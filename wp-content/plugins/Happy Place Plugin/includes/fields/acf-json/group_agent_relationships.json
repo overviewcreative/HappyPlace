@@ -6,34 +6,85 @@
             "key": "field_agent_cities",
             "label": "Cities Served",
             "name": "agent_cities",
+            "aria-label": "",
             "type": "relationship",
             "instructions": "Select the cities this agent serves",
-            "required": 1,
-            "post_type": ["city"],
-            "filters": ["search"],
-            "return_format": "object"
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "city"
+            ],
+            "post_status": "",
+            "taxonomy": "",
+            "filters": [
+                "search"
+            ],
+            "return_format": "object",
+            "min": "",
+            "max": "",
+            "allow_in_bindings": 1,
+            "elements": "",
+            "bidirectional": 0,
+            "bidirectional_target": []
         },
         {
             "key": "field_agent_communities",
             "label": "Communities",
             "name": "agent_communities",
+            "aria-label": "",
             "type": "relationship",
             "instructions": "Select the communities this agent specializes in",
             "required": 0,
-            "post_type": ["community"],
-            "filters": ["search"],
-            "return_format": "object"
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "community"
+            ],
+            "filters": [
+                "search"
+            ],
+            "return_format": "object",
+            "taxonomy": [],
+            "min": 0,
+            "max": 0,
+            "elements": [],
+            "bidirectional_target": []
         },
         {
             "key": "field_agent_transactions",
             "label": "Transactions",
             "name": "agent_transactions",
+            "aria-label": "",
             "type": "relationship",
             "instructions": "Select associated transactions",
             "required": 0,
-            "post_type": ["transaction"],
-            "filters": ["search"],
-            "return_format": "object"
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "transaction"
+            ],
+            "filters": [
+                "search"
+            ],
+            "return_format": "object",
+            "taxonomy": [],
+            "min": 0,
+            "max": 0,
+            "elements": [],
+            "bidirectional_target": []
         }
     ],
     "location": [
@@ -52,5 +103,7 @@
     "instruction_placement": "label",
     "hide_on_screen": "",
     "active": true,
-    "description": "Relationships for real estate agents"
+    "description": "Relationships for real estate agents",
+    "show_in_rest": 0,
+    "modified": 1752258501
 }

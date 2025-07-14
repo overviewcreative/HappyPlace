@@ -1,757 +1,841 @@
 <?php
+
 /**
- * AJAX Handler
+ * Theme AJAX Handler - Presentation Layer Only
  * 
+ * Handles AJAX requests that are purely presentation-related
+ * and don't involve data manipulation or storage.
  * 
  * @package HappyPlace
- * @since 1.0.0
+ * @since 2.0.0
  */
 
-class HPH_Ajax_Handler {
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Theme AJAX Handler Class
+ * 
+ * Manages presentation-specific AJAX operations:
+ * - UI state changes
+ * - Template fragment loading
+ * - Asset loading
+ * - Non-persistent user preferences
+ */
+class HPH_Theme_Ajax_Handler
+{
+    /**
+     * @var HPH_Theme_Ajax_Handler|null Singleton instance
+     */
     private static ?self $instance = null;
-    
-    public static function instance(): self {
+
+    /**
+     * Get singleton instance
+     */
+    public static function instance(): self
+    {
         return self::$instance ??= new self();
     }
-    
-    private function __construct() {
-        $this->register_ajax_handlers();
-        $this->ensure_dependencies();
-    }
-    
+
     /**
-     * Register all AJAX handlers with exact same action names as original
+     * Constructor - Initialize theme-specific AJAX handling
      */
-    private function register_ajax_handlers(): void {
+    private function __construct()
+    {
+        $this->register_theme_ajax_actions();
+    }
+
+    /**
+     * Register theme-specific AJAX actions
+     */
+    private function register_theme_ajax_actions(): void
+    {
+        // UI and presentation-only actions
+        $theme_actions = [
+            'hph_load_template_part' => 'load_template_part',
+            'hph_toggle_view_mode' => 'toggle_view_mode',
+            'hph_update_ui_state' => 'update_ui_state',
+            'hph_load_more_listings' => 'load_more_listings_display',
+            'hph_get_listing_card' => 'get_listing_card_html',
+            'hph_refresh_map_view' => 'refresh_map_view',
+            'hph_validate_form_field' => 'validate_form_field_display'
+        ];
+
+        foreach ($theme_actions as $action => $method) {
+            add_action("wp_ajax_{$action}", [$this, $method]);
+            add_action("wp_ajax_nopriv_{$action}", [$this, $method]);
+        }
+
+        // Register additional agent AJAX handlers
+        $this->register_ajax_handlers();
+    }
+
+    // ADD TO register_ajax_handlers() method:
+    private function register_ajax_handlers(): void
+    {
         $handlers = [
-            // Maintain exact compatibility with existing frontend
+            // Existing handlers...
             'hph_search_suggestions' => 'search_suggestions',
-            'hph_filter_listings' => 'filter_listings', 
+            'hph_filter_listings' => 'filter_listings',
             'hph_toggle_favorite' => 'toggle_favorite',
             'hph_get_favorites' => 'get_favorites',
             'hph_save_search' => 'save_search',
             'hph_contact_agent' => 'contact_agent',
             'hph_get_map_markers' => 'get_map_markers',
-            
-            // Additional dashboard functionality
-            'hph_load_dashboard_section' => 'load_dashboard_section',
-            'hph_update_agent_profile' => 'update_agent_profile',
-            'hph_get_listing_stats' => 'get_listing_stats',
+
+            // NEW AGENT HANDLERS - ADD THESE:
+            'hph_filter_agents' => 'filter_agents',
+            'hph_agent_contact' => 'agent_contact',
+            'hph_agent_property_inquiry' => 'agent_property_inquiry',
+            'hph_save_agent' => 'save_agent',
+            'hph_unsave_agent' => 'unsave_agent',
+            'hph_buyer_registration' => 'buyer_registration',
+            'hph_schedule_callback' => 'schedule_callback'
         ];
-        
+
         foreach ($handlers as $action => $method) {
             add_action("wp_ajax_{$action}", [$this, $method]);
             add_action("wp_ajax_nopriv_{$action}", [$this, $method]);
         }
     }
-    
-    /**
-     * Ensure required dependencies are loaded
-     */
-    private function ensure_dependencies(): void {
-        $listing_helper_path = get_template_directory() . '/inc/class-listing-helper.php';
-        if (!class_exists('Happy_Place_Listing_Helper') && file_exists($listing_helper_path)) {
-            require_once $listing_helper_path;
-        }
-    }
-    
-    /**
-     * Search suggestions for autocomplete - EXACT COMPATIBILITY
-     */
-    public function search_suggestions(): void {
-        check_ajax_referer('hph_search_nonce', 'nonce');
-        
-        $term = sanitize_text_field($_POST['term'] ?? '');
-        $suggestions = [];
-        
-        if (strlen($term) >= 2) {
-            // Search cities
-            $cities = $this->search_cities($term);
-            $suggestions = array_merge($suggestions, $cities);
-            
-            // Search neighborhoods if helper class exists
-            if (class_exists('Happy_Place_Listing_Helper')) {
-                $listing_helper = Happy_Place_Listing_Helper::get_instance();
-                if (method_exists($listing_helper, 'search_neighborhoods')) {
-                    $neighborhoods = $listing_helper->search_neighborhoods($term);
-                    $suggestions = array_merge($suggestions, $neighborhoods);
-                }
-            }
-            
-            // Search zip codes
-            $zips = $this->search_zip_codes($term);
-            $suggestions = array_merge($suggestions, $zips);
-        }
-        
-        wp_send_json_success($suggestions);
-    }
-    
-    /**
-     * Filter listings - IMPROVED with exact compatibility
-     */
-    public function filter_listings(): void {
-        check_ajax_referer('hph_filter_nonce', 'nonce');
 
-        try {
-            $filters = [
-                'price_min' => $this->sanitize_number_input($_POST['price_min'] ?? 0),
-                'price_max' => $this->sanitize_number_input($_POST['price_max'] ?? 0),
-                'bedrooms' => $this->sanitize_number_input($_POST['bedrooms'] ?? 0, true),
-                'bathrooms' => $this->sanitize_number_input($_POST['bathrooms'] ?? 0),
-                'property_type' => sanitize_text_field($_POST['property_type'] ?? ''),
-                'location' => sanitize_text_field($_POST['location'] ?? ''),
-                'features' => $this->sanitize_array_input($_POST['features'] ?? []),
-                'status' => sanitize_text_field($_POST['status'] ?? 'Active'),
-                'sort' => sanitize_text_field($_POST['sort'] ?? 'price_desc'),
-                'view' => sanitize_text_field($_POST['view'] ?? 'list'),
-                'page' => $this->sanitize_number_input($_POST['page'] ?? 1, true),
-                'per_page' => $this->sanitize_number_input($_POST['per_page'] ?? 12, true)
-            ];
-
-            $results = $this->get_filtered_listings($filters);
-            
-            wp_send_json_success([
-                'listings' => $results['listings'],
-                'total' => $results['total'],
-                'pages' => $results['pages'],
-                'current_page' => $filters['page']
-            ]);
-
-        } catch (Exception $e) {
-            error_log('Error in filter_listings: ' . $e->getMessage());
-            wp_send_json_error('Error processing listing filters');
-        }
-    }
-    
     /**
-     * Toggle favorite listing - EXACT COMPATIBILITY
+     * 1. FILTER AGENTS - For archive page filtering
      */
-    public function toggle_favorite(): void {
-        if (!is_user_logged_in()) {
-            wp_send_json_error('Please log in to save favorites');
-        }
-        
-        check_ajax_referer('hph_favorites_nonce', 'nonce');
-        
-        $listing_id = $this->sanitize_number_input($_POST['listing_id'] ?? 0, true);
-        $user_id = get_current_user_id();
-        
-        if (!$listing_id) {
-            wp_send_json_error('Invalid listing ID');
-        }
-        
-        $favorites = get_user_meta($user_id, 'hph_favorite_listings', true) ?: [];
-        
-        if (in_array($listing_id, $favorites)) {
-            $favorites = array_diff($favorites, [$listing_id]);
-            $action = 'removed';
-        } else {
-            $favorites[] = $listing_id;
-            $action = 'added';
-        }
-        
-        update_user_meta($user_id, 'hph_favorite_listings', array_values($favorites));
-        
-        wp_send_json_success([
-            'action' => $action,
-            'count' => count($favorites)
-        ]);
-    }
-    
-    /**
-     * Get user's favorite listings - EXACT COMPATIBILITY
-     */
-    public function get_favorites(): void {
-        if (!is_user_logged_in()) {
-            wp_send_json_error('Please log in to view favorites');
-        }
+    public function filter_agents(): void
+    {
+        check_ajax_referer('hph_ajax_nonce', 'nonce');
 
-        check_ajax_referer('hph_favorites_nonce', 'nonce');
-        
-        $user_id = get_current_user_id();
-        $favorites = get_user_meta($user_id, 'hph_favorite_listings', true) ?: [];
-        
-        wp_send_json_success([
-            'favorites' => $favorites,
-            'count' => count($favorites)
-        ]);
-    }
-    
-    /**
-     * Save search criteria - EXACT COMPATIBILITY
-     */
-    public function save_search(): void {
-        if (!is_user_logged_in()) {
-            wp_send_json_error('Please log in to save searches');
-        }
-        
-        check_ajax_referer('hph_search_nonce', 'nonce');
-        
-        $search_data = [
-            'name' => sanitize_text_field($_POST['name'] ?? ''),
-            'criteria' => [
-                'price_min' => $this->sanitize_number_input($_POST['price_min'] ?? 0),
-                'price_max' => $this->sanitize_number_input($_POST['price_max'] ?? 0),
-                'bedrooms' => $this->sanitize_number_input($_POST['bedrooms'] ?? 0, true),
-                'bathrooms' => $this->sanitize_number_input($_POST['bathrooms'] ?? 0),
-                'property_type' => sanitize_text_field($_POST['property_type'] ?? ''),
-                'location' => sanitize_text_field($_POST['location'] ?? ''),
-                'features' => $this->sanitize_array_input($_POST['features'] ?? [])
-            ],
-            'email_alerts' => !empty($_POST['email_alerts']),
-            'created' => current_time('mysql')
+        $filters = [
+            'search' => sanitize_text_field($_POST['filters']['search'] ?? ''),
+            'location' => sanitize_text_field($_POST['filters']['location'] ?? ''),
+            'specialization' => sanitize_text_field($_POST['filters']['specialization'] ?? ''),
+            'language' => sanitize_text_field($_POST['filters']['language'] ?? ''),
+            'experience' => intval($_POST['filters']['experience'] ?? 0),
+            'rating' => intval($_POST['filters']['rating'] ?? 0),
+            'sort' => sanitize_text_field($_POST['filters']['sort'] ?? 'name')
         ];
-        
-        if (empty($search_data['name'])) {
-            wp_send_json_error('Please provide a name for your saved search');
+
+        $page = intval($_POST['page'] ?? 1);
+        $view_mode = sanitize_text_field($_POST['view_mode'] ?? 'grid');
+
+        $args = [
+            'post_type' => 'agent',
+            'post_status' => 'publish',
+            'posts_per_page' => 12,
+            'paged' => $page,
+            'meta_query' => ['relation' => 'AND']
+        ];
+
+        // Apply filters
+        if (!empty($filters['search'])) {
+            $args['s'] = $filters['search'];
         }
-        
-        $user_id = get_current_user_id();
-        $saved_searches = get_user_meta($user_id, 'hph_saved_searches', true) ?: [];
-        $saved_searches[] = $search_data;
-        
-        update_user_meta($user_id, 'hph_saved_searches', $saved_searches);
-        
-        wp_send_json_success('Search saved successfully');
+
+        if (!empty($filters['location'])) {
+            $args['meta_query'][] = [
+                'key' => 'office_location',
+                'value' => $filters['location'],
+                'compare' => 'LIKE'
+            ];
+        }
+
+        if (!empty($filters['specialization'])) {
+            $args['tax_query'] = [
+                [
+                    'taxonomy' => 'agent_specialty',
+                    'field' => 'slug',
+                    'terms' => $filters['specialization']
+                ]
+            ];
+        }
+
+        // Apply sorting
+        switch ($filters['sort']) {
+            case 'name_desc':
+                $args['orderby'] = 'title';
+                $args['order'] = 'DESC';
+                break;
+            case 'listings':
+                $args['meta_key'] = '_listing_count'; // You'd need to set this
+                $args['orderby'] = 'meta_value_num';
+                $args['order'] = 'DESC';
+                break;
+            default:
+                $args['orderby'] = 'title';
+                $args['order'] = 'ASC';
+        }
+
+        $query = new WP_Query($args);
+
+        $grid_html = '';
+        $list_html = '';
+
+        if ($query->have_posts()) {
+            // Generate grid view HTML
+            ob_start();
+            while ($query->have_posts()) {
+                $query->the_post();
+                include(get_template_directory() . '/template-parts/cards/agent-card-grid.php');
+            }
+            $grid_html = ob_get_clean();
+
+            // Generate list view HTML
+            ob_start();
+            $query->rewind_posts();
+            while ($query->have_posts()) {
+                $query->the_post();
+                include(get_template_directory() . '/template-parts/cards/agent-card-list.php');
+            }
+            $list_html = ob_get_clean();
+            wp_reset_postdata();
+        }
+
+        wp_send_json_success([
+            'grid_html' => $grid_html,
+            'list_html' => $list_html,
+            'total' => $query->found_posts,
+            'current_page' => $page,
+            'has_more' => $page < $query->max_num_pages
+        ]);
     }
-    
+
     /**
-     * Contact agent - IMPROVED with better validation
+     * 2. AGENT CONTACT - Handle contact form submissions
      */
-    public function contact_agent(): void {
-        check_ajax_referer('hph_contact_nonce', 'nonce');
-        
+    public function agent_contact(): void
+    {
+        check_ajax_referer('hph_ajax_nonce', 'nonce');
+
         $data = [
+            'agent_id' => intval($_POST['agent_id'] ?? 0),
             'name' => sanitize_text_field($_POST['name'] ?? ''),
             'email' => sanitize_email($_POST['email'] ?? ''),
             'phone' => sanitize_text_field($_POST['phone'] ?? ''),
+            'subject' => sanitize_text_field($_POST['subject'] ?? ''),
             'message' => sanitize_textarea_field($_POST['message'] ?? ''),
-            'listing_id' => $this->sanitize_number_input($_POST['listing_id'] ?? 0, true)
+            'preferred_contact' => sanitize_text_field($_POST['preferred_contact'] ?? 'email'),
+            'best_time' => sanitize_text_field($_POST['best_time'] ?? 'anytime')
         ];
-        
-        // Enhanced validation
-        $validation_errors = $this->validate_contact_form($data);
-        if (!empty($validation_errors)) {
-            wp_send_json_error(implode('. ', $validation_errors));
+
+        // Validation
+        $errors = [];
+        if (empty($data['name'])) $errors[] = 'Name is required';
+        if (empty($data['email']) || !is_email($data['email'])) $errors[] = 'Valid email is required';
+        if (empty($data['message'])) $errors[] = 'Message is required';
+        if (!$data['agent_id']) $errors[] = 'Invalid agent';
+
+        if (!empty($errors)) {
+            wp_send_json_error(['message' => implode('. ', $errors)]);
         }
-        
-        // Get agent info - improved error handling
-        $agent_id = get_field('agent', $data['listing_id']);
-        $agent_email = get_field('agent_email', $agent_id) ?: get_field('email', $agent_id);
-        
+
+        // Get agent email using correct field name
+        $agent_email = get_field('email', $data['agent_id']);
         if (!$agent_email) {
-            error_log('Agent email not found for listing: ' . $data['listing_id']);
-            wp_send_json_error('Unable to contact agent');
+            wp_send_json_error(['message' => 'Unable to contact agent.']);
         }
-        
-        // Send email with improved formatting
-        $subject = 'New Inquiry for ' . get_the_title($data['listing_id']);
-        $email_content = $this->format_contact_email($data);
-        
+
+        // Send email
+        $subject = 'New Contact Inquiry - ' . $data['subject'];
+        $message = $this->format_agent_contact_email($data);
+
         $headers = [
             'Content-Type: text/html; charset=UTF-8',
             'From: ' . get_bloginfo('name') . ' <' . get_option('admin_email') . '>',
             'Reply-To: ' . $data['name'] . ' <' . $data['email'] . '>'
         ];
-        
-        $sent = wp_mail($agent_email, $subject, $email_content, $headers);
-        
+
+        $sent = wp_mail($agent_email, $subject, $message, $headers);
+
         if ($sent) {
-            // Log successful contact with better data
-            $this->log_contact_attempt($data['listing_id'], $agent_id, $data['email'], true, $data);
-            wp_send_json_success('Message sent successfully');
+            // Log the contact
+            $this->log_agent_contact($data);
+            wp_send_json_success(['message' => 'Your message has been sent successfully!']);
         } else {
-            // Log failed contact
-            $this->log_contact_attempt($data['listing_id'], $agent_id, $data['email'], false, $data);
-            wp_send_json_error('Failed to send message');
+            wp_send_json_error(['message' => 'There was an error sending your message.']);
         }
     }
-    
-    /**
-     * Get map markers - EXACT COMPATIBILITY
-     */
-    public function get_map_markers(): void {
-        check_ajax_referer('hph_map_nonce', 'nonce');
-        
-        try {
-            $filters = [
-                'price_min' => $this->sanitize_number_input($_POST['price_min'] ?? 0),
-                'price_max' => $this->sanitize_number_input($_POST['price_max'] ?? 0),
-                'bedrooms' => $this->sanitize_number_input($_POST['bedrooms'] ?? 0, true),
-                'bathrooms' => $this->sanitize_number_input($_POST['bathrooms'] ?? 0),
-                'property_type' => sanitize_text_field($_POST['property_type'] ?? ''),
-                'status' => sanitize_text_field($_POST['status'] ?? 'Active')
-            ];
 
-            if (class_exists('Happy_Place_Listing_Helper')) {
-                $listing_helper = Happy_Place_Listing_Helper::get_instance();
-                if (method_exists($listing_helper, 'get_listing_markers')) {
-                    $markers = $listing_helper->get_listing_markers($filters);
-                    wp_send_json_success($markers);
-                    return;
-                }
-            }
-            
-            // Fallback implementation if helper class not available
-            $markers = $this->get_listing_markers_fallback($filters);
-            wp_send_json_success($markers);
-            
-        } catch (Exception $e) {
-            error_log('Error getting map markers: ' . $e->getMessage());
-            wp_send_json_error('Error loading map markers');
-        }
-    }
-    
     /**
-     * ADDITIONAL: Dashboard section loading
+     * 3. PROPERTY INQUIRY - Handle property search requests
      */
-    public function load_dashboard_section(): void {
-        check_ajax_referer('hph_dashboard_nonce', 'nonce');
-        $this->check_user_permissions();
-        
-        $section = sanitize_text_field($_POST['section'] ?? '');
-        $template_path = get_template_directory() . "/templates/dashboard/{$section}.php";
-        
-        if (!file_exists($template_path)) {
-            wp_send_json_error(__('Section not found.', 'happy-place'));
-        }
-        
-        ob_start();
-        include $template_path;
-        $html = ob_get_clean();
-        
-        wp_send_json_success(['html' => $html]);
-    }
-    
-    /**
-     * ADDITIONAL: Agent profile updates
-     */
-    public function update_agent_profile(): void {
-        check_ajax_referer('hph_profile_nonce', 'nonce');
-        $this->check_user_permissions();
-        
-        $agent_id = get_current_user_id();
-        $allowed_fields = [
-            'name', 'title', 'bio', 'phone', 'email',
-            'facebook', 'twitter', 'linkedin', 'instagram'
+    public function agent_property_inquiry(): void
+    {
+        check_ajax_referer('hph_ajax_nonce', 'nonce');
+
+        $data = [
+            'agent_id' => intval($_POST['agent_id'] ?? 0),
+            'inquiry_type' => sanitize_text_field($_POST['inquiry_type'] ?? ''),
+            'price_range_min' => intval($_POST['price_range_min'] ?? 0),
+            'price_range_max' => intval($_POST['price_range_max'] ?? 0),
+            'property_type' => sanitize_text_field($_POST['property_type'] ?? ''),
+            'bedrooms' => sanitize_text_field($_POST['bedrooms'] ?? ''),
+            'bathrooms' => sanitize_text_field($_POST['bathrooms'] ?? ''),
+            'location' => sanitize_text_field($_POST['location'] ?? ''),
+            'timeline' => sanitize_text_field($_POST['timeline'] ?? ''),
+            'additional_requirements' => sanitize_textarea_field($_POST['additional_requirements'] ?? '')
         ];
-        
-        $updated = [];
-        foreach ($allowed_fields as $field) {
-            if (isset($_POST[$field])) {
-                $value = $field === 'bio' 
-                    ? sanitize_textarea_field($_POST[$field])
-                    : sanitize_text_field($_POST[$field]);
-                
-                update_field($field, $value, "user_{$agent_id}");
-                $updated[$field] = $value;
-            }
-        }
-        
-        wp_send_json_success($updated);
-    }
-    
-    /**
-     * ADDITIONAL: Get listing statistics
-     */
-    public function get_listing_stats(): void {
-        check_ajax_referer('hph_stats_nonce', 'nonce');
-        $this->check_user_permissions();
-        
-        $agent_id = get_current_user_id();
-        $range = sanitize_text_field($_POST['range'] ?? '30d');
-        
-        $stats = $this->calculate_agent_stats($agent_id, $range);
-        wp_send_json_success($stats);
-    }
-    
-    /**
-     * Utility Methods - IMPROVED VERSIONS
-     */
-    
-    private function sanitize_number_input($value, bool $integer = false) {
-        if ($value === '' || $value === null) {
-            return '';
-        }
 
-        if ($integer) {
-            return filter_var($value, FILTER_VALIDATE_INT) !== false 
-                ? intval($value) 
-                : '';
-        }
-
-        return filter_var($value, FILTER_VALIDATE_FLOAT) !== false 
-            ? floatval($value) 
-            : '';
-    }
-    
-    private function sanitize_array_input($value): array {
-        if (!is_array($value)) {
-            return [];
-        }
-
-        return array_map('sanitize_text_field', $value);
-    }
-    
-    private function validate_contact_form(array $data): array {
-        $errors = [];
-        
-        if (empty($data['name'])) {
-            $errors[] = 'Name is required';
-        }
-        
-        if (empty($data['email'])) {
-            $errors[] = 'Email is required';
-        } elseif (!is_email($data['email'])) {
-            $errors[] = 'Please provide a valid email address';
-        }
-        
-        if (empty($data['message'])) {
-            $errors[] = 'Message is required';
-        }
-        
-        if (!$data['listing_id']) {
-            $errors[] = 'Invalid listing ID';
-        }
-        
-        return $errors;
-    }
-    
-    private function check_user_permissions(): void {
-        if (!is_user_logged_in()) {
-            wp_send_json_error('You must be logged in');
-        }
-        
-        if (!current_user_can('agent') && !current_user_can('administrator')) {
-            wp_send_json_error('Insufficient permissions');
-        }
-    }
-    
-    /**
-     * EXACT COMPATIBILITY METHODS - Same as original
-     */
-    
-    private function get_filtered_listings($filters) {
-        $args = [
-            'post_type' => 'listing',
+        // Save the inquiry
+        $inquiry_id = wp_insert_post([
+            'post_type' => 'property_inquiry',
+            'post_title' => 'Property Inquiry - ' . date('Y-m-d H:i:s'),
             'post_status' => 'publish',
-            'posts_per_page' => $filters['per_page'],
-            'paged' => $filters['page'],
-            'meta_query' => [],
-            'tax_query' => []
-        ];
-        
-        // Apply all filters exactly as original
-        if ($filters['price_min'] > 0) {
-            $args['meta_query'][] = [
-                'key' => 'price',
-                'value' => $filters['price_min'],
-                'type' => 'NUMERIC',
-                'compare' => '>='
-            ];
-        }
-        
-        if ($filters['price_max'] > 0) {
-            $args['meta_query'][] = [
-                'key' => 'price',
-                'value' => $filters['price_max'],
-                'type' => 'NUMERIC',
-                'compare' => '<='
-            ];
-        }
-        
-        if ($filters['bedrooms'] > 0) {
-            $args['meta_query'][] = [
-                'key' => 'bedrooms',
-                'value' => $filters['bedrooms'],
-                'type' => 'NUMERIC',
-                'compare' => '>='
-            ];
-        }
-        
-        if ($filters['bathrooms'] > 0) {
-            $args['meta_query'][] = [
-                'key' => 'bathrooms',
-                'value' => $filters['bathrooms'],
-                'type' => 'NUMERIC',
-                'compare' => '>='
-            ];
-        }
-        
-        if ($filters['status']) {
-            $args['meta_query'][] = [
-                'key' => 'status',
-                'value' => $filters['status'],
-                'compare' => '='
-            ];
-        }
-        
-        if ($filters['property_type']) {
-            $args['tax_query'][] = [
-                'taxonomy' => 'property_type',
-                'field' => 'slug',
-                'terms' => $filters['property_type']
-            ];
-        }
-        
-        if (!empty($filters['features'])) {
-            $args['tax_query'][] = [
-                'taxonomy' => 'feature',
-                'field' => 'slug',
-                'terms' => $filters['features']
-            ];
-        }
-        
-        if ($filters['location']) {
-            $args['meta_query'][] = [
-                'relation' => 'OR',
-                [
-                    'key' => 'city',
-                    'value' => $filters['location'],
-                    'compare' => 'LIKE'
-                ],
-                [
-                    'key' => 'zip_code',
-                    'value' => $filters['location'],
-                    'compare' => 'LIKE'
-                ],
-                [
-                    'key' => 'neighborhood',
-                    'value' => $filters['location'],
-                    'compare' => 'LIKE'
-                ]
-            ];
-        }
-        
-        // Sorting exactly as original
-        switch ($filters['sort']) {
-            case 'price_asc':
-                $args['meta_key'] = 'price';
-                $args['orderby'] = 'meta_value_num';
-                $args['order'] = 'ASC';
-                break;
-            case 'price_desc':
-                $args['meta_key'] = 'price';
-                $args['orderby'] = 'meta_value_num';
-                $args['order'] = 'DESC';
-                break;
-            case 'newest':
-                $args['orderby'] = 'date';
-                $args['order'] = 'DESC';
-                break;
-            case 'size_desc':
-                $args['meta_key'] = 'square_footage';
-                $args['orderby'] = 'meta_value_num';
-                $args['order'] = 'DESC';
-                break;
-        }
-        
-        $query = new WP_Query($args);
-        $listings = [];
-        
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                
-                if ($filters['view'] === 'list') {
-                    ob_start();
-                    get_template_part('template-parts/cards/listing-list-card', null, [
-                        'post_id' => get_the_ID(),
-                        'size' => 'default'
-                    ]);
-                    $listings[] = ob_get_clean();
-                } else {
-                    ob_start();
-                    get_template_part('template-parts/cards/listing-swipe-card', null, [
-                        'post_id' => get_the_ID(),
-                        'size' => 'default'
-                    ]);
-                    $listings[] = ob_get_clean();
-                }
+            'meta_input' => $data
+        ]);
+
+        if ($inquiry_id) {
+            // Send notification to agent
+            $agent_email = get_field('email', $data['agent_id']);
+            if ($agent_email) {
+                $subject = 'New Property Search Inquiry';
+                $message = $this->format_property_inquiry_email($data);
+                wp_mail($agent_email, $subject, $message);
             }
-            wp_reset_postdata();
+
+            wp_send_json_success(['message' => 'Your inquiry has been submitted!']);
+        } else {
+            wp_send_json_error(['message' => 'There was an error submitting your inquiry.']);
         }
-        
-        return [
-            'listings' => $listings,
-            'total' => $query->found_posts,
-            'pages' => $query->max_num_pages
+    }
+
+    /**
+     * 4. SAVE/UNSAVE AGENT - For favorites functionality
+     */
+    public function save_agent(): void
+    {
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => 'You must be logged in to save agents.']);
+        }
+
+        check_ajax_referer('hph_ajax_nonce', 'nonce');
+
+        $agent_id = intval($_POST['agent_id'] ?? 0);
+        $user_id = get_current_user_id();
+
+        $saved_agents = get_user_meta($user_id, 'saved_agents', true) ?: [];
+
+        if (!in_array($agent_id, $saved_agents)) {
+            $saved_agents[] = $agent_id;
+            update_user_meta($user_id, 'saved_agents', $saved_agents);
+            wp_send_json_success(['message' => 'Agent saved to your favorites!']);
+        } else {
+            wp_send_json_error(['message' => 'Agent is already in your favorites.']);
+        }
+    }
+
+    public function unsave_agent(): void
+    {
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => 'You must be logged in.']);
+        }
+
+        check_ajax_referer('hph_ajax_nonce', 'nonce');
+
+        $agent_id = intval($_POST['agent_id'] ?? 0);
+        $user_id = get_current_user_id();
+
+        $saved_agents = get_user_meta($user_id, 'saved_agents', true) ?: [];
+        $saved_agents = array_diff($saved_agents, [$agent_id]);
+
+        update_user_meta($user_id, 'saved_agents', $saved_agents);
+        wp_send_json_success(['message' => 'Agent removed from favorites.']);
+    }
+
+    /**
+     * 5. SCHEDULE CALLBACK - Handle callback requests
+     */
+    public function schedule_callback(): void
+    {
+        check_ajax_referer('hph_ajax_nonce', 'nonce');
+
+        $data = [
+            'agent_id' => intval($_POST['agent_id'] ?? 0),
+            'name' => sanitize_text_field($_POST['callback_name'] ?? ''),
+            'phone' => sanitize_text_field($_POST['callback_phone'] ?? ''),
+            'date' => sanitize_text_field($_POST['callback_date'] ?? ''),
+            'time' => sanitize_text_field($_POST['callback_time'] ?? ''),
+            'topic' => sanitize_textarea_field($_POST['callback_topic'] ?? '')
         ];
+
+        // Save callback request
+        $callback_id = wp_insert_post([
+            'post_type' => 'callback_request',
+            'post_title' => 'Callback Request - ' . $data['name'] . ' - ' . date('Y-m-d H:i:s'),
+            'post_status' => 'publish',
+            'meta_input' => $data
+        ]);
+
+        if ($callback_id) {
+            // Send notification to agent
+            $agent_email = get_field('email', $data['agent_id']);
+            if ($agent_email) {
+                $subject = 'New Callback Request';
+                $message = $this->format_callback_email($data);
+                wp_mail($agent_email, $subject, $message);
+            }
+
+            wp_send_json_success(['message' => 'Your callback has been scheduled!']);
+        } else {
+            wp_send_json_error(['message' => 'There was an error scheduling your callback.']);
+        }
     }
-    
-    private function search_cities($term) {
-        global $wpdb;
-        
-        $results = $wpdb->get_results($wpdb->prepare("
-            SELECT DISTINCT meta_value as city 
-            FROM {$wpdb->postmeta} 
-            WHERE meta_key = 'city' 
-            AND meta_value LIKE %s 
-            LIMIT 10
-        ", '%' . $wpdb->esc_like($term) . '%'));
-        
-        return array_map(function($result) {
-            return [
-                'label' => $result->city,
-                'value' => $result->city,
-                'type' => 'city'
-            ];
-        }, $results);
-    }
-    
-    private function search_zip_codes($term) {
-        global $wpdb;
-        
-        $results = $wpdb->get_results($wpdb->prepare("
-            SELECT DISTINCT meta_value as zip 
-            FROM {$wpdb->postmeta} 
-            WHERE meta_key = 'zip_code' 
-            AND meta_value LIKE %s 
-            LIMIT 5
-        ", $wpdb->esc_like($term) . '%'));
-        
-        return array_map(function($result) {
-            return [
-                'label' => $result->zip,
-                'value' => $result->zip,
-                'type' => 'zip'
-            ];
-        }, $results);
-    }
-    
-    private function format_contact_email(array $data): string {
-        $listing_title = get_the_title($data['listing_id']);
-        $listing_url = get_permalink($data['listing_id']);
-        $price = get_field('price', $data['listing_id']);
-        $formatted_price = $price ? '$' . number_format($price) : 'Price not available';
-        
+
+    // Helper methods for agent AJAX handlers
+    private function format_agent_contact_email($data): string
+    {
+        $agent_name = get_the_title($data['agent_id']);
+
         return "
-            <h2>New Property Inquiry</h2>
-            <h3>Listing Details</h3>
-            <p><strong>Property:</strong> {$listing_title}</p>
-            <p><strong>Price:</strong> {$formatted_price}</p>
-            <p><strong>URL:</strong> <a href='{$listing_url}'>{$listing_url}</a></p>
-            
-            <h3>Inquirer Information</h3>
-            <p><strong>Name:</strong> {$data['name']}</p>
-            <p><strong>Email:</strong> {$data['email']}</p>
-            <p><strong>Phone:</strong> {$data['phone']}</p>
-            
-            <h3>Message</h3>
-            <p>" . nl2br(esc_html($data['message'])) . "</p>
-            
-            <hr>
-            <p><small>This inquiry was sent from " . get_bloginfo('name') . "</small></p>
+        <h2>New Contact Inquiry</h2>
+        <p><strong>Agent:</strong> {$agent_name}</p>
+        <p><strong>From:</strong> {$data['name']}</p>
+        <p><strong>Email:</strong> {$data['email']}</p>
+        <p><strong>Phone:</strong> {$data['phone']}</p>
+        <p><strong>Subject:</strong> {$data['subject']}</p>
+        <p><strong>Preferred Contact:</strong> {$data['preferred_contact']}</p>
+        <p><strong>Best Time:</strong> {$data['best_time']}</p>
+        <hr>
+        <p><strong>Message:</strong></p>
+        <p>" . nl2br(esc_html($data['message'])) . "</p>
         ";
     }
-    
-    private function log_contact_attempt($listing_id, $agent_id, $inquirer_email, $success, $data = []) {
-        global $wpdb;
-        
-        // Try to use custom table if it exists
-        $table = $wpdb->prefix . 'hph_contact_log';
-        if ($wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table) {
-            $wpdb->insert($table, [
-                'listing_id' => $listing_id,
-                'agent_id' => $agent_id,
-                'inquirer_email' => $inquirer_email,
-                'inquirer_name' => $data['name'] ?? '',
-                'inquirer_phone' => $data['phone'] ?? '',
-                'success' => $success ? 1 : 0,
-                'created_at' => current_time('mysql'),
-                'ip_address' => $_SERVER['REMOTE_ADDR'] ?? ''
-            ]);
-        } else {
-            // Fallback to post meta
-            $log_data = [
-                'post_type' => 'contact_log',
-                'post_title' => 'Contact Attempt - ' . get_the_title($listing_id),
-                'post_status' => 'publish',
-                'meta_input' => [
-                    'listing_id' => $listing_id,
-                    'agent_id' => $agent_id,
-                    'inquirer_email' => $inquirer_email,
-                    'success' => $success,
-                    'datetime' => current_time('mysql')
-                ]
-            ];
-            
-            wp_insert_post($log_data);
-        }
+
+    private function format_property_inquiry_email($data): string
+    {
+        return "
+        <h2>New Property Search Inquiry</h2>
+        <p><strong>Type:</strong> {$data['inquiry_type']}</p>
+        <p><strong>Price Range:</strong> $" . number_format($data['price_range_min']) . " - $" . number_format($data['price_range_max']) . "</p>
+        <p><strong>Property Type:</strong> {$data['property_type']}</p>
+        <p><strong>Bedrooms:</strong> {$data['bedrooms']}</p>
+        <p><strong>Bathrooms:</strong> {$data['bathrooms']}</p>
+        <p><strong>Location:</strong> {$data['location']}</p>
+        <p><strong>Timeline:</strong> {$data['timeline']}</p>
+        <hr>
+        <p><strong>Additional Requirements:</strong></p>
+        <p>" . nl2br(esc_html($data['additional_requirements'])) . "</p>
+        ";
     }
-    
-    private function get_listing_markers_fallback($filters): array {
-        $args = [
-            'post_type' => 'listing',
+
+    private function format_callback_email($data): string
+    {
+        return "
+        <h2>New Callback Request</h2>
+        <p><strong>Name:</strong> {$data['name']}</p>
+        <p><strong>Phone:</strong> {$data['phone']}</p>
+        <p><strong>Preferred Date:</strong> {$data['date']}</p>
+        <p><strong>Preferred Time:</strong> {$data['time']}</p>
+        <hr>
+        <p><strong>Topic:</strong></p>
+        <p>" . nl2br(esc_html($data['topic'])) . "</p>
+        ";
+    }
+
+    private function log_agent_contact($data): void
+    {
+        // Log contact attempt for CRM tracking
+        $log_data = [
+            'post_type' => 'agent_contact_log',
+            'post_title' => 'Contact: ' . $data['name'] . ' - ' . date('Y-m-d H:i:s'),
             'post_status' => 'publish',
-            'posts_per_page' => 100, // Limit for performance
-            'meta_query' => []
+            'meta_input' => [
+                'agent_id' => $data['agent_id'],
+                'contact_name' => $data['name'],
+                'contact_email' => $data['email'],
+                'contact_phone' => $data['phone'],
+                'contact_subject' => $data['subject'],
+                'contact_message' => $data['message'],
+                'contact_date' => current_time('mysql'),
+                'ip_address' => $_SERVER['REMOTE_ADDR'] ?? ''
+            ]
         ];
-        
-        // Apply basic filters
-        if ($filters['price_min'] > 0) {
-            $args['meta_query'][] = [
-                'key' => 'price',
-                'value' => $filters['price_min'],
-                'type' => 'NUMERIC',
-                'compare' => '>='
-            ];
+
+        wp_insert_post($log_data);
+    }
+
+    /**
+     * Load template part dynamically
+     * For loading template fragments without full page reload
+     */
+    public function load_template_part(): void
+    {
+        if (!check_ajax_referer('hph_theme_nonce', 'nonce', false)) {
+            wp_send_json_error(__('Security check failed', 'happy-place'));
         }
-        
-        if ($filters['price_max'] > 0) {
-            $args['meta_query'][] = [
-                'key' => 'price',
-                'value' => $filters['price_max'],
-                'type' => 'NUMERIC',
-                'compare' => '<='
-            ];
+
+        $template_part = sanitize_file_name($_POST['template_part'] ?? '');
+        $template_args = $_POST['args'] ?? [];
+
+        // Allowed template parts for security
+        $allowed_templates = [
+            'cards/listing-list-card',
+            'cards/listing-swipe-card',
+            'listing/no-results',
+            'filters/filter-chips',
+            'pagination/load-more'
+        ];
+
+        if (!in_array($template_part, $allowed_templates)) {
+            wp_send_json_error(__('Invalid template requested', 'happy-place'));
         }
-        
-        $query = new WP_Query($args);
-        $markers = [];
-        
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                
-                $lat = get_field('latitude', get_the_ID());
-                $lng = get_field('longitude', get_the_ID());
-                
-                if ($lat && $lng) {
-                    $markers[] = [
-                        'id' => get_the_ID(),
-                        'lat' => floatval($lat),
-                        'lng' => floatval($lng),
-                        'title' => get_the_title(),
-                        'price' => get_field('price', get_the_ID()),
-                        'url' => get_permalink(),
-                        'image' => get_the_post_thumbnail_url(get_the_ID(), 'thumbnail')
+
+        ob_start();
+
+        // Sanitize args
+        $sanitized_args = $this->sanitize_template_args($template_args);
+
+        get_template_part("template-parts/{$template_part}", null, $sanitized_args);
+
+        $content = ob_get_clean();
+
+        wp_send_json_success([
+            'html' => $content,
+            'template' => $template_part
+        ]);
+    }
+
+    /**
+     * Toggle view mode (list/grid/map)
+     * Stores preference in session, not database
+     */
+    public function toggle_view_mode(): void
+    {
+        if (!check_ajax_referer('hph_theme_nonce', 'nonce', false)) {
+            wp_send_json_error(__('Security check failed', 'happy-place'));
+        }
+
+        $view_mode = sanitize_key($_POST['view_mode'] ?? '');
+
+        $allowed_modes = ['list', 'grid', 'swipe', 'map'];
+        if (!in_array($view_mode, $allowed_modes)) {
+            wp_send_json_error(__('Invalid view mode', 'happy-place'));
+        }
+
+        // Store in session (not database)
+        if (!session_id()) {
+            session_start();
+        }
+        $_SESSION['hph_view_mode'] = $view_mode;
+
+        wp_send_json_success([
+            'view_mode' => $view_mode,
+            'message' => sprintf(__('Switched to %s view', 'happy-place'), $view_mode)
+        ]);
+    }
+
+    /**
+     * Update UI state (temporary/session-based changes)
+     */
+    public function update_ui_state(): void
+    {
+        if (!check_ajax_referer('hph_theme_nonce', 'nonce', false)) {
+            wp_send_json_error(__('Security check failed', 'happy-place'));
+        }
+
+        $state_key = sanitize_key($_POST['state_key'] ?? '');
+        $state_value = sanitize_text_field($_POST['state_value'] ?? '');
+
+        // Allowed UI states
+        $allowed_states = [
+            'sidebar_collapsed',
+            'map_zoom_level',
+            'filter_panel_open',
+            'sort_preference',
+            'results_per_page'
+        ];
+
+        if (!in_array($state_key, $allowed_states)) {
+            wp_send_json_error(__('Invalid state key', 'happy-place'));
+        }
+
+        // Store in session
+        if (!session_id()) {
+            session_start();
+        }
+        $_SESSION["hph_ui_{$state_key}"] = $state_value;
+
+        wp_send_json_success([
+            'state_key' => $state_key,
+            'state_value' => $state_value
+        ]);
+    }
+
+    /**
+     * Load more listings for infinite scroll
+     * Returns HTML for display, doesn't query database directly
+     */
+    public function load_more_listings_display(): void
+    {
+        if (!check_ajax_referer('hph_theme_nonce', 'nonce', false)) {
+            wp_send_json_error(__('Security check failed', 'happy-place'));
+        }
+
+        $page = intval($_POST['page'] ?? 1);
+        $filters = $_POST['filters'] ?? [];
+
+        // Get listings from plugin via filter hook
+        $listings = apply_filters('hph_get_filtered_listings', [], $filters, [
+            'page' => $page,
+            'posts_per_page' => 12
+        ]);
+
+        if (empty($listings)) {
+            wp_send_json_success([
+                'html' => '',
+                'has_more' => false,
+                'message' => __('No more listings to load', 'happy-place')
+            ]);
+        }
+
+        // Generate HTML for listings
+        ob_start();
+        foreach ($listings as $listing) {
+            get_template_part('template-parts/cards/listing-list-card', null, [
+                'listing' => $listing
+            ]);
+        }
+        $html = ob_get_clean();
+
+        wp_send_json_success([
+            'html' => $html,
+            'has_more' => count($listings) >= 12,
+            'page' => $page,
+            'count' => count($listings)
+        ]);
+    }
+
+    /**
+     * Get single listing card HTML
+     * For dynamic card updates or replacements
+     */
+    public function get_listing_card_html(): void
+    {
+        if (!check_ajax_referer('hph_theme_nonce', 'nonce', false)) {
+            wp_send_json_error(__('Security check failed', 'happy-place'));
+        }
+
+        $listing_id = intval($_POST['listing_id'] ?? 0);
+        $card_type = sanitize_key($_POST['card_type'] ?? 'list');
+
+        if (!$listing_id) {
+            wp_send_json_error(__('Invalid listing ID', 'happy-place'));
+        }
+
+        $allowed_card_types = ['list', 'swipe', 'mini'];
+        if (!in_array($card_type, $allowed_card_types)) {
+            $card_type = 'list';
+        }
+
+        // Get listing data from plugin
+        $listing = apply_filters('hph_get_listing_by_id', null, $listing_id);
+
+        if (!$listing) {
+            wp_send_json_error(__('Listing not found', 'happy-place'));
+        }
+
+        ob_start();
+        get_template_part("template-parts/cards/listing-{$card_type}-card", null, [
+            'listing' => $listing
+        ]);
+        $html = ob_get_clean();
+
+        wp_send_json_success([
+            'html' => $html,
+            'listing_id' => $listing_id,
+            'card_type' => $card_type
+        ]);
+    }
+
+    /**
+     * Refresh map view
+     * Returns map markers and updated view state
+     */
+    public function refresh_map_view(): void
+    {
+        if (!check_ajax_referer('hph_theme_nonce', 'nonce', false)) {
+            wp_send_json_error(__('Security check failed', 'happy-place'));
+        }
+
+        $bounds = $_POST['bounds'] ?? [];
+        $zoom = intval($_POST['zoom'] ?? 10);
+        $filters = $_POST['filters'] ?? [];
+
+        // Get markers from plugin
+        $markers = apply_filters('hph_get_listing_markers', [], array_merge($filters, [
+            'bounds' => $bounds,
+            'zoom' => $zoom
+        ]));
+
+        // Generate info window HTML for each marker
+        foreach ($markers as &$marker) {
+            if (isset($marker['listing_id'])) {
+                ob_start();
+                get_template_part('template-parts/listing/map-info-window', null, [
+                    'listing_id' => $marker['listing_id']
+                ]);
+                $marker['info_window_html'] = ob_get_clean();
+            }
+        }
+
+        wp_send_json_success([
+            'markers' => $markers,
+            'count' => count($markers),
+            'bounds' => $bounds,
+            'zoom' => $zoom
+        ]);
+    }
+
+    /**
+     * Validate form field and return display feedback
+     * For real-time form validation UI
+     */
+    public function validate_form_field_display(): void
+    {
+        if (!check_ajax_referer('hph_theme_nonce', 'nonce', false)) {
+            wp_send_json_error(__('Security check failed', 'happy-place'));
+        }
+
+        $field_name = sanitize_key($_POST['field_name'] ?? '');
+        $field_value = sanitize_text_field($_POST['field_value'] ?? '');
+
+        $validation_result = $this->validate_field_for_display($field_name, $field_value);
+
+        wp_send_json_success([
+            'field_name' => $field_name,
+            'is_valid' => $validation_result['is_valid'],
+            'message' => $validation_result['message'],
+            'css_class' => $validation_result['is_valid'] ? 'valid' : 'invalid'
+        ]);
+    }
+
+    // =========================================================================
+    // HELPER METHODS
+    // =========================================================================
+
+    /**
+     * Sanitize template arguments
+     */
+    private function sanitize_template_args(array $args): array
+    {
+        $sanitized = [];
+
+        foreach ($args as $key => $value) {
+            $key = sanitize_key($key);
+
+            if (is_array($value)) {
+                $sanitized[$key] = $this->sanitize_template_args($value);
+            } elseif (is_numeric($value)) {
+                $sanitized[$key] = intval($value);
+            } else {
+                $sanitized[$key] = sanitize_text_field($value);
+            }
+        }
+
+        return $sanitized;
+    }
+
+    /**
+     * Validate field for display purposes only
+     */
+    private function validate_field_for_display(string $field_name, string $field_value): array
+    {
+        $result = ['is_valid' => true, 'message' => ''];
+
+        switch ($field_name) {
+            case 'email':
+                if (!is_email($field_value)) {
+                    $result = [
+                        'is_valid' => false,
+                        'message' => __('Please enter a valid email address', 'happy-place')
                     ];
                 }
-            }
-            wp_reset_postdata();
+                break;
+
+            case 'phone':
+                if (!preg_match('/^[\d\s\-\(\)\+]+$/', $field_value)) {
+                    $result = [
+                        'is_valid' => false,
+                        'message' => __('Please enter a valid phone number', 'happy-place')
+                    ];
+                }
+                break;
+
+            case 'price':
+                if (!is_numeric($field_value) || floatval($field_value) <= 0) {
+                    $result = [
+                        'is_valid' => false,
+                        'message' => __('Please enter a valid price', 'happy-place')
+                    ];
+                }
+                break;
+
+            case 'zip_code':
+                if (!preg_match('/^\d{5}(-\d{4})?$/', $field_value)) {
+                    $result = [
+                        'is_valid' => false,
+                        'message' => __('Please enter a valid ZIP code', 'happy-place')
+                    ];
+                }
+                break;
+
+            default:
+                // Basic required field check
+                if (empty(trim($field_value))) {
+                    $result = [
+                        'is_valid' => false,
+                        'message' => __('This field is required', 'happy-place')
+                    ];
+                }
+                break;
         }
-        
-        return $markers;
+
+        return $result;
     }
-    
-    private function calculate_agent_stats($agent_id, $range): array {
-        // Implementation for agent statistics
-        return [
-            'listings_count' => count(get_posts([
-                'post_type' => 'listing',
-                'author' => $agent_id,
-                'post_status' => 'publish'
-            ])),
-            'active_listings' => count(get_posts([
-                'post_type' => 'listing',
-                'author' => $agent_id,
-                'meta_query' => [['key' => 'status', 'value' => 'Active']]
-            ])),
-            // Add more stats as needed
-        ];
+
+    /**
+     * Get current view mode from session
+     */
+    public static function get_current_view_mode(): string
+    {
+        if (!session_id()) {
+            session_start();
+        }
+
+        return $_SESSION['hph_view_mode'] ?? 'list';
+    }
+
+    /**
+     * Get UI state from session
+     */
+    public static function get_ui_state(string $state_key, $default = null)
+    {
+        if (!session_id()) {
+            session_start();
+        }
+
+        return $_SESSION["hph_ui_{$state_key}"] ?? $default;
+    }
+
+    /**
+     * Check if this is a theme AJAX request
+     */
+    public static function is_theme_ajax_request(): bool
+    {
+        return defined('DOING_AJAX') &&
+            DOING_AJAX &&
+            isset($_POST['action']) &&
+            strpos($_POST['action'], 'hph_') === 0 &&
+            !in_array($_POST['action'], [
+                'hph_load_dashboard_section',
+                'hph_save_listing',
+                'hph_save_lead',
+                'hph_save_open_house'
+            ]);
     }
 }
 
-// Initialize - EXACT SAME WAY
-HPH_Ajax_Handler::instance();
+// Initialize the theme AJAX handler
+HPH_Theme_Ajax_Handler::instance();

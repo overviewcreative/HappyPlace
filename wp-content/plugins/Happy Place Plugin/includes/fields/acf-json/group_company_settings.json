@@ -1,0 +1,107 @@
+{
+    "key": "group_company_settings",
+    "title": "Company Settings",
+    "fields": [
+        {
+            "key": "field_company_logo",
+            "label": "Company Logo",
+            "name": "company_logo",
+            "type": "image",
+            "instructions": "Upload your company logo (recommended size: 300x300px)",
+            "required": 0,
+            "return_format": "array",
+            "preview_size": "medium",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "jpg,jpeg,png,svg"
+        },
+        {
+            "key": "field_company_name",
+            "label": "Company Name",
+            "name": "company_name",
+            "type": "text",
+            "instructions": "Enter your company's name",
+            "required": 1,
+            "default_value": "The Parker Group",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_office_email",
+            "label": "Office Email",
+            "name": "office_email",
+            "type": "email",
+            "instructions": "Enter the main office email address",
+            "required": 1,
+            "default_value": "cheers@theparkergroup.com",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_office_phone",
+            "label": "Office Phone",
+            "name": "office_phone",
+            "type": "text",
+            "instructions": "Enter the main office phone number",
+            "required": 1,
+            "default_value": "302-217-6692",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_office_address",
+            "label": "Office Address",
+            "name": "office_address",
+            "type": "text",
+            "instructions": "Enter the office address",
+            "required": 1,
+            "default_value": "673 N Bedford St. Georgetown, DE",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_company_tagline",
+            "label": "Company Tagline",
+            "name": "company_tagline",
+            "type": "text",
+            "instructions": "Enter your company's tagline",
+            "required": 0,
+            "default_value": "find your happy place",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "company-settings"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Company settings and branding information used throughout the site",
+    "show_in_rest": 0,
+    "modified": 1689089523
+}

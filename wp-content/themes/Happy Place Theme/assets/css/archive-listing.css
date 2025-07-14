@@ -316,11 +316,11 @@
 
 /* Filter Groups */
 .hph-filter-group {
-    margin-bottom: var(--hph-spacing-6);
+    margin-bottom: var(--hph-spacing-2);
 }
 
 .hph-filter-title {
-    font-size: var(--hph-font-size-base);
+    font-size: var(--hph-font-size-sm);
     font-weight: 600;
     color: var(--hph-color-gray-900);
     margin-bottom: var(--hph-spacing-3);
@@ -425,8 +425,8 @@
 .hph-bedroom-options,
 .hph-bathroom-options {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--hph-spacing-2);
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--hph-spacing-1);
 }
 
 .hph-bedroom-option,
@@ -447,7 +447,7 @@
     display: block;
     padding: var(--hph-spacing-1) var(--hph-spacing-2);
     text-align: center;
-    border: 1px solid var(--hph-color-gray-300);
+    border: 1px solid var(--hph-color-primary-50);
     border-radius: var(--hph-radius-lg);
     font-size: var(--hph-font-size-xs);
     font-weight: 500;

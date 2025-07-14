@@ -6,45 +6,95 @@
             "key": "field_price_per_sqft",
             "label": "Price per Sq Ft",
             "name": "price_per_sqft",
+            "aria-label": "",
             "type": "number",
             "instructions": "Automatically calculated from price ÷ square footage",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
             "readonly": 1,
             "disabled": 1,
             "step": 0.01,
             "prepend": "$",
-            "wrapper": {"width": "25"}
+            "default_value": "",
+            "min": "",
+            "max": "",
+            "placeholder": "",
+            "append": ""
         },
         {
             "key": "field_full_address",
             "label": "Full Address",
             "name": "full_address",
+            "aria-label": "",
             "type": "text",
             "instructions": "Auto-generated from address components",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "75",
+                "class": "",
+                "id": ""
+            },
             "readonly": 1,
             "disabled": 1,
-            "wrapper": {"width": "75"}
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_latitude",
             "label": "Latitude",
             "name": "latitude",
+            "aria-label": "",
             "type": "number",
             "instructions": "Auto-generated via Google Geocoding API",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
             "readonly": 1,
             "disabled": 1,
-            "step": 0.000001,
-            "wrapper": {"width": "50"}
+            "step": 9.9999999999999995e-7,
+            "default_value": "",
+            "min": "",
+            "max": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_longitude",
             "label": "Longitude",
             "name": "longitude",
+            "aria-label": "",
             "type": "number",
             "instructions": "Auto-generated via Google Geocoding API",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
             "readonly": 1,
             "disabled": 1,
-            "step": 0.000001,
-            "wrapper": {"width": "50"}
+            "step": 9.9999999999999995e-7,
+            "default_value": "",
+            "min": "",
+            "max": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         }
     ],
     "location": [
@@ -58,5 +108,12 @@
     ],
     "menu_order": 10,
     "position": "side",
-    "active": true
+    "style": "seamless",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1752345374
 }

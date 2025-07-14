@@ -1,0 +1,2 @@
+title,transaction_type,listing_id,buyer_agent_id,seller_agent_id,sale_price,commission,closing_date,transaction_status
+"123 Main St Sale",Sale,123,456,789,450000,27000,2024-12-01,Closed

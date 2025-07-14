@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Handle relationships between listings and transactions
  */
@@ -9,17 +10,20 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Listing_Transaction_Sync {
+class Listing_Transaction_Sync
+{
     private static ?self $instance = null;
-    
-    public static function get_instance(): self {
+
+    public static function get_instance(): self
+    {
         if (null === self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
     }
 
-    private function __construct() {
+    private function __construct()
+    {
         // Hook into ACF saves for transaction status changes
         add_action('acf/save_post', [$this, 'sync_transaction_status_to_listing'], 20);
     }
@@ -27,7 +31,8 @@ class Listing_Transaction_Sync {
     /**
      * Map transaction stages to listing statuses
      */
-    private function get_status_mapping(): array {
+    private function get_status_mapping(): array
+    {
         return [
             'pre_contract' => 'Active',
             'under_contract' => 'Pending',
@@ -41,7 +46,16 @@ class Listing_Transaction_Sync {
     /**
      * Update listing status when transaction status changes
      */
-    public function sync_transaction_status_to_listing(int $post_id): void {
+    public function sync_transaction_status_to_listing($post_id): void
+    {
+        // Handle ACF's user field format (e.g., 'user_1')
+        if (is_string($post_id) && strpos($post_id, 'user_') === 0) {
+            return;
+        }
+
+        // Cast to int for regular posts
+        $post_id = (int) $post_id;
+
         // Only process for transaction post type
         if (get_post_type($post_id) !== 'transaction') {
             return;
@@ -62,7 +76,7 @@ class Listing_Transaction_Sync {
         // Get the mapped listing status
         $status_mapping = $this->get_status_mapping();
         $new_listing_status = $status_mapping[$transaction_stage] ?? null;
-        
+
         if (!$new_listing_status) {
             error_log('HPH: Unknown transaction stage: ' . $transaction_stage);
             return;
@@ -70,15 +84,15 @@ class Listing_Transaction_Sync {
 
         // Get current listing status
         $current_status = get_field('status', $listing_id);
-        
+
         // Only update if status is different
         if ($current_status !== $new_listing_status) {
             // Update the listing status
             update_field('status', $new_listing_status, $listing_id);
-            
+
             // Update corresponding dates based on status
             $dates = get_field('listing_dates', $listing_id) ?: [];
-            
+
             if ($new_listing_status === 'Pending' && empty($dates['date_pending'])) {
                 $dates['date_pending'] = date('Y-m-d');
                 update_field('listing_dates', $dates, $listing_id);
@@ -106,7 +120,8 @@ class Listing_Transaction_Sync {
      * @param string $new_status New listing status.
      * @return void
      */
-    public function handle_listing_status_change($post_id, $old_status, $new_status) {
+    public function handle_listing_status_change($post_id, $old_status, $new_status)
+    {
         if (!$post_id || empty($new_status)) {
             return;
         }
@@ -121,7 +136,7 @@ class Listing_Transaction_Sync {
             $list_date = $intended_date && $intended_date <= $today ? $intended_date : $today;
 
             update_field('listing_dates_date_listed', $list_date, $post_id);
-            
+
             // Log the transition
             error_log(sprintf(
                 'Listing #%d transitioned from Coming Soon to Active. Set list date to: %s',
@@ -140,19 +155,20 @@ class Listing_Transaction_Sync {
      * @param int $post_id The listing post ID.
      * @return void
      */
-    public function update_listing_badges($post_id) {
+    public function update_listing_badges($post_id)
+    {
         if (!$post_id || get_post_type($post_id) !== 'listing') {
             return;
         }
 
         // Get current badges
         $highlight_badges = get_field('highlight_badges', $post_id) ?: array();
-        
+
         // Check for new listing (within 14 days)
         $date_listed = get_field('listing_dates_date_listed', $post_id);
         if ($date_listed) {
-            $list_date = new DateTime($date_listed);
-            $now = new DateTime(current_time('Y-m-d'));
+            $list_date = new \DateTime($date_listed);
+            $now = new \DateTime(current_time('Y-m-d'));
             $days_listed = $now->diff($list_date)->days;
 
             // Add or remove "new_listing" badge based on age
@@ -172,7 +188,8 @@ class Listing_Transaction_Sync {
     /**
      * Initialize hooks for badge management
      */
-    public function init() {
+    public function init()
+    {
         // Existing hooks
         // ...existing code...
 

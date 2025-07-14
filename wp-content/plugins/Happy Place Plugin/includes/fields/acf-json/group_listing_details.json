@@ -3,24 +3,6 @@
     "title": "Listing Details",
     "fields": [
         {
-            "key": "field_listing_tabs",
-            "label": "Listing Information",
-            "name": "",
-            "aria-label": "",
-            "type": "tab",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "placement": "top",
-            "endpoint": 0,
-            "selected": 0
-        },
-        {
             "key": "field_basic_info_tab",
             "label": "🏠 Basic Information",
             "name": "",
@@ -102,8 +84,8 @@
             "aria-label": "",
             "type": "text",
             "instructions": "Multiple Listing Service number",
-            "required": false,
-            "conditional_logic": false,
+            "required": 1,
+            "conditional_logic": 0,
             "wrapper": {
                 "width": "34",
                 "class": "",
@@ -111,6 +93,7 @@
             },
             "default_value": "",
             "maxlength": "",
+            "allow_in_bindings": 1,
             "placeholder": "e.g., DE12345678",
             "prepend": "",
             "append": ""
@@ -180,8 +163,8 @@
             "aria-label": "",
             "type": "number",
             "instructions": "Number of bedrooms",
-            "required": false,
-            "conditional_logic": false,
+            "required": 0,
+            "conditional_logic": 0,
             "wrapper": {
                 "width": "25",
                 "class": "",
@@ -190,8 +173,9 @@
             "default_value": "",
             "min": 0,
             "max": 20,
-            "step": 1,
+            "allow_in_bindings": 1,
             "placeholder": "e.g., 4",
+            "step": 1,
             "prepend": "",
             "append": ""
         },
@@ -202,8 +186,8 @@
             "aria-label": "",
             "type": "number",
             "instructions": "Number of bathrooms",
-            "required": false,
-            "conditional_logic": false,
+            "required": 0,
+            "conditional_logic": 0,
             "wrapper": {
                 "width": "25",
                 "class": "",
@@ -212,8 +196,9 @@
             "default_value": "",
             "min": 0,
             "max": 20,
-            "step": 0.5,
+            "allow_in_bindings": 1,
             "placeholder": "e.g., 3.5",
+            "step": "0.5",
             "prepend": "",
             "append": ""
         },
@@ -278,6 +263,27 @@
             "new_lines": "br",
             "placeholder": "Stunning 4-bedroom colonial in desirable neighborhood...",
             "rows": 3
+        },
+        {
+            "key": "field_6871498abac1e",
+            "label": "Full Description",
+            "name": "",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Brief description for listings and marketing materials",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "allow_in_bindings": 0,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
         },
         {
             "key": "field_address_tab",
@@ -808,6 +814,34 @@
             "mime_types": "jpg,jpeg,png,webp"
         },
         {
+            "key": "field_687149babac1f",
+            "label": "Floor Plans",
+            "name": "",
+            "aria-label": "",
+            "type": "gallery",
+            "instructions": "Additional photos of the property",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "min": "",
+            "max": 50,
+            "min_width": 800,
+            "min_height": 600,
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": 5,
+            "mime_types": "jpg,jpeg,png,webp",
+            "insert": "append",
+            "preview_size": "medium"
+        },
+        {
             "key": "field_virtual_tour_link",
             "label": "Virtual Tour Link",
             "name": "virtual_tour_link",
@@ -881,6 +915,7 @@
             "key": "field_listing_dates_tab",
             "label": "📅 Dates & Transactions",
             "name": "",
+            "aria-label": "",
             "type": "tab",
             "instructions": "",
             "required": 0,
@@ -898,26 +933,26 @@
             "key": "field_listing_dates",
             "label": "Listing Dates",
             "name": "listing_dates",
+            "aria-label": "",
             "type": "group",
             "instructions": "Important dates for this listing",
             "required": 0,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
             "layout": "block",
             "sub_fields": [
                 {
                     "key": "field_intended_list_date",
                     "label": "Intended List Date",
                     "name": "intended_list_date",
+                    "aria-label": "",
                     "type": "date_picker",
-                    "required": 1,
-                    "display_format": "F j, Y",
-                    "return_format": "Y-m-d",
-                    "first_day": 0,
                     "instructions": "The date this Coming Soon property is planned to go Active",
-                    "wrapper": {
-                        "width": "33",
-                        "class": "",
-                        "id": ""
-                    },
+                    "required": 1,
                     "conditional_logic": [
                         [
                             {
@@ -926,53 +961,69 @@
                                 "value": "Coming Soon"
                             }
                         ]
-                    ]
+                    ],
+                    "wrapper": {
+                        "width": "33",
+                        "class": "",
+                        "id": ""
+                    },
+                    "display_format": "F j, Y",
+                    "return_format": "Y-m-d",
+                    "first_day": 0
                 },
                 {
                     "key": "field_date_listed",
                     "label": "Date Listed",
                     "name": "date_listed",
+                    "aria-label": "",
                     "type": "date_picker",
-                    "required": 1,
-                    "display_format": "F j, Y",
-                    "return_format": "Y-m-d",
-                    "first_day": 0,
                     "instructions": "The date this property was listed on the market",
+                    "required": 1,
+                    "conditional_logic": false,
                     "wrapper": {
                         "width": "33",
                         "class": "",
                         "id": ""
-                    }
+                    },
+                    "display_format": "F j, Y",
+                    "return_format": "Y-m-d",
+                    "first_day": 0
                 },
                 {
                     "key": "field_date_pending",
                     "label": "Date Pending",
                     "name": "date_pending",
+                    "aria-label": "",
                     "type": "date_picker",
-                    "display_format": "F j, Y",
-                    "return_format": "Y-m-d",
-                    "first_day": 0,
                     "instructions": "The date this property went under contract",
+                    "required": false,
+                    "conditional_logic": false,
                     "wrapper": {
                         "width": "33",
                         "class": "",
                         "id": ""
-                    }
+                    },
+                    "display_format": "F j, Y",
+                    "return_format": "Y-m-d",
+                    "first_day": 0
                 },
                 {
                     "key": "field_date_sold",
                     "label": "Date Sold",
                     "name": "date_sold",
+                    "aria-label": "",
                     "type": "date_picker",
-                    "display_format": "F j, Y",
-                    "return_format": "Y-m-d",
-                    "first_day": 0,
-                    "instructions": "The date this property closed/sold",
+                    "instructions": "The date this property closed\/sold",
+                    "required": false,
+                    "conditional_logic": false,
                     "wrapper": {
                         "width": "33",
                         "class": "",
                         "id": ""
-                    }
+                    },
+                    "display_format": "F j, Y",
+                    "return_format": "Y-m-d",
+                    "first_day": 0
                 }
             ]
         },
@@ -980,10 +1031,16 @@
             "key": "field_listing_transactions",
             "label": "Related Transactions",
             "name": "related_transactions",
+            "aria-label": "",
             "type": "relationship",
             "instructions": "Transactions associated with this listing",
             "required": 0,
             "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
             "post_type": [
                 "transaction"
             ],
@@ -996,47 +1053,92 @@
             ],
             "min": "",
             "max": "",
-            "return_format": "object"
+            "return_format": "object",
+            "bidirectional_target": []
         },
         {
             "key": "field_price_history",
             "label": "Price History",
             "name": "price_history",
+            "aria-label": "",
             "type": "repeater",
             "instructions": "Track price changes over time",
             "required": 0,
             "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
             "layout": "table",
             "button_label": "Add Price Change",
             "min": 0,
             "max": 0,
+            "rows_per_page": 20,
+            "collapsed": "",
             "sub_fields": [
                 {
                     "key": "field_price_date",
                     "label": "Date",
                     "name": "date",
+                    "aria-label": "",
                     "type": "date_picker",
+                    "instructions": "",
                     "required": 1,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
                     "display_format": "F j, Y",
                     "return_format": "Y-m-d",
-                    "first_day": 0
+                    "first_day": 0,
+                    "parent_repeater": "field_price_history"
                 },
                 {
                     "key": "field_price_amount",
                     "label": "Price",
                     "name": "price",
+                    "aria-label": "",
                     "type": "number",
+                    "instructions": "",
                     "required": 1,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
                     "min": 0,
                     "step": 1000,
-                    "prepend": "$"
+                    "prepend": "$",
+                    "default_value": "",
+                    "max": "",
+                    "placeholder": "",
+                    "append": "",
+                    "parent_repeater": "field_price_history"
                 },
                 {
                     "key": "field_price_note",
                     "label": "Note",
                     "name": "note",
+                    "aria-label": "",
                     "type": "text",
-                    "instructions": "Optional note about the price change"
+                    "instructions": "Optional note about the price change",
+                    "required": false,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_price_history"
                 }
             ]
         }
@@ -1059,10 +1161,5 @@
     "active": true,
     "description": "Complete listing information with organized tabs for easy data entry",
     "show_in_rest": 1,
-    "acfe_display_title": "",
-    "acfe_autosync": "",
-    "acfe_form": 0,
-    "acfe_meta": "",
-    "acfe_note": "",
-    "modified": 1752175340
+    "modified": 1752254944
 }

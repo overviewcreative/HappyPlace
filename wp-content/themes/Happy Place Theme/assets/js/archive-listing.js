@@ -50,40 +50,41 @@
             this.initFilterToggles();
             
             // Initialize map if in map view
-            // Add to archive-listing.js
-function initMapFilterToggle() {
-    const filterHeader = document.querySelector('.hph-filters-header');
-    const filterSection = document.querySelector('.hph-map-filters');
-    
-    if (filterHeader && filterSection) {
-        // Start collapsed by default
-        filterSection.classList.add('collapsed');
-        
-        filterHeader.addEventListener('click', function() {
-            filterSection.classList.toggle('collapsed');
-        });
-        
-        // Toggle button click
-        const toggleBtn = document.querySelector('.hph-filters-toggle-btn');
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', function(e) {
-                e.stopPropagation(); // Prevent firing the header click event
-                filterSection.classList.toggle('collapsed');
-            });
-        }
-    }
-}
-
-// Call this in your init function
-if (this.viewMode === 'map') {
-    initMapFilterToggle();
-}
+            if (this.viewMode === 'map') {
+                this.initMapFilterToggle();
+            }
             
             // Initialize responsive behavior
             this.initResponsive();
             
             // Initialize Google Places autocomplete for search input
             this.initAddressAutocomplete();
+        },
+        
+        /**
+         * Initialize map filter toggle functionality
+         */
+        initMapFilterToggle: function() {
+            const filterHeader = document.querySelector('.hph-filters-header');
+            const filterSection = document.querySelector('.hph-map-filters');
+            
+            if (filterHeader && filterSection) {
+                // Start collapsed by default
+                filterSection.classList.add('collapsed');
+                
+                filterHeader.addEventListener('click', function() {
+                    filterSection.classList.toggle('collapsed');
+                });
+                
+                // Toggle button click
+                const toggleBtn = document.querySelector('.hph-filters-toggle-btn');
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', function(e) {
+                        e.stopPropagation(); // Prevent firing the header click event
+                        filterSection.classList.toggle('collapsed');
+                    });
+                }
+            }
         },
         
         /**
@@ -129,10 +130,14 @@ if (this.viewMode === 'map') {
                 return;
             }
             
-            this.isLoading = true;
+            // Always clear existing loading states
+            this.hideLoading();
             
-            // Show loading indicator
-            this.showLoading();
+            // Show loading only if we're not already showing no results
+            if (!$('.no-properties-found').length) {
+                this.isLoading = true;
+                this.showLoading();
+            }
         },
         
         /**
@@ -426,17 +431,41 @@ if (this.viewMode === 'map') {
          * Show loading indicator
          */
         showLoading: function() {
-            this.elements.resultsContent.addClass('loading');
-            
-            // Add full page loading overlay
-            $('<div class="hph-loading-overlay"><div class="hph-loading-spinner"></div></div>')
-                .appendTo('body');
+            // Never show loading if we're already on a no-results state
+            if ($('.no-properties-found').length > 0) {
+                this.isLoading = false;
+                this.hideLoading();
+                return;
+            }
+
+            if (!this.isLoading) {
+                this.isLoading = true;
+                
+                // Remove any existing overlay first
+                $('.hph-loading-overlay').remove();
+                
+                // Add full page loading overlay
+                const $overlay = $('<div class="hph-loading-overlay"><div class="hph-loading-spinner"></div></div>');
+                $('body').append($overlay);
+
+                // Set a shorter timeout for the loading state
+                setTimeout(() => {
+                    if (this.isLoading) {
+                        this.hideLoading();
+                        // If we still don't have results, show no results message
+                        if ($('.hph-results-content').length === 0 || $('.hph-results-content').is(':empty')) {
+                            $('.hph-results-content').html('<div class="no-properties-found">No properties found matching your criteria.</div>');
+                        }
+                    }
+                }, 5000);
+            }
         },
         
         /**
          * Hide loading indicator
          */
         hideLoading: function() {
+            this.isLoading = false;
             this.elements.resultsContent.removeClass('loading');
             
             // Remove loading overlay
@@ -446,6 +475,24 @@ if (this.viewMode === 'map') {
     
     // Initialize when document is ready
     $(document).ready(function() {
+        // Ensure any stuck loading overlays are removed
+        $('.hph-loading-overlay').remove();
+        
+        // Force remove loading state
+        $('.loading').removeClass('loading');
+        
+        // Add global AJAX error handler
+        $(document).ajaxError(function() {
+            archiveListing.hideLoading();
+        });
+        
+        // Add handler for page load completion
+        $(window).on('load', function() {
+            archiveListing.hideLoading();
+            $('.hph-loading-overlay').remove();
+        });
+        
+        // Initialize
         archiveListing.init();
     });
     

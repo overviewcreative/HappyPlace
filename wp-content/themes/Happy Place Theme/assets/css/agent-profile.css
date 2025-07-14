@@ -1,0 +1,357 @@
+/**
+ * Agent Profile Styles
+ * 
+ * Styles for individual agent profile pages including
+ * contact information, listings, and biography sections.
+ * 
+ * @package HappyPlace
+ */
+
+/* Agent Profile Layout */
+.hph-agent-profile {
+    padding: 2rem 0;
+}
+
+.hph-agent-header {
+    background: linear-gradient(135deg, var(--hph-primary-500) 0%, var(--hph-primary-700) 100%);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 3rem;
+}
+
+.hph-agent-hero {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 2rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.hph-agent-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+}
+
+.hph-agent-info h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.hph-agent-title {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.hph-agent-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.hph-agent-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    backdrop-filter: blur(10px);
+}
+
+.hph-agent-contact-quick {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.hph-contact-button {
+    background: var(--hph-accent-500);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    text-align: center;
+}
+
+.hph-contact-button:hover {
+    background: var(--hph-accent-600);
+}
+
+.hph-contact-button--outline {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.hph-contact-button--outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Agent Content */
+.hph-agent-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.hph-agent-main > * {
+    margin-bottom: 3rem;
+}
+
+.hph-agent-main > *:last-child {
+    margin-bottom: 0;
+}
+
+.hph-agent-sidebar > * {
+    margin-bottom: 2rem;
+}
+
+.hph-agent-sidebar > *:last-child {
+    margin-bottom: 0;
+}
+
+/* Biography Section */
+.hph-agent-bio {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.hph-agent-bio h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--hph-gray-900);
+}
+
+.hph-agent-bio p {
+    line-height: 1.7;
+    color: var(--hph-gray-700);
+    margin-bottom: 1rem;
+}
+
+/* Specialties */
+.hph-agent-specialties {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.hph-specialties-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.hph-specialty-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--hph-gray-50);
+    border-radius: 0.5rem;
+}
+
+.hph-specialty-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--hph-primary-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hph-primary-600);
+}
+
+/* Agent Stats */
+.hph-agent-stats {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.hph-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.hph-stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--hph-gray-50);
+    border-radius: 0.5rem;
+}
+
+.hph-stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--hph-primary-600);
+    display: block;
+}
+
+.hph-stat-label {
+    font-size: 0.875rem;
+    color: var(--hph-gray-600);
+    margin-top: 0.25rem;
+}
+
+/* Agent Listings */
+.hph-agent-listings {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.hph-listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+/* Contact Card */
+.hph-agent-contact-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 2rem;
+}
+
+.hph-contact-info {
+    margin-bottom: 1.5rem;
+}
+
+.hph-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: var(--hph-gray-50);
+    border-radius: 0.375rem;
+}
+
+.hph-contact-icon {
+    width: 16px;
+    color: var(--hph-primary-600);
+}
+
+.hph-contact-form {
+    border-top: 1px solid var(--hph-gray-200);
+    padding-top: 1.5rem;
+}
+
+.hph-form-group {
+    margin-bottom: 1rem;
+}
+
+.hph-form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--hph-gray-700);
+}
+
+.hph-form-group input,
+.hph-form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--hph-gray-300);
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+}
+
+.hph-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Social Links */
+.hph-agent-social {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.hph-social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.hph-social-link {
+    width: 50px;
+    height: 50px;
+    background: var(--hph-gray-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hph-gray-600);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.hph-social-link:hover {
+    background: var(--hph-primary-500);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .hph-agent-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .hph-agent-contact-card {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .hph-agent-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .hph-agent-info h1 {
+        font-size: 2rem;
+    }
+    
+    .hph-contact-button {
+        width: 100%;
+    }
+    
+    .hph-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-listings-grid {
+        grid-template-columns: 1fr;
+    }
+}

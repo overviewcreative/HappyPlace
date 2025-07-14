@@ -3,12 +3,19 @@
  */
 class HPHListingFilters {
     constructor() {
-        this.form = document.querySelector('.hph-listing-filters-form');
+        this.form = document.querySelector('.hph-filters-form');
         this.mapContainer = document.querySelector('.hph-listings-map');
         this.listingsContainer = document.querySelector('.hph-listings-grid');
         this.loadingOverlay = this.createLoadingOverlay();
         this.debounceTimeout = null;
         this.map = this.mapContainer?.hphMap;
+
+        console.log('HPHListingFilters initialized:', {
+            form: !!this.form,
+            mapContainer: !!this.mapContainer,
+            listingsContainer: !!this.listingsContainer,
+            hphAjax: typeof hphAjax !== 'undefined'
+        });
 
         this.initialize();
     }
@@ -70,16 +77,20 @@ class HPHListingFilters {
 
     async fetchFilteredResults() {
         const formData = new FormData(this.form);
-        const queryString = new URLSearchParams(formData).toString();
+        
+        // Add action and nonce for security
+        formData.append('action', 'hph_filter_listings');
+        formData.append('nonce', hphAjax.nonce);
 
         try {
             this.showLoading();
 
-            const response = await fetch(`${hphConfig.ajaxurl}?action=filter_listings&${queryString}`, {
-                method: 'GET',
+            const response = await fetch(hphAjax.ajaxUrl, {
+                method: 'POST',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
-                }
+                },
+                body: formData
             });
 
             if (!response.ok) throw new Error('Network response was not ok');
@@ -87,7 +98,8 @@ class HPHListingFilters {
             const data = await response.json();
 
             if (data.success) {
-                // Update URL without page reload
+                // Create query string for URL update
+                const queryString = new URLSearchParams(formData).toString();
                 const newUrl = `${window.location.pathname}?${queryString}`;
                 window.history.pushState({ filters: formData }, '', newUrl);
 
@@ -147,6 +159,11 @@ class HPHListingFilters {
         this.fetchFilteredResults();
     }
 }
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    new HPHListingFilters();
+});
 
 // Initialize filters when document is ready
 jQuery(document).ready(() => {

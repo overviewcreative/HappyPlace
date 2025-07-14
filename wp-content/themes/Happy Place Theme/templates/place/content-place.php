@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Content Template for Places
  *
@@ -6,76 +7,50 @@
  */
 ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class( 'place-item' ); ?>>
-    <header class="entry-header">
-        <?php
-        if ( is_singular() ) :
-            the_title( '<h1 class="entry-title">', '</h1>' );
-        else :
-            the_title( '<h2 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h2>' );
-        endif;
-
-        // Place meta information
-        $address = get_post_meta( get_the_ID(), 'place_address', true );
-        $hours = get_post_meta( get_the_ID(), 'place_hours', true );
-        $phone = get_post_meta( get_the_ID(), 'place_phone', true );
-        $website = get_post_meta( get_the_ID(), 'place_website', true );
-        $rating = get_post_meta( get_the_ID(), 'place_rating', true );
-        ?>
-        
-        <div class="place-meta">
-            <?php if ( $address ) : ?>
-                <span class="place-address">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <?php echo esc_html( $address ); ?>
-                </span>
-            <?php endif; ?>
-            
-            <?php if ( $phone ) : ?>
-                <span class="place-phone">
-                    <i class="fas fa-phone"></i>
-                    <a href="tel:<?php echo esc_attr( $phone ); ?>"><?php echo esc_html( $phone ); ?></a>
-                </span>
-            <?php endif; ?>
-            
-            <?php if ( $website ) : ?>
-                <span class="place-website">
-                    <i class="fas fa-globe"></i>
-                    <a href="<?php echo esc_url( $website ); ?>" target="_blank" rel="noopener noreferrer">
-                        <?php esc_html_e( 'Visit Website', 'happy-place' ); ?>
-                    </a>
-                </span>
-            <?php endif; ?>
-            
-            <?php if ( $rating ) : ?>
-                <span class="place-rating">
-                    <i class="fas fa-star"></i>
-                    <?php echo esc_html( $rating ); ?>/5
-                </span>
-            <?php endif; ?>
-        </div>
-    </header>
-
-    <?php if ( has_post_thumbnail() ) : ?>
-        <div class="place-image">
-            <?php the_post_thumbnail( 'large' ); ?>
+<article id="post-<?php the_ID(); ?>" <?php post_class('hph-card hph-card--place'); ?>>
+    <?php if (has_post_thumbnail()) : ?>
+        <div class="hph-card__media">
+            <a href="<?php the_permalink(); ?>" class="hph-card__media-link">
+                <?php the_post_thumbnail('medium_large', ['class' => 'hph-card__image']); ?>
+            </a>
         </div>
     <?php endif; ?>
 
-    <div class="entry-content">
+    <div class="hph-card__content">
+        <h3 class="hph-card__title">
+            <a href="<?php the_permalink(); ?>" class="hph-link hph-link--primary"><?php the_title(); ?></a>
+        </h3>
+
         <?php
-        if ( is_singular() ) :
-            the_content();
-            
-            if ( $hours ) :
-                echo '<div class="place-hours">';
-                echo '<h3>' . esc_html__( 'Business Hours', 'happy-place' ) . '</h3>';
-                echo '<pre>' . esc_html( $hours ) . '</pre>';
-                echo '</div>';
-            endif;
-        else :
-            the_excerpt();
-        endif;
+        // Get place details
+        $address = get_post_meta(get_the_ID(), 'place_address', true);
+        $phone = get_post_meta(get_the_ID(), 'place_phone', true);
+        $rating = get_post_meta(get_the_ID(), 'place_rating', true);
         ?>
+
+        <div class="hph-card__meta">
+            <?php if ($address) : ?>
+                <div class="hph-meta-item">
+                    <i class="fas fa-map-marker-alt hph-icon hph-text-primary"></i>
+                    <span><?php echo esc_html($address); ?></span>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($phone) : ?>
+                <div class="hph-meta-item">
+                    <i class="fas fa-phone hph-icon hph-text-primary"></i>
+                    <a href="tel:<?php echo esc_attr($phone); ?>"><?php echo esc_html($phone); ?></a>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <?php if ($rating) : ?>
+            <div class="hph-card__footer">
+                <div class="hph-rating">
+                    <i class="fas fa-star hph-icon hph-text-primary"></i>
+                    <span><?php echo esc_html($rating); ?></span>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 </article>

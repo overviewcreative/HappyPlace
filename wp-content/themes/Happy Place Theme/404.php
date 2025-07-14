@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The template for displaying 404 pages (not found)
  *
@@ -22,7 +23,7 @@ get_header();
                     <?php esc_html_e('It looks like nothing was found at this location. Maybe try one of the links below or a search?', 'happy-place'); ?>
                 </p>
 
-                <?php get_template_part('templates/partials/search-form'); ?>
+                <?php get_template_part('templates/partials/global/search-form'); ?>
 
                 <div class="error-404__content">
                     <div class="error-404__recent">
@@ -39,7 +40,7 @@ get_header();
                             echo '<div class="listings-grid listings-grid--small">';
                             while ($recent_listings->have_posts()) :
                                 $recent_listings->the_post();
-                                get_template_part('templates/partials/card', 'listing');
+                                get_template_part('templates/partials/listing/card', 'listing');
                             endwhile;
                             echo '</div>';
                             wp_reset_postdata();

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Single City Template
  *
@@ -9,14 +10,14 @@ get_header();
 ?>
 
 <div class="single-city">
-    <div class="container">
+    <div class="hph-container">
         <?php
-        while ( have_posts() ) :
+        while (have_posts()) :
             the_post();
-            get_template_part( 'templates/city/content', 'city' );
-            
+            get_template_part('templates/city/content', 'city');
+
             // Display neighborhoods/communities in this city
-            $communities = get_posts( array(
+            $communities = get_posts(array(
                 'post_type' => 'community',
                 'meta_query' => array(
                     array(
@@ -25,17 +26,17 @@ get_header();
                     ),
                 ),
                 'posts_per_page' => -1,
-            ) );
+            ));
 
-            if ( $communities ) :
-            ?>
+            if ($communities) :
+        ?>
                 <div class="city-communities">
-                    <h2><?php esc_html_e( 'Communities in this City', 'happy-place' ); ?></h2>
+                    <h2><?php esc_html_e('Communities in this City', 'happy-place'); ?></h2>
                     <div class="communities-grid">
                         <?php
-                        foreach ( $communities as $post ) :
-                            setup_postdata( $post );
-                            get_template_part( 'templates/community/content', 'community' );
+                        foreach ($communities as $post) :
+                            setup_postdata($post);
+                            get_template_part('templates/community/content', 'community');
                         endforeach;
                         wp_reset_postdata();
                         ?>
@@ -45,7 +46,7 @@ get_header();
 
             <?php
             // Display related listings
-            $related_listings = get_posts( array(
+            $related_listings = get_posts(array(
                 'post_type' => 'listing',
                 'meta_query' => array(
                     array(
@@ -54,17 +55,17 @@ get_header();
                     ),
                 ),
                 'posts_per_page' => 6,
-            ) );
+            ));
 
-            if ( $related_listings ) :
+            if ($related_listings) :
             ?>
                 <div class="related-listings">
-                    <h2><?php esc_html_e( 'Featured Listings in this City', 'happy-place' ); ?></h2>
+                    <h2><?php esc_html_e('Featured Listings in this City', 'happy-place'); ?></h2>
                     <div class="listings-grid">
                         <?php
-                        foreach ( $related_listings as $post ) :
-                            setup_postdata( $post );
-                            get_template_part( 'templates/listing/content', 'listing' );
+                        foreach ($related_listings as $post) :
+                            setup_postdata($post);
+                            get_template_part('templates/listing/content', 'listing');
                         endforeach;
                         wp_reset_postdata();
                         ?>
