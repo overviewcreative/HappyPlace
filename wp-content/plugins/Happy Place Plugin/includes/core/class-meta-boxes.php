@@ -42,11 +42,11 @@ class Meta_Boxes
             'high'
         );
 
-        // Open House Schedule
+        // Open House Events
         add_meta_box(
-            'open_house_schedule',
-            'Open House Schedule',
-            array($this, 'render_open_house_schedule'),
+            'listing_open_houses',
+            'Open House Events',
+            array($this, 'render_listing_open_houses'),
             'listing',
             'normal',
             'default'
@@ -177,29 +177,160 @@ class Meta_Boxes
      *
      * @param \WP_Post $post Post object.
      */
-    public function render_open_house_schedule($post)
+    public function render_listing_open_houses($post)
     {
-        wp_nonce_field('happy_place_open_house', 'open_house_nonce');
+        wp_nonce_field('happy_place_open_houses', 'open_houses_nonce');
 
-        $schedules = get_post_meta($post->ID, 'open_house_schedules', true);
-        if (! is_array($schedules)) {
-            $schedules = array();
+        $events = get_post_meta($post->ID, 'listing_open_houses', true);
+        if (!is_array($events)) {
+            $events = array();
         }
+        
+        $current_user = wp_get_current_user();
     ?>
-        <div class="open-house-schedules">
+        <div class="happy-place-meta-box open-house-events">
             <div id="open-house-list">
-                <?php foreach ($schedules as $index => $schedule) : ?>
-                    <div class="schedule-row">
-                        <input type="date" name="open_house_date[]" value="<?php echo esc_attr($schedule['date']); ?>">
-                        <input type="time" name="open_house_start_time[]" value="<?php echo esc_attr($schedule['start_time']); ?>">
-                        <input type="time" name="open_house_end_time[]" value="<?php echo esc_attr($schedule['end_time']); ?>">
-                        <button type="button" class="remove-schedule">Remove</button>
+                <?php 
+                // Sort events by date/time
+                usort($events, function($a, $b) {
+                    $date_a = strtotime($a['date'] . ' ' . $a['start_time']);
+                    $date_b = strtotime($b['date'] . ' ' . $b['start_time']);
+                    return $date_a - $date_b;
+                });
+                
+                foreach ($events as $index => $event) : 
+                    $past = strtotime($event['date'] . ' ' . $event['end_time']) < current_time('timestamp');
+                ?>
+                    <div class="event-row <?php echo $past ? 'past-event' : ''; ?>">
+                        <div class="event-date">
+                            <input type="date" 
+                                   name="open_house_date[]" 
+                                   value="<?php echo esc_attr($event['date']); ?>"
+                                   min="<?php echo date('Y-m-d'); ?>"
+                                   <?php echo $past ? 'disabled' : ''; ?>>
+                        </div>
+                        <div class="event-time">
+                            <input type="time" 
+                                   name="open_house_start_time[]" 
+                                   value="<?php echo esc_attr($event['start_time']); ?>"
+                                   <?php echo $past ? 'disabled' : ''; ?>>
+                            <span>to</span>
+                            <input type="time" 
+                                   name="open_house_end_time[]" 
+                                   value="<?php echo esc_attr($event['end_time']); ?>"
+                                   <?php echo $past ? 'disabled' : ''; ?>>
+                        </div>
+                        <div class="event-details">
+                            <input type="text" 
+                                   name="open_house_host[]" 
+                                   value="<?php echo esc_attr($event['host'] ?? $current_user->display_name); ?>"
+                                   placeholder="Host"
+                                   <?php echo $past ? 'disabled' : ''; ?>>
+                            <input type="number" 
+                                   name="open_house_max_visitors[]" 
+                                   value="<?php echo esc_attr($event['max_visitors'] ?? ''); ?>"
+                                   placeholder="Max visitors"
+                                   min="1"
+                                   <?php echo $past ? 'disabled' : ''; ?>>
+                        </div>
+                        <div class="event-actions">
+                            <?php if (!$past) : ?>
+                                <button type="button" class="remove-event button">
+                                    <span class="dashicons dashicons-trash"></span>
+                                </button>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
-            <button type="button" id="add-open-house">Add Open House</button>
+            
+            <div class="meta-box-actions">
+                <button type="button" id="add-open-house" class="button button-secondary">
+                    <span class="dashicons dashicons-plus-alt"></span>
+                    Add Open House Event
+                </button>
+            </div>
+            
+            <template id="open-house-template">
+                <div class="event-row">
+                    <div class="event-date">
+                        <input type="date" name="open_house_date[]" required min="<?php echo date('Y-m-d'); ?>">
+                    </div>
+                    <div class="event-time">
+                        <input type="time" name="open_house_start_time[]" required>
+                        <span>to</span>
+                        <input type="time" name="open_house_end_time[]" required>
+                    </div>
+                    <div class="event-details">
+                        <input type="text" 
+                               name="open_house_host[]" 
+                               value="<?php echo esc_attr($current_user->display_name); ?>"
+                               placeholder="Host">
+                        <input type="number" 
+                               name="open_house_max_visitors[]" 
+                               placeholder="Max visitors"
+                               min="1">
+                    </div>
+                    <div class="event-actions">
+                        <button type="button" class="remove-event button">
+                            <span class="dashicons dashicons-trash"></span>
+                        </button>
+                    </div>
+                </div>
+            </template>
         </div>
-    <?php
+        
+        <style>
+            .open-house-events .event-row {
+                display: grid;
+                grid-template-columns: 200px 250px 1fr auto;
+                gap: 10px;
+                align-items: center;
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .open-house-events .event-row.past-event {
+                opacity: 0.7;
+                background: #f5f5f5;
+            }
+            
+            .open-house-events .event-time {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            
+            .open-house-events .event-details {
+                display: flex;
+                gap: 10px;
+            }
+            
+            .open-house-events .meta-box-actions {
+                margin-top: 15px;
+            }
+            
+            .open-house-events input[disabled] {
+                background: #f5f5f5;
+                border-color: #ddd;
+            }
+        </style>
+        
+        <script>
+        jQuery(document).ready(function($) {
+            const container = $('#open-house-list');
+            const template = document.getElementById('open-house-template');
+            
+            $('#add-open-house').on('click', function() {
+                const content = template.content.cloneNode(true);
+                container.append(content);
+            });
+            
+            container.on('click', '.remove-event', function() {
+                $(this).closest('.event-row').remove();
+            });
+        });
+        </script>
     }
 
     /**
@@ -340,7 +471,7 @@ class Meta_Boxes
         // Check if our nonce is set for each meta box
         $nonces = array(
             'listing_details' => 'listing_details_nonce',
-            'open_house'      => 'open_house_nonce',
+            'open_houses'     => 'open_houses_nonce',
             'lead_info'       => 'lead_info_nonce',
             'transaction'     => 'transaction_nonce',
         );
@@ -405,28 +536,38 @@ class Meta_Boxes
      */
     private function save_open_house($post_id)
     {
-        if (! isset($_POST['open_house_date'])) {
+        if (!isset($_POST['open_house_date'])) {
             return;
         }
 
-        $schedules = array();
+        $events = array();
         $dates = $_POST['open_house_date'];
         $start_times = $_POST['open_house_start_time'];
         $end_times = $_POST['open_house_end_time'];
+        $hosts = $_POST['open_house_host'] ?? array();
+        $max_visitors = $_POST['open_house_max_visitors'] ?? array();
 
         for ($i = 0; $i < count($dates); $i++) {
             if (empty($dates[$i])) {
                 continue;
             }
 
-            $schedules[] = array(
-                'date'       => sanitize_text_field($dates[$i]),
+            // Don't allow past events to be modified
+            $event_time = strtotime($dates[$i] . ' ' . $end_times[$i]);
+            if ($event_time < current_time('timestamp')) {
+                continue;
+            }
+
+            $events[] = array(
+                'date' => sanitize_text_field($dates[$i]),
                 'start_time' => sanitize_text_field($start_times[$i]),
-                'end_time'   => sanitize_text_field($end_times[$i]),
+                'end_time' => sanitize_text_field($end_times[$i]),
+                'host' => isset($hosts[$i]) ? sanitize_text_field($hosts[$i]) : '',
+                'max_visitors' => isset($max_visitors[$i]) ? absint($max_visitors[$i]) : '',
             );
         }
 
-        update_post_meta($post_id, 'open_house_schedules', $schedules);
+        update_post_meta($post_id, 'listing_open_houses', $events);
     }
 
     /**

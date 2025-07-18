@@ -1,0 +1,136 @@
+/* ============================================================================
+   Features Grid Component
+   ============================================================================ */
+
+.hph-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: var(--spacing-3);
+  
+  /* Ensure consistent sizing across different contexts */
+  &.auto-grid-xs {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  }
+  
+  &.auto-grid-sm {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  }
+  
+  &.auto-grid-md {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  }
+}
+
+.hph-feature-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--border-radius-md);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: var(--color-gray-100);
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Icon styling */
+  .fas, .far, .fab {
+    color: var(--color-primary);
+    font-size: var(--font-size-lg);
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  
+  /* Text content */
+  span, .hph-feature-text {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-800);
+    line-height: 1.4;
+  }
+}
+
+/* Alternative icon container style (for cards with separate icon divs) */
+.hph-feature-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  .fas, .far, .fab {
+    color: white;
+    font-size: var(--font-size-base);
+    width: auto;
+  }
+}
+
+/* When using icon containers, adjust the item layout */
+.hph-feature-item:has(.hph-feature-icon) {
+  gap: var(--spacing-4);
+  
+  .hph-feature-text {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Compact variant for smaller spaces */
+.hph-features-grid--compact {
+  gap: var(--spacing-2);
+  
+  .hph-feature-item {
+    padding: var(--spacing-2);
+    font-size: var(--font-size-xs);
+    
+    .fas, .far, .fab {
+      font-size: var(--font-size-base);
+      width: 16px;
+    }
+  }
+}
+
+/* List variant (vertical stacking) */
+.hph-features-grid--list {
+  grid-template-columns: 1fr;
+  gap: var(--spacing-2);
+  
+  .hph-feature-item {
+    justify-content: flex-start;
+  }
+}
+
+/* Responsive behavior */
+@media (max-width: 767px) {
+  .hph-features-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2);
+  }
+  
+  .hph-feature-item {
+    padding: var(--spacing-2-5);
+    
+    .hph-feature-icon {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+
+/* Context-specific adjustments */
+.hph-card .hph-features-grid {
+  margin-top: var(--spacing-4);
+}
+
+.hph-listing-features .hph-features-grid {
+  margin: var(--spacing-4) 0;
+}

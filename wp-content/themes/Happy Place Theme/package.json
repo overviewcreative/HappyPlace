@@ -1,0 +1,38 @@
+{
+  "name": "happy-place-theme",
+  "version": "2.0.0",
+  "description": "A modern WordPress theme for real estate professionals",
+  "main": "index.js",
+  "scripts": {
+    "build": "./build.sh",
+    "watch": "npx sass assets/src/scss/main.scss assets/dist/css/main.css --watch --style=compressed --no-source-map",
+    "dev": "./build.sh",
+    "test": "echo 'No tests configured'"
+  },
+  "keywords": [
+    "wordpress",
+    "theme",
+    "real-estate"
+  ],
+  "author": "Your Name",
+  "license": "GPL-2.0",
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "css-loader": "^6.11.0",
+    "cssnano": "^6.0.0",
+    "mini-css-extract-plugin": "^2.9.2",
+    "postcss": "^8.4.24",
+    "postcss-loader": "^7.3.0",
+    "sass": "^1.89.2",
+    "sass-loader": "^13.3.3",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.100.2",
+    "webpack-assets-manifest": "^5.2.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.0"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  }
+}

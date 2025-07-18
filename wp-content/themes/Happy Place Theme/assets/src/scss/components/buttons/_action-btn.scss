@@ -1,0 +1,241 @@
+/* ============================================
+   ACTION BUTTON COMPONENT
+   ============================================ */
+
+// Base button styles that match our updated templates
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+  white-space: nowrap;
+  
+  // Remove default button styles
+  background: none;
+  outline: none;
+  
+  // Focus states
+  &:focus {
+    outline: 2px solid var(--hph-primary-400);
+    outline-offset: 2px;
+  }
+  
+  // Disabled state
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  // Icon support
+  svg, i {
+    margin-right: 8px;
+    &:last-child {
+      margin-right: 0;
+      margin-left: 8px;
+    }
+    &:only-child {
+      margin: 0;
+    }
+  }
+}
+
+// Primary button variant
+.action-btn--primary {
+  background-color: var(--hph-primary-400);
+  color: white;
+  border-color: var(--hph-primary-400);
+  
+  &:hover {
+    background-color: var(--hph-primary-500);
+    border-color: var(--hph-primary-500);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(81, 186, 224, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(81, 186, 224, 0.3);
+  }
+}
+
+// Secondary button variant
+.action-btn--secondary {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-900);
+  border-color: var(--color-gray-300);
+  
+  &:hover {
+    background-color: var(--color-gray-200);
+    border-color: var(--color-gray-400);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Outline button variant
+.action-btn--outline {
+  background-color: transparent;
+  color: var(--hph-primary-400);
+  border-color: var(--hph-primary-400);
+  
+  &:hover {
+    background-color: var(--hph-primary-400);
+    color: white;
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Danger button variant
+.action-btn--danger {
+  background-color: var(--color-error-600);
+  color: white;
+  border-color: var(--color-error-600);
+  
+  &:hover {
+    background-color: var(--color-error-700);
+    border-color: var(--color-error-700);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// White button variant
+.action-btn--white {
+  background-color: white;
+  color: var(--color-gray-900);
+  border-color: var(--color-gray-300);
+  
+  &:hover {
+    background-color: var(--color-gray-50);
+    border-color: var(--color-gray-400);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Text button variant
+.action-btn--text {
+  background-color: transparent;
+  color: var(--hph-primary-400);
+  border-color: transparent;
+  padding: 8px 16px;
+  
+  &:hover {
+    background-color: var(--hph-primary-50);
+    color: var(--hph-primary-500);
+  }
+  
+  &:active {
+    background-color: var(--hph-primary-100);
+  }
+}
+
+// Size variants
+.action-btn--sm {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.action-btn--large {
+  padding: 16px 32px;
+  font-size: 18px;
+  border-radius: 8px;
+}
+
+// Width variants
+.action-btn--block {
+  width: 100%;
+  display: flex;
+}
+
+.action-btn--full {
+  width: 100%;
+  display: flex;
+}
+
+// Special functional button classes
+.schedule-btn {
+  // Additional styles for schedule buttons
+  &::before {
+    content: "📅";
+    margin-right: 8px;
+  }
+}
+
+.favorite-btn {
+  // Additional styles for favorite buttons
+  position: relative;
+  
+  &.is-favorite {
+    color: var(--color-red-600, #dc2626);
+  }
+  
+  &::before {
+    content: "♡";
+    margin-right: 4px;
+  }
+  
+  &.is-favorite::before {
+    content: "♥";
+  }
+}
+
+.share-btn {
+  // Additional styles for share buttons
+  &::before {
+    content: "📤";
+    margin-right: 8px;
+  }
+}
+
+.contact-btn {
+  // Additional styles for contact buttons
+  &::before {
+    content: "✉";
+    margin-right: 8px;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .action-btn {
+    padding: 10px 20px;
+    font-size: 15px;
+  }
+  
+  .action-btn--sm {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .action-btn--large {
+    padding: 14px 28px;
+    font-size: 17px;
+  }
+}

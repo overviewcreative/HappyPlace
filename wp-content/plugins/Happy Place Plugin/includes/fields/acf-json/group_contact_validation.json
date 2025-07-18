@@ -1,0 +1,61 @@
+{
+    "key": "group_contact_validation",
+    "title": "Contact Validation Rules",
+    "fields": [
+        {
+            "key": "field_contact_validation_rules",
+            "label": "Contact Validation Rules",
+            "name": "contact_validation_rules",
+            "type": "group",
+            "instructions": "Configure contact information validation rules",
+            "layout": "block",
+            "sub_fields": [
+                {
+                    "key": "field_phone_format",
+                    "label": "Phone Number Format",
+                    "name": "phone_format",
+                    "type": "text",
+                    "instructions": "Regular expression for phone number validation",
+                    "default_value": "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$"
+                },
+                {
+                    "key": "field_email_domains",
+                    "label": "Allowed Email Domains",
+                    "name": "allowed_email_domains",
+                    "type": "textarea",
+                    "instructions": "Allowed email domains for professional email addresses (one per line)",
+                    "rows": 5
+                },
+                {
+                    "key": "field_required_contact_fields",
+                    "label": "Required Contact Fields",
+                    "name": "required_contact_fields",
+                    "type": "checkbox",
+                    "choices": {
+                        "email": "Email Address",
+                        "phone": "Phone Number",
+                        "mobile": "Mobile Number",
+                        "address": "Physical Address"
+                    },
+                    "default_value": ["email", "phone"]
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "happy-place-settings"
+            }
+        ]
+    ],
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [],
+    "active": true,
+    "description": "Contact information validation rules"
+}

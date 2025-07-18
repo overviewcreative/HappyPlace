@@ -1,0 +1,18 @@
+/*
+ * Grid - CSS Grid system
+ */
+
+.grid {
+    @include grid();
+}
+
+.grid-2 { @include grid(2); }
+.grid-3 { @include grid(3); }
+.grid-4 { @include grid(4); }
+
+.auto-grid {
+    @include auto-grid();
+}
+
+.auto-grid-sm { @include auto-grid(200px); }
+.auto-grid-lg { @include auto-grid(300px); }

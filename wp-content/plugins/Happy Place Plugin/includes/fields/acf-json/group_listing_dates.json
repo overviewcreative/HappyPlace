@@ -1,0 +1,74 @@
+{
+    "key": "group_listing_dates",
+    "title": "Listing Dates",
+    "fields": [
+        {
+            "key": "field_list_date",
+            "label": "List Date",
+            "name": "list_date",
+            "type": "date_picker",
+            "instructions": "Select the date this property was listed",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "F j, Y",
+            "return_format": "Y-m-d",
+            "first_day": 0
+        },
+        {
+            "key": "field_contract_date",
+            "label": "Contract Date",
+            "name": "contract_date",
+            "type": "date_picker",
+            "instructions": "Date the property went under contract",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "F j, Y",
+            "return_format": "Y-m-d",
+            "first_day": 0
+        },
+        {
+            "key": "field_close_date",
+            "label": "Close Date",
+            "name": "close_date",
+            "type": "date_picker",
+            "instructions": "Date the property closed",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "F j, Y",
+            "return_format": "Y-m-d",
+            "first_day": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Date fields for listings including list date, contract date, and close date"
+}

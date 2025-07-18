@@ -71,11 +71,21 @@ class Agent_Dashboard
             $page_template = get_post_meta(get_the_ID(), '_wp_page_template', true);
 
             // Check for both template names
-            if ($page_template === 'agent-dashboard.php' || $page_template === 'templates/agent-dashboard.php') {
-                // First check theme template
-                $theme_template = get_template_directory() . '/templates/agent-dashboard.php';
+            if ($page_template === 'agent-dashboard.php' || 
+                $page_template === 'templates/agent-dashboard.php' ||
+                $page_template === 'agent-dashboard-rebuilt.php' ||
+                $page_template === 'page-templates/agent-dashboard-rebuilt.php') {
+                
+                // First check theme page-templates directory
+                $theme_template = get_template_directory() . '/page-templates/agent-dashboard-rebuilt.php';
                 if (file_exists($theme_template)) {
                     return $theme_template;
+                }
+                
+                // Check theme templates directory
+                $theme_template_alt = get_template_directory() . '/templates/agent-dashboard.php';
+                if (file_exists($theme_template_alt)) {
+                    return $theme_template_alt;
                 }
 
                 // Fallback to plugin template

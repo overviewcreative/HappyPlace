@@ -316,14 +316,20 @@ function hph_activate() {
     do_action('happy_place_activated');
 }
 
-
 /**
  * Compatibility function for dashboard
  */
-if ( ! function_exists( 'hph_is_dashboard' ) ) {
-    function hph_is_dashboard() {
-        return is_page() && get_post_meta(get_the_ID(), '_wp_page_template', true) === 'agent-dashboard.php';
+function hph_is_dashboard() {
+    if (!is_page()) {
+        return false;
     }
+    
+    $page_template = get_post_meta(get_the_ID(), '_wp_page_template', true);
+    return in_array($page_template, [
+        'agent-dashboard.php',
+        'agent-dashboard-rebuilt.php',
+        'page-templates/agent-dashboard-rebuilt.php'
+    ]);
 }
 
 /**
@@ -451,5 +457,243 @@ function hph_acf_integration() {
         return $choices;
     }, 10);
 }
+
+class Airtable_Integration {
+    private static ?self $instance = null;
+
+    // Singleton instance getter
+    public static function get_instance(): self {
+        return self::$instance ??= new self();
+    }
+
+    private function __construct() {
+        $this->load_dependencies();
+        $this->init_hooks();
+    }
+
+    /**
+     * Load required integration files
+     */
+    private function load_dependencies(): void {
+        require_once plugin_dir_path(__FILE__) . 'includes/integrations/class-airtable-two-way-sync.php';
+        require_once plugin_dir_path(__FILE__) . 'includes/integrations/class-airtable-sync-ajax-handler.php';
+        require_once plugin_dir_path(__FILE__) . 'includes/integrations/class-airtable-settings.php';
+    }
+
+    /**
+     * Initialize hooks and integrations
+     */
+    private function init_hooks(): void {
+        // Register settings
+        add_action('admin_init', [$this, 'register_airtable_settings']);
+
+        // Setup periodic sync
+        $this->schedule_periodic_sync();
+    }
+
+    /**
+     * Register Airtable integration settings
+     */
+    public function register_airtable_settings(): void {
+        register_setting(
+            'happy_place_options_group', 
+            'happy_place_airtable_options',
+            [
+                'type' => 'array',
+                'sanitize_callback' => [$this, 'sanitize_airtable_settings']
+            ]
+        );
+
+        add_settings_section(
+            'happy_place_airtable_section', 
+            'Airtable Integration', 
+            [$this, 'airtable_section_callback'], 
+            'happy-place-settings'
+        );
+
+        add_settings_field(
+            'airtable_api_key', 
+            'Airtable API Key', 
+            [$this, 'render_api_key_field'], 
+            'happy-place-settings', 
+            'happy_place_airtable_section'
+        );
+
+        add_settings_field(
+            'airtable_base_id', 
+            'Airtable Base ID', 
+            [$this, 'render_base_id_field'], 
+            'happy-place-settings', 
+            'happy_place_airtable_section'
+        );
+    }
+
+    /**
+     * Sanitize Airtable settings
+     */
+    public function sanitize_airtable_settings($input): array {
+        $output = [];
+
+        // Sanitize API Key
+        if (isset($input['api_key'])) {
+            $output['api_key'] = sanitize_text_field($input['api_key']);
+        }
+
+        // Sanitize Base ID
+        if (isset($input['base_id'])) {
+            $output['base_id'] = sanitize_text_field($input['base_id']);
+        }
+
+        return $output;
+    }
+
+    /**
+     * Airtable settings section callback
+     */
+    public function airtable_section_callback(): void {
+        echo '<p>Configure your Airtable integration settings.</p>';
+    }
+
+    /**
+     * Render API Key input field
+     */
+    public function render_api_key_field(): void {
+        $options = get_option('happy_place_airtable_options', []);
+        $api_key = $options['api_key'] ?? '';
+        ?>
+        <input 
+            type="text" 
+            name="happy_place_airtable_options[api_key]" 
+            value="<?php echo esc_attr($api_key); ?>" 
+            class="regular-text"
+            placeholder="Enter your Airtable API Key"
+        />
+        <p class="description">
+            Get your API key from 
+            <a href="https://airtable.com/account" target="_blank">Airtable Account</a>
+        </p>
+        <?php
+    }
+
+    /**
+     * Render Base ID input field
+     */
+    public function render_base_id_field(): void {
+        $options = get_option('happy_place_airtable_options', []);
+        $base_id = $options['base_id'] ?? '';
+        ?>
+        <input 
+            type="text" 
+            name="happy_place_airtable_options[base_id]" 
+            value="<?php echo esc_attr($base_id); ?>" 
+            class="regular-text"
+            placeholder="Enter your Airtable Base ID"
+        />
+        <p class="description">
+            Find your Base ID in the Airtable API documentation
+        </p>
+        <?php
+    }
+
+    /**
+     * Schedule periodic sync
+     */
+    private function schedule_periodic_sync(): void {
+        // Add custom interval for sync
+        add_filter('cron_schedules', [$this, 'add_sync_interval']);
+
+        // Schedule sync if not already scheduled
+        if (!wp_next_scheduled('hph_airtable_periodic_sync')) {
+            wp_schedule_event(
+                time(), 
+                'every_six_hours', 
+                'hph_airtable_periodic_sync'
+            );
+        }
+
+        // Hook for periodic sync
+        add_action('hph_airtable_periodic_sync', [$this, 'perform_periodic_sync']);
+    }
+
+    /**
+     * Add custom sync interval
+     */
+    public function add_sync_interval($schedules): array {
+        $schedules['every_six_hours'] = [
+            'interval' => 6 * HOUR_IN_SECONDS,
+            'display'  => __('Every Six Hours')
+        ];
+        return $schedules;
+    }
+
+    /**
+     * Perform periodic background sync
+     */
+    public function perform_periodic_sync(): void {
+        // Get Airtable configuration
+        $options = get_option('happy_place_airtable_options', []);
+        $base_id = $options['base_id'] ?? null;
+
+        if (!$base_id) {
+            error_log('Airtable Base ID not configured for periodic sync');
+            return;
+        }
+
+        try {
+            $sync = new \HappyPlace\Integrations\Airtable_Two_Way_Sync(
+                $base_id, 
+                'Listings'  // Hardcoded table name, can be made configurable
+            );
+
+            // Perform two-way sync
+            $airtable_to_wp_result = $sync->sync_airtable_to_wordpress();
+            $wp_to_airtable_result = $sync->sync_wordpress_to_airtable();
+
+            // Log sync results
+            error_log('Periodic Airtable Sync Results: ' . print_r([
+                'Airtable to WP' => $airtable_to_wp_result,
+                'WP to Airtable' => $wp_to_airtable_result
+            ], true));
+
+        } catch (\Exception $e) {
+            error_log('Periodic Airtable Sync Error: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Add settings page to plugin menu
+     */
+    public function add_settings_page(): void {
+        add_submenu_page(
+            'happy-place-dashboard',  // Parent slug
+            'Airtable Integration',   // Page title
+            'Airtable Sync',          // Menu title
+            'manage_options',          // Capability
+            'happy-place-airtable',    // Menu slug
+            [$this, 'render_settings_page'] // Callback
+        );
+    }
+
+    /**
+     * Render settings page
+     */
+    public function render_settings_page(): void {
+        ?>
+        <div class="wrap">
+            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            <form action="options.php" method="post">
+                <?php
+                settings_fields('happy_place_options_group');
+                do_settings_sections('happy-place-settings');
+                submit_button('Save Airtable Settings');
+                ?>
+            </form>
+        </div>
+        <?php
+    }
+}
+
+// Initialize the Airtable integration
+Airtable_Integration::get_instance();
 
 error_log('HPH: Plugin file loaded successfully');

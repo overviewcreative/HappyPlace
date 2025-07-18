@@ -1,0 +1,216 @@
+/**
+ * Listings Styles
+ */
+
+/* Listings Grid */
+.hph-listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.hph-listings-grid[data-view-type="list"] {
+    grid-template-columns: 1fr;
+    max-width: 900px;
+    margin: 2rem auto;
+}
+
+/* Archive Header */
+.hph-archive-header {
+    text-align: center;
+    margin: 2rem 0;
+    padding: 2rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.hph-archive-title {
+    margin: 0 0 1rem;
+    font-size: 2.5rem;
+    color: #333;
+}
+
+.hph-archive-description {
+    max-width: 700px;
+    margin: 0 auto;
+    color: #666;
+}
+
+/* Listing Cards */
+.hph-listing-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.hph-listing-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hph-listing-card__image {
+    position: relative;
+    padding-top: 66.67%;
+    background: #f5f5f5;
+}
+
+.hph-listing-card__image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hph-listing-card__content {
+    padding: 1.5rem;
+}
+
+.hph-listing-card__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.hph-listing-card__price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007cba;
+    margin: 0 0 1rem;
+}
+
+.hph-listing-card__meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.hph-listing-card__meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hph-listing-card__meta-icon {
+    width: 16px;
+    height: 16px;
+    color: #007cba;
+}
+
+.hph-listing-card__location {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
+}
+
+.hph-listing-card__agent {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.hph-listing-card__agent-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.hph-listing-card__agent-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hph-listing-card__agent-info {
+    flex: 1;
+}
+
+.hph-listing-card__agent-name {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.hph-listing-card__agent-title {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+/* List View Modifications */
+.hph-listings-grid[data-view-type="list"] .hph-listing-card {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+}
+
+.hph-listings-grid[data-view-type="list"] .hph-listing-card__image {
+    padding-top: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hph-listings-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .hph-listings-grid[data-view-type="list"] .hph-listing-card {
+        grid-template-columns: 1fr;
+    }
+
+    .hph-listing-card__meta {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Loading State */
+.hph-listings-grid.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* No Results */
+.hph-no-listings {
+    text-align: center;
+    padding: 3rem 0;
+    color: #666;
+}
+
+/* Pagination */
+.hph-pagination {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.hph-pagination .page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 0 0.25rem;
+    border-radius: 4px;
+    background: #fff;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.hph-pagination .page-numbers.current {
+    background: #007cba;
+    color: #fff;
+}
+
+.hph-pagination a.page-numbers:hover {
+    background: #f5f5f5;
+}

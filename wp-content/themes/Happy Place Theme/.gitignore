@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build files
+assets/dist/
+*.map
+
+# Environment files
+.env
+.env.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Backup files
+*~
+*.bak
+*.tmp
+theme_backup_*
+
+# Testing
+coverage/
+.nyc_output/
+
+# WordPress
+wp-config.php
+wp-content/uploads/

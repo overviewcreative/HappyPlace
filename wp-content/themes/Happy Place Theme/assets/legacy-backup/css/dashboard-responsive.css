@@ -1,0 +1,400 @@
+/* ============================================================================
+   Happy Place Real Estate Platform - Dashboard Responsive Design
+   ============================================================================ */
+
+/* Tablet Optimizations (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+    
+    /* Dashboard Layout */
+    .hph-dashboard {
+        grid-template-columns: 240px 1fr;
+    }
+    
+    .hph-dashboard-sidebar {
+        padding: var(--hph-spacing-5) var(--hph-spacing-4);
+    }
+    
+    .hph-dashboard-main {
+        padding: var(--hph-spacing-6) var(--hph-spacing-5);
+    }
+    
+    /* Stats Grid */
+    .hph-dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--hph-spacing-4);
+    }
+    
+    /* Content Areas */
+    .hph-dashboard-content {
+        grid-template-columns: 1fr;
+        gap: var(--hph-spacing-5);
+    }
+    
+    /* Listings Grid */
+    .hph-listings-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--hph-spacing-4);
+    }
+    
+    /* Performance Grid */
+    .hph-performance-grid {
+        grid-template-columns: 1fr;
+        gap: var(--hph-spacing-4);
+    }
+}
+
+/* Mobile Optimizations (max-width: 767px) */
+@media (max-width: 767px) {
+    
+    /* Dashboard Layout */
+    .hph-dashboard {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        min-height: 100vh;
+    }
+    
+    .hph-dashboard-sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 280px;
+        height: 100vh;
+        z-index: var(--hph-z-overlay);
+        transition: left var(--hph-transition-base);
+        box-shadow: var(--hph-shadow-xl);
+        background: var(--hph-color-white);
+        border-right: 1px solid var(--hph-color-gray-200);
+        padding: var(--hph-spacing-4);
+        overflow-y: auto;
+    }
+    
+    .hph-dashboard-sidebar--open {
+        left: 0;
+    }
+    
+    .hph-dashboard-main {
+        padding: var(--hph-spacing-4);
+        margin-top: 60px; /* Space for mobile header */
+    }
+    
+    /* Mobile Header */
+    .hph-mobile-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: var(--hph-color-white);
+        border-bottom: 1px solid var(--hph-color-gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 var(--hph-spacing-4);
+        z-index: var(--hph-z-fixed);
+    }
+    
+    .hph-mobile-menu-toggle {
+        background: none;
+        border: none;
+        font-size: var(--hph-font-size-xl);
+        color: var(--hph-color-gray-700);
+        cursor: pointer;
+    }
+    
+    /* Dashboard User - Mobile */
+    .hph-dashboard-user {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--hph-spacing-3);
+    }
+    
+    .hph-dashboard-user-info h3 {
+        font-size: var(--hph-font-size-base);
+    }
+    
+    .hph-dashboard-user-info p {
+        font-size: var(--hph-font-size-sm);
+    }
+    
+    /* Dashboard Header */
+    .hph-dashboard-header {
+        margin-bottom: var(--hph-spacing-5);
+        padding: var(--hph-spacing-4);
+        text-align: center;
+        flex-direction: column;
+        gap: var(--hph-spacing-4);
+    }
+    
+    .hph-dashboard-title {
+        font-size: var(--hph-font-size-xl);
+    }
+    
+    .hph-dashboard-subtitle {
+        font-size: var(--hph-font-size-sm);
+    }
+    
+    .hph-dashboard-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    /* Stats Grid */
+    .hph-dashboard-stats {
+        grid-template-columns: 1fr;
+        gap: var(--hph-spacing-3);
+        margin-bottom: var(--hph-spacing-5);
+    }
+    
+    .hph-stat-card {
+        padding: var(--hph-spacing-4);
+    }
+    
+    .hph-stat-card-value {
+        font-size: var(--hph-font-size-2xl);
+    }
+    
+    /* Content Areas */
+    .hph-dashboard-content {
+        grid-template-columns: 1fr;
+        gap: var(--hph-spacing-4);
+    }
+    
+    .hph-dashboard-widget {
+        border-radius: var(--hph-radius-xl);
+    }
+    
+    .hph-dashboard-widget-header {
+        padding: var(--hph-spacing-4);
+    }
+    
+    .hph-dashboard-widget-content {
+        padding: var(--hph-spacing-4);
+    }
+    
+    /* Listings */
+    .hph-listings-grid {
+        grid-template-columns: 1fr;
+        gap: var(--hph-spacing-3);
+    }
+    
+    /* Activity Feed */
+    .hph-activity-item {
+        gap: var(--hph-spacing-3);
+        padding: var(--hph-spacing-3) 0;
+    }
+    
+    .hph-activity-icon {
+        width: 36px;
+        height: 36px;
+        font-size: var(--hph-font-size-xs);
+    }
+    
+    /* Buttons */
+    .hph-btn {
+        font-size: var(--hph-font-size-xs);
+        padding: var(--hph-spacing-2) var(--hph-spacing-3);
+    }
+    
+    .hph-btn--sm {
+        padding: var(--hph-spacing-1-5) var(--hph-spacing-2-5);
+        font-size: 0.6875rem;
+    }
+    
+    /* Charts */
+    .hph-chart-container {
+        height: 250px;
+    }
+    
+    .hph-chart-widget {
+        padding: var(--hph-spacing-4);
+    }
+    
+    .hph-chart-header {
+        flex-direction: column;
+        gap: var(--hph-spacing-3);
+        align-items: stretch;
+        margin-bottom: var(--hph-spacing-4);
+    }
+    
+    .hph-chart-period {
+        justify-content: center;
+    }
+    
+    /* Events Grid */
+    .hph-events-grid {
+        gap: var(--hph-spacing-3);
+    }
+    
+    /* Navigation - Mobile */
+    .hph-dashboard-nav-item {
+        padding: var(--hph-spacing-4);
+        font-size: var(--hph-font-size-base);
+    }
+    
+    .hph-dashboard-nav-item i {
+        font-size: var(--hph-font-size-xl);
+    }
+    
+    /* Quick Stats - Mobile */
+    .hph-quick-stats {
+        grid-template-columns: 1fr;
+        gap: var(--hph-spacing-2);
+    }
+}
+
+/* Extra Small Devices (max-width: 480px) */
+@media (max-width: 480px) {
+    
+    .hph-dashboard-main {
+        padding: var(--hph-spacing-3);
+    }
+    
+    .hph-dashboard-header {
+        padding: var(--hph-spacing-3);
+        margin-bottom: var(--hph-spacing-4);
+    }
+    
+    .hph-dashboard-title {
+        font-size: var(--hph-font-size-lg);
+    }
+    
+    .hph-dashboard-stats {
+        gap: var(--hph-spacing-2);
+    }
+    
+    .hph-stat-card {
+        padding: var(--hph-spacing-3);
+    }
+    
+    .hph-stat-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--hph-spacing-2);
+    }
+    
+    .hph-stat-card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: var(--hph-font-size-base);
+    }
+    
+    .hph-stat-card-value {
+        font-size: var(--hph-font-size-xl);
+    }
+    
+    .hph-dashboard-content {
+        gap: var(--hph-spacing-3);
+    }
+    
+    .hph-dashboard-widget-header,
+    .hph-dashboard-widget-content {
+        padding: var(--hph-spacing-3);
+    }
+    
+    .hph-dashboard-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--hph-spacing-2);
+    }
+    
+    .hph-btn {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    
+    /* Increase touch targets */
+    .hph-dashboard-nav-item {
+        min-height: 44px;
+        padding: var(--hph-spacing-3) var(--hph-spacing-4);
+    }
+    
+    .hph-btn {
+        min-height: 44px;
+        padding: var(--hph-spacing-3) var(--hph-spacing-5);
+    }
+    
+    .hph-dashboard-toast-close {
+        width: 44px;
+        height: 44px;
+        padding: var(--hph-spacing-2);
+    }
+    
+    /* Remove hover effects on touch devices */
+    .hph-stat-card:hover,
+    .hph-dashboard-widget:hover,
+    .hph-event-card:hover {
+        transform: none;
+        box-shadow: var(--hph-shadow-sm);
+    }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+    
+    .hph-dashboard-avatar,
+    .hph-activity-icon {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Landscape Orientation on Mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+    
+    .hph-dashboard-main {
+        margin-top: 50px; /* Smaller header for landscape */
+    }
+    
+    .hph-mobile-header {
+        height: 50px;
+    }
+    
+    .hph-dashboard-header {
+        padding: var(--hph-spacing-3);
+        margin-bottom: var(--hph-spacing-3);
+    }
+    
+    .hph-dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--hph-spacing-2);
+    }
+}
+
+/* Print Styles */
+@media print {
+    
+    .hph-dashboard-sidebar,
+    .hph-dashboard-actions,
+    .hph-dashboard-nav,
+    .hph-mobile-header,
+    .hph-dashboard-notifications,
+    .hph-dashboard-loading {
+        display: none !important;
+    }
+    
+    .hph-dashboard {
+        grid-template-columns: 1fr;
+        background: white;
+        box-shadow: none;
+    }
+    
+    .hph-dashboard-main {
+        padding: 0;
+        background: white;
+    }
+    
+    .hph-stat-card,
+    .hph-dashboard-widget {
+        border: 1px solid #ddd;
+        box-shadow: none;
+        break-inside: avoid;
+    }
+    
+    .hph-dashboard-title {
+        color: black;
+    }
+}

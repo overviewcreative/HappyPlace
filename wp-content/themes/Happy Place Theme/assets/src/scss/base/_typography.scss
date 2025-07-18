@@ -1,0 +1,47 @@
+/*
+ * Typography - Enhanced type system
+ */
+
+body {
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--color-gray-900);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    color: var(--color-gray-900);
+}
+
+h1 { @include heading(1); }
+h2 { @include heading(2); }
+h3 { @include heading(3); }
+h4 { @include heading(4); }
+h5 { @include heading(5); }
+h6 { @include heading(6); }
+
+p {
+    @include body-text();
+    margin-bottom: var(--spacing-4);
+    
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+a {
+    color: var(--hph-primary-500);
+    text-decoration: none;
+    transition: var(--transition-colors);
+    
+    &:hover {
+        color: var(--hph-primary-600);
+        text-decoration: underline;
+    }
+    
+    &:focus {
+        @include focus-outline();
+    }
+}

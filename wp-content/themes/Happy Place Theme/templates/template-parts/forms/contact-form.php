@@ -46,14 +46,14 @@ $license = get_post_meta($agent->ID, '_license_number', true);
                 <div class="hph-space-y-4">
                     <div class="hph-flex hph-flex-wrap hph-gap-3">
                         <?php if ($phone) : ?>
-                            <a href="tel:<?php echo esc_attr($phone); ?>" class="hph-btn hph-btn--primary">
+                            <a href="tel:<?php echo esc_attr($phone); ?>" class="action-btn action-btn--primary">
                                 <i class="fas fa-phone hph-mr-2"></i>
                                 <?php esc_html_e('Call Agent', 'happy-place'); ?>
                             </a>
                         <?php endif; ?>
                         
                         <?php if ($email) : ?>
-                            <a href="mailto:<?php echo esc_attr($email); ?>" class="hph-btn hph-btn--secondary">
+                            <a href="mailto:<?php echo esc_attr($email); ?>" class="action-btn action-btn--secondary">
                                 <i class="fas fa-envelope hph-mr-2"></i>
                                 <?php esc_html_e('Email Agent', 'happy-place'); ?>
                             </a>

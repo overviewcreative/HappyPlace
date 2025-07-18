@@ -81,12 +81,29 @@ class ACF_Field_Groups
      * @var array
      */
     private $field_group_files = [
+        // Core Entities
         'group_listing_details.json',
-        'group_transaction_details.json',
         'group_agent_details.json',
-        'group_agent_user_fields.json',
         'group_community_details.json',
-        'group_city_details.json'
+        'group_city_details.json',
+        'group_open_house_details.json',
+        'group_lead_details.json',
+        
+        // User Integration
+        'group_agent_user_fields.json',
+        'group_user_profile.json',
+        
+        // Business Logic
+        'group_transaction_details.json',
+        'group_company_settings.json',
+        
+        // Relationships
+        'group_property_relationships.json',
+        'group_agent_relationships.json',
+        
+        // Validation Rules
+        'group_mls_validation.json',
+        'group_contact_validation.json'
     ];
 
     /**

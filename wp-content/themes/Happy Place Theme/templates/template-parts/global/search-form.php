@@ -18,7 +18,7 @@ $location = isset($_GET['location']) ? sanitize_text_field($_GET['location']) : 
 <form role="search" method="get" class="hph-search-form hph-card hph-p-6" action="<?php echo esc_url(home_url('/')); ?>">
     <input type="hidden" name="post_type" value="listing">
     
-    <div class="hph-grid hph-gap-4 md:hph-grid-cols-2 lg:hph-grid-cols-4">
+    <div class="grid grid-2 md:grid-2 lg:grid-4 gap-4">
         <div class="hph-form-group">
             <label for="location" class="hph-form-label"><?php esc_html_e('Location', 'happy-place'); ?></label>
             <div class="hph-input-group">
@@ -37,7 +37,7 @@ $location = isset($_GET['location']) ? sanitize_text_field($_GET['location']) : 
 
         <div class="hph-form-group">
             <label class="hph-form-label"><?php esc_html_e('Price Range', 'happy-place'); ?></label>
-            <div class="hph-grid hph-grid-cols-2 hph-gap-2">
+            <div class="grid-2 gap-2">
                 <div class="hph-input-group">
                     <span class="hph-input-group-icon">
                         <i class="fas fa-dollar-sign"></i>
@@ -97,7 +97,7 @@ $location = isset($_GET['location']) ? sanitize_text_field($_GET['location']) : 
             </div>
         </div>
 
-        <div class="hph-form-group lg:hph-col-span-4">
+        <div class="hph-form-group lg:col-span-4">
             <label for="property_type" class="hph-form-label"><?php esc_html_e('Property Type', 'happy-place'); ?></label>
             <div class="hph-input-group">
                 <span class="hph-input-group-icon">
@@ -123,7 +123,7 @@ $location = isset($_GET['location']) ? sanitize_text_field($_GET['location']) : 
     </div>
 
     <div class="hph-form-actions hph-mt-6 hph-text-center">
-        <button type="submit" class="hph-btn hph-btn--primary hph-w-full md:hph-w-auto">
+        <button type="submit" class="action-btn action-btn--primary hph-w-full md:hph-w-auto">
             <i class="fas fa-search hph-mr-2"></i>
             <?php esc_html_e('Search Properties', 'happy-place'); ?>
         </button>

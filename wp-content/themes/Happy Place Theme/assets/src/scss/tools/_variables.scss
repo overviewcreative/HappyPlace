@@ -1,0 +1,341 @@
+// Enhanced Variables System - Single Source of Truth
+// Based on Happy Place brand color (#51bae0) and design standards
+
+:root {
+    // ===================================================================
+    // Brand Colors (Single Source of Truth)
+    // ===================================================================
+    --hph-primary-25: #f8fcff;
+    --hph-primary-50: #f0f9ff;
+    --hph-primary-100: #e0f2fe;
+    --hph-primary-200: #bae6fd;
+    --hph-primary-300: #7dd3fc;
+    --hph-primary-400: #51bae0;      // Main brand color
+    --hph-primary-500: #0ea5e9;
+    --hph-primary-600: #0284c7;
+    --hph-primary-700: #0369a1;
+    --hph-primary-800: #075985;
+    --hph-primary-900: #0c4a6e;
+    
+    // Legacy color mappings for compatibility
+    --color-primary: var(--hph-primary-400);
+    --color-primary-light: var(--hph-primary-200);
+    --color-primary-dark: var(--hph-primary-600);
+    
+    // ===================================================================
+    // Semantic Colors
+    // ===================================================================
+    --color-success: #10b981;
+    --color-success-light: #6ee7b7;
+    --color-success-dark: #047857;
+    
+    --color-warning: #f59e0b;
+    --color-warning-light: #fcd34d;
+    --color-warning-dark: #d97706;
+    
+    --color-danger: #ef4444;
+    --color-danger-light: #fca5a5;
+    --color-danger-dark: #dc2626;
+    
+    --color-info: var(--hph-primary-500);
+    --color-info-light: var(--hph-primary-200);
+    --color-info-dark: var(--hph-primary-700);
+    
+    // ===================================================================
+    // Grayscale System
+    // ===================================================================
+    --color-white: #ffffff;
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+    --color-black: #000000;
+    
+    // Text colors
+    --color-text: var(--color-gray-900);
+    --color-text-light: var(--color-gray-600);
+    --color-text-muted: var(--color-gray-500);
+    --color-heading: var(--color-gray-900);
+    
+    // Background colors
+    --color-background: var(--color-white);
+    --color-background-alt: var(--color-gray-50);
+    --color-surface: var(--color-white);
+    
+    // Border colors
+    --color-border: var(--color-gray-300);
+    --color-border-light: var(--color-gray-200);
+    --color-border-dark: var(--color-gray-400);
+    
+    // Legacy mappings for backward compatibility
+    --color-gray-light: var(--color-gray-100);
+    --color-gray: var(--color-gray-300);
+    
+    // ===================================================================
+    // Typography Scale (Poppins-focused)
+    // ===================================================================
+    --font-family-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-family-secondary: 'Poppins', Georgia, 'Times New Roman', serif; // Keep Poppins for consistency
+    --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+    
+    // Font sizes (enhanced scale)
+    --font-size-xs: 0.75rem;    // 12px
+    --font-size-sm: 0.875rem;   // 14px
+    --font-size-base: 1rem;     // 16px
+    --font-size-lg: 1.125rem;   // 18px
+    --font-size-xl: 1.25rem;    // 20px
+    --font-size-2xl: 1.5rem;    // 24px
+    --font-size-3xl: 1.875rem;  // 30px
+    --font-size-4xl: 2.25rem;   // 36px
+    --font-size-5xl: 3rem;      // 48px
+    --font-size-6xl: 3.75rem;   // 60px
+    
+    // Font weights (Poppins supports these)
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    
+    // Line heights
+    --line-height-tight: 1.25;
+    --line-height-snug: 1.375;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.625;
+    --line-height-loose: 2;
+    
+    // ===================================================================
+    // Spacing Scale (8px base unit)
+    // ===================================================================
+    --spacing-px: 1px;
+    --spacing-0: 0;
+    --spacing-0-5: 0.125rem;    // 2px
+    --spacing-1: 0.25rem;       // 4px
+    --spacing-1-5: 0.375rem;    // 6px
+    --spacing-2: 0.5rem;        // 8px
+    --spacing-2-5: 0.625rem;    // 10px
+    --spacing-3: 0.75rem;       // 12px
+    --spacing-3-5: 0.875rem;    // 14px
+    --spacing-4: 1rem;          // 16px
+    --spacing-5: 1.25rem;       // 20px
+    --spacing-6: 1.5rem;        // 24px
+    --spacing-7: 1.75rem;       // 28px
+    --spacing-8: 2rem;          // 32px
+    --spacing-9: 2.25rem;       // 36px
+    --spacing-10: 2.5rem;       // 40px
+    --spacing-11: 2.75rem;      // 44px
+    --spacing-12: 3rem;         // 48px
+    --spacing-14: 3.5rem;       // 56px
+    --spacing-16: 4rem;         // 64px
+    --spacing-20: 5rem;         // 80px
+    --spacing-24: 6rem;         // 96px
+    --spacing-28: 7rem;         // 112px
+    --spacing-32: 8rem;         // 128px
+    --spacing-36: 9rem;         // 144px
+    --spacing-40: 10rem;        // 160px
+    --spacing-44: 11rem;        // 176px
+    --spacing-48: 12rem;        // 192px
+    
+    // ===================================================================
+    // Component-Specific Variables (Design Standard)
+    // ===================================================================
+    
+    // Card System (based on listing swipe card)
+    --card-border-radius: 12px;
+    --card-border-radius-sm: 8px;
+    --card-border-radius-lg: 16px;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --card-shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --card-shadow-focus: 0 0 0 3px rgba(81, 186, 224, 0.2);
+    --card-border: 1px solid var(--color-border);
+    --card-padding: var(--spacing-6);
+    --card-padding-sm: var(--spacing-4);
+    --card-padding-lg: var(--spacing-8);
+    
+    // Button System
+    --button-height-sm: 36px;
+    --button-height-md: 44px;      // Touch-friendly minimum
+    --button-height-lg: 52px;
+    --button-border-radius: 6px;
+    --button-padding-x: var(--spacing-4);
+    --button-padding-x-sm: var(--spacing-3);
+    --button-padding-x-lg: var(--spacing-6);
+    --button-font-weight: var(--font-weight-medium);
+    
+    // Form System (enhanced from your current forms)
+    --form-field-height: 44px;
+    --form-field-border-radius: 6px;
+    --form-field-border: 1px solid var(--color-border);
+    --form-field-border-focus: 2px solid var(--hph-primary-400);
+    --form-field-padding: var(--spacing-3);
+    --form-field-font-size: var(--font-size-base);
+    --form-label-font-weight: var(--font-weight-medium);
+    --form-label-color: var(--color-text);
+    
+    // Focus ring system
+    --focus-ring-width: 3px;
+    --focus-ring-color: rgba(81, 186, 224, 0.2);
+    --focus-ring-offset: 2px;
+    
+    // ===================================================================
+    // Layout Variables
+    // ===================================================================
+    --container-max-width: 1200px;
+    --container-padding: var(--spacing-4);
+    --container-padding-sm: var(--spacing-6);
+    --container-padding-lg: var(--spacing-8);
+    
+    // Grid gaps
+    --grid-gap-sm: var(--spacing-4);
+    --grid-gap-md: var(--spacing-6);
+    --grid-gap-lg: var(--spacing-8);
+    --grid-gap-xl: var(--spacing-10);
+    
+    // ===================================================================
+    // Component Sizes (Real Estate Specific)
+    // ===================================================================
+    --listing-card-width: 320px;
+    --listing-card-height: 380px;
+    --listing-card-image-height: 200px;
+    
+    --agent-card-width: 280px;
+    --agent-card-height: 320px;
+    
+    --feature-badge-height: 24px;
+    --status-badge-height: 28px;
+    
+    // Dashboard specific
+    --dashboard-sidebar-width: 280px;
+    --dashboard-sidebar-width-collapsed: 64px;
+    --dashboard-header-height: 64px;
+    
+    // ===================================================================
+    // Animation & Transitions
+    // ===================================================================
+    --transition-fast: 150ms ease;
+    --transition-normal: 300ms ease;
+    --transition-slow: 500ms ease;
+    
+    // Easing functions
+    --easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --easing-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --easing-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    // Transform values for hover states
+    --transform-hover-scale: scale(1.02);
+    --transform-hover-translate: translateY(-2px);
+    
+    // ===================================================================
+    // Z-Index Scale
+    // ===================================================================
+    --z-base: 0;
+    --z-raised: 10;
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    --z-toast: 1080;
+    --z-top: 9999;
+    
+    // ===================================================================
+    // Breakpoints (for use in container queries)
+    // ===================================================================
+    --breakpoint-xs: 320px;
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+    --breakpoint-xxl: 1536px;
+}
+
+// ===================================================================
+// Dark Mode Support
+// ===================================================================
+@media (prefers-color-scheme: dark) {
+    :root {
+        // Invert grayscale for dark mode
+        --color-text: var(--color-gray-100);
+        --color-text-light: var(--color-gray-400);
+        --color-text-muted: var(--color-gray-500);
+        --color-heading: var(--color-gray-50);
+        
+        --color-background: var(--color-gray-900);
+        --color-background-alt: var(--color-gray-800);
+        --color-surface: var(--color-gray-800);
+        
+        --color-border: var(--color-gray-600);
+        --color-border-light: var(--color-gray-700);
+        --color-border-dark: var(--color-gray-500);
+        
+        // Adjust shadows for dark mode
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        --card-shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+}
+
+// ===================================================================
+// Component-Specific Variable Groups
+// ===================================================================
+
+// Listing Swipe Card Variables (Design Standard)
+:root {
+    --listing-swipe-card-width: var(--listing-card-width);
+    --listing-swipe-card-border-radius: var(--card-border-radius);
+    --listing-swipe-card-shadow: var(--card-shadow);
+    --listing-swipe-card-shadow-hover: var(--card-shadow-hover);
+    --listing-swipe-card-transition: var(--transition-normal);
+    --listing-swipe-card-image-height: var(--listing-card-image-height);
+    --listing-swipe-card-padding: var(--card-padding);
+    --listing-swipe-card-gap: var(--spacing-4);
+}
+
+// Form Variables (Enhanced)
+:root {
+    --form-input-height: var(--form-field-height);
+    --form-input-padding: var(--form-field-padding);
+    --form-input-border-radius: var(--form-field-border-radius);
+    --form-input-border: var(--form-field-border);
+    --form-input-border-focus: var(--form-field-border-focus);
+    --form-focus-ring-width: var(--focus-ring-width);
+    --form-focus-ring-color: var(--focus-ring-color);
+}
+
+// Grid Variables (Enhanced)
+:root {
+    --grid-listing-min-width: var(--listing-card-width);
+    --grid-agent-min-width: var(--agent-card-width);
+    --grid-feature-min-width: 200px;
+    --grid-default-gap: var(--grid-gap-md);
+}
+
+// Status Colors for Real Estate
+:root {
+    --status-active: var(--color-success);
+    --status-pending: var(--color-warning);
+    --status-sold: var(--color-danger);
+    --status-off-market: var(--color-gray-500);
+    --status-coming-soon: var(--hph-primary-400);
+}
+
+// ===================================================================
+// Print Variables
+// ===================================================================
+@media print {
+    :root {
+        --color-text: #000000;
+        --color-background: #ffffff;
+        --card-shadow: none;
+        --card-border: 1px solid #cccccc;
+    }
+}

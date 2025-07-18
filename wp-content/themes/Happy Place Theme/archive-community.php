@@ -1,36 +1,36 @@
 <?php
 
 /**
- * The template for displaying community archives
+ * Archive Template for Communities
  *
- * @package Happy_Place_Theme
+ * @package HappyPlace
  */
 
 get_header();
 ?>
 
-<main id="primary" class="site-main communities-archive">
+<div class="archive-communities">
     <div class="container">
+        <header class="page-header">
+            <h1 class="page-title"><?php post_type_archive_title(); ?></h1>
+            <?php the_archive_description('<div class="archive-description">', '</div>'); ?>
+        </header>
+
         <?php if (have_posts()) : ?>
-            <header class="page-header">
-                <h1 class="page-title"><?php post_type_archive_title(); ?></h1>
-                <?php the_archive_description(); ?>
-            </header>
-
             <div class="communities-grid">
-                <?php while (have_posts()) : ?>
-                    <?php the_post(); ?>
-                    <?php get_template_part('templates/community/content', 'community'); ?>
-                <?php endwhile; ?>
+                <?php
+                while (have_posts()) :
+                    the_post();
+                    get_template_part('templates/community/content', 'community');
+                endwhile;
+                ?>
             </div>
-
-            <?php the_posts_navigation(); ?>
-
+            <?php the_posts_pagination(); ?>
         <?php else : ?>
             <p><?php esc_html_e('No communities found.', 'happy-place'); ?></p>
         <?php endif; ?>
     </div>
-</main>
+</div>
 
 <?php
 get_footer();

@@ -101,7 +101,7 @@ class Listings_Section
     public function get_user_listings(int $user_id, int $page = 1, string $search = '', string $status = 'all'): array
     {
         $args = [
-            'post_type' => 'hph_listing',
+            'post_type' => 'listing',
             'author' => $user_id,
             'posts_per_page' => $this->default_per_page,
             'paged' => $page,
@@ -140,7 +140,7 @@ class Listings_Section
     public function get_pagination_data(int $user_id, int $page, string $search, string $status): array
     {
         $args = [
-            'post_type' => 'hph_listing',
+            'post_type' => 'listing',
             'author' => $user_id,
             'posts_per_page' => $this->default_per_page,
             'fields' => 'ids'
@@ -283,7 +283,7 @@ class Listings_Section
     private function count_listings_by_status(int $user_id, string $status): int
     {
         $args = [
-            'post_type' => 'hph_listing',
+            'post_type' => 'listing',
             'author' => $user_id,
             'posts_per_page' => -1,
             'fields' => 'ids',
@@ -304,7 +304,7 @@ class Listings_Section
     private function count_listings_this_month(int $user_id): int
     {
         $args = [
-            'post_type' => 'hph_listing',
+            'post_type' => 'listing',
             'author' => $user_id,
             'posts_per_page' => -1,
             'fields' => 'ids',
@@ -324,7 +324,7 @@ class Listings_Section
     private function count_listings_last_30_days(int $user_id): int
     {
         $args = [
-            'post_type' => 'hph_listing',
+            'post_type' => 'listing',
             'author' => $user_id,
             'posts_per_page' => -1,
             'fields' => 'ids',
@@ -348,7 +348,7 @@ class Listings_Section
             SELECT AVG(CAST(pm.meta_value AS DECIMAL(10,2)))
             FROM {$wpdb->posts} p
             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'hph_listing'
+            WHERE p.post_type = 'listing'
             AND p.post_author = %d
             AND pm.meta_key = '_listing_price'
             AND pm.meta_value != ''
@@ -369,7 +369,7 @@ class Listings_Section
             FROM {$wpdb->posts} p
             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
             INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id
-            WHERE p.post_type = 'hph_listing'
+            WHERE p.post_type = 'listing'
             AND p.post_author = %d
             AND pm.meta_key = '_listing_price'
             AND pm.meta_value != ''
@@ -471,7 +471,7 @@ class Listings_Section
             FROM {$wpdb->posts} p
             INNER JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_listing_city'
             INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_listing_state'
-            WHERE p.post_type = 'hph_listing'
+            WHERE p.post_type = 'listing'
             AND p.post_author = %d
             AND pm1.meta_value != ''
             AND pm2.meta_value != ''

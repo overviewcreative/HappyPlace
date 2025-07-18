@@ -86,7 +86,7 @@
             </div>
 
             <div class="hph-header-main">
-                <div class="hph-header-container">
+                <div class="container">
                     <div class="hph-site-branding">
                         <?php
                         if (has_custom_logo()) {

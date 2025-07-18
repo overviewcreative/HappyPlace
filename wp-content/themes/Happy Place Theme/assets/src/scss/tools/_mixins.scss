@@ -1,0 +1,374 @@
+/*
+ * Mixins - Reusable SCSS patterns
+ * Happy Place Theme v2.0
+ */
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
+$breakpoints: (
+    'xs': 320px,
+    'sm': 640px,
+    'md': 768px,
+    'lg': 1024px,
+    'xl': 1280px,
+    '2xl': 1536px
+);
+
+@mixin respond-to($breakpoint) {
+    @if map-has-key($breakpoints, $breakpoint) {
+        @media screen and (min-width: map-get($breakpoints, $breakpoint)) {
+            @content;
+        }
+    } @else {
+        @warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
+            + "Available breakpoints are: #{map-keys($breakpoints)}.";
+    }
+}
+
+@mixin respond-between($min, $max) {
+    @if map-has-key($breakpoints, $min) and map-has-key($breakpoints, $max) {
+        @media screen and (min-width: map-get($breakpoints, $min)) and (max-width: #{map-get($breakpoints, $max) - 1px}) {
+            @content;
+        }
+    }
+}
+
+@mixin respond-to-max($breakpoint) {
+    @if map-has-key($breakpoints, $breakpoint) {
+        @media screen and (max-width: #{map-get($breakpoints, $breakpoint) - 1px}) {
+            @content;
+        }
+    }
+}
+
+/* ============================================
+   COMPONENT MIXINS
+   ============================================ */
+
+// Card component mixin
+@mixin card($variant: 'default') {
+    background: white;
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: var(--transition-shadow);
+    
+    @if $variant == 'hover' {
+        &:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-2px);
+        }
+    }
+    
+    @if $variant == 'interactive' {
+        cursor: pointer;
+        transition: var(--transition-shadow), var(--transition-transform);
+        
+        &:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-2px);
+        }
+        
+        &:focus {
+            outline: none;
+            box-shadow: var(--card-shadow-focus);
+        }
+    }
+}
+
+// Button component mixin
+@mixin button($variant: 'primary', $size: 'md') {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--button-border-radius);
+    font-family: var(--font-family-primary);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition-colors);
+    
+    // Size variants
+    @if $size == 'sm' {
+        height: var(--button-height-sm);
+        padding: 0 var(--spacing-3);
+        font-size: var(--font-size-sm);
+    } @else if $size == 'md' {
+        height: var(--button-height-md);
+        padding: 0 var(--spacing-4);
+        font-size: var(--font-size-base);
+    } @else if $size == 'lg' {
+        height: var(--button-height-lg);
+        padding: 0 var(--spacing-6);
+        font-size: var(--font-size-lg);
+    }
+    
+    // Color variants
+    @if $variant == 'primary' {
+        background-color: var(--hph-primary-400);
+        color: white;
+        
+        &:hover:not(:disabled) {
+            background-color: var(--hph-primary-500);
+        }
+        
+        &:focus {
+            box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.2);
+        }
+    } @else if $variant == 'secondary' {
+        background-color: var(--color-gray-100);
+        color: var(--color-gray-900);
+        
+        &:hover:not(:disabled) {
+            background-color: var(--color-gray-200);
+        }
+    } @else if $variant == 'outline' {
+        background-color: transparent;
+        color: var(--hph-primary-400);
+        border: 1px solid var(--hph-primary-400);
+        
+        &:hover:not(:disabled) {
+            background-color: var(--hph-primary-400);
+            color: white;
+        }
+    }
+    
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+// Form field mixin
+@mixin form-field() {
+    display: block;
+    width: 100%;
+    height: var(--form-field-height);
+    padding: 0 var(--spacing-3);
+    background-color: white;
+    border: var(--form-field-border);
+    border-radius: var(--form-field-border-radius);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-base);
+    transition: var(--transition-colors);
+    
+    &:focus {
+        outline: none;
+        border: var(--form-field-border-focus);
+    }
+    
+    &::placeholder {
+        color: var(--color-gray-400);
+    }
+    
+    &:disabled {
+        background-color: var(--color-gray-50);
+        cursor: not-allowed;
+    }
+}
+
+// Container mixin
+@mixin container($max-width: null) {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-padding-mobile);
+    padding-right: var(--container-padding-mobile);
+    
+    @include respond-to('md') {
+        padding-left: var(--container-padding-tablet);
+        padding-right: var(--container-padding-tablet);
+    }
+    
+    @include respond-to('lg') {
+        padding-left: var(--container-padding-desktop);
+        padding-right: var(--container-padding-desktop);
+    }
+    
+    @if $max-width {
+        max-width: $max-width;
+    } @else {
+        max-width: var(--container-max-width);
+    }
+}
+
+// Grid system mixin
+@mixin grid($columns: 1, $gap: var(--grid-gap-md)) {
+    display: grid;
+    grid-template-columns: repeat($columns, 1fr);
+    gap: $gap;
+}
+
+@mixin auto-grid($min-column-width: 250px, $gap: var(--grid-gap-md)) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax($min-column-width, 1fr));
+    gap: $gap;
+}
+
+// Flex utilities
+@mixin flex-center() {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between() {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin flex-column() {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================
+   TYPOGRAPHY MIXINS
+   ============================================ */
+
+@mixin heading($level: 1) {
+    font-family: var(--font-family-primary);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    color: var(--color-gray-900);
+    
+    @if $level == 1 {
+        font-size: var(--font-size-4xl);
+        @include respond-to('md') {
+            font-size: var(--font-size-5xl);
+        }
+    } @else if $level == 2 {
+        font-size: var(--font-size-3xl);
+        @include respond-to('md') {
+            font-size: var(--font-size-4xl);
+        }
+    } @else if $level == 3 {
+        font-size: var(--font-size-2xl);
+        @include respond-to('md') {
+            font-size: var(--font-size-3xl);
+        }
+    } @else if $level == 4 {
+        font-size: var(--font-size-xl);
+        @include respond-to('md') {
+            font-size: var(--font-size-2xl);
+        }
+    } @else if $level == 5 {
+        font-size: var(--font-size-lg);
+        @include respond-to('md') {
+            font-size: var(--font-size-xl);
+        }
+    } @else if $level == 6 {
+        font-size: var(--font-size-base);
+        @include respond-to('md') {
+            font-size: var(--font-size-lg);
+        }
+    }
+}
+
+@mixin body-text($size: 'base') {
+    font-family: var(--font-family-primary);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+    color: var(--color-gray-700);
+    
+    @if $size == 'sm' {
+        font-size: var(--font-size-sm);
+    } @else if $size == 'base' {
+        font-size: var(--font-size-base);
+    } @else if $size == 'lg' {
+        font-size: var(--font-size-lg);
+    }
+}
+
+@mixin text-truncate() {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@mixin text-truncate-lines($lines: 2) {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+}
+
+/* ============================================
+   UTILITY MIXINS
+   ============================================ */
+
+// Screen reader only
+@mixin sr-only() {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+// Focus outline
+@mixin focus-outline($color: var(--hph-primary-400)) {
+    outline: 2px solid $color;
+    outline-offset: 2px;
+}
+
+// Hover lift effect
+@mixin hover-lift($distance: 4px) {
+    transition: var(--transition-transform), var(--transition-shadow);
+    
+    &:hover {
+        transform: translateY(-#{$distance});
+        box-shadow: var(--shadow-lg);
+    }
+}
+
+// Aspect ratio
+@mixin aspect-ratio($ratio: 16/9) {
+    position: relative;
+    
+    &::before {
+        content: '';
+        display: block;
+        padding-bottom: percentage(1 / $ratio);
+    }
+    
+    > * {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+// Clearfix
+@mixin clearfix() {
+    &::after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+}
+
+// Safe area insets (for mobile devices with notches)
+@mixin safe-area-inset($property: padding, $sides: all) {
+    @if $sides == all {
+        #{$property}: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    } @else if $sides == top {
+        #{$property}-top: env(safe-area-inset-top);
+    } @else if $sides == right {
+        #{$property}-right: env(safe-area-inset-right);
+    } @else if $sides == bottom {
+        #{$property}-bottom: env(safe-area-inset-bottom);
+    } @else if $sides == left {
+        #{$property}-left: env(safe-area-inset-left);
+    }
+}

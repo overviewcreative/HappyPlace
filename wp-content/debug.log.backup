@@ -1,0 +1,406 @@
+[16-Jul-2025 18:46:46 UTC] HPH: Data Validator utility loaded
+[16-Jul-2025 18:46:46 UTC] HPH: Plugin file loaded successfully
+[16-Jul-2025 18:46:46 UTC] HPH: User Dashboard Manager initialized via get_instance
+[16-Jul-2025 18:46:46 UTC] HPH: Assets Manager initialized via instance
+[16-Jul-2025 18:46:46 UTC] HPH: Template Loader file not found (skipping - not critical for dashboard)
+[16-Jul-2025 18:46:46 UTC] HPH: Main initialization completed
+[16-Jul-2025 18:46:46 UTC] HPH Theme: integration file not found: plugin-integration.php
+[16-Jul-2025 18:46:46 UTC] HPH Theme: dashboard file not found: dashboard-setup.php
+[16-Jul-2025 18:46:46 UTC] HPH Theme: dashboard file not found: dashboard-manager.php
+[16-Jul-2025 18:46:46 UTC] HPH: Post_Types::initialize() called
+[16-Jul-2025 18:46:46 UTC] HPH: register_post_types() called
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Currently registered post types: Array
+(
+    [listing] => listing
+    [agent] => agent
+    [community] => community
+    [city] => city
+    [transaction] => transaction
+    [open-house] => open-house
+    [local-place] => local-place
+    [team] => team
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH: Post type listing registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type agent registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type community registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type city registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type transaction registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type open-house registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type local-place registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type team registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type listing capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type agent capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type community capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type city capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type transaction capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type open-house capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type local-place capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type team capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH: Community post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: City post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Transaction post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Open house post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Local place post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Team post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: All registered custom post types: listing, agent, community, city, transaction, open-house, local-place, team
+[16-Jul-2025 18:46:46 UTC] HPH: Post_Types constructor completed
+[16-Jul-2025 18:46:46 UTC] HPH: Post Types initialized
+[16-Jul-2025 18:46:46 UTC] HPH: Taxonomies initialized
+[16-Jul-2025 18:46:46 UTC] HPH: User Roles initialized
+[16-Jul-2025 18:46:46 UTC] HPH: User_Dashboard_Manager initialized
+[16-Jul-2025 18:46:46 UTC] HPH: Dashboard AJAX Handler initialized successfully via instance
+[16-Jul-2025 18:46:46 UTC] HPH: Loaded overview section
+[16-Jul-2025 18:46:46 UTC] HPH: Loaded listings section
+[16-Jul-2025 18:46:46 UTC] HPH: Dashboard initialization completed
+[16-Jul-2025 18:46:46 UTC] PHP Fatal error:  Uncaught TypeError: call_user_func_array(): Argument #1 ($callback) must be a valid callback, class HappyPlace\Integrations\Airtable_Settings does not have a method "register_settings" in /Users/patrickgallagher/Local Sites/tpgv12/app/public/wp-includes/class-wp-hook.php:324
+Stack trace:
+#0 /Users/patrickgallagher/Local Sites/tpgv12/app/public/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters(NULL, Array)
+#1 /Users/patrickgallagher/Local Sites/tpgv12/app/public/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#2 /Users/patrickgallagher/Local Sites/tpgv12/app/public/wp-admin/admin.php(176): do_action('admin_init')
+#3 /Users/patrickgallagher/Local Sites/tpgv12/app/public/wp-admin/index.php(10): require_once('/Users/patrickg...')
+#4 {main}
+  thrown in /Users/patrickgallagher/Local Sites/tpgv12/app/public/wp-includes/class-wp-hook.php on line 324
+[16-Jul-2025 18:46:46 UTC] HPH: Data Validator utility loaded
+[16-Jul-2025 18:46:46 UTC] HPH: Plugin file loaded successfully
+[16-Jul-2025 18:46:46 UTC] HPH: User Dashboard Manager initialized via get_instance
+[16-Jul-2025 18:46:46 UTC] HPH: Assets Manager initialized via instance
+[16-Jul-2025 18:46:46 UTC] HPH: Template Loader file not found (skipping - not critical for dashboard)
+[16-Jul-2025 18:46:46 UTC] HPH: Main initialization completed
+[16-Jul-2025 18:46:46 UTC] HPH Theme: integration file not found: plugin-integration.php
+[16-Jul-2025 18:46:46 UTC] HPH Theme: dashboard file not found: dashboard-setup.php
+[16-Jul-2025 18:46:46 UTC] HPH Theme: dashboard file not found: dashboard-manager.php
+[16-Jul-2025 18:46:46 UTC] HPH: Post_Types::initialize() called
+[16-Jul-2025 18:46:46 UTC] HPH: register_post_types() called
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Currently registered post types: Array
+(
+    [listing] => listing
+    [agent] => agent
+    [community] => community
+    [city] => city
+    [transaction] => transaction
+    [open-house] => open-house
+    [local-place] => local-place
+    [team] => team
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH: Post type listing registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type agent registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type community registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type city registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type transaction registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type open-house registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type local-place registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Post type team registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type listing capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type agent capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type community capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type city capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type transaction capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type open-house capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type local-place capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH Debug: Post type team capabilities: stdClass Object
+(
+    [edit_post] => edit_post
+    [read_post] => read_post
+    [delete_post] => delete_post
+    [edit_posts] => edit_posts
+    [edit_others_posts] => edit_others_posts
+    [delete_posts] => delete_posts
+    [publish_posts] => publish_posts
+    [read_private_posts] => read_private_posts
+    [read] => read
+    [delete_private_posts] => delete_private_posts
+    [delete_published_posts] => delete_published_posts
+    [delete_others_posts] => delete_others_posts
+    [edit_private_posts] => edit_private_posts
+    [edit_published_posts] => edit_published_posts
+    [create_posts] => edit_posts
+)
+
+[16-Jul-2025 18:46:46 UTC] HPH: Community post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: City post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Transaction post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Open house post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Local place post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: Team post type registered successfully
+[16-Jul-2025 18:46:46 UTC] HPH: All registered custom post types: listing, agent, community, city, transaction, open-house, local-place, team
+[16-Jul-2025 18:46:46 UTC] HPH: Post_Types constructor completed
+[16-Jul-2025 18:46:46 UTC] HPH: Post Types initialized
+[16-Jul-2025 18:46:46 UTC] HPH: Taxonomies initialized
+[16-Jul-2025 18:46:46 UTC] HPH: User Roles initialized
+[16-Jul-2025 18:46:46 UTC] HPH: User_Dashboard_Manager initialized
+[16-Jul-2025 18:46:46 UTC] HPH: Dashboard AJAX Handler initialized successfully via instance
+[16-Jul-2025 18:46:46 UTC] HPH: Loaded overview section
+[16-Jul-2025 18:46:46 UTC] HPH: Loaded listings section
+[16-Jul-2025 18:46:46 UTC] HPH: Dashboard initialization completed
