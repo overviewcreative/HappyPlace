@@ -1,0 +1,417 @@
+{
+    "key": "group_relationships_all",
+    "title": "Entity Relationships",
+    "fields": [
+        {
+            "key": "field_community_agents",
+            "label": "Agents Specializing in Community",
+            "name": "community_agents",
+            "type": "relationship",
+            "instructions": "Agents who specialize in this community",
+            "required": 0,
+            "post_type": ["agent"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_community_local_places",
+            "label": "Local Places in Community",
+            "name": "community_local_places",
+            "type": "relationship",
+            "instructions": "Select local places within this community",
+            "required": 0,
+            "post_type": ["local-place"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_city_relationships_tab",
+            "label": "🏙️ City Relationships",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_city_communities",
+            "label": "Communities in City",
+            "name": "city_communities",
+            "type": "relationship",
+            "instructions": "Communities located within this city",
+            "required": 0,
+            "post_type": ["community"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_city_listings",
+            "label": "Listings in City",
+            "name": "city_listings",
+            "type": "relationship",
+            "instructions": "Properties currently listed in this city",
+            "required": 0,
+            "post_type": ["listing"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_city_agents",
+            "label": "Agents Serving City",
+            "name": "city_agents",
+            "type": "relationship",
+            "instructions": "Agents who serve this city",
+            "required": 0,
+            "post_type": ["agent"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_city_open_houses",
+            "label": "Open Houses in City",
+            "name": "city_open_houses",
+            "type": "relationship",
+            "instructions": "Upcoming open houses in this city",
+            "required": 0,
+            "post_type": ["open-house"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_city_local_places",
+            "label": "Local Places in City",
+            "name": "city_local_places",
+            "type": "relationship",
+            "instructions": "Select notable local places in this city",
+            "required": 0,
+            "post_type": ["local-place"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_transaction_relationships_tab",
+            "label": "💼 Transaction Relationships",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_transaction_listing",
+            "label": "Related Listing",
+            "name": "transaction_listing",
+            "type": "relationship",
+            "instructions": "Select the listing this transaction is for",
+            "required": 1,
+            "post_type": ["listing"],
+            "filters": ["search"],
+            "elements": ["featured_image"],
+            "min": 1,
+            "max": 1,
+            "return_format": "object"
+        },
+        {
+            "key": "field_transaction_agents",
+            "label": "Involved Agents",
+            "name": "transaction_agents",
+            "type": "group",
+            "instructions": "Agents involved in this transaction",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_listing_agent_transaction",
+                    "label": "Listing Agent",
+                    "name": "listing_agent",
+                    "type": "post_object",
+                    "wrapper": {"width": "50"},
+                    "post_type": ["agent"],
+                    "return_format": "object",
+                    "ui": 1
+                },
+                {
+                    "key": "field_buyer_agent_transaction",
+                    "label": "Buyer's Agent",
+                    "name": "buyer_agent",
+                    "type": "post_object",
+                    "wrapper": {"width": "50"},
+                    "post_type": ["agent"],
+                    "return_format": "object",
+                    "ui": 1
+                }
+            ]
+        },
+        {
+            "key": "field_open_house_relationships_tab",
+            "label": "🏠 Open House Relationships",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_open_house_listing",
+            "label": "Related Listing",
+            "name": "open_house_listing",
+            "type": "post_object",
+            "instructions": "Select the property listing for this open house",
+            "required": 1,
+            "post_type": ["listing"],
+            "return_format": "object",
+            "ui": 1
+        },
+        {
+            "key": "field_hosting_agent",
+            "label": "Hosting Agent",
+            "name": "hosting_agent",
+            "type": "post_object",
+            "instructions": "Agent hosting this open house",
+            "required": 0,
+            "post_type": ["agent"],
+            "return_format": "object",
+            "ui": 1
+        },
+        {
+            "key": "field_local_place_relationships_tab",
+            "label": "📍 Local Place Relationships",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_local_place_city",
+            "label": "City",
+            "name": "local_place_city",
+            "type": "post_object",
+            "instructions": "City where this local place is located",
+            "required": 1,
+            "post_type": ["city"],
+            "return_format": "object",
+            "ui": 1
+        },
+        {
+            "key": "field_local_place_communities",
+            "label": "Nearby Communities",
+            "name": "local_place_communities",
+            "type": "relationship",
+            "instructions": "Communities near this local place",
+            "required": 0,
+            "post_type": ["community"],
+            "return_format": "object",
+            "multiple": 1
+        },
+        {
+            "key": "field_recommending_agents",
+            "label": "Agents Who Recommend",
+            "name": "recommending_agents",
+            "type": "repeater",
+            "instructions": "Agents who recommend this place",
+            "required": 0,
+            "min": 0,
+            "max": 20,
+            "layout": "table",
+            "button_label": "Add Agent Recommendation",
+            "sub_fields": [
+                {
+                    "key": "field_recommending_agent",
+                    "label": "Agent",
+                    "name": "agent",
+                    "type": "post_object",
+                    "wrapper": {"width": "30"},
+                    "post_type": ["agent"],
+                    "return_format": "object",
+                    "ui": 1
+                },
+                {
+                    "key": "field_recommendation_note",
+                    "label": "Recommendation Note",
+                    "name": "note",
+                    "type": "textarea",
+                    "wrapper": {"width": "50"},
+                    "rows": 2,
+                    "instructions": "Why the agent recommends this place"
+                },
+                {
+                    "key": "field_recommendation_date",
+                    "label": "Date",
+                    "name": "date",
+                    "type": "date_picker",
+                    "wrapper": {"width": "20"},
+                    "display_format": "M j, Y",
+                    "return_format": "Y-m-d"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "agent"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "community"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "city"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "transaction"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "open-house"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "local-place"
+            }
+        ]
+    ],
+    "menu_order": 21,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true,
+    "description": "Manages all relationships between different post types (agents, listings, communities, cities, transactions, open houses, and local places).",
+    "show_in_rest": true
+}field_agent_relationships_tab",
+            "label": "👤 Agent Relationships",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_agent_cities",
+            "label": "Cities Served",
+            "name": "agent_cities",
+            "type": "relationship",
+            "instructions": "Select the cities this agent serves",
+            "required": 0,
+            "post_type": ["city"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_agent_communities",
+            "label": "Communities Specialized In",
+            "name": "agent_communities",
+            "type": "relationship",
+            "instructions": "Select the communities this agent specializes in",
+            "required": 0,
+            "post_type": ["community"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_managed_listings",
+            "label": "Current Listings",
+            "name": "managed_listings",
+            "type": "relationship",
+            "instructions": "Select listings currently managed by this agent",
+            "required": 0,
+            "post_type": ["listing"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_upcoming_open_houses",
+            "label": "Upcoming Open Houses",
+            "name": "upcoming_open_houses",
+            "type": "relationship",
+            "instructions": "Select open houses this agent will be hosting",
+            "required": 0,
+            "post_type": ["open-house"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_agent_transactions",
+            "label": "Transactions",
+            "name": "agent_transactions",
+            "type": "relationship",
+            "instructions": "Select associated transactions",
+            "required": 0,
+            "post_type": ["transaction"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "field_community_relationships_tab",
+            "label": "🏘️ Community Relationships",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_community_city",
+            "label": "Parent City",
+            "name": "community_city",
+            "type": "relationship",
+            "instructions": "Select the city this community is located in",
+            "required": 1,
+            "post_type": ["city"],
+            "filters": ["search"],
+            "max": 1,
+            "return_format": "object"
+        },
+        {
+            "key": "field_community_listings",
+            "label": "Listings in Community",
+            "name": "community_listings",
+            "type": "relationship",
+            "instructions": "Properties currently listed in this community",
+            "required": 0,
+            "post_type": ["listing"],
+            "filters": ["search"],
+            "return_format": "object",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "key": "

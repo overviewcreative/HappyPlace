@@ -68,8 +68,8 @@ class Architecture_Map
             wp_mkdir_p($this->output_dir);
         }
 
-        // Add admin menu
-        add_action('admin_menu', [$this, 'addAdminMenu']);
+        // Disable admin menu registration - not needed for production
+        // add_action('admin_menu', [$this, 'addAdminMenu']);
 
         // Add automatic generation on plugin/theme updates
         add_action('upgrader_process_complete', [$this, 'generateArchitectureMap'], 10, 2);

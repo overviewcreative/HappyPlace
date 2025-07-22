@@ -16,6 +16,26 @@ if (!defined('ABSPATH')) {
 }
 
 class Asset_Loader {
+
+    public function enqueue_template_assets_by_name(string $template_name): void {
+    $template_type = $this->get_template_type_from_name($template_name);
+    if ($template_type) {
+        $this->enqueue_template_assets($template_type);
+    }
+}
+
+private function get_template_type_from_name(string $template_name): ?string {
+    $mappings = [
+        'single-listing.php' => 'listing',
+        'archive-listing.php' => 'listing', 
+        'single-agent.php' => 'agent',
+        'archive-agent.php' => 'agent',
+        'agent-dashboard.php' => 'dashboard',
+        // Add more mappings as needed
+    ];
+    
+    return $mappings[$template_name] ?? null;
+}
     
     private static ?self $instance = null;
     private array $loaded_assets = [];

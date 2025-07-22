@@ -67,6 +67,29 @@ if (!defined('HPH_PLUGIN_URL')) {
     define('HPH_PLUGIN_URL', HPH_URL);
 }
 
+// Enqueue admin styles and scripts
+add_action('admin_enqueue_scripts', 'hph_enqueue_admin_assets');
+
+function hph_enqueue_admin_assets($hook) {
+    // Only load on post edit screens for listings
+    if (!in_array($hook, ['post.php', 'post-new.php'])) {
+        return;
+    }
+    
+    global $post;
+    if (!$post || $post->post_type !== 'listing') {
+        return;
+    }
+    
+    // Enqueue ACF field groups CSS
+    wp_enqueue_style(
+        'hph-acf-field-groups',
+        HPH_PLUGIN_URL . 'assets/css/acf-field-groups.css',
+        [],
+        HPH_VERSION
+    );
+}
+
 // =============================================================================
 // SIMPLE INITIALIZATION WITHOUT NAMESPACE
 // =============================================================================
@@ -75,10 +98,25 @@ if (!defined('HPH_PLUGIN_URL')) {
 require_once HPH_INCLUDES_PATH . 'dashboard-functions.php';
 require_once HPH_INCLUDES_PATH . 'template-functions.php';
 
+// Load bridge functions for template integration (BEFORE AJAX handlers)
+require_once HPH_INCLUDES_PATH . 'constants/class-listing-fields.php';
+
+// Load shortcodes
+require_once HPH_INCLUDES_PATH . 'shortcodes.php';
+
+// Load AJAX handlers (AFTER bridge functions)
+require_once HPH_INCLUDES_PATH . 'api/class-ajax-handler.php';
+
 // Load utility classes that might be needed
 if (file_exists(HPH_INCLUDES_PATH . 'utilities/class-data-validator.php')) {
     require_once HPH_INCLUDES_PATH . 'utilities/class-data-validator.php';
     error_log('HPH: Data Validator utility loaded');
+}
+
+// Load image processor
+if (file_exists(HPH_INCLUDES_PATH . 'utilities/class-image-processor.php')) {
+    require_once HPH_INCLUDES_PATH . 'utilities/class-image-processor.php';
+    error_log('HPH: Image Processor utility loaded');
 }
 
 // Initialize early (post types and taxonomies)
@@ -177,6 +215,20 @@ function hph_init_main() {
             error_log('HPH: Assets Manager file not found at: ' . HPH_INCLUDES_PATH . 'core/class-assets-manager.php');
         }
 
+        // Initialize Image Processor
+        if (class_exists('HappyPlace\\Utilities\\Image_Processor')) {
+            new HappyPlace\Utilities\Image_Processor();
+            error_log('HPH: Image Processor initialized');
+        } else {
+            error_log('HPH: Image Processor class not found');
+        }
+
+        // Load Image Optimization AJAX Handler
+        if (file_exists(HPH_INCLUDES_PATH . 'admin/class-image-optimization-ajax.php')) {
+            require_once HPH_INCLUDES_PATH . 'admin/class-image-optimization-ajax.php';
+            error_log('HPH: Image Optimization AJAX Handler loaded');
+        }
+
         // Skip Template Loader if file doesn't exist (not critical for dashboard)
         if (file_exists(HPH_INCLUDES_PATH . 'core/class-template-loader.php')) {
             require_once HPH_INCLUDES_PATH . 'core/class-template-loader.php';
@@ -199,8 +251,202 @@ function hph_init_main() {
 
         error_log('HPH: Main initialization completed');
 
+        // Load External API Auto-Population Service
+        if (file_exists(HPH_INCLUDES_PATH . 'services/class-external-api-auto-population.php')) {
+            require_once HPH_INCLUDES_PATH . 'services/class-external-api-auto-population.php';
+            if (class_exists('HappyPlace\\Services\\External_API_Auto_Population')) {
+                HappyPlace\Services\External_API_Auto_Population::get_instance();
+                error_log('HPH: External API Auto-Population Service initialized');
+            }
+        }
+
+        // Load Admin Classes (only on admin pages)
+        if (is_admin()) {
+            hph_init_admin();
+        }
+
+        // Load ACF Enhancements
+        hph_init_acf_enhancements();
+
     } catch (Exception $e) {
         error_log('HPH: Error in main init: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Initialize ACF enhancements
+ */
+function hph_init_acf_enhancements() {
+    try {
+        // Load Consolidated ACF Manager
+        require_once HPH_INCLUDES_PATH . 'fields/class-acf-manager.php';
+        if (class_exists('HappyPlace\\Fields\\ACF_Manager')) {
+            HappyPlace\Fields\ACF_Manager::get_instance();
+            error_log('HPH: Consolidated ACF Manager initialized');
+        }
+
+        error_log('HPH: ACF enhancements loaded successfully');
+
+    } catch (Exception $e) {
+        error_log('HPH: Error in ACF enhancements: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Admin initialization
+ */
+function hph_init_admin() {
+    try {
+        // Load Admin Menu
+        require_once HPH_INCLUDES_PATH . 'admin/class-admin-menu.php';
+        if (class_exists('HPH\\Admin\\Admin_Menu')) {
+            HPH\Admin\Admin_Menu::get_instance();
+            error_log('HPH: Admin Menu initialized');
+        }
+
+        // Load Integrations Manager
+        require_once HPH_INCLUDES_PATH . 'admin/class-integrations-manager.php';
+        if (class_exists('HPH\\Admin\\Integrations_Manager')) {
+            HPH\Admin\Integrations_Manager::get_instance();
+            error_log('HPH: Integrations Manager initialized');
+        }
+
+        // Load Settings Page
+        if (file_exists(HPH_INCLUDES_PATH . 'admin/class-settings-page.php')) {
+            require_once HPH_INCLUDES_PATH . 'admin/class-settings-page.php';
+            if (class_exists('HPH\\Admin\\Settings_Page')) {
+                HPH\Admin\Settings_Page::get_instance();
+                error_log('HPH: Settings Page initialized');
+            }
+        }
+
+        // Load Admin Dashboard
+        if (file_exists(HPH_INCLUDES_PATH . 'admin/class-admin-dashboard.php')) {
+            require_once HPH_INCLUDES_PATH . 'admin/class-admin-dashboard.php';
+            if (class_exists('HPH\\Admin\\Admin_Dashboard')) {
+                HPH\Admin\Admin_Dashboard::get_instance();
+                error_log('HPH: Admin Dashboard initialized');
+            }
+        }
+
+        // Load External API Settings
+        if (file_exists(HPH_INCLUDES_PATH . 'admin/class-external-api-settings.php')) {
+            require_once HPH_INCLUDES_PATH . 'admin/class-external-api-settings.php';
+            if (class_exists('HappyPlace\\Admin\\External_API_Settings')) {
+                HappyPlace\Admin\External_API_Settings::get_instance();
+                error_log('HPH: External API Settings initialized');
+            }
+        }
+
+        // Load Location Intelligence Admin
+        if (file_exists(HPH_INCLUDES_PATH . 'admin/class-location-intelligence-admin.php')) {
+            require_once HPH_INCLUDES_PATH . 'admin/class-location-intelligence-admin.php';
+            if (class_exists('HappyPlace\\Admin\\Location_Intelligence_Admin')) {
+                HappyPlace\Admin\Location_Intelligence_Admin::get_instance();
+                error_log('HPH: Location Intelligence Admin initialized');
+            }
+        }
+
+        // Load Auto-Population Notices
+        if (file_exists(HPH_INCLUDES_PATH . 'admin/class-auto-population-notices.php')) {
+            require_once HPH_INCLUDES_PATH . 'admin/class-auto-population-notices.php';
+            if (class_exists('HappyPlace\\Admin\\Auto_Population_Notices')) {
+                HappyPlace\Admin\Auto_Population_Notices::get_instance();
+                error_log('HPH: Auto-Population Notices initialized');
+            }
+        }
+
+        // Load ACF Field Groups Migration
+        if (file_exists(HPH_INCLUDES_PATH . 'admin/class-acf-field-groups-migration.php')) {
+            require_once HPH_INCLUDES_PATH . 'admin/class-acf-field-groups-migration.php';
+            // Migration class auto-initializes if in admin
+            error_log('HPH: ACF Field Groups Migration loaded');
+        }
+
+        // Load ACF Auto Migration (handles automatic migration to new field structure)
+        if (file_exists(HPH_INCLUDES_PATH . 'admin/class-acf-auto-migration.php')) {
+            require_once HPH_INCLUDES_PATH . 'admin/class-acf-auto-migration.php';
+            // Auto-migration class auto-initializes if in admin
+            error_log('HPH: ACF Auto Migration loaded');
+        }
+
+        // Load ACF Migration Helper (manual migration tools)
+        if (file_exists(HPH_INCLUDES_PATH . 'admin/class-acf-migration.php')) {
+            require_once HPH_INCLUDES_PATH . 'admin/class-acf-migration.php';
+            // Migration helper class auto-initializes if in admin
+            error_log('HPH: ACF Migration Helper loaded');
+        }
+
+        error_log('HPH: Admin classes loaded successfully');
+
+        // Initialize cron schedules for integrations
+        hph_init_cron_schedules();
+
+    } catch (\Exception $e) {
+        error_log('HPH: Error in admin init: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Initialize cron schedules
+ */
+function hph_init_cron_schedules() {
+    // Add custom cron intervals
+    add_filter('cron_schedules', function($schedules) {
+        $schedules['every_three_hours'] = [
+            'interval' => 3 * HOUR_IN_SECONDS,
+            'display'  => __('Every 3 Hours', 'happy-place')
+        ];
+        $schedules['every_six_hours'] = [
+            'interval' => 6 * HOUR_IN_SECONDS,
+            'display'  => __('Every 6 Hours', 'happy-place')
+        ];
+        $schedules['every_twelve_hours'] = [
+            'interval' => 12 * HOUR_IN_SECONDS,
+            'display'  => __('Every 12 Hours', 'happy-place')
+        ];
+        return $schedules;
+    });
+
+    // Hook for periodic Airtable sync
+    add_action('hph_airtable_periodic_sync', 'hph_perform_airtable_sync');
+}
+
+/**
+ * Perform periodic Airtable sync
+ */
+function hph_perform_airtable_sync() {
+    try {
+        $options = get_option('happy_place_integrations', []);
+        $airtable_settings = $options['airtable'] ?? [];
+
+        if (empty($airtable_settings['enabled']) || 
+            empty($airtable_settings['auto_sync']) || 
+            empty($airtable_settings['api_key']) || 
+            empty($airtable_settings['base_id'])) {
+            error_log('HPH: Airtable sync skipped - not configured or disabled');
+            return;
+        }
+
+        // Load the sync class
+        require_once plugin_dir_path(__FILE__) . 'includes/integrations/class-airtable-two-way-sync.php';
+        
+        $sync = new \HappyPlace\Integrations\Airtable_Two_Way_Sync(
+            $airtable_settings['base_id'],
+            $airtable_settings['table_name'] ?? 'Listings'
+        );
+
+        // Perform two-way sync
+        $airtable_to_wp = $sync->sync_airtable_to_wordpress();
+        $wp_to_airtable = $sync->sync_wordpress_to_airtable();
+
+        error_log('HPH: Periodic Airtable sync completed - ' . json_encode([
+            'airtable_to_wp' => $airtable_to_wp,
+            'wp_to_airtable' => $wp_to_airtable
+        ]));
+
+    } catch (\Exception $e) {
+        error_log('HPH: Periodic Airtable sync error: ' . $e->getMessage());
     }
 }
 
@@ -457,243 +703,5 @@ function hph_acf_integration() {
         return $choices;
     }, 10);
 }
-
-class Airtable_Integration {
-    private static ?self $instance = null;
-
-    // Singleton instance getter
-    public static function get_instance(): self {
-        return self::$instance ??= new self();
-    }
-
-    private function __construct() {
-        $this->load_dependencies();
-        $this->init_hooks();
-    }
-
-    /**
-     * Load required integration files
-     */
-    private function load_dependencies(): void {
-        require_once plugin_dir_path(__FILE__) . 'includes/integrations/class-airtable-two-way-sync.php';
-        require_once plugin_dir_path(__FILE__) . 'includes/integrations/class-airtable-sync-ajax-handler.php';
-        require_once plugin_dir_path(__FILE__) . 'includes/integrations/class-airtable-settings.php';
-    }
-
-    /**
-     * Initialize hooks and integrations
-     */
-    private function init_hooks(): void {
-        // Register settings
-        add_action('admin_init', [$this, 'register_airtable_settings']);
-
-        // Setup periodic sync
-        $this->schedule_periodic_sync();
-    }
-
-    /**
-     * Register Airtable integration settings
-     */
-    public function register_airtable_settings(): void {
-        register_setting(
-            'happy_place_options_group', 
-            'happy_place_airtable_options',
-            [
-                'type' => 'array',
-                'sanitize_callback' => [$this, 'sanitize_airtable_settings']
-            ]
-        );
-
-        add_settings_section(
-            'happy_place_airtable_section', 
-            'Airtable Integration', 
-            [$this, 'airtable_section_callback'], 
-            'happy-place-settings'
-        );
-
-        add_settings_field(
-            'airtable_api_key', 
-            'Airtable API Key', 
-            [$this, 'render_api_key_field'], 
-            'happy-place-settings', 
-            'happy_place_airtable_section'
-        );
-
-        add_settings_field(
-            'airtable_base_id', 
-            'Airtable Base ID', 
-            [$this, 'render_base_id_field'], 
-            'happy-place-settings', 
-            'happy_place_airtable_section'
-        );
-    }
-
-    /**
-     * Sanitize Airtable settings
-     */
-    public function sanitize_airtable_settings($input): array {
-        $output = [];
-
-        // Sanitize API Key
-        if (isset($input['api_key'])) {
-            $output['api_key'] = sanitize_text_field($input['api_key']);
-        }
-
-        // Sanitize Base ID
-        if (isset($input['base_id'])) {
-            $output['base_id'] = sanitize_text_field($input['base_id']);
-        }
-
-        return $output;
-    }
-
-    /**
-     * Airtable settings section callback
-     */
-    public function airtable_section_callback(): void {
-        echo '<p>Configure your Airtable integration settings.</p>';
-    }
-
-    /**
-     * Render API Key input field
-     */
-    public function render_api_key_field(): void {
-        $options = get_option('happy_place_airtable_options', []);
-        $api_key = $options['api_key'] ?? '';
-        ?>
-        <input 
-            type="text" 
-            name="happy_place_airtable_options[api_key]" 
-            value="<?php echo esc_attr($api_key); ?>" 
-            class="regular-text"
-            placeholder="Enter your Airtable API Key"
-        />
-        <p class="description">
-            Get your API key from 
-            <a href="https://airtable.com/account" target="_blank">Airtable Account</a>
-        </p>
-        <?php
-    }
-
-    /**
-     * Render Base ID input field
-     */
-    public function render_base_id_field(): void {
-        $options = get_option('happy_place_airtable_options', []);
-        $base_id = $options['base_id'] ?? '';
-        ?>
-        <input 
-            type="text" 
-            name="happy_place_airtable_options[base_id]" 
-            value="<?php echo esc_attr($base_id); ?>" 
-            class="regular-text"
-            placeholder="Enter your Airtable Base ID"
-        />
-        <p class="description">
-            Find your Base ID in the Airtable API documentation
-        </p>
-        <?php
-    }
-
-    /**
-     * Schedule periodic sync
-     */
-    private function schedule_periodic_sync(): void {
-        // Add custom interval for sync
-        add_filter('cron_schedules', [$this, 'add_sync_interval']);
-
-        // Schedule sync if not already scheduled
-        if (!wp_next_scheduled('hph_airtable_periodic_sync')) {
-            wp_schedule_event(
-                time(), 
-                'every_six_hours', 
-                'hph_airtable_periodic_sync'
-            );
-        }
-
-        // Hook for periodic sync
-        add_action('hph_airtable_periodic_sync', [$this, 'perform_periodic_sync']);
-    }
-
-    /**
-     * Add custom sync interval
-     */
-    public function add_sync_interval($schedules): array {
-        $schedules['every_six_hours'] = [
-            'interval' => 6 * HOUR_IN_SECONDS,
-            'display'  => __('Every Six Hours')
-        ];
-        return $schedules;
-    }
-
-    /**
-     * Perform periodic background sync
-     */
-    public function perform_periodic_sync(): void {
-        // Get Airtable configuration
-        $options = get_option('happy_place_airtable_options', []);
-        $base_id = $options['base_id'] ?? null;
-
-        if (!$base_id) {
-            error_log('Airtable Base ID not configured for periodic sync');
-            return;
-        }
-
-        try {
-            $sync = new \HappyPlace\Integrations\Airtable_Two_Way_Sync(
-                $base_id, 
-                'Listings'  // Hardcoded table name, can be made configurable
-            );
-
-            // Perform two-way sync
-            $airtable_to_wp_result = $sync->sync_airtable_to_wordpress();
-            $wp_to_airtable_result = $sync->sync_wordpress_to_airtable();
-
-            // Log sync results
-            error_log('Periodic Airtable Sync Results: ' . print_r([
-                'Airtable to WP' => $airtable_to_wp_result,
-                'WP to Airtable' => $wp_to_airtable_result
-            ], true));
-
-        } catch (\Exception $e) {
-            error_log('Periodic Airtable Sync Error: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Add settings page to plugin menu
-     */
-    public function add_settings_page(): void {
-        add_submenu_page(
-            'happy-place-dashboard',  // Parent slug
-            'Airtable Integration',   // Page title
-            'Airtable Sync',          // Menu title
-            'manage_options',          // Capability
-            'happy-place-airtable',    // Menu slug
-            [$this, 'render_settings_page'] // Callback
-        );
-    }
-
-    /**
-     * Render settings page
-     */
-    public function render_settings_page(): void {
-        ?>
-        <div class="wrap">
-            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            <form action="options.php" method="post">
-                <?php
-                settings_fields('happy_place_options_group');
-                do_settings_sections('happy-place-settings');
-                submit_button('Save Airtable Settings');
-                ?>
-            </form>
-        </div>
-        <?php
-    }
-}
-
-// Initialize the Airtable integration
-Airtable_Integration::get_instance();
 
 error_log('HPH: Plugin file loaded successfully');

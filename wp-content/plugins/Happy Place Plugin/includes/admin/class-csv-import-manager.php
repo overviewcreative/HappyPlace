@@ -87,7 +87,8 @@ class CSV_Import_Manager
 
     private function __construct()
     {
-        add_action('admin_menu', [$this, 'add_import_pages']);
+        // Disable admin menu registration - handled by unified Admin Menu
+        // add_action('admin_menu', [$this, 'add_import_pages']);
         add_action('wp_ajax_hph_import_csv', [$this, 'handle_csv_import']);
         add_action('wp_ajax_hph_preview_csv', [$this, 'handle_csv_preview']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_import_scripts']);

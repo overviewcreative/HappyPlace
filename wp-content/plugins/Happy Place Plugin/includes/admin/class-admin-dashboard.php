@@ -48,6 +48,26 @@ class Admin_Dashboard
             true
         );
 
+        // Image optimization scripts
+        wp_enqueue_script(
+            'hph-image-optimization',
+            plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/js/image-optimization.js',
+            ['jquery', 'hph-admin-dashboard'],
+            '1.0.0',
+            true
+        );
+
+        // Localize scripts
+        wp_localize_script('hph-admin-dashboard', 'happyPlaceAdmin', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('happy_place_admin_nonce'),
+            'strings' => [
+                'optimizing' => __('Optimizing...', 'happy-place'),
+                'complete' => __('Complete!', 'happy-place'),
+                'error' => __('Error occurred', 'happy-place')
+            ]
+        ]);
+
         // Localize script with data
         wp_localize_script('hph-admin-dashboard', 'hphAdmin', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -254,10 +274,31 @@ class Admin_Dashboard
                         <div class="feature-grid">
                             <div class="feature-card">
                                 <h3><?php _e('Image Optimization', 'happy-place'); ?></h3>
-                                <p><?php _e('Optimize listing images for better performance.', 'happy-place'); ?></p>
+                                <p><?php _e('Optimize listing images for better performance and SEO. Includes WebP conversion and responsive sizing.', 'happy-place'); ?></p>
+                                <div id="image-optimization-stats" class="hph-stats-grid" style="margin: 15px 0;">
+                                    <div class="hph-stat">
+                                        <span class="hph-stat-number" id="total-images">-</span>
+                                        <span class="hph-stat-label">Total Images</span>
+                                    </div>
+                                    <div class="hph-stat">
+                                        <span class="hph-stat-number" id="optimized-images">-</span>
+                                        <span class="hph-stat-label">Optimized</span>
+                                    </div>
+                                    <div class="hph-stat">
+                                        <span class="hph-stat-number" id="optimization-percentage">-%</span>
+                                        <span class="hph-stat-label">Complete</span>
+                                    </div>
+                                </div>
                                 <div class="feature-actions">
-                                    <a href="#" class="button button-primary" id="optimize-images"><?php _e('Optimize All', 'happy-place'); ?></a>
-                                    <a href="#" class="button" id="check-images"><?php _e('Check Status', 'happy-place'); ?></a>
+                                    <a href="#" class="button button-primary" id="optimize-images"><?php _e('Optimize Images', 'happy-place'); ?></a>
+                                    <a href="#" class="button" id="check-image-stats"><?php _e('Refresh Stats', 'happy-place'); ?></a>
+                                    <a href="#" class="button" id="clear-optimization-meta"><?php _e('Reset', 'happy-place'); ?></a>
+                                </div>
+                                <div id="optimization-progress" class="hph-progress-container" style="display: none; margin-top: 15px;">
+                                    <div class="hph-progress-bar" style="background: #f0f0f0; height: 20px; border-radius: 10px; overflow: hidden;">
+                                        <div class="hph-progress-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #007cba, #00a0d2); transition: width 0.3s ease;"></div>
+                                    </div>
+                                    <div class="hph-progress-text" style="margin-top: 5px; font-size: 13px; color: #666;">Ready to optimize images...</div>
                                 </div>
                             </div>
 

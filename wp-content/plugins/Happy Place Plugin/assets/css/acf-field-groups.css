@@ -1,0 +1,190 @@
+/* ACF Field Groups Styling */
+
+/* Readonly field styling */
+.hph-readonly-field input,
+.hph-readonly-field textarea,
+.hph-readonly-field select {
+    background-color: #f7f7f7 !important;
+    color: #666 !important;
+    cursor: not-allowed !important;
+    border-color: #ddd !important;
+}
+
+/* Highlight important calculated fields */
+.hph-highlight-field input {
+    background-color: #e8f5e8 !important;
+    border-color: #4CAF50 !important;
+    font-weight: bold !important;
+}
+
+/* Refresh controls styling */
+.hph-refresh-controls {
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.hph-refresh-controls button {
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+.hph-refresh-controls button:hover {
+    background-color: #0073aa;
+    color: white;
+}
+
+/* Tab styling improvements */
+.acf-tab-wrap .acf-tab-group li a {
+    padding: 12px 16px;
+    font-size: 14px;
+}
+
+.acf-tab-wrap .acf-tab-group li.active a {
+    background-color: #0073aa;
+    color: white;
+    border-color: #0073aa;
+}
+
+/* Message field styling */
+.acf-field-message .acf-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.acf-field-message .acf-input p {
+    background: #f0f6fc;
+    border-left: 4px solid #0073aa;
+    padding: 12px;
+    margin: 0;
+    border-radius: 0 4px 4px 0;
+}
+
+/* Repeater field improvements */
+.acf-repeater .acf-row {
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+}
+
+.acf-repeater .acf-row:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Field group titles */
+.postbox .hndle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #0073aa;
+}
+
+/* Essential fields emphasis */
+.acf-field[data-name="price"] .acf-label label,
+.acf-field[data-name="status"] .acf-label label,
+.acf-field[data-name="mls_number"] .acf-label label,
+.acf-field[data-name="list_date"] .acf-label label {
+    color: #d63638;
+    font-weight: bold;
+}
+
+.acf-field[data-name="price"] .acf-label label:after,
+.acf-field[data-name="status"] .acf-label label:after,
+.acf-field[data-name="mls_number"] .acf-label label:after,
+.acf-field[data-name="list_date"] .acf-label label:after {
+    content: " *";
+    color: #d63638;
+}
+
+/* Auto-populated field indicators */
+.hph-readonly-field .acf-label label:after {
+    content: " (Auto)";
+    font-size: 11px;
+    color: #666;
+    font-weight: normal;
+    font-style: italic;
+}
+
+/* Progress indicator for field completion */
+.acf-field-group-completion {
+    background: #f0f6fc;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.completion-bar {
+    background: #ddd;
+    border-radius: 10px;
+    height: 8px;
+    margin: 5px 0;
+    overflow: hidden;
+}
+
+.completion-fill {
+    background: linear-gradient(90deg, #4CAF50, #81C784);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .acf-field[data-width] {
+        width: 100% !important;
+    }
+    
+    .hph-refresh-controls button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+/* Field validation styling */
+.acf-field.acf-error .acf-input {
+    border-color: #d63638;
+}
+
+.acf-field.acf-error .acf-label label {
+    color: #d63638;
+}
+
+/* Success states for auto-populated fields */
+.hph-field-populated {
+    position: relative;
+}
+
+.hph-field-populated:after {
+    content: "✓";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Loading states */
+.hph-field-loading {
+    position: relative;
+}
+
+.hph-field-loading:after {
+    content: "⟳";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #0073aa;
+    font-weight: bold;
+    font-size: 16px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}

@@ -3,90 +3,368 @@
     "title": "Location Intelligence (Auto-Populated)",
     "fields": [
         {
-            "key": "field_school_data",
+            "key": "field_coordinates_tab",
+            "label": "📍 Coordinates & Mapping",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_coordinates_info_message",
+            "label": "Geographic Data",
+            "name": "",
+            "type": "message",
+            "message": "Geographic coordinates and mapping data are automatically generated from the property address using Google Maps API.",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_latitude",
+            "label": "Latitude",
+            "name": "latitude",
+            "type": "text",
+            "instructions": "GPS latitude coordinate (auto-populated)",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "hph-readonly-field",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_longitude",
+            "label": "Longitude", 
+            "name": "longitude",
+            "type": "text",
+            "instructions": "GPS longitude coordinate (auto-populated)",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "hph-readonly-field",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_full_address",
+            "label": "Full Formatted Address",
+            "name": "full_address",
+            "type": "text",
+            "instructions": "Complete formatted address (auto-generated)",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "100",
+                "class": "hph-readonly-field",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_google_place_id",
+            "label": "Google Place ID",
+            "name": "google_place_id",
+            "type": "text",
+            "instructions": "Unique Google Places identifier",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "100",
+                "class": "hph-readonly-field",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_schools_education_tab",
+            "label": "🎓 Schools & Education",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_schools_info_message",
             "label": "School Information",
-            "name": "school_data",
+            "name": "",
+            "type": "message",
+            "message": "School data is automatically populated from external APIs based on the property address. Use the refresh button below to update this information.",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_school_district",
+            "label": "School District",
+            "name": "school_district",
+            "type": "text",
+            "instructions": "Assigned school district (auto-populated)",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "100",
+                "class": "hph-readonly-field",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_assigned_schools",
+            "label": "Assigned Schools",
+            "name": "assigned_schools",
             "type": "group",
+            "instructions": "Schools assigned to this address",
+            "required": 0,
             "sub_fields": [
-                {
-                    "key": "field_school_district",
-                    "label": "School District",
-                    "name": "school_district",
-                    "type": "text",
-                    "readonly": 1,
-                    "wrapper": {"width": "50"}
-                },
                 {
                     "key": "field_elementary_school",
                     "label": "Elementary School",
                     "name": "elementary_school",
                     "type": "text",
+                    "wrapper": {"width": "50"},
+                    "readonly": 1
+                },
+                {
+                    "key": "field_elementary_rating",
+                    "label": "Rating",
+                    "name": "elementary_rating",
+                    "type": "number",
+                    "wrapper": {"width": "50"},
                     "readonly": 1,
-                    "wrapper": {"width": "50"}
+                    "min": 1,
+                    "max": 10,
+                    "step": 0.1,
+                    "append": "/10"
                 },
                 {
                     "key": "field_middle_school",
                     "label": "Middle School",
                     "name": "middle_school",
                     "type": "text",
+                    "wrapper": {"width": "50"},
+                    "readonly": 1
+                },
+                {
+                    "key": "field_middle_rating",
+                    "label": "Rating",
+                    "name": "middle_rating",
+                    "type": "number",
+                    "wrapper": {"width": "50"},
                     "readonly": 1,
-                    "wrapper": {"width": "50"}
+                    "min": 1,
+                    "max": 10,
+                    "step": 0.1,
+                    "append": "/10"
                 },
                 {
                     "key": "field_high_school",
                     "label": "High School",
                     "name": "high_school",
                     "type": "text",
+                    "wrapper": {"width": "50"},
+                    "readonly": 1
+                },
+                {
+                    "key": "field_high_rating",
+                    "label": "Rating",
+                    "name": "high_rating",
+                    "type": "number",
+                    "wrapper": {"width": "50"},
                     "readonly": 1,
-                    "wrapper": {"width": "50"}
+                    "min": 1,
+                    "max": 10,
+                    "step": 0.1,
+                    "append": "/10"
                 }
             ]
         },
         {
-            "key": "field_walkability_data",
-            "label": "Walkability & Transit",
-            "name": "walkability_data",
-            "type": "group",
+            "key": "field_private_schools",
+            "label": "Nearby Private Schools",
+            "name": "private_schools",
+            "type": "repeater",
+            "instructions": "Private schools within 10 miles (auto-populated)",
+            "required": 0,
+            "readonly": 1,
+            "min": 0,
+            "max": 20,
+            "layout": "table",
+            "button_label": "Refresh Private Schools",
             "sub_fields": [
                 {
-                    "key": "field_walk_score",
-                    "label": "Walk Score",
-                    "name": "walk_score",
-                    "type": "number",
-                    "readonly": 1,
-                    "min": 0,
-                    "max": 100,
-                    "wrapper": {"width": "33.33"}
+                    "key": "field_private_school_name",
+                    "label": "School Name",
+                    "name": "school_name",
+                    "type": "text",
+                    "wrapper": {"width": "40"},
+                    "readonly": 1
                 },
                 {
-                    "key": "field_transit_score",
-                    "label": "Transit Score",
-                    "name": "transit_score",
-                    "type": "number",
-                    "readonly": 1,
-                    "min": 0,
-                    "max": 100,
-                    "wrapper": {"width": "33.33"}
+                    "key": "field_private_school_type",
+                    "label": "Type",
+                    "name": "school_type",
+                    "type": "text",
+                    "wrapper": {"width": "20"},
+                    "readonly": 1
                 },
                 {
-                    "key": "field_bike_score",
-                    "label": "Bike Score",
-                    "name": "bike_score",
+                    "key": "field_private_school_distance",
+                    "label": "Distance",
+                    "name": "school_distance",
                     "type": "number",
+                    "wrapper": {"width": "20"},
                     "readonly": 1,
-                    "min": 0,
-                    "max": 100,
-                    "wrapper": {"width": "33.33"}
+                    "append": "mi"
+                },
+                {
+                    "key": "field_private_school_rating",
+                    "label": "Rating",
+                    "name": "school_rating",
+                    "type": "number",
+                    "wrapper": {"width": "20"},
+                    "readonly": 1,
+                    "append": "/10"
                 }
             ]
+        },
+        {
+            "key": "field_walkability_transit_tab",
+            "label": "🚶 Walkability & Transit",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_walkability_info_message",
+            "label": "Walkability Scores",
+            "name": "",
+            "type": "message",
+            "message": "Walkability scores are calculated based on nearby amenities and transit options. Scores range from 0-100, with higher scores indicating better walkability.",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_walk_score",
+            "label": "Walk Score",
+            "name": "walk_score",
+            "type": "number",
+            "instructions": "Walkability rating 0-100 (auto-populated)",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "33",
+                "class": "hph-readonly-field",
+                "id": ""
+            },
+            "min": 0,
+            "max": 100,
+            "append": "/100"
+        },
+        {
+            "key": "field_transit_score",
+            "label": "Transit Score",
+            "name": "transit_score",
+            "type": "number",
+            "instructions": "Public transit rating 0-100 (auto-populated)",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "33",
+                "class": "hph-readonly-field",
+                "id": ""
+            },
+            "min": 0,
+            "max": 100,
+            "append": "/100"
+        },
+        {
+            "key": "field_bike_score",
+            "label": "Bike Score",
+            "name": "bike_score",
+            "type": "number",
+            "instructions": "Bike-friendliness rating 0-100 (auto-populated)",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "34",
+                "class": "hph-readonly-field",
+                "id": ""
+            },
+            "min": 0,
+            "max": 100,
+            "append": "/100"
+        },
+        {
+            "key": "field_commute_times",
+            "label": "Commute Times",
+            "name": "commute_times",
+            "type": "group",
+            "instructions": "Average commute times to major employment centers",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_commute_wilmington",
+                    "label": "To Wilmington",
+                    "name": "commute_wilmington",
+                    "type": "number",
+                    "wrapper": {"width": "25"},
+                    "readonly": 1,
+                    "append": "min"
+                },
+                {
+                    "key": "field_commute_philadelphia",
+                    "label": "To Philadelphia",
+                    "name": "commute_philadelphia",
+                    "type": "number",
+                    "wrapper": {"width": "25"},
+                    "readonly": 1,
+                    "append": "min"
+                },
+                {
+                    "key": "field_commute_baltimore",
+                    "label": "To Baltimore",
+                    "name": "commute_baltimore",
+                    "type": "number",
+                    "wrapper": {"width": "25"},
+                    "readonly": 1,
+                    "append": "min"
+                },
+                {
+                    "key": "field_commute_washington_dc",
+                    "label": "To Washington DC",
+                    "name": "commute_washington_dc",
+                    "type": "number",
+                    "wrapper": {"width": "25"},
+                    "readonly": 1,
+                    "append": "min"
+                }
+            ]
+        },
+        {
+            "key": "field_nearby_amenities_tab",
+            "label": "📍 Nearby Amenities",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_amenities_info_message",
+            "label": "Nearby Places",
+            "name": "",
+            "type": "message",
+            "message": "This list shows nearby restaurants, shops, and services within 2 miles of the property. Data is automatically populated from Google Places API.",
+            "new_lines": "wpautop",
+            "esc_html": 0
         },
         {
             "key": "field_nearby_amenities",
             "label": "Nearby Amenities",
             "name": "nearby_amenities",
             "type": "repeater",
-            "instructions": "Auto-populated from Google Places API",
-            "max": 15,
+            "instructions": "Nearby places and amenities (auto-populated)",
+            "required": 0,
+            "min": 0,
+            "max": 30,
             "layout": "table",
             "button_label": "Refresh Amenities",
             "readonly": 1,
@@ -96,6 +374,7 @@
                     "label": "Name",
                     "name": "amenity_name",
                     "type": "text",
+                    "wrapper": {"width": "30"},
                     "readonly": 1
                 },
                 {
@@ -103,27 +382,147 @@
                     "label": "Type",
                     "name": "amenity_type",
                     "type": "text",
+                    "wrapper": {"width": "20"},
                     "readonly": 1
                 },
                 {
                     "key": "field_amenity_distance",
-                    "label": "Distance (miles)",
-                    "name": "distance_miles",
+                    "label": "Distance",
+                    "name": "amenity_distance",
                     "type": "number",
+                    "wrapper": {"width": "15"},
                     "readonly": 1,
+                    "append": "mi",
                     "step": 0.1
                 },
                 {
                     "key": "field_amenity_rating",
                     "label": "Rating",
-                    "name": "rating",
+                    "name": "amenity_rating",
                     "type": "number",
+                    "wrapper": {"width": "15"},
                     "readonly": 1,
-                    "min": 0,
-                    "max": 5,
+                    "append": "/5",
                     "step": 0.1
+                },
+                {
+                    "key": "field_amenity_address",
+                    "label": "Address",
+                    "name": "amenity_address",
+                    "type": "text",
+                    "wrapper": {"width": "20"},
+                    "readonly": 1
                 }
             ]
+        },
+        {
+            "key": "field_categories_breakdown",
+            "label": "Amenities by Category",
+            "name": "amenities_by_category",
+            "type": "group",
+            "instructions": "Count of amenities by category within 2 miles",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_restaurants_count",
+                    "label": "Restaurants",
+                    "name": "restaurants_count",
+                    "type": "number",
+                    "wrapper": {"width": "20"},
+                    "readonly": 1
+                },
+                {
+                    "key": "field_shopping_count",
+                    "label": "Shopping",
+                    "name": "shopping_count",
+                    "type": "number",
+                    "wrapper": {"width": "20"},
+                    "readonly": 1
+                },
+                {
+                    "key": "field_healthcare_count",
+                    "label": "Healthcare",
+                    "name": "healthcare_count",
+                    "type": "number",
+                    "wrapper": {"width": "20"},
+                    "readonly": 1
+                },
+                {
+                    "key": "field_parks_count",
+                    "label": "Parks",
+                    "name": "parks_count",
+                    "type": "number",
+                    "wrapper": {"width": "20"},
+                    "readonly": 1
+                },
+                {
+                    "key": "field_entertainment_count",
+                    "label": "Entertainment",
+                    "name": "entertainment_count",
+                    "type": "number",
+                    "wrapper": {"width": "20"},
+                    "readonly": 1
+                }
+            ]
+        },
+        {
+            "key": "field_refresh_controls_tab",
+            "label": "🔄 Data Management",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_refresh_controls",
+            "label": "Manual Refresh Controls",
+            "name": "",
+            "type": "message",
+            "message": "<div class='hph-refresh-controls'><button type='button' class='button button-secondary' onclick='hphGeocodeAddress()'>🌍 Get Coordinates from Address</button> <button type='button' class='button button-secondary' onclick='hphRefreshLocationData()'>🔄 Refresh All Location Data</button> <button type='button' class='button button-secondary' onclick='hphRefreshSchoolData()'>🎓 Refresh School Data</button> <button type='button' class='button button-secondary' onclick='hphRefreshWalkabilityData()'>🚶 Refresh Walkability</button> <button type='button' class='button button-secondary' onclick='hphRefreshAmenities()'>📍 Refresh Amenities</button></div>",
+            "new_lines": "",
+            "esc_html": 0
+        },
+        {
+            "key": "field_last_updated",
+            "label": "Last Updated",
+            "name": "location_intelligence_last_updated",
+            "type": "text",
+            "instructions": "Timestamp of last location intelligence update",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "hph-readonly-field",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_api_status",
+            "label": "API Status",
+            "name": "location_api_status",
+            "type": "text",
+            "instructions": "Status of last API call",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "hph-readonly-field",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_api_credits_used",
+            "label": "API Credits Used Today",
+            "name": "api_credits_used",
+            "type": "number",
+            "instructions": "Number of API credits used today",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "100",
+                "class": "hph-readonly-field",
+                "id": ""
+            }
         }
     ],
     "location": [
@@ -135,7 +534,12 @@
             }
         ]
     ],
-    "menu_order": 11,
+    "menu_order": 7,
     "position": "normal",
-    "active": true
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true,
+    "description": "Location intelligence data automatically populated from external APIs. All fields are read-only.",
+    "show_in_rest": true
 }

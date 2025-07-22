@@ -78,11 +78,15 @@ class Template_Loader {
             'templates/agent/',
             'templates/community/',
             'templates/city/',
-            'templates/dashboard/',
+            'templates/team/',
+            'templates/transaction/',
             'templates/open-house/',
             'templates/local-place/',
-            'templates/transaction/',
+            'templates/place/',
+            'templates/dashboard/',
+            'templates/template-parts/',
             'templates/',
+            'template-parts/',
             '',
         ]);
     }
@@ -91,7 +95,7 @@ class Template_Loader {
      * Setup hooks
      */
     private function setup_hooks(): void {
-        add_filter('template_include', [$this, 'template_loader'], 5);
+        add_filter('template_include', [$this, 'template_loader'], 10); // Changed from 5 to 10
         add_action('template_redirect', [$this, 'set_template_context']);
     }
 
@@ -138,11 +142,12 @@ class Template_Loader {
     private function get_template_candidates(string $template_name): array {
         $candidates = [];
         $post_type = get_post_type();
-        $valid_post_types = ['listing', 'agent', 'community', 'city', 'place', 'open-house', 'local-place', 'transaction'];
+        $valid_post_types = ['listing', 'agent', 'community', 'city', 'place', 'open-house', 'local-place', 'transaction', 'team'];
 
         // Handle CPT-specific templates
         if ($post_type && in_array($post_type, $valid_post_types)) {
             if (is_post_type_archive()) {
+                // Archive template hierarchy
                 $candidates[] = "templates/{$post_type}/archive-{$post_type}.php";
                 $candidates[] = "templates/archive-{$post_type}.php";
                 $candidates[] = "archive-{$post_type}.php";
@@ -153,11 +158,22 @@ class Template_Loader {
                     $candidates[] = $template;
                 }
                 
-                // Then fallback to standard templates
+                // Single template hierarchy - prioritize post-type directory
+                $post_id = get_the_ID();
+                if ($post_id) {
+                    $candidates[] = "templates/{$post_type}/single-{$post_type}-{$post_id}.php";
+                    $candidates[] = "single-{$post_type}-{$post_id}.php";
+                }
+                
                 $candidates[] = "templates/{$post_type}/single-{$post_type}.php";
                 $candidates[] = "templates/single-{$post_type}.php";
                 $candidates[] = "single-{$post_type}.php";
+                $candidates[] = "templates/{$post_type}/single.php";
+                $candidates[] = "templates/single.php";
             }
+            
+            // Add post-type specific fallbacks for any template
+            $candidates[] = "templates/{$post_type}/{$template_name}";
         }
 
         // Add generic paths
@@ -237,22 +253,27 @@ class Template_Loader {
     public function get_template_part(string $slug, string $name = '', array $args = []): void {
         $templates = [];
         $post_type = get_post_type();
+        $valid_post_types = ['listing', 'agent', 'community', 'city', 'place', 'open-house', 'local-place', 'transaction', 'team'];
         
         if ($name) {
-            // Try post type specific template first
-            if ($post_type) {
+            // Try post type specific template first (highest priority)
+            if ($post_type && in_array($post_type, $valid_post_types)) {
                 $templates[] = "templates/{$post_type}/{$slug}-{$name}.php";
+                $templates[] = "templates/{$post_type}/template-parts/{$slug}-{$name}.php";
             }
+            
             // Then try generic template-parts directory
             $templates[] = "templates/template-parts/{$slug}-{$name}.php";
             $templates[] = "template-parts/{$slug}-{$name}.php";
             $templates[] = "{$slug}-{$name}.php";
         }
 
-        // Add fallback templates
-        if ($post_type) {
+        // Add fallback templates without name
+        if ($post_type && in_array($post_type, $valid_post_types)) {
             $templates[] = "templates/{$post_type}/{$slug}.php";
+            $templates[] = "templates/{$post_type}/template-parts/{$slug}.php";
         }
+        
         $templates[] = "templates/template-parts/{$slug}.php";
         $templates[] = "template-parts/{$slug}.php";
         $templates[] = "{$slug}.php";
@@ -265,6 +286,12 @@ class Template_Loader {
                 extract($args);
             }
             include($template);
+        } else {
+            // Debug: Log missing template for development
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("HPH Template Loader: Template part not found - Slug: {$slug}, Name: {$name}, Post Type: {$post_type}");
+                error_log("HPH Template Loader: Searched paths: " . implode(', ', $templates));
+            }
         }
     }
 
@@ -383,7 +410,143 @@ class Template_Loader {
             }
         }
 
-        return $template;
+        return $file_path; // Return the original file path if no custom template found
+    }
+
+    /**
+     * Enhanced template part loader with better post-type support
+     *
+     * @param string $slug Template slug
+     * @param string $name Optional template name
+     * @param array $args Optional arguments to pass to template
+     * @param string $specific_post_type Override post type detection
+     * @return bool True if template was found and loaded
+     */
+    public function load_template_part(string $slug, string $name = '', array $args = [], string $specific_post_type = ''): bool {
+        $templates = [];
+        $post_type = $specific_post_type ?: get_post_type();
+        $valid_post_types = ['listing', 'agent', 'community', 'city', 'place', 'open-house', 'local-place', 'transaction', 'team'];
+        
+        // Build template hierarchy
+        if ($name) {
+            // Named templates with post-type priority
+            if ($post_type && in_array($post_type, $valid_post_types)) {
+                $templates[] = "templates/{$post_type}/{$slug}-{$name}.php";
+                $templates[] = "templates/{$post_type}/template-parts/{$slug}-{$name}.php";
+            }
+            
+            $templates[] = "templates/template-parts/{$post_type}/{$slug}-{$name}.php";
+            $templates[] = "templates/template-parts/{$slug}-{$name}.php";
+            $templates[] = "template-parts/{$post_type}/{$slug}-{$name}.php";
+            $templates[] = "template-parts/{$slug}-{$name}.php";
+            $templates[] = "{$slug}-{$name}.php";
+        }
+
+        // Base templates
+        if ($post_type && in_array($post_type, $valid_post_types)) {
+            $templates[] = "templates/{$post_type}/{$slug}.php";
+            $templates[] = "templates/{$post_type}/template-parts/{$slug}.php";
+        }
+        
+        $templates[] = "templates/template-parts/{$post_type}/{$slug}.php";
+        $templates[] = "templates/template-parts/{$slug}.php";
+        $templates[] = "template-parts/{$post_type}/{$slug}.php";
+        $templates[] = "template-parts/{$slug}.php";
+        $templates[] = "{$slug}.php";
+
+        // Remove duplicates and find template
+        $templates = array_unique($templates);
+        $template = locate_template($templates);
+
+        if ($template) {
+            if (!empty($args) && is_array($args)) {
+                extract($args);
+            }
+            include($template);
+            return true;
+        }
+
+        // Debug logging
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("HPH Template Loader: Template part not found - Slug: {$slug}, Name: {$name}, Post Type: {$post_type}");
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if a template part exists
+     *
+     * @param string $slug Template slug
+     * @param string $name Optional template name
+     * @param string $specific_post_type Override post type detection
+     * @return string|false Template path if found, false otherwise
+     */
+    public function template_part_exists(string $slug, string $name = '', string $specific_post_type = ''): string|bool {
+        $post_type = $specific_post_type ?: get_post_type();
+        $valid_post_types = ['listing', 'agent', 'community', 'city', 'place', 'open-house', 'local-place', 'transaction', 'team'];
+        
+        $templates = [];
+        
+        if ($name) {
+            if ($post_type && in_array($post_type, $valid_post_types)) {
+                $templates[] = "templates/{$post_type}/{$slug}-{$name}.php";
+                $templates[] = "templates/{$post_type}/template-parts/{$slug}-{$name}.php";
+            }
+            $templates[] = "templates/template-parts/{$slug}-{$name}.php";
+            $templates[] = "template-parts/{$slug}-{$name}.php";
+            $templates[] = "{$slug}-{$name}.php";
+        }
+
+        if ($post_type && in_array($post_type, $valid_post_types)) {
+            $templates[] = "templates/{$post_type}/{$slug}.php";
+            $templates[] = "templates/{$post_type}/template-parts/{$slug}.php";
+        }
+        
+        $templates[] = "templates/template-parts/{$slug}.php";
+        $templates[] = "template-parts/{$slug}.php";
+        $templates[] = "{$slug}.php";
+
+        $templates = array_unique($templates);
+        return locate_template($templates);
+    }
+
+    /**
+     * Get all available template parts for a post type
+     *
+     * @param string $post_type Post type to search for
+     * @return array Array of found template files
+     */
+    public function get_available_template_parts(string $post_type = ''): array {
+        $post_type = $post_type ?: get_post_type();
+        $template_dir = get_template_directory();
+        $found_templates = [];
+        
+        if (!$post_type) {
+            return $found_templates;
+        }
+        
+        $search_dirs = [
+            "templates/{$post_type}/",
+            "templates/{$post_type}/template-parts/",
+            "templates/template-parts/{$post_type}/",
+            "templates/template-parts/",
+            "template-parts/{$post_type}/",
+            "template-parts/"
+        ];
+        
+        foreach ($search_dirs as $dir) {
+            $full_path = $template_dir . '/' . $dir;
+            if (is_dir($full_path)) {
+                $files = glob($full_path . '*.php');
+                foreach ($files as $file) {
+                    $relative_path = str_replace($template_dir . '/', '', $file);
+                    $found_templates[] = $relative_path;
+                }
+            }
+        }
+        
+        return array_unique($found_templates);
     }
 }
 
@@ -397,5 +560,17 @@ if (!function_exists('hph_get_template_part')) {
 if (!function_exists('hph_locate_template')) {
     function hph_locate_template($template_names, bool $load = false, bool $require_once = true, array $args = []): string {
         return Template_Loader::instance()->locate_template($template_names, $load, $require_once, $args);
+    }
+}
+
+if (!function_exists('hph_load_template_part')) {
+    function hph_load_template_part(string $slug, string $name = '', array $args = [], string $specific_post_type = ''): bool {
+        return Template_Loader::instance()->load_template_part($slug, $name, $args, $specific_post_type);
+    }
+}
+
+if (!function_exists('hph_template_part_exists')) {
+    function hph_template_part_exists(string $slug, string $name = '', string $specific_post_type = ''): string|bool {
+        return Template_Loader::instance()->template_part_exists($slug, $name, $specific_post_type);
     }
 }

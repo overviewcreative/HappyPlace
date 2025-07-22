@@ -1,0 +1,353 @@
+{
+    "key": "group_agent_core",
+    "title": "Core Agent Information",
+    "fields": [
+        {
+            "key": "field_contact_info_tab",
+            "label": "📞 Contact Information",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_phone",
+            "label": "Primary Phone Number",
+            "name": "phone",
+            "type": "text",
+            "instructions": "Primary contact phone number",
+            "placeholder": "(555) 123-4567",
+            "required": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_mobile",
+            "label": "Mobile Number",
+            "name": "mobile",
+            "type": "text",
+            "instructions": "Mobile phone number (if different from primary)",
+            "placeholder": "(555) 123-4567",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_email",
+            "label": "Email Address",
+            "name": "email",
+            "type": "email",
+            "instructions": "Professional email address",
+            "required": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_website",
+            "label": "Personal Website",
+            "name": "website",
+            "type": "url",
+            "instructions": "Personal agent website or landing page",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "placeholder": "https://www.youragentsite.com"
+        },
+        {
+            "key": "field_licensing_tab",
+            "label": "📋 Licensing & Professional",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_license_number",
+            "label": "Real Estate License Number",
+            "name": "license_number",
+            "type": "text",
+            "instructions": "State professional license number",
+            "required": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_license_state",
+            "label": "License State",
+            "name": "license_state",
+            "type": "select",
+            "choices": {
+                "DE": "Delaware",
+                "MD": "Maryland",
+                "PA": "Pennsylvania",
+                "NJ": "New Jersey",
+                "VA": "Virginia",
+                "DC": "Washington DC"
+            },
+            "instructions": "State where real estate license is issued",
+            "required": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "DE"
+        },
+        {
+            "key": "field_license_expiration",
+            "label": "License Expiration Date",
+            "name": "license_expiration",
+            "type": "date_picker",
+            "instructions": "When the license expires",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "F j, Y",
+            "return_format": "Y-m-d"
+        },
+        {
+            "key": "field_nrds_id",
+            "label": "NRDS ID",
+            "name": "nrds_id",
+            "type": "text",
+            "instructions": "National REALTOR Database System ID",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_job_title",
+            "label": "Job Title",
+            "name": "job_title",
+            "type": "text",
+            "instructions": "Professional title or designation",
+            "required": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Real Estate Agent",
+            "placeholder": "e.g., Real Estate Agent, Broker, Associate Broker"
+        },
+        {
+            "key": "field_years_experience",
+            "label": "Years of Experience",
+            "name": "years_experience",
+            "type": "number",
+            "instructions": "Years in real estate",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "min": 0,
+            "max": 50,
+            "step": 1
+        },
+        {
+            "key": "field_office_info_tab",
+            "label": "🏢 Office Information",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_brokerage_name",
+            "label": "Brokerage Name",
+            "name": "brokerage_name",
+            "type": "text",
+            "instructions": "Name of the brokerage firm",
+            "required": 1,
+            "wrapper": {
+                "width": "100",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "The Parker Group"
+        },
+        {
+            "key": "field_office_location",
+            "label": "Office Location Name",
+            "name": "office_location",
+            "type": "text",
+            "instructions": "Name of office location or branch",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "placeholder": "e.g., Georgetown Office, Main Branch"
+        },
+        {
+            "key": "field_office_address",
+            "label": "Office Address",
+            "name": "office_address",
+            "type": "textarea",
+            "instructions": "Full address of the office location",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "rows": 3,
+            "default_value": "673 N Bedford St.\nGeorgetown, DE 19947"
+        },
+        {
+            "key": "field_office_phone",
+            "label": "Office Phone Number",
+            "name": "office_phone",
+            "type": "text",
+            "instructions": "Main office contact number",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "302-217-6692"
+        },
+        {
+            "key": "field_office_email",
+            "label": "Office Email Address",
+            "name": "office_email",
+            "type": "email",
+            "instructions": "Main office email address",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "cheers@theparkergroup.com"
+        },
+        {
+            "key": "field_service_areas_tab",
+            "label": "🗺️ Service Areas",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_service_areas",
+            "label": "Primary Service Areas",
+            "name": "service_areas",
+            "type": "checkbox",
+            "choices": {
+                "new_castle_de": "New Castle County, DE",
+                "kent_de": "Kent County, DE", 
+                "sussex_de": "Sussex County, DE",
+                "cecil_md": "Cecil County, MD",
+                "harford_md": "Harford County, MD",
+                "baltimore_county_md": "Baltimore County, MD",
+                "anne_arundel_md": "Anne Arundel County, MD",
+                "caroline_md": "Caroline County, MD",
+                "queen_annes_md": "Queen Anne's County, MD",
+                "chester_pa": "Chester County, PA",
+                "philadelphia_pa": "Philadelphia County, PA"
+            },
+            "instructions": "Counties where you primarily serve clients",
+            "required": 1,
+            "wrapper": {
+                "width": "100",
+                "class": "",
+                "id": ""
+            },
+            "layout": "vertical",
+            "default_value": ["new_castle_de"]
+        },
+        {
+            "key": "field_service_radius",
+            "label": "Service Radius",
+            "name": "service_radius",
+            "type": "number",
+            "instructions": "Maximum distance (in miles) you'll travel for clients",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "min": 5,
+            "max": 100,
+            "step": 5,
+            "default_value": 25,
+            "append": "miles"
+        },
+        {
+            "key": "field_specialties",
+            "label": "Specialties & Expertise",
+            "name": "specialties",
+            "type": "checkbox",
+            "instructions": "Select your primary areas of expertise",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "first_time_buyers": "First-Time Home Buyers",
+                "luxury_homes": "Luxury Homes",
+                "waterfront": "Waterfront Properties",
+                "investment": "Investment Properties",
+                "commercial": "Commercial Real Estate",
+                "new_construction": "New Construction",
+                "55_plus": "55+ Communities",
+                "farm_land": "Farm & Land",
+                "historic_homes": "Historic Homes",
+                "condos_townhomes": "Condos & Townhomes",
+                "relocation": "Relocation Services",
+                "military": "Military Relocation",
+                "divorce": "Divorce & Separation",
+                "probate": "Probate & Estate Sales",
+                "short_sales": "Short Sales & Foreclosures"
+            },
+            "layout": "vertical",
+            "return_format": "value"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "agent"
+            }
+        ]
+    ],
+    "menu_order": 1,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true,
+    "description": "Essential agent information including contact details, licensing, and service areas.",
+    "show_in_rest": true
+}

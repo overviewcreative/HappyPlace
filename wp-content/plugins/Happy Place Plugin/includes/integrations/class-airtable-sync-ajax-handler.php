@@ -10,14 +10,18 @@ class Airtable_Sync_Ajax_Handler {
 
     public function __construct() {
         add_action('wp_ajax_hph_two_way_airtable_sync', [$this, 'handle_two_way_sync']);
-        add_action('admin_menu', [$this, 'add_sync_page']);
+        // Disable admin menu registration - handled by unified Integrations Manager
+        // add_action('admin_menu', [$this, 'add_sync_page']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_sync_scripts']);
     }
 
     /**
      * Add sync page to WordPress admin
+     * DISABLED - Now handled by Integrations Manager
      */
     public function add_sync_page(): void {
+        // Menu registration disabled - handled by unified integrations page
+        /*
         add_menu_page(
             'Airtable Sync', 
             'Airtable Sync', 
@@ -27,6 +31,7 @@ class Airtable_Sync_Ajax_Handler {
             'dashicons-database-import',
             30
         );
+        */
     }
 
     /**

@@ -11,7 +11,8 @@ class Airtable_Settings {
     }
 
     private function __construct() {
-        add_action('admin_menu', [$this, 'add_settings_page']);
+        // Disable admin menu registration - handled by unified Integrations Manager
+        // add_action('admin_menu', [$this, 'add_settings_page']);
         add_action('admin_init', [$this, 'register_settings']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_scripts']);
         add_action('wp_ajax_hph_two_way_airtable_sync', [$this, 'handle_sync_ajax']);
@@ -55,8 +56,11 @@ class Airtable_Settings {
 
     /**
      * Add settings page to WordPress menu
+     * DISABLED - Now handled by Integrations Manager
      */
     public function add_settings_page(): void {
+        // Menu registration disabled - handled by unified integrations page
+        /*
         add_menu_page(
             'Airtable Two-Way Sync',   // Page title
             'Airtable Sync',           // Menu title
@@ -66,6 +70,7 @@ class Airtable_Settings {
             'dashicons-database-import', // Icon
             30                          // Position
         );
+        */
     }
 
     /**

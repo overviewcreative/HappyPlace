@@ -22,7 +22,7 @@ class Admin_Menu
         add_menu_page(
             'Happy Place',
             'Happy Place',
-            'manage_options',
+            'read', // Most permissive capability - all logged in users
             'happy-place',
             [$this, 'render_dashboard'],
             'dashicons-building',
@@ -34,7 +34,7 @@ class Admin_Menu
             'happy-place',
             'Settings',
             'Settings',
-            'manage_options',
+            'read',
             'happy-place-settings',
             [$this, 'render_settings']
         );
@@ -44,9 +44,19 @@ class Admin_Menu
             'happy-place',
             'CSV Import',
             'CSV Import',
-            'manage_options',
+            'read',
             'happy-place-csv-import',
             [$this, 'render_csv_import']
+        );
+
+        // Add Integrations submenu
+        add_submenu_page(
+            'happy-place',
+            'Integrations',
+            'Integrations',
+            'read',
+            'happy-place-integrations',
+            [$this, 'render_integrations']
         );
     }
 
@@ -76,5 +86,14 @@ class Admin_Menu
             echo '<p>CSV Import template not found.</p>';
             echo '</div>';
         }
+    }
+
+    /**
+     * Render the integrations page
+     */
+    public function render_integrations(): void
+    {
+        $integrations_manager = Integrations_Manager::get_instance();
+        $integrations_manager->render_integrations_page();
     }
 }

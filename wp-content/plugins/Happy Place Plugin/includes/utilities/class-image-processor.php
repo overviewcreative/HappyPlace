@@ -23,7 +23,7 @@ class Image_Processor
      *
      * @var int
      */
-    private $quality = 90;
+    private $quality = 85;
 
     /**
      * Maximum image dimensions
@@ -36,11 +36,32 @@ class Image_Processor
     );
 
     /**
+     * Enable WebP conversion
+     *
+     * @var bool
+     */
+    private $enable_webp = true;
+
+    /**
+     * WebP quality setting
+     *
+     * @var int
+     */
+    private $webp_quality = 80;
+
+    /**
      * Initialize the image processor
      */
     public function __construct()
     {
         add_filter('wp_handle_upload', array($this, 'process_uploaded_image'));
+        add_filter('wp_generate_attachment_metadata', array($this, 'generate_webp_versions'), 10, 2);
+        add_action('init', array($this, 'register_image_sizes'));
+        add_filter('wp_get_attachment_image_src', array($this, 'maybe_use_webp'), 10, 4);
+        
+        // Add WebP mime type support
+        add_filter('upload_mimes', array($this, 'add_webp_support'));
+        add_filter('wp_check_filetype_and_ext', array($this, 'webp_file_type_check'), 10, 5);
     }
 
     /**
@@ -296,6 +317,290 @@ class Image_Processor
         $this->max_dimensions = array(
             'width'  => max(0, $width),
             'height' => max(0, $height),
+        );
+    }
+
+    /**
+     * Register additional image sizes for real estate
+     */
+    public function register_image_sizes()
+    {
+        // Real estate specific image sizes
+        add_image_size('listing-thumbnail', 400, 300, true);
+        add_image_size('listing-medium', 600, 450, true);
+        add_image_size('listing-large', 1200, 800, true);
+        add_image_size('listing-hero', 1920, 1080, true);
+        add_image_size('listing-gallery', 800, 600, false);
+        
+        // Agent profile sizes
+        add_image_size('agent-thumbnail', 200, 200, true);
+        add_image_size('agent-medium', 400, 400, true);
+        add_image_size('agent-large', 600, 600, true);
+        
+        // Square formats for social media
+        add_image_size('square-small', 300, 300, true);
+        add_image_size('square-medium', 600, 600, true);
+        add_image_size('square-large', 1200, 1200, true);
+        
+        // Flyer and marketing sizes
+        add_image_size('flyer-portrait', 612, 792, true); // 8.5x11 aspect ratio
+        add_image_size('flyer-landscape', 792, 612, true);
+        add_image_size('social-facebook', 1200, 630, true);
+        add_image_size('social-instagram', 1080, 1080, true);
+    }
+
+    /**
+     * Add WebP support to WordPress
+     */
+    public function add_webp_support($mimes)
+    {
+        $mimes['webp'] = 'image/webp';
+        return $mimes;
+    }
+
+    /**
+     * Check WebP file type
+     */
+    public function webp_file_type_check($data, $file, $filename, $mimes, $real_mime)
+    {
+        if (!empty($data['ext']) && !empty($data['type'])) {
+            return $data;
+        }
+
+        $wp_file_type = wp_check_filetype($filename, $mimes);
+
+        if ($wp_file_type['ext'] === 'webp') {
+            $data['ext'] = 'webp';
+            $data['type'] = 'image/webp';
+        }
+
+        return $data;
+    }
+
+    /**
+     * Generate WebP versions of uploaded images
+     */
+    public function generate_webp_versions($metadata, $attachment_id)
+    {
+        if (!$this->enable_webp || !function_exists('imagewebp')) {
+            return $metadata;
+        }
+
+        $file = get_attached_file($attachment_id);
+        if (!$file || !wp_attachment_is_image($attachment_id)) {
+            return $metadata;
+        }
+
+        // Generate WebP for main image
+        $this->create_webp_version($file);
+
+        // Generate WebP for all image sizes
+        if (isset($metadata['sizes']) && is_array($metadata['sizes'])) {
+            $upload_dir = wp_upload_dir();
+            $base_dir = dirname($file);
+
+            foreach ($metadata['sizes'] as $size_name => $size_data) {
+                $size_file = $base_dir . '/' . $size_data['file'];
+                if (file_exists($size_file)) {
+                    $this->create_webp_version($size_file);
+                }
+            }
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * Create WebP version of an image
+     */
+    private function create_webp_version($image_path)
+    {
+        if (!function_exists('imagewebp')) {
+            return false;
+        }
+
+        $image_info = getimagesize($image_path);
+        if (!$image_info) {
+            return false;
+        }
+
+        $source = $this->load_image($image_path, $image_info['mime']);
+        if (!$source) {
+            return false;
+        }
+
+        $webp_path = preg_replace('/\.(jpe?g|png|gif)$/i', '.webp', $image_path);
+        
+        $success = imagewebp($source, $webp_path, $this->webp_quality);
+        imagedestroy($source);
+
+        return $success;
+    }
+
+    /**
+     * Maybe use WebP version if available and supported
+     */
+    public function maybe_use_webp($image, $attachment_id, $size, $icon)
+    {
+        if (!$this->enable_webp || !$this->browser_supports_webp()) {
+            return $image;
+        }
+
+        if (!$image || !is_array($image)) {
+            return $image;
+        }
+
+        $webp_url = preg_replace('/\.(jpe?g|png|gif)$/i', '.webp', $image[0]);
+        $webp_path = str_replace(wp_upload_dir()['baseurl'], wp_upload_dir()['basedir'], $webp_url);
+
+        if (file_exists($webp_path)) {
+            $image[0] = $webp_url;
+        }
+
+        return $image;
+    }
+
+    /**
+     * Check if browser supports WebP
+     */
+    private function browser_supports_webp()
+    {
+        if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'image/webp') !== false) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Optimize image for specific use case
+     */
+    public function optimize_for_use_case($image_path, $use_case = 'listing')
+    {
+        $settings = $this->get_optimization_settings($use_case);
+        
+        // Save original settings
+        $original_quality = $this->quality;
+        $original_dimensions = $this->max_dimensions;
+        
+        // Apply use case specific settings
+        $this->quality = $settings['quality'];
+        $this->max_dimensions = $settings['dimensions'];
+        
+        // Optimize
+        $result = $this->optimize_image($image_path);
+        
+        // Restore original settings
+        $this->quality = $original_quality;
+        $this->max_dimensions = $original_dimensions;
+        
+        return $result;
+    }
+
+    /**
+     * Get optimization settings for different use cases
+     */
+    private function get_optimization_settings($use_case)
+    {
+        $settings = array(
+            'listing' => array(
+                'quality' => 85,
+                'dimensions' => array('width' => 2048, 'height' => 2048)
+            ),
+            'gallery' => array(
+                'quality' => 80,
+                'dimensions' => array('width' => 1600, 'height' => 1600)
+            ),
+            'thumbnail' => array(
+                'quality' => 90,
+                'dimensions' => array('width' => 800, 'height' => 800)
+            ),
+            'agent_profile' => array(
+                'quality' => 90,
+                'dimensions' => array('width' => 1000, 'height' => 1000)
+            ),
+            'social_media' => array(
+                'quality' => 85,
+                'dimensions' => array('width' => 1200, 'height' => 1200)
+            )
+        );
+
+        return isset($settings[$use_case]) ? $settings[$use_case] : $settings['listing'];
+    }
+
+    /**
+     * Bulk optimize existing images
+     */
+    public function bulk_optimize_images($limit = 10)
+    {
+        $args = array(
+            'post_type' => 'attachment',
+            'post_mime_type' => array('image/jpeg', 'image/png', 'image/gif'),
+            'post_status' => 'inherit',
+            'posts_per_page' => $limit,
+            'meta_query' => array(
+                array(
+                    'key' => '_hph_optimized',
+                    'compare' => 'NOT EXISTS'
+                )
+            )
+        );
+
+        $images = get_posts($args);
+        $optimized = 0;
+
+        foreach ($images as $image) {
+            $file = get_attached_file($image->ID);
+            if ($file && file_exists($file)) {
+                if ($this->optimize_image($file)) {
+                    update_post_meta($image->ID, '_hph_optimized', time());
+                    $optimized++;
+                }
+            }
+        }
+
+        return $optimized;
+    }
+
+    /**
+     * Get image optimization statistics
+     */
+    public function get_optimization_stats()
+    {
+        global $wpdb;
+
+        $total_images = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts} 
+             WHERE post_type = 'attachment' 
+             AND post_mime_type LIKE 'image/%'"
+        );
+
+        $optimized_images = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+             WHERE p.post_type = 'attachment' 
+             AND p.post_mime_type LIKE 'image/%'
+             AND pm.meta_key = '_hph_optimized'"
+        );
+
+        return array(
+            'total' => (int) $total_images,
+            'optimized' => (int) $optimized_images,
+            'pending' => (int) $total_images - (int) $optimized_images,
+            'percentage' => $total_images > 0 ? round(($optimized_images / $total_images) * 100, 1) : 0
+        );
+    }
+
+    /**
+     * Clear optimization metadata (for re-optimization)
+     */
+    public function clear_optimization_meta()
+    {
+        global $wpdb;
+        
+        return $wpdb->delete(
+            $wpdb->postmeta,
+            array('meta_key' => '_hph_optimized')
         );
     }
 }

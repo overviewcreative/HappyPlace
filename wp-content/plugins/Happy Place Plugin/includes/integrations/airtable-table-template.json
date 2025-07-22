@@ -1,0 +1,236 @@
+{
+  "table_name": "Real Estate Listings",
+  "description": "WordPress Happy Place Plugin compatible real estate listings table",
+  "setup_instructions": {
+    "step_1": "Log into your Airtable account at https://airtable.com",
+    "step_2": "Create a new base or open an existing base",
+    "step_3": "Add a new table or rename an existing table to 'Real Estate Listings'",
+    "step_4": "Configure the fields according to the field_structure below",
+    "step_5": "Copy your Base ID from the URL (starts with app...)",
+    "step_6": "Generate a personal access token in your Airtable account settings",
+    "step_7": "Configure the Happy Place plugin with your Base ID and access token"
+  },
+  "compatibility_notes": [
+    "All field names must match exactly for proper sync",
+    "Property Name is required and should not be empty",
+    "Record ID will be auto-populated by WordPress during sync",
+    "Single select options must match the allowed values in the sync"
+  ],
+  "field_structure": [
+    {
+      "name": "Record ID",
+      "type": "singleLineText",
+      "description": "Unique identifier for WordPress sync - leave empty, auto-populated",
+      "options": {
+        "unique": true
+      },
+      "wordpress_field": "listing_id"
+    },
+    {
+      "name": "Property Name",
+      "type": "singleLineText",
+      "description": "Property title/name (REQUIRED)",
+      "required": true,
+      "wordpress_field": "title"
+    },
+    {
+      "name": "Street Address",
+      "type": "singleLineText",
+      "description": "Full street address",
+      "wordpress_field": "address"
+    },
+    {
+      "name": "City",
+      "type": "singleLineText",
+      "description": "City name",
+      "wordpress_field": "city"
+    },
+    {
+      "name": "State",
+      "type": "singleLineText",
+      "description": "State abbreviation (2 characters max)",
+      "wordpress_field": "state"
+    },
+    {
+      "name": "ZIP Code",
+      "type": "singleLineText",
+      "description": "ZIP code (format: 12345 or 12345-6789)",
+      "wordpress_field": "zip_code"
+    },
+    {
+      "name": "List Price",
+      "type": "currency",
+      "description": "Property listing price",
+      "options": {
+        "precision": 0,
+        "symbol": "$"
+      },
+      "wordpress_field": "price"
+    },
+    {
+      "name": "Bedrooms",
+      "type": "number",
+      "description": "Number of bedrooms (0-20)",
+      "options": {
+        "precision": 0
+      },
+      "wordpress_field": "bedrooms"
+    },
+    {
+      "name": "Bathrooms",
+      "type": "number",
+      "description": "Number of bathrooms (0-20, allows decimals like 2.5)",
+      "options": {
+        "precision": 1
+      },
+      "wordpress_field": "bathrooms"
+    },
+    {
+      "name": "Square Footage",
+      "type": "number",
+      "description": "Total square footage (0-50,000)",
+      "options": {
+        "precision": 0
+      },
+      "wordpress_field": "square_footage"
+    },
+    {
+      "name": "Lot Size",
+      "type": "number",
+      "description": "Lot size in square feet",
+      "options": {
+        "precision": 0
+      },
+      "wordpress_field": "lot_size_sqft"
+    },
+    {
+      "name": "Year Built",
+      "type": "number",
+      "description": "Year the property was built (1800-2030)",
+      "options": {
+        "precision": 0
+      },
+      "wordpress_field": "year_built"
+    },
+    {
+      "name": "Garage Spaces",
+      "type": "number",
+      "description": "Number of garage spaces (0-10)",
+      "options": {
+        "precision": 0
+      },
+      "wordpress_field": "garage_spaces"
+    },
+    {
+      "name": "Property Type",
+      "type": "singleSelect",
+      "description": "Type of property",
+      "options": {
+        "choices": [
+          {"name": "Single Family"},
+          {"name": "Condo"},
+          {"name": "Townhouse"},
+          {"name": "Multi-Family"},
+          {"name": "Land"},
+          {"name": "Commercial"}
+        ]
+      },
+      "wordpress_field": "property_type"
+    },
+    {
+      "name": "Listing Status",
+      "type": "singleSelect",
+      "description": "Current listing status",
+      "options": {
+        "choices": [
+          {"name": "active"},
+          {"name": "pending"},
+          {"name": "sold"},
+          {"name": "withdrawn"},
+          {"name": "expired"}
+        ]
+      },
+      "wordpress_field": "status"
+    },
+    {
+      "name": "MLS Number",
+      "type": "singleLineText",
+      "description": "MLS listing number",
+      "wordpress_field": "mls_number"
+    },
+    {
+      "name": "Property Description",
+      "type": "multilineText",
+      "description": "Detailed property description (max 5,000 characters)",
+      "wordpress_field": "description"
+    },
+    {
+      "name": "Latitude",
+      "type": "number",
+      "description": "Geographic latitude (-90 to 90)",
+      "options": {
+        "precision": 6
+      },
+      "wordpress_field": "latitude"
+    },
+    {
+      "name": "Longitude",
+      "type": "number",
+      "description": "Geographic longitude (-180 to 180)",
+      "options": {
+        "precision": 6
+      },
+      "wordpress_field": "longitude"
+    },
+    {
+      "name": "Created Date",
+      "type": "createdTime",
+      "description": "When record was created in Airtable"
+    },
+    {
+      "name": "Last Modified",
+      "type": "lastModifiedTime",
+      "description": "When record was last updated in Airtable"
+    },
+    {
+      "name": "WordPress Post ID",
+      "type": "number",
+      "description": "WordPress post ID for sync reference - auto-populated",
+      "options": {
+        "precision": 0
+      }
+    },
+    {
+      "name": "Last Sync",
+      "type": "dateTime",
+      "description": "Last sync timestamp from WordPress - auto-populated"
+    }
+  ],
+  "sample_data": [
+    {
+      "Property Name": "Beautiful Family Home",
+      "Street Address": "123 Main Street",
+      "City": "Anytown",
+      "State": "CA",
+      "ZIP Code": "90210",
+      "List Price": 750000,
+      "Bedrooms": 4,
+      "Bathrooms": 2.5,
+      "Square Footage": 2100,
+      "Lot Size": 7500,
+      "Year Built": 1995,
+      "Garage Spaces": 2,
+      "Property Type": "Single Family",
+      "Listing Status": "active",
+      "MLS Number": "MLS12345",
+      "Property Description": "Stunning single-family home in desirable neighborhood. Features spacious living areas, updated kitchen, and beautiful backyard perfect for entertaining.",
+      "Latitude": 34.0522,
+      "Longitude": -118.2437
+    }
+  ],
+  "airtable_setup_links": {
+    "create_account": "https://airtable.com/signup",
+    "api_documentation": "https://airtable.com/developers/web/api/introduction",
+    "personal_access_tokens": "https://airtable.com/create/tokens"
+  }
+}

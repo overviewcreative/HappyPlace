@@ -1,0 +1,518 @@
+{
+    "key": "group_system_settings",
+    "title": "System Settings & Configuration",
+    "fields": [
+        {
+            "key": "field_company_branding_tab",
+            "label": "🏢 Company Branding",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_company_logo",
+            "label": "Company Logo",
+            "name": "company_logo",
+            "type": "image",
+            "instructions": "Upload your company logo (recommended size: 300x300px)",
+            "required": 0,
+            "return_format": "array",
+            "preview_size": "medium",
+            "library": "all",
+            "mime_types": "jpg,jpeg,png,svg"
+        },
+        {
+            "key": "field_company_name",
+            "label": "Company Name",
+            "name": "company_name",
+            "type": "text",
+            "instructions": "Enter your company's name",
+            "required": 1,
+            "default_value": "The Parker Group",
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_company_tagline",
+            "label": "Company Tagline",
+            "name": "company_tagline",
+            "type": "text",
+            "instructions": "Enter your company's tagline",
+            "required": 0,
+            "default_value": "find your happy place",
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_office_email",
+            "label": "Main Office Email",
+            "name": "office_email",
+            "type": "email",
+            "instructions": "Enter the main office email address",
+            "required": 1,
+            "default_value": "cheers@theparkergroup.com",
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_office_phone",
+            "label": "Main Office Phone",
+            "name": "office_phone",
+            "type": "text",
+            "instructions": "Enter the main office phone number",
+            "required": 1,
+            "default_value": "302-217-6692",
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_office_address",
+            "label": "Office Address",
+            "name": "office_address",
+            "type": "textarea",
+            "instructions": "Enter the office address",
+            "required": 1,
+            "default_value": "673 N Bedford St.\nGeorgetown, DE 19947",
+            "rows": 3
+        },
+        {
+            "key": "field_mls_compliance_tab",
+            "label": "📋 MLS & Compliance",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_mls_validation_rules",
+            "label": "MLS Validation Rules",
+            "name": "mls_validation_rules",
+            "type": "group",
+            "instructions": "Configure MLS compliance validation rules",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_required_listing_fields",
+                    "label": "Required Listing Fields",
+                    "name": "required_listing_fields",
+                    "type": "checkbox",
+                    "choices": {
+                        "price": "Price",
+                        "bedrooms": "Bedrooms", 
+                        "bathrooms": "Bathrooms",
+                        "square_feet": "Square Footage",
+                        "mls_number": "MLS Number",
+                        "property_type": "Property Type",
+                        "listing_agent": "Listing Agent",
+                        "property_address": "Property Address"
+                    },
+                    "default_value": ["price", "mls_number", "listing_agent"],
+                    "layout": "vertical"
+                },
+                {
+                    "key": "field_mls_feed_settings",
+                    "label": "MLS Feed Settings",
+                    "name": "mls_feed_settings",
+                    "type": "group",
+                    "sub_fields": [
+                        {
+                            "key": "field_auto_sync_enabled",
+                            "label": "Auto-Sync Enabled",
+                            "name": "auto_sync_enabled",
+                            "type": "true_false",
+                            "wrapper": {"width": "50"},
+                            "message": "Enable automatic MLS synchronization"
+                        },
+                        {
+                            "key": "field_sync_frequency",
+                            "label": "Sync Frequency",
+                            "name": "sync_frequency",
+                            "type": "select",
+                            "wrapper": {"width": "50"},
+                            "choices": {
+                                "hourly": "Every Hour",
+                                "daily": "Daily",
+                                "weekly": "Weekly"
+                            },
+                            "default_value": "daily"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key": "field_fair_housing_terms",
+            "label": "Fair Housing Compliance Terms",
+            "name": "fair_housing_terms",
+            "type": "textarea",
+            "instructions": "Terms to check for Fair Housing compliance (one per line)",
+            "required": 0,
+            "rows": 10,
+            "placeholder": "Enter prohibited terms that should trigger compliance warnings..."
+        },
+        {
+            "key": "field_contact_validation_tab",
+            "label": "📞 Contact Validation",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_contact_validation_rules",
+            "label": "Contact Validation Rules",
+            "name": "contact_validation_rules",
+            "type": "group",
+            "instructions": "Configure contact information validation rules",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_phone_format",
+                    "label": "Phone Number Format",
+                    "name": "phone_format",
+                    "type": "text",
+                    "instructions": "Regular expression for phone number validation",
+                    "default_value": "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$",
+                    "wrapper": {"width": "100"}
+                },
+                {
+                    "key": "field_allowed_email_domains",
+                    "label": "Allowed Email Domains",
+                    "name": "allowed_email_domains",
+                    "type": "textarea",
+                    "instructions": "Allowed email domains for professional email addresses (one per line)",
+                    "rows": 5,
+                    "wrapper": {"width": "50"}
+                },
+                {
+                    "key": "field_required_contact_fields",
+                    "label": "Required Contact Fields",
+                    "name": "required_contact_fields",
+                    "type": "checkbox",
+                    "choices": {
+                        "email": "Email Address",
+                        "phone": "Phone Number",
+                        "mobile": "Mobile Number",
+                        "address": "Physical Address"
+                    },
+                    "default_value": ["email", "phone"],
+                    "wrapper": {"width": "50"}
+                }
+            ]
+        },
+        {
+            "key": "field_api_integrations_tab",
+            "label": "🔌 API Integrations",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_google_apis",
+            "label": "Google APIs Configuration",
+            "name": "google_apis",
+            "type": "group",
+            "instructions": "Configure Google API integrations",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_google_maps_api_key",
+                    "label": "Google Maps API Key",
+                    "name": "google_maps_api_key",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "instructions": "API key for Google Maps integration"
+                },
+                {
+                    "key": "field_google_places_api_key",
+                    "label": "Google Places API Key",
+                    "name": "google_places_api_key",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "instructions": "API key for Google Places data"
+                },
+                {
+                    "key": "field_google_api_daily_limit",
+                    "label": "Daily API Call Limit",
+                    "name": "google_api_daily_limit",
+                    "type": "number",
+                    "wrapper": {"width": "50"},
+                    "default_value": 1000,
+                    "min": 100,
+                    "max": 100000
+                },
+                {
+                    "key": "field_auto_location_intelligence",
+                    "label": "Auto Location Intelligence",
+                    "name": "auto_location_intelligence",
+                    "type": "true_false",
+                    "wrapper": {"width": "50"},
+                    "message": "Automatically populate location data for new listings",
+                    "default_value": 1
+                }
+            ]
+        },
+        {
+            "key": "field_external_apis",
+            "label": "Other API Integrations",
+            "name": "external_apis",
+            "type": "group",
+            "instructions": "Configure other external API integrations",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_walk_score_api",
+                    "label": "Walk Score API Key",
+                    "name": "walk_score_api",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "instructions": "API key for Walk Score data"
+                },
+                {
+                    "key": "field_school_api_key",
+                    "label": "School District API Key",
+                    "name": "school_api_key",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "instructions": "API key for school district data"
+                },
+                {
+                    "key": "field_zillow_api_key",
+                    "label": "Zillow API Key",
+                    "name": "zillow_api_key",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "instructions": "API key for Zillow integration (if available)"
+                },
+                {
+                    "key": "field_mls_api_endpoint",
+                    "label": "MLS API Endpoint",
+                    "name": "mls_api_endpoint",
+                    "type": "url",
+                    "wrapper": {"width": "50"},
+                    "instructions": "MLS RETS/API endpoint URL"
+                }
+            ]
+        },
+        {
+            "key": "field_automation_tab",
+            "label": "🤖 Automation Settings",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_automated_calculations",
+            "label": "Automated Calculations",
+            "name": "automated_calculations",
+            "type": "group",
+            "instructions": "Configure which calculations should be automated",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_auto_price_per_sqft",
+                    "label": "Auto-Calculate Price per Sq Ft",
+                    "name": "auto_price_per_sqft",
+                    "type": "true_false",
+                    "wrapper": {"width": "33"},
+                    "message": "Automatically calculate when price or square footage changes",
+                    "default_value": 1
+                },
+                {
+                    "key": "field_auto_mortgage_estimates",
+                    "label": "Auto-Update Mortgage Estimates",
+                    "name": "auto_mortgage_estimates",
+                    "type": "true_false",
+                    "wrapper": {"width": "33"},
+                    "message": "Update mortgage calculations when price changes",
+                    "default_value": 1
+                },
+                {
+                    "key": "field_auto_days_on_market",
+                    "label": "Auto-Calculate Days on Market",
+                    "name": "auto_days_on_market",
+                    "type": "true_false",
+                    "wrapper": {"width": "34"},
+                    "message": "Automatically update days on market daily",
+                    "default_value": 1
+                }
+            ]
+        },
+        {
+            "key": "field_email_notifications",
+            "label": "Email Notifications",
+            "name": "email_notifications",
+            "type": "group",
+            "instructions": "Configure automated email notifications",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_new_listing_notifications",
+                    "label": "New Listing Notifications",
+                    "name": "new_listing_notifications",
+                    "type": "true_false",
+                    "wrapper": {"width": "50"},
+                    "message": "Send email when new listings are added",
+                    "default_value": 1
+                },
+                {
+                    "key": "field_status_change_notifications",
+                    "label": "Status Change Notifications",
+                    "name": "status_change_notifications",
+                    "type": "true_false",
+                    "wrapper": {"width": "50"},
+                    "message": "Send email when listing status changes",
+                    "default_value": 1
+                },
+                {
+                    "key": "field_notification_recipients",
+                    "label": "Notification Recipients",
+                    "name": "notification_recipients",
+                    "type": "textarea",
+                    "wrapper": {"width": "100"},
+                    "instructions": "Email addresses to receive notifications (one per line)",
+                    "rows": 4
+                }
+            ]
+        },
+        {
+            "key": "field_backup_maintenance_tab",
+            "label": "🔧 Backup & Maintenance",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_data_backup",
+            "label": "Data Backup Settings",
+            "name": "data_backup",
+            "type": "group",
+            "instructions": "Configure automated data backup",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_auto_backup_enabled",
+                    "label": "Auto Backup Enabled",
+                    "name": "auto_backup_enabled",
+                    "type": "true_false",
+                    "wrapper": {"width": "50"},
+                    "message": "Enable automatic data backups"
+                },
+                {
+                    "key": "field_backup_frequency",
+                    "label": "Backup Frequency",
+                    "name": "backup_frequency",
+                    "type": "select",
+                    "wrapper": {"width": "50"},
+                    "choices": {
+                        "daily": "Daily",
+                        "weekly": "Weekly",
+                        "monthly": "Monthly"
+                    },
+                    "default_value": "weekly"
+                },
+                {
+                    "key": "field_backup_retention",
+                    "label": "Backup Retention (days)",
+                    "name": "backup_retention",
+                    "type": "number",
+                    "wrapper": {"width": "50"},
+                    "default_value": 30,
+                    "min": 7,
+                    "max": 365
+                },
+                {
+                    "key": "field_last_backup",
+                    "label": "Last Backup",
+                    "name": "last_backup",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "readonly": 1,
+                    "instructions": "Timestamp of last successful backup"
+                }
+            ]
+        },
+        {
+            "key": "field_system_maintenance",
+            "label": "System Maintenance",
+            "name": "system_maintenance",
+            "type": "group",
+            "instructions": "System maintenance and cleanup settings",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_auto_cleanup_enabled",
+                    "label": "Auto Cleanup Enabled",
+                    "name": "auto_cleanup_enabled",
+                    "type": "true_false",
+                    "wrapper": {"width": "50"},
+                    "message": "Automatically clean up old data"
+                },
+                {
+                    "key": "field_cleanup_frequency",
+                    "label": "Cleanup Frequency",
+                    "name": "cleanup_frequency",
+                    "type": "select",
+                    "wrapper": {"width": "50"},
+                    "choices": {
+                        "weekly": "Weekly",
+                        "monthly": "Monthly",
+                        "quarterly": "Quarterly"
+                    },
+                    "default_value": "monthly"
+                },
+                {
+                    "key": "field_system_version",
+                    "label": "System Version",
+                    "name": "system_version",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "readonly": 1,
+                    "instructions": "Current system version"
+                },
+                {
+                    "key": "field_last_update",
+                    "label": "Last Update",
+                    "name": "last_update",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "readonly": 1,
+                    "instructions": "Date of last system update"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "happy-place-settings"
+            }
+        ]
+    ],
+    "menu_order": 41,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true,
+    "description": "System-wide settings including company branding, MLS compliance, API integrations, and automation configuration.",
+    "show_in_rest": false
+}

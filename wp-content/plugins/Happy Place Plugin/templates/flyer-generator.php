@@ -1,3 +1,30 @@
+<?php
+/**
+ * Flyer Generator Template
+ * 
+ * @package HappyPlace
+ * @subpackage Templates
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+// Enqueue flyer generator assets
+wp_enqueue_script('fabric-js', 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js', [], '5.3.0', true);
+wp_enqueue_script('jspdf', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', [], '2.5.1', true);
+
+wp_enqueue_style('flyer-generator-css', HPH_PLUGIN_URL . 'assets/css/flyer-generator.css', [], HPH_VERSION);
+wp_enqueue_script('flyer-generator-js', HPH_PLUGIN_URL . 'assets/js/flyer-generator.js', ['jquery', 'fabric-js'], HPH_VERSION, true);
+
+// Localize script for AJAX
+wp_localize_script('flyer-generator-js', 'flyerGenerator', [
+    'ajaxUrl' => admin_url('admin-ajax.php'),
+    'nonce' => wp_create_nonce('flyer_generator_nonce'),
+    'pluginUrl' => HPH_PLUGIN_URL
+]);
+?>
+
 <div id="flyer-generator-container" class="flyer-generator">
     <div class="flyer-controls">
         <div class="control-group">
@@ -12,12 +39,27 @@
                 ]);
                 
                 foreach ($listings as $listing) {
-                    $address = get_field('street_address', $listing->ID);
-                    $city = get_field('city', $listing->ID);
-                    $price = get_field('price', $listing->ID);
-                    $display = $address . ', ' . $city . ' - $' . number_format($price);
+                    // Use bridge functions instead of direct get_field calls
+                    $address = hph_get_listing_address($listing->ID, 'street');
+                    $city = hph_get_listing_address($listing->ID, 'city');
+                    $price = hph_get_listing_price($listing->ID, false);
                     
-                    echo '<option value="' . $listing->ID . '">' . esc_html($display) . '</option>';
+                    // Debug: Check if functions exist and data is available
+                    if (defined('WP_DEBUG') && WP_DEBUG && current_user_can('manage_options')) {
+                        error_log("Flyer Generator Debug - Listing {$listing->ID}: Address={$address}, City={$city}, Price={$price}");
+                    }
+                    
+                    if ($address || $city || $price) {
+                        $display_parts = array_filter([$address, $city]);
+                        $display = implode(', ', $display_parts);
+                        if ($price) {
+                            $display .= ' - $' . number_format($price);
+                        }
+                        echo '<option value="' . $listing->ID . '">' . esc_html($display) . '</option>';
+                    } else {
+                        // Fallback to post title if bridge functions don't return data
+                        echo '<option value="' . $listing->ID . '">' . esc_html($listing->post_title) . '</option>';
+                    }
                 }
                 ?>
             </select>
@@ -44,6 +86,7 @@
     </div>
     
     <div class="flyer-loading" style="display:none;">
+        <div class="loading-spinner"></div>
         <p>Generating your flyer...</p>
     </div>
 </div>

@@ -1,0 +1,401 @@
+{
+    "key": "group_community_features",
+    "title": "Community Features & Amenities",
+    "fields": [
+        {
+            "key": "field_amenities_tab",
+            "label": "🏊 Amenities & Recreation",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_amenities",
+            "label": "Community Amenities",
+            "name": "amenities",
+            "type": "checkbox",
+            "instructions": "Select all available amenities",
+            "required": 0,
+            "choices": {
+                "pool": "Swimming Pool",
+                "pool_indoor": "Indoor Pool",
+                "pool_outdoor": "Outdoor Pool",
+                "spa_hot_tub": "Spa/Hot Tub",
+                "fitness_center": "Fitness Center",
+                "gym": "Gym/Exercise Room",
+                "yoga_studio": "Yoga Studio",
+                "clubhouse": "Clubhouse",
+                "community_center": "Community Center",
+                "business_center": "Business Center",
+                "golf_course": "Golf Course",
+                "driving_range": "Driving Range",
+                "putting_green": "Putting Green",
+                "tennis_court": "Tennis Court",
+                "pickleball": "Pickleball Court",
+                "basketball_court": "Basketball Court",
+                "volleyball_court": "Volleyball Court",
+                "walking_trails": "Walking Trails",
+                "hiking_trails": "Hiking Trails",
+                "biking_trails": "Biking Trails",
+                "nature_trails": "Nature Trails",
+                "playground": "Playground",
+                "dog_park": "Dog Park",
+                "pet_wash_station": "Pet Wash Station",
+                "water_access": "Water Access",
+                "beach_access": "Beach Access",
+                "marina": "Marina",
+                "boat_ramp": "Boat Ramp",
+                "fishing_pier": "Fishing Pier",
+                "gated": "Gated Community",
+                "security": "Security Services",
+                "concierge": "Concierge Services",
+                "valet": "Valet Services",
+                "55_plus": "55+ Community",
+                "age_restricted": "Age Restricted",
+                "guest_parking": "Guest Parking",
+                "covered_parking": "Covered Parking",
+                "garage_parking": "Garage Parking",
+                "electric_car_charging": "Electric Car Charging"
+            },
+            "layout": "vertical",
+            "return_format": "value"
+        },
+        {
+            "key": "field_recreational_facilities",
+            "label": "Detailed Recreational Facilities",
+            "name": "recreational_facilities",
+            "type": "repeater",
+            "instructions": "Add detailed information about recreational facilities",
+            "required": 0,
+            "min": 0,
+            "max": 20,
+            "layout": "table",
+            "button_label": "Add Facility",
+            "sub_fields": [
+                {
+                    "key": "field_facility_name",
+                    "label": "Facility Name",
+                    "name": "facility_name",
+                    "type": "text",
+                    "wrapper": {"width": "25"},
+                    "placeholder": "e.g., Olympic Pool, Tennis Courts"
+                },
+                {
+                    "key": "field_facility_type",
+                    "label": "Type",
+                    "name": "facility_type",
+                    "type": "select",
+                    "wrapper": {"width": "20"},
+                    "choices": {
+                        "pool": "Pool/Aquatic",
+                        "fitness": "Fitness",
+                        "sports": "Sports Courts",
+                        "trails": "Trails/Paths",
+                        "social": "Social Spaces",
+                        "other": "Other"
+                    }
+                },
+                {
+                    "key": "field_facility_description",
+                    "label": "Description",
+                    "name": "facility_description",
+                    "type": "textarea",
+                    "wrapper": {"width": "35"},
+                    "rows": 2
+                },
+                {
+                    "key": "field_facility_hours",
+                    "label": "Hours",
+                    "name": "facility_hours",
+                    "type": "text",
+                    "wrapper": {"width": "20"},
+                    "placeholder": "e.g., 6 AM - 10 PM"
+                }
+            ]
+        },
+        {
+            "key": "field_schools_tab",
+            "label": "🎓 Schools & Education",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_school_details",
+            "label": "School Information",
+            "name": "school_details",
+            "type": "repeater",
+            "instructions": "Schools serving this community",
+            "required": 0,
+            "min": 0,
+            "max": 20,
+            "layout": "table",
+            "button_label": "Add School",
+            "sub_fields": [
+                {
+                    "key": "field_school_name",
+                    "label": "School Name",
+                    "name": "name",
+                    "type": "text",
+                    "wrapper": {"width": "30"}
+                },
+                {
+                    "key": "field_school_type",
+                    "label": "School Type",
+                    "name": "type",
+                    "type": "select",
+                    "wrapper": {"width": "20"},
+                    "choices": {
+                        "elementary": "Elementary",
+                        "middle": "Middle School",
+                        "high": "High School",
+                        "private": "Private School",
+                        "charter": "Charter School",
+                        "montessori": "Montessori",
+                        "catholic": "Catholic School"
+                    }
+                },
+                {
+                    "key": "field_school_rating",
+                    "label": "Rating",
+                    "name": "rating",
+                    "type": "number",
+                    "wrapper": {"width": "15"},
+                    "min": 1,
+                    "max": 10,
+                    "step": 0.1,
+                    "append": "/10"
+                },
+                {
+                    "key": "field_school_distance",
+                    "label": "Distance",
+                    "name": "distance",
+                    "type": "number",
+                    "wrapper": {"width": "15"},
+                    "step": 0.1,
+                    "append": "mi"
+                },
+                {
+                    "key": "field_school_district",
+                    "label": "District",
+                    "name": "district",
+                    "type": "text",
+                    "wrapper": {"width": "20"}
+                }
+            ]
+        },
+        {
+            "key": "field_demographics_tab",
+            "label": "👥 Demographics & Lifestyle",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_demographics",
+            "label": "Community Demographics",
+            "name": "demographics",
+            "type": "group",
+            "instructions": "Demographic information about residents",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_median_age",
+                    "label": "Median Age",
+                    "name": "median_age",
+                    "type": "number",
+                    "wrapper": {"width": "33"}
+                },
+                {
+                    "key": "field_average_household_size",
+                    "label": "Average Household Size",
+                    "name": "average_household_size",
+                    "type": "number",
+                    "wrapper": {"width": "33"},
+                    "step": 0.1
+                },
+                {
+                    "key": "field_median_income",
+                    "label": "Median Household Income",
+                    "name": "median_income",
+                    "type": "number",
+                    "wrapper": {"width": "34"},
+                    "prepend": "$",
+                    "step": 1000
+                },
+                {
+                    "key": "field_household_types",
+                    "label": "Household Composition",
+                    "name": "household_types",
+                    "type": "checkbox",
+                    "wrapper": {"width": "100"},
+                    "choices": {
+                        "families": "Families with Children",
+                        "couples": "Couples",
+                        "singles": "Singles",
+                        "retirees": "Retirees",
+                        "young_professionals": "Young Professionals",
+                        "empty_nesters": "Empty Nesters",
+                        "first_time_buyers": "First-Time Buyers"
+                    },
+                    "layout": "horizontal"
+                }
+            ]
+        },
+        {
+            "key": "field_lifestyle_features",
+            "label": "Lifestyle & Culture",
+            "name": "lifestyle_features",
+            "type": "checkbox",
+            "instructions": "Community lifestyle characteristics",
+            "required": 0,
+            "choices": {
+                "family_friendly": "Family Friendly",
+                "pet_friendly": "Pet Friendly",
+                "quiet_neighborhood": "Quiet Neighborhood",
+                "active_community": "Active Community",
+                "close_knit": "Close-Knit Community",
+                "diverse": "Diverse Community",
+                "walkable": "Walkable",
+                "bike_friendly": "Bike Friendly",
+                "eco_friendly": "Eco-Friendly",
+                "historic_charm": "Historic Charm",
+                "modern_amenities": "Modern Amenities",
+                "luxury_lifestyle": "Luxury Lifestyle",
+                "low_maintenance": "Low Maintenance Living",
+                "resort_style": "Resort-Style Living"
+            },
+            "layout": "vertical"
+        },
+        {
+            "key": "field_nearby_attractions_tab",
+            "label": "📍 Nearby Attractions",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_nearby_attractions",
+            "label": "Nearby Attractions & Points of Interest",
+            "name": "nearby_attractions",
+            "type": "repeater",
+            "instructions": "Notable attractions and points of interest near the community",
+            "required": 0,
+            "min": 0,
+            "max": 30,
+            "layout": "table",
+            "button_label": "Add Attraction",
+            "sub_fields": [
+                {
+                    "key": "field_attraction_name",
+                    "label": "Name",
+                    "name": "name",
+                    "type": "text",
+                    "wrapper": {"width": "25"}
+                },
+                {
+                    "key": "field_attraction_type",
+                    "label": "Type",
+                    "name": "type",
+                    "type": "select",
+                    "wrapper": {"width": "20"},
+                    "choices": {
+                        "restaurant": "Restaurant",
+                        "shopping": "Shopping",
+                        "entertainment": "Entertainment",
+                        "park": "Park/Recreation",
+                        "healthcare": "Healthcare",
+                        "education": "Educational",
+                        "cultural": "Cultural/Arts",
+                        "transportation": "Transportation",
+                        "beach": "Beach",
+                        "golf": "Golf Course",
+                        "historic": "Historic Site"
+                    }
+                },
+                {
+                    "key": "field_attraction_distance",
+                    "label": "Distance",
+                    "name": "distance",
+                    "type": "number",
+                    "wrapper": {"width": "15"},
+                    "step": 0.1,
+                    "append": "mi"
+                },
+                {
+                    "key": "field_attraction_description",
+                    "label": "Description",
+                    "name": "description",
+                    "type": "textarea",
+                    "wrapper": {"width": "40"},
+                    "rows": 2
+                }
+            ]
+        },
+        {
+            "key": "field_transportation",
+            "label": "Transportation & Commuting",
+            "name": "transportation",
+            "type": "group",
+            "instructions": "Transportation options and commute information",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_public_transportation",
+                    "label": "Public Transportation",
+                    "name": "public_transportation",
+                    "type": "textarea",
+                    "wrapper": {"width": "50"},
+                    "rows": 3,
+                    "placeholder": "e.g., Bus routes, train stations, etc."
+                },
+                {
+                    "key": "field_major_highways",
+                    "label": "Major Highways",
+                    "name": "major_highways",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "placeholder": "e.g., Route 1, I-95, Route 113"
+                },
+                {
+                    "key": "field_airport_distance",
+                    "label": "Distance to Airport",
+                    "name": "airport_distance",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "placeholder": "e.g., 45 minutes to BWI"
+                },
+                {
+                    "key": "field_commute_times",
+                    "label": "Commute Times",
+                    "name": "commute_times",
+                    "type": "textarea",
+                    "wrapper": {"width": "50"},
+                    "rows": 3,
+                    "placeholder": "e.g., 30 min to Wilmington, 1 hour to Philadelphia"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "community"
+            }
+        ]
+    ],
+    "menu_order": 2,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true,
+    "description": "Community amenities, schools, demographics, and nearby attractions.",
+    "show_in_rest": true
+}

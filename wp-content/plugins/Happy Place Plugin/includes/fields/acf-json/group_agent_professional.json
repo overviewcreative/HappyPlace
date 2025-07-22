@@ -1,0 +1,445 @@
+{
+    "key": "group_agent_professional",
+    "title": "Professional Profile & Marketing",
+    "fields": [
+        {
+            "key": "field_profile_tab",
+            "label": "👤 Profile & Bio",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_profile_photo",
+            "label": "Profile Photo",
+            "name": "profile_photo",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "instructions": "Professional headshot (recommended: 500x500 pixels, square format)",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "min_width": 300,
+            "min_height": 300,
+            "mime_types": "jpg,jpeg,png"
+        },
+        {
+            "key": "field_additional_photos",
+            "label": "Additional Photos",
+            "name": "additional_photos",
+            "type": "gallery",
+            "instructions": "Additional professional photos for marketing materials",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "preview_size": "thumbnail",
+            "max": 10
+        },
+        {
+            "key": "field_bio",
+            "label": "Professional Biography",
+            "name": "bio",
+            "type": "wysiwyg",
+            "instructions": "Professional biography and background (will be displayed on website)",
+            "required": 0,
+            "tabs": "all",
+            "toolbar": "basic",
+            "media_upload": 0
+        },
+        {
+            "key": "field_short_bio",
+            "label": "Short Bio",
+            "name": "short_bio",
+            "type": "textarea",
+            "instructions": "Brief 1-2 sentence description for listings and cards",
+            "required": 0,
+            "rows": 3,
+            "maxlength": 200,
+            "wrapper": {
+                "width": "100",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_personal_info",
+            "label": "Personal Information",
+            "name": "personal_info",
+            "type": "group",
+            "instructions": "Optional personal details to help clients connect",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_hometown",
+                    "label": "Hometown",
+                    "name": "hometown",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "placeholder": "e.g., Georgetown, DE"
+                },
+                {
+                    "key": "field_languages",
+                    "label": "Languages Spoken",
+                    "name": "languages",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "placeholder": "e.g., English, Spanish"
+                },
+                {
+                    "key": "field_hobbies",
+                    "label": "Hobbies & Interests",
+                    "name": "hobbies",
+                    "type": "textarea",
+                    "wrapper": {"width": "100"},
+                    "rows": 2,
+                    "placeholder": "e.g., Fishing, Golf, Cooking, Travel"
+                }
+            ]
+        },
+        {
+            "key": "field_certifications_tab",
+            "label": "🏆 Certifications & Awards",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_professional_certifications",
+            "label": "Professional Certifications",
+            "name": "certifications",
+            "type": "repeater",
+            "instructions": "Add professional certifications and designations",
+            "required": 0,
+            "min": 0,
+            "max": 20,
+            "layout": "table",
+            "button_label": "Add Certification",
+            "sub_fields": [
+                {
+                    "key": "field_certification_name",
+                    "label": "Certification Name",
+                    "name": "name",
+                    "type": "text",
+                    "wrapper": {"width": "40"},
+                    "placeholder": "e.g., ABR, CRS, GRI, SRES"
+                },
+                {
+                    "key": "field_certification_full_name",
+                    "label": "Full Name",
+                    "name": "full_name",
+                    "type": "text",
+                    "wrapper": {"width": "40"},
+                    "placeholder": "e.g., Accredited Buyer's Representative"
+                },
+                {
+                    "key": "field_certification_year",
+                    "label": "Year Obtained",
+                    "name": "year",
+                    "type": "number",
+                    "wrapper": {"width": "20"},
+                    "min": 1900,
+                    "max": 2030
+                }
+            ]
+        },
+        {
+            "key": "field_awards_recognition",
+            "label": "Awards & Recognition",
+            "name": "awards",
+            "type": "repeater",
+            "instructions": "Professional awards and recognition",
+            "required": 0,
+            "min": 0,
+            "max": 20,
+            "layout": "table",
+            "button_label": "Add Award",
+            "sub_fields": [
+                {
+                    "key": "field_award_title",
+                    "label": "Award Title",
+                    "name": "title",
+                    "type": "text",
+                    "wrapper": {"width": "40"},
+                    "placeholder": "e.g., Top Producer, Million Dollar Club"
+                },
+                {
+                    "key": "field_award_organization",
+                    "label": "Organization",
+                    "name": "organization",
+                    "type": "text",
+                    "wrapper": {"width": "40"},
+                    "placeholder": "e.g., Delaware Association of Realtors"
+                },
+                {
+                    "key": "field_award_year",
+                    "label": "Year",
+                    "name": "year",
+                    "type": "number",
+                    "wrapper": {"width": "20"},
+                    "min": 1900,
+                    "max": 2030
+                }
+            ]
+        },
+        {
+            "key": "field_education",
+            "label": "Education & Training",
+            "name": "education",
+            "type": "repeater",
+            "instructions": "Educational background and continuing education",
+            "required": 0,
+            "min": 0,
+            "max": 10,
+            "layout": "table",
+            "button_label": "Add Education",
+            "sub_fields": [
+                {
+                    "key": "field_education_institution",
+                    "label": "Institution",
+                    "name": "institution",
+                    "type": "text",
+                    "wrapper": {"width": "30"}
+                },
+                {
+                    "key": "field_education_degree",
+                    "label": "Degree/Program",
+                    "name": "degree",
+                    "type": "text",
+                    "wrapper": {"width": "30"}
+                },
+                {
+                    "key": "field_education_year",
+                    "label": "Year",
+                    "name": "year",
+                    "type": "number",
+                    "wrapper": {"width": "20"},
+                    "min": 1900,
+                    "max": 2030
+                },
+                {
+                    "key": "field_education_ongoing",
+                    "label": "Ongoing",
+                    "name": "ongoing",
+                    "type": "true_false",
+                    "wrapper": {"width": "20"},
+                    "message": "Currently enrolled"
+                }
+            ]
+        },
+        {
+            "key": "field_social_marketing_tab",
+            "label": "📱 Social Media & Marketing",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_social_links",
+            "label": "Social Media Profiles",
+            "name": "social_links",
+            "type": "repeater",
+            "instructions": "Add professional social media profiles",
+            "required": 0,
+            "min": 0,
+            "max": 10,
+            "layout": "table",
+            "button_label": "Add Social Profile",
+            "sub_fields": [
+                {
+                    "key": "field_social_platform",
+                    "label": "Platform",
+                    "name": "platform",
+                    "type": "select",
+                    "wrapper": {"width": "30"},
+                    "choices": {
+                        "facebook": "Facebook",
+                        "instagram": "Instagram",
+                        "linkedin": "LinkedIn",
+                        "twitter": "Twitter/X",
+                        "tiktok": "TikTok",
+                        "youtube": "YouTube",
+                        "zillow": "Zillow",
+                        "realtor_com": "Realtor.com",
+                        "other": "Other"
+                    }
+                },
+                {
+                    "key": "field_social_url",
+                    "label": "Profile URL",
+                    "name": "url",
+                    "type": "url",
+                    "wrapper": {"width": "50"}
+                },
+                {
+                    "key": "field_social_display",
+                    "label": "Display",
+                    "name": "display",
+                    "type": "true_false",
+                    "wrapper": {"width": "20"},
+                    "message": "Show on website",
+                    "default_value": 1
+                }
+            ]
+        },
+        {
+            "key": "field_marketing_tools",
+            "label": "Marketing Tools & Links",
+            "name": "marketing_tools",
+            "type": "group",
+            "instructions": "Links to marketing and scheduling tools",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_schedule_link",
+                    "label": "Schedule Appointment Link",
+                    "name": "schedule_link",
+                    "type": "url",
+                    "wrapper": {"width": "50"},
+                    "instructions": "Calendly, Acuity, or other scheduling platform URL",
+                    "placeholder": "https://calendly.com/youragent"
+                },
+                {
+                    "key": "field_chat_link", 
+                    "label": "Chat/WhatsApp Link",
+                    "name": "chat_link",
+                    "type": "url",
+                    "wrapper": {"width": "50"},
+                    "instructions": "WhatsApp, SMS, or chat platform URL",
+                    "placeholder": "https://wa.me/1234567890"
+                },
+                {
+                    "key": "field_video_call_link",
+                    "label": "Video Call Link",
+                    "name": "video_call_link",
+                    "type": "url",
+                    "wrapper": {"width": "50"},
+                    "instructions": "Zoom, Teams, or video conferencing link",
+                    "placeholder": "https://zoom.us/j/..."
+                },
+                {
+                    "key": "field_review_links",
+                    "label": "Review Profile Links",
+                    "name": "review_links",
+                    "type": "textarea",
+                    "wrapper": {"width": "50"},
+                    "instructions": "Links to Google, Zillow, or other review profiles (one per line)",
+                    "rows": 4
+                }
+            ]
+        },
+        {
+            "key": "field_contact_preferences_tab",
+            "label": "📞 Contact Preferences",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_contact_preferences",
+            "label": "Preferred Contact Methods",
+            "name": "contact_preferences",
+            "type": "checkbox",
+            "choices": {
+                "phone_ok": "Phone Calls Welcome",
+                "text_ok": "Text Messages Welcome",
+                "email_ok": "Email Preferred",
+                "whatsapp_ok": "WhatsApp Available",
+                "video_call_ok": "Video Calls Available",
+                "evening_ok": "Evening Calls OK",
+                "weekend_ok": "Weekend Calls OK"
+            },
+            "instructions": "How clients can best reach you",
+            "required": 0,
+            "default_value": ["phone_ok", "text_ok", "email_ok"],
+            "layout": "vertical"
+        },
+        {
+            "key": "field_business_hours",
+            "label": "Business Hours",
+            "name": "business_hours",
+            "type": "group",
+            "instructions": "Your typical availability",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_weekday_hours",
+                    "label": "Weekday Hours",
+                    "name": "weekday_hours",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "placeholder": "e.g., 8:00 AM - 7:00 PM",
+                    "default_value": "8:00 AM - 7:00 PM"
+                },
+                {
+                    "key": "field_weekend_hours",
+                    "label": "Weekend Hours",
+                    "name": "weekend_hours",
+                    "type": "text",
+                    "wrapper": {"width": "50"},
+                    "placeholder": "e.g., 9:00 AM - 5:00 PM",
+                    "default_value": "9:00 AM - 5:00 PM"
+                },
+                {
+                    "key": "field_response_time",
+                    "label": "Typical Response Time",
+                    "name": "response_time",
+                    "type": "select",
+                    "wrapper": {"width": "50"},
+                    "choices": {
+                        "immediate": "Immediate (within minutes)",
+                        "1_hour": "Within 1 hour",
+                        "same_day": "Same day",
+                        "24_hours": "Within 24 hours"
+                    },
+                    "default_value": "1_hour"
+                },
+                {
+                    "key": "field_emergency_contact",
+                    "label": "Emergency Contact Available",
+                    "name": "emergency_contact",
+                    "type": "true_false",
+                    "wrapper": {"width": "50"},
+                    "message": "Available for urgent real estate matters outside business hours"
+                }
+            ]
+        },
+        {
+            "key": "field_contact_form_id",
+            "label": "Custom Contact Form ID",
+            "name": "contact_form_id",
+            "type": "text",
+            "instructions": "Gravity Forms or Contact Form 7 ID for agent-specific forms",
+            "required": 0,
+            "placeholder": "e.g., 5 (for form ID 5)"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "agent"
+            }
+        ]
+    ],
+    "menu_order": 2,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true,
+    "description": "Professional profile, certifications, social media, and marketing tools for agent branding.",
+    "show_in_rest": true
+}
