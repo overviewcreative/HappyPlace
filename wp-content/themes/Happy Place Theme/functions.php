@@ -997,8 +997,6 @@ function handle_book_property_showing() {
         wp_send_json_error(array('message' => 'Failed to send showing request. Please try again.'));
     }
 }
-add_action('wp_ajax_book_property_showing', 'handle_book_property_showing');
-add_action('wp_ajax_nopriv_book_property_showing', 'handle_book_property_showing');
 
 /**
  * Handle contact agent requests
@@ -1092,8 +1090,6 @@ function handle_contact_agent() {
         wp_send_json_error(array('message' => 'Failed to send message. Please try again.'));
     }
 }
-add_action('wp_ajax_contact_agent', 'handle_contact_agent');
-add_action('wp_ajax_nopriv_contact_agent', 'handle_contact_agent');
 
 /**
  * Handle save/unsave listing requests
@@ -1151,7 +1147,6 @@ function handle_save_listing() {
         wp_send_json_error(array('message' => 'Failed to save listing.'));
     }
 }
-add_action('wp_ajax_save_listing', 'handle_save_listing');
 
 /**
  * Handle unsave listing requests
