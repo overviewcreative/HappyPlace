@@ -1,241 +1,331 @@
 /* ============================================
-   ACTION BUTTON COMPONENT
+   UNIFIED BUTTON SYSTEM - .hph-btn
+   Consolidates .action-btn, .btn, and .hph-btn
    ============================================ */
 
-// Base button styles that match our updated templates
-.action-btn {
+/* Base Button Component */
+.hph-btn,
+.action-btn,
+.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 24px;
+  padding: calc(var(--hph-spacing-3) - 2px) var(--hph-spacing-4);
   border: 2px solid transparent;
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.2;
+  border-radius: var(--hph-button-border-radius);
+  font-family: var(--hph-font-primary);
+  font-size: var(--hph-font-size-base);
+  font-weight: var(--hph-button-font-weight);
+  line-height: var(--hph-line-height-none);
   text-decoration: none;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: var(--hph-transition-fast);
   user-select: none;
   white-space: nowrap;
-  
-  // Remove default button styles
+  min-height: var(--hph-button-height-md);
   background: none;
   outline: none;
+  position: relative;
   
-  // Focus states
+  /* Focus States */
   &:focus {
-    outline: 2px solid var(--hph-primary-400);
-    outline-offset: 2px;
+    outline: var(--hph-focus-ring-width) solid var(--hph-focus-ring-color);
+    outline-offset: var(--hph-focus-ring-offset);
   }
   
-  // Disabled state
-  &:disabled {
+  /* Disabled State */
+  &:disabled,
+  &[disabled] {
     opacity: 0.6;
     cursor: not-allowed;
     pointer-events: none;
   }
   
-  // Icon support
+  /* Icon Support */
   svg, i {
-    margin-right: 8px;
+    width: var(--hph-icon-size-base);
+    height: var(--hph-icon-size-base);
+    margin-right: var(--hph-spacing-2);
+    
     &:last-child {
       margin-right: 0;
-      margin-left: 8px;
+      margin-left: var(--hph-spacing-2);
     }
+    
     &:only-child {
       margin: 0;
     }
   }
+  
+  /* Loading State */
+  &.is-loading {
+    color: transparent;
+    pointer-events: none;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 1rem;
+      height: 1rem;
+      margin: -0.5rem 0 0 -0.5rem;
+      border: 2px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+  }
 }
 
-// Primary button variant
-.action-btn--primary {
-  background-color: var(--hph-primary-400);
-  color: white;
-  border-color: var(--hph-primary-400);
+/* ========================================================================
+   BUTTON VARIANTS
+   ======================================================================== */
+
+/* Primary Button */
+.hph-btn--primary,
+.hph-btn-primary,
+.action-btn--primary,
+.btn-primary {
+  background-color: var(--hph-color-primary-500);
+  color: var(--hph-color-white);
+  border-color: var(--hph-color-primary-500);
   
-  &:hover {
-    background-color: var(--hph-primary-500);
-    border-color: var(--hph-primary-500);
+  &:hover:not(:disabled) {
+    background-color: var(--hph-color-primary-600);
+    border-color: var(--hph-color-primary-600);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(81, 186, 224, 0.3);
+    box-shadow: var(--hph-shadow-primary);
   }
   
   &:active {
+    background-color: var(--hph-color-primary-700);
+    border-color: var(--hph-color-primary-700);
     transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(81, 186, 224, 0.3);
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 var(--hph-focus-ring-width) var(--hph-color-primary-200);
   }
 }
 
-// Secondary button variant
-.action-btn--secondary {
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-900);
-  border-color: var(--color-gray-300);
+/* Secondary Button */
+.hph-btn--secondary,
+.hph-btn-secondary,
+.action-btn--secondary,
+.btn-secondary {
+  background-color: var(--hph-color-secondary-500);
+  color: var(--hph-color-white);
+  border-color: var(--hph-color-secondary-500);
   
-  &:hover {
-    background-color: var(--color-gray-200);
-    border-color: var(--color-gray-400);
+  &:hover:not(:disabled) {
+    background-color: var(--hph-color-secondary-600);
+    border-color: var(--hph-color-secondary-600);
     transform: translateY(-1px);
+    box-shadow: var(--hph-shadow-base);
   }
   
   &:active {
+    background-color: var(--hph-color-secondary-700);
+    border-color: var(--hph-color-secondary-700);
     transform: translateY(0);
   }
 }
 
-// Outline button variant
-.action-btn--outline {
+/* Outline Button */
+.hph-btn--outline,
+.action-btn--outline,
+.btn-outline {
   background-color: transparent;
-  color: var(--hph-primary-400);
-  border-color: var(--hph-primary-400);
+  color: var(--hph-color-primary-500);
+  border-color: var(--hph-color-primary-500);
   
-  &:hover {
-    background-color: var(--hph-primary-400);
-    color: white;
+  &:hover:not(:disabled) {
+    background-color: var(--hph-color-primary-500);
+    color: var(--hph-color-white);
     transform: translateY(-1px);
+    box-shadow: var(--hph-shadow-primary);
   }
   
   &:active {
+    background-color: var(--hph-color-primary-600);
+    border-color: var(--hph-color-primary-600);
     transform: translateY(0);
   }
 }
 
-// Danger button variant
-.action-btn--danger {
-  background-color: var(--color-error-600);
-  color: white;
-  border-color: var(--color-error-600);
-  
-  &:hover {
-    background-color: var(--color-error-700);
-    border-color: var(--color-error-700);
-    transform: translateY(-1px);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-// White button variant
-.action-btn--white {
-  background-color: white;
-  color: var(--color-gray-900);
-  border-color: var(--color-gray-300);
-  
-  &:hover {
-    background-color: var(--color-gray-50);
-    border-color: var(--color-gray-400);
-    transform: translateY(-1px);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-// Text button variant
-.action-btn--text {
+/* Ghost/Text Button */
+.hph-btn--ghost,
+.hph-btn--text,
+.action-btn--text,
+.btn-text {
   background-color: transparent;
-  color: var(--hph-primary-400);
+  color: var(--hph-color-primary-500);
   border-color: transparent;
-  padding: 8px 16px;
   
-  &:hover {
-    background-color: var(--hph-primary-50);
-    color: var(--hph-primary-500);
+  &:hover:not(:disabled) {
+    background-color: var(--hph-color-primary-50);
+    color: var(--hph-color-primary-600);
   }
   
   &:active {
-    background-color: var(--hph-primary-100);
+    background-color: var(--hph-color-primary-100);
+    color: var(--hph-color-primary-700);
   }
 }
 
-// Size variants
-.action-btn--sm {
-  padding: 8px 16px;
-  font-size: 14px;
-  border-radius: 4px;
+/* Success Button */
+.hph-btn--success,
+.btn-success {
+  background-color: var(--hph-color-success-500);
+  color: var(--hph-color-white);
+  border-color: var(--hph-color-success-500);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--hph-color-success-600);
+    border-color: var(--hph-color-success-600);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    background-color: var(--hph-color-success-700);
+    border-color: var(--hph-color-success-700);
+    transform: translateY(0);
+  }
 }
 
-.action-btn--large {
-  padding: 16px 32px;
-  font-size: 18px;
-  border-radius: 8px;
+/* Danger Button */
+.hph-btn--danger,
+.action-btn--danger,
+.btn-danger {
+  background-color: var(--hph-color-danger-500);
+  color: var(--hph-color-white);
+  border-color: var(--hph-color-danger-500);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--hph-color-danger-600);
+    border-color: var(--hph-color-danger-600);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    background-color: var(--hph-color-danger-700);
+    border-color: var(--hph-color-danger-700);
+    transform: translateY(0);
+  }
 }
 
-// Width variants
-.action-btn--block {
-  width: 100%;
+/* White Button */
+.hph-btn--white,
+.action-btn--white,
+.btn-white {
+  background-color: var(--hph-color-white);
+  color: var(--hph-color-gray-700);
+  border-color: var(--hph-color-white);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--hph-color-gray-50);
+    transform: translateY(-1px);
+    box-shadow: var(--hph-shadow-base);
+  }
+  
+  &:active {
+    background-color: var(--hph-color-gray-100);
+    transform: translateY(0);
+  }
+}
+
+/* ========================================================================
+   BUTTON SIZES
+   ======================================================================== */
+
+/* Small Button */
+.hph-btn--sm,
+.action-btn--sm,
+.btn-sm {
+  padding: calc(var(--hph-spacing-2) - 2px) var(--hph-spacing-3);
+  font-size: var(--hph-font-size-sm);
+  min-height: var(--hph-button-height-sm);
+  
+  svg, i {
+    width: var(--hph-icon-size-sm);
+    height: var(--hph-icon-size-sm);
+  }
+}
+
+/* Large Button */
+.hph-btn--lg,
+.action-btn--large,
+.btn-lg {
+  padding: calc(var(--hph-spacing-4) - 2px) var(--hph-spacing-6);
+  font-size: var(--hph-font-size-lg);
+  min-height: var(--hph-button-height-lg);
+  
+  svg, i {
+    width: var(--hph-icon-size-lg);
+    height: var(--hph-icon-size-lg);
+  }
+}
+
+/* ========================================================================
+   BUTTON LAYOUTS
+   ======================================================================== */
+
+/* Block Button (Full Width) */
+.hph-btn--block,
+.action-btn--block,
+.action-btn--full,
+.btn-block {
   display: flex;
-}
-
-.action-btn--full {
   width: 100%;
-  display: flex;
 }
 
-// Special functional button classes
-.schedule-btn {
-  // Additional styles for schedule buttons
-  &::before {
-    content: "📅";
-    margin-right: 8px;
-  }
+/* Rounded Button */
+.hph-btn--rounded {
+  border-radius: var(--hph-radius-full);
 }
 
-.favorite-btn {
-  // Additional styles for favorite buttons
-  position: relative;
+/* Square Button */
+.hph-btn--square {
+  aspect-ratio: 1;
+  padding: var(--hph-spacing-3);
   
-  &.is-favorite {
-    color: var(--color-red-600, #dc2626);
-  }
-  
-  &::before {
-    content: "♡";
-    margin-right: 4px;
-  }
-  
-  &.is-favorite::before {
-    content: "♥";
+  svg, i {
+    margin: 0;
   }
 }
 
-.share-btn {
-  // Additional styles for share buttons
-  &::before {
-    content: "📤";
-    margin-right: 8px;
-  }
+/* ========================================================================
+   LOADING ANIMATION
+   ======================================================================== */
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.contact-btn {
-  // Additional styles for contact buttons
-  &::before {
-    content: "✉";
-    margin-right: 8px;
-  }
-}
+/* ========================================================================
+   RESPONSIVE BEHAVIOR
+   ======================================================================== */
 
-// Responsive adjustments
 @media (max-width: 768px) {
-  .action-btn {
-    padding: 10px 20px;
-    font-size: 15px;
+  .hph-btn,
+  .action-btn,
+  .btn {
+    /* Ensure touch-friendly minimum height on mobile */
+    min-height: max(var(--hph-button-height-md), 44px);
   }
   
-  .action-btn--sm {
-    padding: 6px 12px;
-    font-size: 13px;
+  .hph-btn--sm,
+  .action-btn--sm,
+  .btn-sm {
+    min-height: max(var(--hph-button-height-sm), 40px);
   }
   
-  .action-btn--large {
-    padding: 14px 28px;
-    font-size: 17px;
+  .hph-btn--lg,
+  .action-btn--large,
+  .btn-lg {
+    min-height: max(var(--hph-button-height-lg), 48px);
   }
 }

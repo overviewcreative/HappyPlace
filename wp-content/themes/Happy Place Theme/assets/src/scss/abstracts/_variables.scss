@@ -1,341 +1,272 @@
-// Enhanced Variables System - Single Source of Truth
-// Based on Happy Place brand color (#51bae0) and design standards
+/* ============================================================================
+   HPH MASTER VARIABLES
+   Single source of truth for all CSS custom properties
+   ============================================================================ */
 
 :root {
-    // ===================================================================
-    // Brand Colors (Single Source of Truth)
-    // ===================================================================
-    --hph-primary-25: #f8fcff;
-    --hph-primary-50: #f0f9ff;
-    --hph-primary-100: #e0f2fe;
-    --hph-primary-200: #bae6fd;
-    --hph-primary-300: #7dd3fc;
-    --hph-primary-400: #51bae0;      // Main brand color
-    --hph-primary-500: #0ea5e9;
-    --hph-primary-600: #0284c7;
-    --hph-primary-700: #0369a1;
-    --hph-primary-800: #075985;
-    --hph-primary-900: #0c4a6e;
+    /* ========================================================================
+       COLOR SYSTEM - Extended Monochromatic #51bae0
+       ======================================================================== */
     
-    // Legacy color mappings for compatibility
-    --color-primary: var(--hph-primary-400);
-    --color-primary-light: var(--hph-primary-200);
-    --color-primary-dark: var(--hph-primary-600);
-    
-    // ===================================================================
-    // Semantic Colors
-    // ===================================================================
-    --color-success: #10b981;
-    --color-success-light: #6ee7b7;
-    --color-success-dark: #047857;
-    
-    --color-warning: #f59e0b;
-    --color-warning-light: #fcd34d;
-    --color-warning-dark: #d97706;
-    
-    --color-danger: #ef4444;
-    --color-danger-light: #fca5a5;
-    --color-danger-dark: #dc2626;
-    
-    --color-info: var(--hph-primary-500);
-    --color-info-light: var(--hph-primary-200);
-    --color-info-dark: var(--hph-primary-700);
-    
-    // ===================================================================
-    // Grayscale System
-    // ===================================================================
-    --color-white: #ffffff;
-    --color-gray-50: #f9fafb;
-    --color-gray-100: #f3f4f6;
-    --color-gray-200: #e5e7eb;
-    --color-gray-300: #d1d5db;
-    --color-gray-400: #9ca3af;
-    --color-gray-500: #6b7280;
-    --color-gray-600: #4b5563;
-    --color-gray-700: #374151;
-    --color-gray-800: #1f2937;
-    --color-gray-900: #111827;
-    --color-black: #000000;
-    
-    // Text colors
-    --color-text: var(--color-gray-900);
-    --color-text-light: var(--color-gray-600);
-    --color-text-muted: var(--color-gray-500);
-    --color-heading: var(--color-gray-900);
-    
-    // Background colors
-    --color-background: var(--color-white);
-    --color-background-alt: var(--color-gray-50);
-    --color-surface: var(--color-white);
-    
-    // Border colors
-    --color-border: var(--color-gray-300);
-    --color-border-light: var(--color-gray-200);
-    --color-border-dark: var(--color-gray-400);
-    
-    // Legacy mappings for backward compatibility
-    --color-gray-light: var(--color-gray-100);
-    --color-gray: var(--color-gray-300);
-    
-    // ===================================================================
-    // Typography Scale (Poppins-focused)
-    // ===================================================================
-    --font-family-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-family-secondary: 'Poppins', Georgia, 'Times New Roman', serif; // Keep Poppins for consistency
-    --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-    
-    // Font sizes (enhanced scale)
-    --font-size-xs: 0.75rem;    // 12px
-    --font-size-sm: 0.875rem;   // 14px
-    --font-size-base: 1rem;     // 16px
-    --font-size-lg: 1.125rem;   // 18px
-    --font-size-xl: 1.25rem;    // 20px
-    --font-size-2xl: 1.5rem;    // 24px
-    --font-size-3xl: 1.875rem;  // 30px
-    --font-size-4xl: 2.25rem;   // 36px
-    --font-size-5xl: 3rem;      // 48px
-    --font-size-6xl: 3.75rem;   // 60px
-    
-    // Font weights (Poppins supports these)
-    --font-weight-light: 300;
-    --font-weight-normal: 400;
-    --font-weight-medium: 500;
-    --font-weight-semibold: 600;
-    --font-weight-bold: 700;
-    --font-weight-extrabold: 800;
-    
-    // Line heights
-    --line-height-tight: 1.25;
-    --line-height-snug: 1.375;
-    --line-height-normal: 1.5;
-    --line-height-relaxed: 1.625;
-    --line-height-loose: 2;
-    
-    // ===================================================================
-    // Spacing Scale (8px base unit)
-    // ===================================================================
-    --spacing-px: 1px;
-    --spacing-0: 0;
-    --spacing-0-5: 0.125rem;    // 2px
-    --spacing-1: 0.25rem;       // 4px
-    --spacing-1-5: 0.375rem;    // 6px
-    --spacing-2: 0.5rem;        // 8px
-    --spacing-2-5: 0.625rem;    // 10px
-    --spacing-3: 0.75rem;       // 12px
-    --spacing-3-5: 0.875rem;    // 14px
-    --spacing-4: 1rem;          // 16px
-    --spacing-5: 1.25rem;       // 20px
-    --spacing-6: 1.5rem;        // 24px
-    --spacing-7: 1.75rem;       // 28px
-    --spacing-8: 2rem;          // 32px
-    --spacing-9: 2.25rem;       // 36px
-    --spacing-10: 2.5rem;       // 40px
-    --spacing-11: 2.75rem;      // 44px
-    --spacing-12: 3rem;         // 48px
-    --spacing-14: 3.5rem;       // 56px
-    --spacing-16: 4rem;         // 64px
-    --spacing-20: 5rem;         // 80px
-    --spacing-24: 6rem;         // 96px
-    --spacing-28: 7rem;         // 112px
-    --spacing-32: 8rem;         // 128px
-    --spacing-36: 9rem;         // 144px
-    --spacing-40: 10rem;        // 160px
-    --spacing-44: 11rem;        // 176px
-    --spacing-48: 12rem;        // 192px
-    
-    // ===================================================================
-    // Component-Specific Variables (Design Standard)
-    // ===================================================================
-    
-    // Card System (based on listing swipe card)
-    --card-border-radius: 12px;
-    --card-border-radius-sm: 8px;
-    --card-border-radius-lg: 16px;
-    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --card-shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
-    --card-shadow-focus: 0 0 0 3px rgba(81, 186, 224, 0.2);
-    --card-border: 1px solid var(--color-border);
-    --card-padding: var(--spacing-6);
-    --card-padding-sm: var(--spacing-4);
-    --card-padding-lg: var(--spacing-8);
-    
-    // Button System
-    --button-height-sm: 36px;
-    --button-height-md: 44px;      // Touch-friendly minimum
-    --button-height-lg: 52px;
-    --button-border-radius: 6px;
-    --button-padding-x: var(--spacing-4);
-    --button-padding-x-sm: var(--spacing-3);
-    --button-padding-x-lg: var(--spacing-6);
-    --button-font-weight: var(--font-weight-medium);
-    
-    // Form System (enhanced from your current forms)
-    --form-field-height: 44px;
-    --form-field-border-radius: 6px;
-    --form-field-border: 1px solid var(--color-border);
-    --form-field-border-focus: 2px solid var(--hph-primary-400);
-    --form-field-padding: var(--spacing-3);
-    --form-field-font-size: var(--font-size-base);
-    --form-label-font-weight: var(--font-weight-medium);
-    --form-label-color: var(--color-text);
-    
-    // Focus ring system
-    --focus-ring-width: 3px;
-    --focus-ring-color: rgba(81, 186, 224, 0.2);
-    --focus-ring-offset: 2px;
-    
-    // ===================================================================
-    // Layout Variables
-    // ===================================================================
-    --container-max-width: 1200px;
-    --container-padding: var(--spacing-4);
-    --container-padding-sm: var(--spacing-6);
-    --container-padding-lg: var(--spacing-8);
-    
-    // Grid gaps
-    --grid-gap-sm: var(--spacing-4);
-    --grid-gap-md: var(--spacing-6);
-    --grid-gap-lg: var(--spacing-8);
-    --grid-gap-xl: var(--spacing-10);
-    
-    // ===================================================================
-    // Component Sizes (Real Estate Specific)
-    // ===================================================================
-    --listing-card-width: 320px;
-    --listing-card-height: 380px;
-    --listing-card-image-height: 200px;
-    
-    --agent-card-width: 280px;
-    --agent-card-height: 320px;
-    
-    --feature-badge-height: 24px;
-    --status-badge-height: 28px;
-    
-    // Dashboard specific
-    --dashboard-sidebar-width: 280px;
-    --dashboard-sidebar-width-collapsed: 64px;
-    --dashboard-header-height: 64px;
-    
-    // ===================================================================
-    // Animation & Transitions
-    // ===================================================================
-    --transition-fast: 150ms ease;
-    --transition-normal: 300ms ease;
-    --transition-slow: 500ms ease;
-    
-    // Easing functions
-    --easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-    --easing-ease-out: cubic-bezier(0, 0, 0.2, 1);
-    --easing-ease-in: cubic-bezier(0.4, 0, 1, 1);
-    --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    
-    // Transform values for hover states
-    --transform-hover-scale: scale(1.02);
-    --transform-hover-translate: translateY(-2px);
-    
-    // ===================================================================
-    // Z-Index Scale
-    // ===================================================================
-    --z-base: 0;
-    --z-raised: 10;
-    --z-dropdown: 1000;
-    --z-sticky: 1020;
-    --z-fixed: 1030;
-    --z-modal-backdrop: 1040;
-    --z-modal: 1050;
-    --z-popover: 1060;
-    --z-tooltip: 1070;
-    --z-toast: 1080;
-    --z-top: 9999;
-    
-    // ===================================================================
-    // Breakpoints (for use in container queries)
-    // ===================================================================
-    --breakpoint-xs: 320px;
-    --breakpoint-sm: 640px;
-    --breakpoint-md: 768px;
-    --breakpoint-lg: 1024px;
-    --breakpoint-xl: 1280px;
-    --breakpoint-xxl: 1536px;
-}
+    /* Primary Color Palette */
+    --hph-color-primary-25: #f8fcff;     /* Ultra light blue tint */
+    --hph-color-primary-50: #f0f9ff;     /* Very light blue tint */
+    --hph-color-primary-100: #e0f2fe;    /* Light blue tint */
+    --hph-color-primary-200: #bae6fd;    /* Lighter blue */
+    --hph-color-primary-300: #7dd3fc;    /* Light blue */
+    --hph-color-primary-400: #51bae0;    /* Base primary color */
+    --hph-color-primary-500: #38bdf8;    /* Main primary (slightly adjusted) */
+    --hph-color-primary-600: #0284c7;    /* Darker blue */
+    --hph-color-primary-700: #0369a1;    /* Dark blue */
+    --hph-color-primary-800: #075985;    /* Very dark blue */
+    --hph-color-primary-900: #0c4a6e;    /* Deep blue */
+    --hph-color-primary-950: #082f49;    /* Deepest blue */
+    --hph-color-primary-975: #051e34;    /* Ultra deep blue */
 
-// ===================================================================
-// Dark Mode Support
-// ===================================================================
-@media (prefers-color-scheme: dark) {
-    :root {
-        // Invert grayscale for dark mode
-        --color-text: var(--color-gray-100);
-        --color-text-light: var(--color-gray-400);
-        --color-text-muted: var(--color-gray-500);
-        --color-heading: var(--color-gray-50);
-        
-        --color-background: var(--color-gray-900);
-        --color-background-alt: var(--color-gray-800);
-        --color-surface: var(--color-gray-800);
-        
-        --color-border: var(--color-gray-600);
-        --color-border-light: var(--color-gray-700);
-        --color-border-dark: var(--color-gray-500);
-        
-        // Adjust shadows for dark mode
-        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        --card-shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.4);
-    }
-}
+    /* Neutral Palette - Warm whites and grays */
+    --hph-color-white: #fffdfb;          /* Warm white instead of pure white */
+    --hph-color-gray-25: #fcfcfc;        /* Ultra light warm gray */
+    --hph-color-gray-50: #fafaf9;        /* Very light warm gray */
+    --hph-color-gray-100: #f5f5f4;       /* Light warm gray */
+    --hph-color-gray-200: #e7e5e4;       /* Light gray */
+    --hph-color-gray-300: #d6d3d1;       /* Medium light gray */
+    --hph-color-gray-400: #a8a29e;       /* Medium gray */
+    --hph-color-gray-500: #78716c;       /* Medium dark gray */
+    --hph-color-gray-600: #57534e;       /* Dark gray */
+    --hph-color-gray-700: #44403c;       /* Very dark gray */
+    --hph-color-gray-800: #292524;       /* Almost black */
+    --hph-color-gray-900: #1c1917;       /* Deep black */
+    --hph-color-gray-950: #0f0f0e;       /* Ultra deep black */
 
-// ===================================================================
-// Component-Specific Variable Groups
-// ===================================================================
+    /* Semantic Colors - Harmonized with primary */
+    --hph-color-success: #059669;
+    --hph-color-success-light: #d1fae5;
+    --hph-color-success-dark: #064e3b;
+    --hph-color-warning: #d97706;
+    --hph-color-warning-light: #fef3c7;
+    --hph-color-warning-dark: #92400e;
+    --hph-color-danger: #dc2626;
+    --hph-color-danger-light: #fee2e2;
+    --hph-color-danger-dark: #991b1b;
+    --hph-color-info: var(--hph-color-primary-500);
+    --hph-color-info-light: var(--hph-color-primary-50);
+    --hph-color-info-dark: var(--hph-color-primary-800);
+    /* ========================================================================
+       TYPOGRAPHY SYSTEM
+       ======================================================================== */
+    
+    /* Font Families */
+    --hph-font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --hph-font-secondary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    
+    /* Font Sizes - Harmonious scale */
+    --hph-font-size-xs: 0.75rem;     /* 12px */
+    --hph-font-size-sm: 0.875rem;    /* 14px */
+    --hph-font-size-base: 1rem;      /* 16px */
+    --hph-font-size-lg: 1.125rem;    /* 18px */
+    --hph-font-size-xl: 1.25rem;     /* 20px */
+    --hph-font-size-2xl: 1.5rem;     /* 24px */
+    --hph-font-size-3xl: 1.875rem;   /* 30px */
+    --hph-font-size-4xl: 2.25rem;    /* 36px */
+    --hph-font-size-5xl: 3rem;       /* 48px */
+    --hph-font-size-6xl: 3.75rem;    /* 60px */
 
-// Listing Swipe Card Variables (Design Standard)
-:root {
-    --listing-swipe-card-width: var(--listing-card-width);
-    --listing-swipe-card-border-radius: var(--card-border-radius);
-    --listing-swipe-card-shadow: var(--card-shadow);
-    --listing-swipe-card-shadow-hover: var(--card-shadow-hover);
-    --listing-swipe-card-transition: var(--transition-normal);
-    --listing-swipe-card-image-height: var(--listing-card-image-height);
-    --listing-swipe-card-padding: var(--card-padding);
-    --listing-swipe-card-gap: var(--spacing-4);
-}
+    /* Font Weights */
+    --hph-font-thin: 100;
+    --hph-font-extralight: 200;
+    --hph-font-light: 300;
+    --hph-font-normal: 400;
+    --hph-font-medium: 500;
+    --hph-font-semibold: 600;
+    --hph-font-bold: 700;
+    --hph-font-extrabold: 800;
+    --hph-font-black: 900;
 
-// Form Variables (Enhanced)
-:root {
-    --form-input-height: var(--form-field-height);
-    --form-input-padding: var(--form-field-padding);
-    --form-input-border-radius: var(--form-field-border-radius);
-    --form-input-border: var(--form-field-border);
-    --form-input-border-focus: var(--form-field-border-focus);
-    --form-focus-ring-width: var(--focus-ring-width);
-    --form-focus-ring-color: var(--focus-ring-color);
-}
+    /* Line Heights */
+    --hph-line-height-none: 1;
+    --hph-line-height-tight: 1.25;
+    --hph-line-height-snug: 1.375;
+    --hph-line-height-normal: 1.5;
+    --hph-line-height-relaxed: 1.625;
+    --hph-line-height-loose: 2;
 
-// Grid Variables (Enhanced)
-:root {
-    --grid-listing-min-width: var(--listing-card-width);
-    --grid-agent-min-width: var(--agent-card-width);
-    --grid-feature-min-width: 200px;
-    --grid-default-gap: var(--grid-gap-md);
-}
+    /* ========================================================================
+       SPACING SYSTEM - Consistent scale
+       ======================================================================== */
+    
+    --hph-spacing-px: 1px;
+    --hph-spacing-0: 0;
+    --hph-spacing-0-5: 0.125rem;  /* 2px */
+    --hph-spacing-1: 0.25rem;     /* 4px */
+    --hph-spacing-1-5: 0.375rem;  /* 6px */
+    --hph-spacing-2: 0.5rem;      /* 8px */
+    --hph-spacing-2-5: 0.625rem;  /* 10px */
+    --hph-spacing-3: 0.75rem;     /* 12px */
+    --hph-spacing-3-5: 0.875rem;  /* 14px */
+    --hph-spacing-4: 1rem;        /* 16px */
+    --hph-spacing-5: 1.25rem;     /* 20px */
+    --hph-spacing-6: 1.5rem;      /* 24px */
+    --hph-spacing-7: 1.75rem;     /* 28px */
+    --hph-spacing-8: 2rem;        /* 32px */
+    --hph-spacing-9: 2.25rem;     /* 36px */
+    --hph-spacing-10: 2.5rem;     /* 40px */
+    --hph-spacing-11: 2.75rem;    /* 44px */
+    --hph-spacing-12: 3rem;       /* 48px */
+    --hph-spacing-14: 3.5rem;     /* 56px */
+    --hph-spacing-16: 4rem;       /* 64px */
+    --hph-spacing-20: 5rem;       /* 80px */
+    --hph-spacing-24: 6rem;       /* 96px */
+    --hph-spacing-28: 7rem;       /* 112px */
+    --hph-spacing-32: 8rem;       /* 128px */
 
-// Status Colors for Real Estate
-:root {
-    --status-active: var(--color-success);
-    --status-pending: var(--color-warning);
-    --status-sold: var(--color-danger);
-    --status-off-market: var(--color-gray-500);
-    --status-coming-soon: var(--hph-primary-400);
-}
+    /* ========================================================================
+       BORDER RADIUS SYSTEM
+       ======================================================================== */
+    
+    --hph-radius-none: 0;
+    --hph-radius-sm: 0.125rem;    /* 2px */
+    --hph-radius-base: 0.25rem;   /* 4px */
+    --hph-radius-md: 0.375rem;    /* 6px */
+    --hph-radius-lg: 0.5rem;      /* 8px */
+    --hph-radius-xl: 0.75rem;     /* 12px */
+    --hph-radius-2xl: 1rem;       /* 16px */
+    --hph-radius-3xl: 1.5rem;     /* 24px */
+    --hph-radius-4xl: 2rem;       /* 32px */
+    --hph-radius-full: 9999px;
 
-// ===================================================================
-// Print Variables
-// ===================================================================
-@media print {
-    :root {
-        --color-text: #000000;
-        --color-background: #ffffff;
-        --card-shadow: none;
-        --card-border: 1px solid #cccccc;
-    }
+    /* ========================================================================
+       SHADOW SYSTEM - Consistent elevation
+       ======================================================================== */
+    
+    /* Standard shadows */
+    --hph-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --hph-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --hph-shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --hph-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --hph-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --hph-shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --hph-shadow-2xl: 0 50px 100px -20px rgba(0, 0, 0, 0.25);
+    
+    /* Colored shadows using primary colors */
+    --hph-shadow-primary: 0 4px 14px 0 rgba(81, 186, 224, 0.15);
+    --hph-shadow-primary-lg: 0 10px 28px 0 rgba(81, 186, 224, 0.2);
+    --hph-shadow-primary-xl: 0 20px 40px 0 rgba(81, 186, 224, 0.25);
+    --hph-shadow-dark: 0 4px 14px 0 rgba(8, 47, 73, 0.15);
+    --hph-shadow-dark-lg: 0 10px 28px 0 rgba(8, 47, 73, 0.2);
+    --hph-shadow-dark-xl: 0 20px 40px 0 rgba(8, 47, 73, 0.25);
+
+    /* ========================================================================
+       TRANSITION SYSTEM
+       ======================================================================== */
+    
+    --hph-transition-fast: 0.15s ease;
+    --hph-transition-base: 0.2s ease;
+    --hph-transition-slow: 0.3s ease;
+    --hph-transition-slower: 0.5s ease;
+
+    /* ========================================================================
+       Z-INDEX SCALE - Layering system
+       ======================================================================== */
+    
+    --hph-z-hide: -1;
+    --hph-z-auto: auto;
+    --hph-z-base: 0;
+    --hph-z-docked: 10;
+    --hph-z-dropdown: 1000;
+    --hph-z-sticky: 1020;
+    --hph-z-banner: 1030;
+    --hph-z-overlay: 1040;
+    --hph-z-modal: 1050;
+    --hph-z-popover: 1060;
+    --hph-z-skiplink: 1070;
+    --hph-z-toast: 1080;
+    --hph-z-tooltip: 1090;
+
+    /* ========================================================================
+       BREAKPOINT SYSTEM
+       ======================================================================== */
+    
+    --hph-breakpoint-sm: 640px;
+    --hph-breakpoint-md: 768px;
+    --hph-breakpoint-lg: 1024px;
+    --hph-breakpoint-xl: 1280px;
+    --hph-breakpoint-2xl: 1536px;
+
+    /* ========================================================================
+       CONTAINER SYSTEM
+       ======================================================================== */
+    
+    --hph-container-sm: 640px;
+    --hph-container-md: 768px;
+    --hph-container-lg: 1024px;
+    --hph-container-xl: 1280px;
+    --hph-container-2xl: 1400px;
+
+    /* ========================================================================
+       ICON SYSTEM
+       ======================================================================== */
+    
+    --hph-icon-size-xs: 0.75rem;
+    --hph-icon-size-sm: 0.875rem;
+    --hph-icon-size-base: 1rem;
+    --hph-icon-size-lg: 1.125rem;
+    --hph-icon-size-xl: 1.25rem;
+    --hph-icon-size-2xl: 1.5rem;
+    --hph-icon-size-3xl: 2rem;
+    --hph-icon-size-4xl: 2.5rem;
+
+    /* ========================================================================
+       COMPONENT-SPECIFIC VARIABLES
+       ======================================================================== */
+    
+    /* Button System */
+    --hph-button-height-sm: 36px;
+    --hph-button-height-md: 44px;
+    --hph-button-height-lg: 52px;
+    --hph-button-border-radius: 6px;
+    --hph-button-padding-x: var(--hph-spacing-4);
+    --hph-button-padding-x-sm: var(--hph-spacing-3);
+    --hph-button-padding-x-lg: var(--hph-spacing-6);
+    --hph-button-font-weight: var(--hph-font-medium);
+    
+    /* Card System */
+    --hph-card-border-radius: 12px;
+    --hph-card-border-radius-sm: 8px;
+    --hph-card-border-radius-lg: 16px;
+    --hph-card-shadow: var(--hph-shadow-base);
+    --hph-card-shadow-hover: var(--hph-shadow-lg);
+    --hph-card-padding: var(--hph-spacing-6);
+    --hph-card-padding-sm: var(--hph-spacing-4);
+    --hph-card-padding-lg: var(--hph-spacing-8);
+    
+    /* Form System */
+    --hph-form-field-height: 44px;
+    --hph-form-field-border-radius: 6px;
+    --hph-form-field-border: 1px solid var(--hph-color-gray-300);
+    --hph-form-field-border-focus: 2px solid var(--hph-color-primary-400);
+    --hph-form-field-padding: var(--hph-spacing-3);
+    --hph-form-label-font-weight: var(--hph-font-medium);
+    
+    /* Focus System */
+    --hph-focus-ring-width: 3px;
+    --hph-focus-ring-color: rgba(81, 186, 224, 0.2);
+    --hph-focus-ring-offset: 2px;
+
+    /* ========================================================================
+       LEGACY COMPATIBILITY MAPPINGS
+       ======================================================================== */
+    
+    /* Maintain backward compatibility with old variable names */
+    --color-primary: var(--hph-color-primary-500);
+    --color-primary-light: var(--hph-color-primary-100);
+    --color-primary-dark: var(--hph-color-primary-700);
+    --color-secondary: var(--hph-color-secondary-500);
+    --color-text: var(--hph-color-gray-900);
+    --color-text-light: var(--hph-color-gray-600);
+    --color-background: var(--hph-color-white);
+    --color-border: var(--hph-color-gray-300);
+    --spacing-4: var(--hph-spacing-4);
+    --spacing-8: var(--hph-spacing-8);
+    --font-size-base: var(--hph-font-size-base);
+    --transition-normal: var(--hph-transition-base);
 }

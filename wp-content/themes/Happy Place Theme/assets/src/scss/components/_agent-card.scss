@@ -1,0 +1,320 @@
+/* ============================================
+   AGENT CARD COMPONENT - .hph-agent-card
+   BEM Structure for real estate agent cards
+   ============================================ */
+
+.hph-agent-card {
+  background: var(--hph-color-white);
+  border-radius: var(--hph-card-border-radius);
+  box-shadow: var(--hph-card-shadow);
+  padding: var(--hph-card-padding);
+  text-align: center;
+  transition: var(--hph-transition-base);
+  overflow: hidden;
+  
+  &:hover {
+    box-shadow: var(--hph-card-shadow-hover);
+    transform: translateY(-2px);
+  }
+}
+
+/* ========================================================================
+   AGENT CARD HEADER - Photo and basic info
+   ======================================================================== */
+
+.hph-agent-card__header {
+  margin-bottom: var(--hph-spacing-6);
+  
+  @media (max-width: 768px) {
+    margin-bottom: var(--hph-spacing-4);
+  }
+}
+
+.hph-agent-card__avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--hph-color-gray-200);
+  margin: 0 auto var(--hph-spacing-4);
+  object-fit: cover;
+  display: block;
+  transition: var(--hph-transition-base);
+  
+  &:hover {
+    border-color: var(--hph-color-primary-300);
+    transform: scale(1.05);
+  }
+  
+  @media (max-width: 768px) {
+    width: 70px;
+    height: 70px;
+    margin-bottom: var(--hph-spacing-3);
+  }
+}
+
+.hph-agent-card__name {
+  font-size: var(--hph-font-size-lg);
+  font-weight: var(--hph-font-semibold);
+  color: var(--hph-color-gray-900);
+  margin-bottom: var(--hph-spacing-1);
+  line-height: var(--hph-line-height-tight);
+  
+  @media (max-width: 768px) {
+    font-size: var(--hph-font-size-base);
+  }
+}
+
+.hph-agent-card__title {
+  font-size: var(--hph-font-size-sm);
+  color: var(--hph-color-gray-600);
+  margin-bottom: var(--hph-spacing-1);
+  font-weight: var(--hph-font-normal);
+}
+
+.hph-agent-card__company {
+  font-size: var(--hph-font-size-xs);
+  color: var(--hph-color-gray-500);
+  margin-bottom: var(--hph-spacing-4);
+  font-weight: var(--hph-font-normal);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ========================================================================
+   AGENT CONTACT INFO - Phone and email display
+   ======================================================================== */
+
+.hph-agent-card__contact {
+  margin-bottom: var(--hph-spacing-6);
+  text-align: left;
+  
+  @media (max-width: 768px) {
+    margin-bottom: var(--hph-spacing-4);
+  }
+}
+
+.hph-contact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--hph-spacing-3);
+  margin-bottom: var(--hph-spacing-2);
+  font-size: var(--hph-font-size-sm);
+  color: var(--hph-color-gray-600);
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: 768px) {
+    gap: var(--hph-spacing-2);
+    font-size: var(--hph-font-size-xs);
+  }
+}
+
+.hph-contact-item__icon {
+  color: var(--hph-color-primary-500);
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: var(--hph-font-size-sm);
+  
+  @media (max-width: 768px) {
+    width: 14px;
+    font-size: var(--hph-font-size-xs);
+  }
+}
+
+/* ========================================================================
+   AGENT ACTIONS - CTA buttons
+   ======================================================================== */
+
+.hph-agent-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hph-spacing-3);
+  
+  @media (min-width: 480px) {
+    flex-direction: row;
+    gap: var(--hph-spacing-2);
+  }
+  
+  .hph-btn {
+    flex: 1;
+    justify-content: center;
+    
+    @media (max-width: 479px) {
+      width: 100%;
+    }
+  }
+}
+
+/* ========================================================================
+   AGENT CARD VARIANTS
+   ======================================================================== */
+
+/* Compact variant for sidebars */
+.hph-agent-card--compact {
+  padding: var(--hph-card-padding-sm);
+  
+  .hph-agent-card__avatar {
+    width: 60px;
+    height: 60px;
+    margin-bottom: var(--hph-spacing-3);
+  }
+  
+  .hph-agent-card__name {
+    font-size: var(--hph-font-size-base);
+  }
+  
+  .hph-agent-card__contact {
+    margin-bottom: var(--hph-spacing-4);
+  }
+  
+  .hph-agent-card__actions {
+    gap: var(--hph-spacing-2);
+    
+    .hph-btn {
+      font-size: var(--hph-font-size-sm);
+      padding: var(--hph-spacing-2) var(--hph-spacing-3);
+    }
+  }
+}
+
+/* Horizontal layout variant */
+.hph-agent-card--horizontal {
+  display: flex;
+  text-align: left;
+  align-items: center;
+  gap: var(--hph-spacing-4);
+  
+  .hph-agent-card__header {
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+  
+  .hph-agent-card__avatar {
+    margin: 0;
+    width: 60px;
+    height: 60px;
+  }
+  
+  .hph-agent-card__info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .hph-agent-card__name {
+    margin-bottom: var(--hph-spacing-0-5);
+  }
+  
+  .hph-agent-card__title,
+  .hph-agent-card__company {
+    margin-bottom: var(--hph-spacing-0-5);
+  }
+  
+  .hph-agent-card__contact {
+    margin-bottom: var(--hph-spacing-3);
+  }
+  
+  .hph-agent-card__actions {
+    flex-direction: column;
+    flex-shrink: 0;
+    width: auto;
+    min-width: 120px;
+    
+    .hph-btn {
+      flex: none;
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+    
+    .hph-agent-card__actions {
+      width: 100%;
+      flex-direction: row;
+    }
+  }
+}
+
+/* Featured agent variant */
+.hph-agent-card--featured {
+  border: 2px solid var(--hph-color-primary-200);
+  background: linear-gradient(135deg, var(--hph-color-white), var(--hph-color-primary-25));
+  
+  .hph-agent-card__avatar {
+    border-color: var(--hph-color-primary-300);
+    box-shadow: 0 4px 12px rgba(81, 186, 224, 0.15);
+  }
+  
+  .hph-agent-card__name {
+    color: var(--hph-color-primary-800);
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--hph-color-primary-400), var(--hph-color-primary-600));
+    border-radius: var(--hph-card-border-radius) var(--hph-card-border-radius) 0 0;
+  }
+}
+
+/* ========================================================================
+   RESPONSIVE BEHAVIOR
+   ======================================================================== */
+
+@media (max-width: 480px) {
+  .hph-agent-card {
+    padding: var(--hph-spacing-4);
+  }
+  
+  .hph-agent-card__actions {
+    .hph-btn {
+      font-size: var(--hph-font-size-sm);
+      padding: var(--hph-spacing-2-5) var(--hph-spacing-3);
+      min-height: 40px;
+    }
+  }
+}
+
+/* ========================================================================
+   DARK MODE SUPPORT
+   ======================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  .hph-agent-card {
+    background: var(--hph-color-gray-800);
+    border: 1px solid var(--hph-color-gray-700);
+  }
+  
+  .hph-agent-card__avatar {
+    border-color: var(--hph-color-gray-600);
+  }
+  
+  .hph-agent-card__name {
+    color: var(--hph-color-gray-100);
+  }
+  
+  .hph-agent-card__title {
+    color: var(--hph-color-gray-300);
+  }
+  
+  .hph-agent-card__company {
+    color: var(--hph-color-gray-400);
+  }
+  
+  .hph-contact-item {
+    color: var(--hph-color-gray-300);
+  }
+  
+  .hph-agent-card--featured {
+    background: linear-gradient(135deg, var(--hph-color-gray-800), var(--hph-color-primary-900));
+    border-color: var(--hph-color-primary-600);
+  }
+}

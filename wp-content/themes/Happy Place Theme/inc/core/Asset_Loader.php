@@ -267,6 +267,20 @@ private function get_template_type_from_name(string $template_name): ?string {
                 'loading' => __('Loading...', 'happy-place'),
                 'error' => __('An error occurred. Please try again.', 'happy-place'),
                 'success' => __('Success!', 'happy-place'),
+                'favoriteAdded' => __('Property added to favorites', 'happy-place'),
+                'favoriteRemoved' => __('Property removed from favorites', 'happy-place'),
+            ]
+        ]);
+        
+        // Hero-specific localization
+        wp_localize_script('hph-core-scripts', 'hphHero', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('hph_hero_nonce'),
+            'strings' => [
+                'favoriteAdded' => __('Added to favorites', 'happy-place'),
+                'favoriteRemoved' => __('Removed from favorites', 'happy-place'),
+                'tourScheduled' => __('Tour request sent', 'happy-place'),
+                'galleryOpened' => __('Opening gallery...', 'happy-place'),
             ]
         ]);
     }

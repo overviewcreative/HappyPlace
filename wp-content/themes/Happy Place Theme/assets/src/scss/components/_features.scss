@@ -1,47 +1,55 @@
 /* ============================================================================
-   Features Grid Component
+   Features Grid Component - Updated with HPH Variables
    ============================================================================ */
 
 .hph-features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
-  gap: var(--spacing-3);
+  gap: var(--hph-spacing-4);
   
   /* Ensure consistent sizing across different contexts */
   &.auto-grid-xs {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+    gap: var(--hph-spacing-3);
   }
   
   &.auto-grid-sm {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: var(--hph-spacing-4);
   }
   
   &.auto-grid-md {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: var(--hph-spacing-5);
+  }
+  
+  &.auto-grid-lg {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: var(--hph-spacing-6);
   }
 }
 
 .hph-feature-item {
   display: flex;
   align-items: center;
-  gap: var(--spacing-3);
-  padding: var(--spacing-3);
-  background: var(--color-gray-50);
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--border-radius-md);
-  transition: all 0.2s ease;
+  gap: var(--hph-spacing-3);
+  padding: var(--hph-spacing-4);
+  background: var(--hph-color-gray-50);
+  border: 1px solid var(--hph-color-gray-200);
+  border-radius: var(--hph-radius-lg);
+  transition: var(--hph-transition-base);
   
   &:hover {
-    background: var(--color-gray-100);
-    border-color: var(--color-primary);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: var(--hph-color-gray-100);
+    border-color: var(--hph-color-primary-400);
+    transform: translateY(-2px);
+    box-shadow: var(--hph-shadow-lg);
   }
   
   /* Icon styling */
   .fas, .far, .fab {
-    color: var(--color-primary);
-    font-size: var(--font-size-lg);
+    color: var(--hph-color-primary-500);
+    font-size: var(--hph-font-size-lg);
     width: 20px;
     text-align: center;
     flex-shrink: 0;
@@ -49,10 +57,10 @@
   
   /* Text content */
   span, .hph-feature-text {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    color: var(--color-gray-800);
-    line-height: 1.4;
+    font-size: var(--hph-font-size-sm);
+    font-weight: var(--hph-font-medium);
+    color: var(--hph-color-gray-800);
+    line-height: var(--hph-line-height-snug);
   }
 }
 
@@ -61,40 +69,52 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--color-primary);
-  color: white;
+  background: var(--hph-color-primary-500);
+  color: var(--hph-color-white);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: var(--hph-transition-fast);
   
   .fas, .far, .fab {
-    color: white;
-    font-size: var(--font-size-base);
+    color: var(--hph-color-white);
+    font-size: var(--hph-font-size-base);
     width: auto;
+  }
+  
+  /* Hover effect for icon container */
+  .hph-feature-item:hover & {
+    background: var(--hph-color-primary-600);
+    transform: scale(1.1);
   }
 }
 
 /* When using icon containers, adjust the item layout */
 .hph-feature-item:has(.hph-feature-icon) {
-  gap: var(--spacing-4);
+  gap: var(--hph-spacing-4);
   
   .hph-feature-text {
-    font-size: var(--font-size-base);
+    font-size: var(--hph-font-size-base);
   }
 }
 
 /* Compact variant for smaller spaces */
 .hph-features-grid--compact {
-  gap: var(--spacing-2);
+  gap: var(--hph-spacing-2);
   
   .hph-feature-item {
-    padding: var(--spacing-2);
-    font-size: var(--font-size-xs);
+    padding: var(--hph-spacing-3);
+    font-size: var(--hph-font-size-xs);
     
     .fas, .far, .fab {
-      font-size: var(--font-size-base);
+      font-size: var(--hph-font-size-base);
       width: 16px;
+    }
+    
+    .hph-feature-icon {
+      width: 32px;
+      height: 32px;
     }
   }
 }
@@ -102,10 +122,39 @@
 /* List variant (vertical stacking) */
 .hph-features-grid--list {
   grid-template-columns: 1fr;
-  gap: var(--spacing-2);
+  gap: var(--hph-spacing-2);
   
   .hph-feature-item {
     justify-content: flex-start;
+  }
+}
+
+/* Card variant with enhanced styling */
+.hph-features-grid--cards {
+  gap: var(--hph-spacing-6);
+  
+  .hph-feature-item {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--hph-spacing-6);
+    background: var(--hph-color-white);
+    box-shadow: var(--hph-shadow-base);
+    
+    &:hover {
+      box-shadow: var(--hph-shadow-lg);
+      transform: translateY(-4px);
+    }
+    
+    .hph-feature-icon {
+      width: 60px;
+      height: 60px;
+      margin-bottom: var(--hph-spacing-3);
+    }
+    
+    .hph-feature-text {
+      font-size: var(--hph-font-size-lg);
+      font-weight: var(--hph-font-semibold);
+    }
   }
 }
 
@@ -113,15 +162,26 @@
 @media (max-width: 767px) {
   .hph-features-grid {
     grid-template-columns: 1fr;
-    gap: var(--spacing-2);
+    gap: var(--hph-spacing-3);
   }
   
   .hph-feature-item {
-    padding: var(--spacing-2-5);
+    padding: var(--hph-spacing-3);
     
     .hph-feature-icon {
       width: 32px;
       height: 32px;
+    }
+  }
+  
+  .hph-features-grid--cards {
+    .hph-feature-item {
+      padding: var(--hph-spacing-4);
+      
+      .hph-feature-icon {
+        width: 48px;
+        height: 48px;
+      }
     }
   }
 }

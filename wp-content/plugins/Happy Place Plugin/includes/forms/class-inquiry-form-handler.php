@@ -243,7 +243,7 @@ class Inquiry_Form_Handler {
                 <?php endif; ?>
 
                 <div class="hph-form-row">
-                    <button type="submit" class="hph-btn hph-btn-primary">Send Inquiry</button>
+                    <button type="submit" class="hph-btn hph-btn--primary">Send Inquiry</button>
                 </div>
 
                 <div class="hph-form-message" style="display: none;"></div>

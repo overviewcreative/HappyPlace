@@ -107,6 +107,24 @@ require_once HPH_INCLUDES_PATH . 'shortcodes.php';
 // Load AJAX handlers (AFTER bridge functions)
 require_once HPH_INCLUDES_PATH . 'api/class-ajax-handler.php';
 
+// Load Advanced Form AJAX Handler
+if (file_exists(HPH_INCLUDES_PATH . 'ajax/class-advanced-form-ajax.php')) {
+    require_once HPH_INCLUDES_PATH . 'ajax/class-advanced-form-ajax.php';
+    error_log('HPH: Advanced Form AJAX Handler loaded');
+}
+
+// Load Flyer Generator AJAX Handler
+if (file_exists(HPH_INCLUDES_PATH . 'ajax/flyer-generator.php')) {
+    require_once HPH_INCLUDES_PATH . 'ajax/flyer-generator.php';
+    error_log('HPH: Flyer Generator AJAX Handler loaded');
+}
+
+// Load Flyer Generator Class
+if (file_exists(HPH_INCLUDES_PATH . 'graphics/class-flyer-generator.php')) {
+    require_once HPH_INCLUDES_PATH . 'graphics/class-flyer-generator.php';
+    error_log('HPH: Flyer Generator Class loaded');
+}
+
 // Load utility classes that might be needed
 if (file_exists(HPH_INCLUDES_PATH . 'utilities/class-data-validator.php')) {
     require_once HPH_INCLUDES_PATH . 'utilities/class-data-validator.php';
@@ -260,6 +278,15 @@ function hph_init_main() {
             }
         }
 
+        // Load City API Integration Service
+        if (file_exists(HPH_INCLUDES_PATH . 'services/class-city-api-integration.php')) {
+            require_once HPH_INCLUDES_PATH . 'services/class-city-api-integration.php';
+            if (class_exists('HappyPlace\\Services\\City_API_Integration')) {
+                HappyPlace\Services\City_API_Integration::get_instance();
+                error_log('HPH: City API Integration Service initialized');
+            }
+        }
+
         // Load Admin Classes (only on admin pages)
         if (is_admin()) {
             hph_init_admin();
@@ -267,6 +294,11 @@ function hph_init_main() {
 
         // Load ACF Enhancements
         hph_init_acf_enhancements();
+
+        // Load debug tools in development
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            hph_init_debug_tools();
+        }
 
     } catch (Exception $e) {
         error_log('HPH: Error in main init: ' . $e->getMessage());
@@ -289,6 +321,22 @@ function hph_init_acf_enhancements() {
 
     } catch (Exception $e) {
         error_log('HPH: Error in ACF enhancements: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Initialize debug tools (development only)
+ */
+function hph_init_debug_tools() {
+    try {
+        // City API test
+        if (file_exists(HPH_INCLUDES_PATH . 'debug/city-api-test.php')) {
+            require_once HPH_INCLUDES_PATH . 'debug/city-api-test.php';
+        }
+        
+        error_log('HPH: Debug tools loaded');
+    } catch (Exception $e) {
+        error_log('HPH: Error loading debug tools: ' . $e->getMessage());
     }
 }
 

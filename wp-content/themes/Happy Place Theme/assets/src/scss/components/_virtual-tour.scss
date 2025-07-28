@@ -1,0 +1,677 @@
+/* ============================================================================
+   VIRTUAL TOUR & FLOOR PLANS SECTION STYLES
+   Clean, modern implementation consistent with listing swipe card design
+   ============================================================================ */
+
+/* Section Base */
+.hph-virtual-experience {
+    background: var(--color-white);
+    padding: var(--spacing-16) 0;
+    margin: var(--spacing-12) 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* Section Header */
+.hph-section-header {
+    text-align: center;
+    margin-bottom: var(--spacing-10);
+}
+
+.hph-section-title {
+    font-family: var(--font-family-primary);
+    font-size: 2.25rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin: 0 0 var(--spacing-3) 0;
+    line-height: 1.2;
+}
+
+.hph-section-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-light);
+    margin: 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+}
+
+/* Experience Tabs */
+.hph-experience-tabs {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-2);
+    margin-bottom: var(--spacing-8);
+    padding: var(--spacing-1);
+    background: var(--color-gray-100);
+    border-radius: var(--button-border-radius);
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hph-tab-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-5);
+    background: transparent;
+    border: none;
+    border-radius: var(--button-border-radius);
+    font-family: var(--font-family-primary);
+    font-size: 0.9rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-light);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    white-space: nowrap;
+    flex: 1;
+    justify-content: center;
+    
+    i {
+        font-size: 1rem;
+    }
+    
+    &:hover {
+        color: var(--color-text);
+        background: rgba(255, 255, 255, 0.5);
+    }
+    
+    &.active {
+        background: var(--color-white);
+        color: var(--color-primary);
+        box-shadow: var(--card-shadow);
+        
+        i {
+            color: var(--color-primary);
+        }
+    }
+}
+
+/* Tab Content */
+.hph-tab-content {
+    position: relative;
+}
+
+.hph-tab-panel {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+    
+    &.active {
+        display: block;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Virtual Tour Container */
+.hph-tour-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-8);
+    align-items: start;
+}
+
+/* Tour Player */
+.hph-tour-player {
+    position: relative;
+    background: var(--color-gray-50);
+    border-radius: var(--card-border-radius);
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    box-shadow: var(--card-shadow);
+}
+
+/* Tour Preview */
+.hph-tour-preview {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--hph-primary-600), var(--hph-primary-500));
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    
+    &:hover {
+        transform: scale(1.02);
+        box-shadow: var(--card-shadow-hover);
+    }
+}
+
+.hph-tour-preview-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.hph-preview-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
+        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 2px, transparent 2px);
+    background-size: 50px 50px;
+    background-position: 0 0, 25px 25px;
+    opacity: 0.3;
+}
+
+.hph-tour-preview-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+}
+
+.hph-play-button {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-4) auto;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    backdrop-filter: blur(10px);
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: scale(1.1);
+    }
+}
+
+.hph-play-icon {
+    font-size: 1.5rem;
+    color: white;
+    margin-left: 4px; /* Visual centering for play icon */
+}
+
+.hph-tour-info {
+    h3 {
+        font-size: 1.5rem;
+        font-weight: var(--font-weight-bold);
+        margin: 0 0 var(--spacing-2) 0;
+        color: white;
+    }
+    
+    p {
+        font-size: 1rem;
+        margin: 0;
+        opacity: 0.9;
+        color: white;
+    }
+}
+
+/* Tour Loading */
+.hph-tour-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-white);
+    color: var(--color-text);
+    
+    p {
+        margin: var(--spacing-4) 0 0 0;
+        font-weight: var(--font-weight-medium);
+    }
+}
+
+.hph-loading-spinner {
+    margin-bottom: var(--spacing-2);
+}
+
+.hph-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-gray-200);
+    border-top: 3px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Tour Iframe */
+.hph-tour-iframe-container {
+    position: absolute;
+    inset: 0;
+    
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+}
+
+.hph-tour-controls {
+    position: absolute;
+    top: var(--spacing-4);
+    right: var(--spacing-4);
+    display: flex;
+    gap: var(--spacing-2);
+}
+
+.hph-tour-control-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-normal);
+    backdrop-filter: blur(10px);
+    
+    &:hover {
+        background: rgba(0, 0, 0, 0.9);
+        transform: scale(1.1);
+    }
+    
+    i {
+        font-size: 0.875rem;
+    }
+}
+
+/* Tour Features */
+.hph-tour-features {
+    background: var(--color-gray-50);
+    padding: var(--spacing-6);
+    border-radius: var(--card-border-radius);
+    border: 1px solid var(--color-border);
+}
+
+.hph-features-title {
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin: 0 0 var(--spacing-5) 0;
+}
+
+.hph-features-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+}
+
+.hph-feature-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    font-size: 0.9rem;
+    color: var(--color-text);
+    
+    i {
+        width: 20px;
+        color: var(--color-primary);
+        text-align: center;
+    }
+    
+    span {
+        font-weight: var(--font-weight-medium);
+    }
+}
+
+/* Tour Actions */
+.hph-tour-actions {
+    .hph-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Floor Plans Container */
+.hph-floor-plans-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Floor Plans Grid */
+.hph-floor-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-8);
+}
+
+.hph-floor-plan-item {
+    background: var(--color-white);
+    border-radius: var(--card-border-radius);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: all var(--transition-normal);
+    
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--card-shadow-hover);
+    }
+}
+
+.hph-plan-image {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform var(--transition-normal);
+    }
+    
+    &:hover img {
+        transform: scale(1.05);
+    }
+}
+
+.hph-plan-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    
+    .hph-floor-plan-item:hover & {
+        opacity: 1;
+    }
+}
+
+.hph-view-plan-btn {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: var(--spacing-3) var(--spacing-5);
+    border-radius: var(--button-border-radius);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    transition: all var(--transition-normal);
+    
+    &:hover {
+        background: var(--hph-primary-600);
+        transform: translateY(-2px);
+    }
+}
+
+.hph-plan-info {
+    padding: var(--spacing-4);
+}
+
+.hph-plan-title {
+    font-size: 1.125rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin: 0;
+}
+
+/* Floor Plan Actions */
+.hph-floor-plan-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-4);
+    flex-wrap: wrap;
+}
+
+/* Button Styles */
+.hph-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-5);
+    border-radius: var(--button-border-radius);
+    font-family: var(--font-family-primary);
+    font-size: 0.9rem;
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: 2px solid transparent;
+    
+    i {
+        font-size: 0.875rem;
+    }
+    
+    &.hph-btn--primary {
+        background: var(--color-primary);
+        color: white;
+        
+        &:hover {
+            background: var(--hph-primary-600);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(var(--hph-primary-500), 0.3);
+        }
+    }
+    
+    &.hph-btn--outline {
+        background: transparent;
+        color: var(--color-primary);
+        border-color: var(--color-primary);
+        
+        &:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+    }
+}
+
+/* Modal Styles */
+.hph-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-4);
+}
+
+.hph-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+.hph-modal-content {
+    position: relative;
+    background: var(--color-white);
+    border-radius: var(--card-border-radius);
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.hph-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-4) var(--spacing-5);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.hph-modal-title {
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin: 0;
+}
+
+.hph-modal-close {
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    color: var(--color-text-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-normal);
+    
+    &:hover {
+        background: var(--color-gray-100);
+        color: var(--color-text);
+    }
+}
+
+.hph-modal-body {
+    padding: 0;
+    
+    img {
+        width: 100%;
+        height: auto;
+        display: block;
+        max-height: 70vh;
+        object-fit: contain;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .hph-tour-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-6);
+    }
+    
+    .hph-tour-features {
+        order: -1;
+    }
+    
+    .hph-floor-plans-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--spacing-4);
+    }
+}
+
+@media (max-width: 768px) {
+    .hph-virtual-experience {
+        padding: var(--spacing-12) 0;
+    }
+    
+    .hph-section-title {
+        font-size: 1.875rem;
+    }
+    
+    .hph-section-subtitle {
+        font-size: 1rem;
+    }
+    
+    .hph-experience-tabs {
+        max-width: 100%;
+    }
+    
+    .hph-tab-btn {
+        font-size: 0.8rem;
+        padding: var(--spacing-3) var(--spacing-4);
+        
+        span {
+            display: none;
+        }
+        
+        i {
+            font-size: 1.125rem;
+        }
+    }
+    
+    .hph-play-button {
+        width: 60px;
+        height: 60px;
+        
+        .hph-play-icon {
+            font-size: 1.25rem;
+        }
+    }
+    
+    .hph-tour-info h3 {
+        font-size: 1.25rem;
+    }
+    
+    .hph-floor-plan-actions {
+        flex-direction: column;
+        align-items: center;
+        
+        .hph-btn {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+    
+    .hph-features-list {
+        gap: var(--spacing-3);
+    }
+    
+    .hph-feature-item {
+        font-size: 0.85rem;
+    }
+    
+    .hph-modal-content {
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+    
+    .hph-modal-header {
+        padding: var(--spacing-3) var(--spacing-4);
+    }
+    
+    .hph-modal-title {
+        font-size: 1.125rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-virtual-experience {
+        padding: var(--spacing-10) 0;
+        margin: var(--spacing-8) 0;
+    }
+    
+    .hph-section-title {
+        font-size: 1.625rem;
+    }
+    
+    .hph-tour-features {
+        padding: var(--spacing-4);
+    }
+    
+    .hph-floor-plans-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-4);
+    }
+    
+    .hph-experience-tabs {
+        padding: 2px;
+        gap: 2px;
+    }
+    
+    .hph-tab-btn {
+        padding: var(--spacing-2) var(--spacing-3);
+        border-radius: 4px;
+    }
+}

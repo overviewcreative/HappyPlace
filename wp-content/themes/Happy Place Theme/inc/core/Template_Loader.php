@@ -17,6 +17,13 @@ if (!defined('ABSPATH')) {
 
 class Template_Loader {
     /**
+     * Template cache for performance
+     *
+     * @var array
+     */
+    private static array $template_cache = [];
+    
+    /**
      * Instance of the class
      *
      * @var Template_Loader
@@ -74,19 +81,28 @@ class Template_Loader {
      */
     private function setup_template_paths(): void {
         $this->template_paths = apply_filters('happy_place_template_paths', [
+            // Primary WordPress standard structure
+            'template-parts/listing/',
+            'template-parts/agent/',
+            'template-parts/community/',
+            'template-parts/dashboard/',
+            'template-parts/cards/',
+            'template-parts/forms/',
+            'template-parts/filters/',
+            'template-parts/navigation/',
+            'template-parts/',
+            
+            // Legacy fallbacks for backward compatibility
             'templates/listing/',
             'templates/agent/',
             'templates/community/',
-            'templates/city/',
-            'templates/team/',
-            'templates/transaction/',
-            'templates/open-house/',
-            'templates/local-place/',
-            'templates/place/',
             'templates/dashboard/',
+            'templates/cards/',
+            'templates/forms/',
+            'templates/filters/',
+            'templates/navigation/',
             'templates/template-parts/',
             'templates/',
-            'template-parts/',
             '',
         ]);
     }
@@ -195,6 +211,13 @@ class Template_Loader {
         try {
             $template_name = basename($template_path);
             
+            // Skip Assets_Manager for templates that the theme handles directly
+            $theme_handled_templates = ['single-listing.php', 'archive-listing.php'];
+            if (in_array($template_name, $theme_handled_templates)) {
+                do_action('hph_after_template_assets_loaded', $template_name, $template_path);
+                return;
+            }
+            
             // Try to load assets only if Assets Manager is available
             if (class_exists('\\HappyPlace\\Core\\Assets_Manager')) {
                 $assets_manager = \HappyPlace\Core\Assets_Manager::instance();
@@ -292,6 +315,21 @@ class Template_Loader {
                 error_log("HPH Template Loader: Template part not found - Slug: {$slug}, Name: {$name}, Post Type: {$post_type}");
                 error_log("HPH Template Loader: Searched paths: " . implode(', ', $templates));
             }
+            
+            // Show debug output for administrators
+            if (defined('WP_DEBUG') && WP_DEBUG && current_user_can('manage_options')) {
+                echo '<div style="background: #fef2f2; padding: 10px; margin: 10px; border-left: 4px solid #ef4444; font-family: monospace; font-size: 12px;">';
+                echo '<strong>Template Loader Debug:</strong> Template not found<br>';
+                echo '<strong>Slug:</strong> ' . esc_html($slug) . '<br>';
+                echo '<strong>Name:</strong> ' . esc_html($name) . '<br>';
+                echo '<strong>Post Type:</strong> ' . esc_html($post_type) . '<br>';
+                echo '<strong>Searched paths:</strong><br>';
+                foreach ($templates as $t) {
+                    $full_path = get_template_directory() . '/' . $t;
+                    echo '- ' . esc_html($t) . ' (' . (file_exists($full_path) ? 'EXISTS' : 'MISSING') . ')<br>';
+                }
+                echo '</div>';
+            }
         }
     }
 
@@ -307,6 +345,14 @@ class Template_Loader {
     public function locate_template($template_names, bool $load = false, bool $require_once = true, array $args = []): string {
         $located = '';
         
+        // Create cache key
+        $cache_key = md5(serialize($template_names));
+        
+        // Check cache first (only for non-loading calls to avoid include issues)
+        if (!$load && isset(self::$template_cache[$cache_key])) {
+            return self::$template_cache[$cache_key];
+        }
+        
         foreach ((array) $template_names as $template_name) {
             if (!$template_name) {
                 continue;
@@ -321,6 +367,11 @@ class Template_Loader {
                     break 2;
                 }
             }
+        }
+        
+        // Cache the result (only for non-loading calls)
+        if (!$load) {
+            self::$template_cache[$cache_key] = $located;
         }
 
         if ($load && $located) {

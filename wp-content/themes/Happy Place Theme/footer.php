@@ -147,7 +147,7 @@
     
     <?php 
     // Include global modals
-    get_template_part('templates/template-parts/global/modals'); 
+    get_template_part('template-parts/global/modals'); 
     ?>
     
     <?php wp_footer(); ?>

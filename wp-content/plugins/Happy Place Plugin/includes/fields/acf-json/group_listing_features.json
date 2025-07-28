@@ -62,7 +62,7 @@
             "label": "Lot Size",
             "name": "lot_size",
             "type": "number",
-            "instructions": "Size of the lot in square feet",
+            "instructions": "Size of the lot in acres",
             "required": 0,
             "wrapper": {
                 "width": "34",
@@ -70,10 +70,10 @@
                 "id": ""
             },
             "min": 0,
-            "max": 10000000,
-            "step": 1,
-            "placeholder": "e.g., 8712",
-            "append": "sq ft"
+            "max": 100,
+            "step": 0.01,
+            "placeholder": "e.g., 0.2",
+            "append": "acres"
         },
         {
             "key": "field_full_baths",

@@ -1,0 +1,325 @@
+// assets/scss/components/_mortgage-calculator.scss
+
+.mortgage-calculator-widget {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  overflow: hidden;
+
+  .widget-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    background: linear-gradient(135deg, var(--hph-color-primary-400) 0%, var(--hph-color-primary-600) 100%);
+    color: white;
+  }
+
+  .widget-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .widget-subtitle {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 0.9rem;
+  }
+
+  .widget-content {
+    padding: 1.5rem;
+  }
+
+  // Form Styles
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: 500;
+    color: var(--hph-color-gray-800);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+
+    .required {
+      color: #ef4444;
+    }
+  }
+
+  .input-group {
+    position: relative;
+  }
+
+  .input-prefix {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--hph-color-gray-600);
+    font-weight: 500;
+    z-index: 2;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2rem;
+    border: 2px solid var(--hph-color-gray-200);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+    background: var(--hph-color-gray-50);
+
+    &:focus {
+      outline: none;
+      border-color: var(--hph-color-primary-400);
+      background: white;
+    }
+  }
+
+  // Range Sliders
+  .range-slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--hph-color-gray-200);
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    margin-bottom: 1rem;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--hph-color-primary-400);
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    &::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--hph-color-primary-400);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .range-values {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .range-percent {
+    font-weight: 600;
+    color: var(--hph-color-primary-600);
+  }
+
+  .range-amount {
+    font-size: 0.9rem;
+    color: var(--hph-color-gray-600);
+  }
+
+  // Form Tabs
+  .form-tabs {
+    display: flex;
+    border: 2px solid var(--hph-color-gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+
+    input[type="radio"] {
+      display: none;
+    }
+  }
+
+  .tab-label {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    background: var(--hph-color-gray-50);
+    border-right: 1px solid var(--hph-color-gray-200);
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  .form-tabs input[type="radio"]:checked + .tab-label {
+    background: var(--hph-color-primary-400);
+    color: white;
+  }
+
+  // Results
+  .mortgage-results {
+    margin: 2rem 0;
+    border: 1px solid var(--hph-color-gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .results-header {
+    padding: 1rem 1.5rem;
+    background: var(--hph-color-gray-50);
+    border-bottom: 1px solid var(--hph-color-gray-200);
+
+    h4 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--hph-color-gray-800);
+    }
+  }
+
+  .payment-breakdown {
+    padding: 1rem 0;
+  }
+
+  .payment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+
+    &.primary {
+      background: #fef3f2;
+    }
+
+    &.pmi {
+      background: #fff7ed;
+    }
+  }
+
+  .payment-label {
+    font-size: 0.9rem;
+    color: var(--hph-color-gray-800);
+  }
+
+  .payment-amount {
+    font-weight: 600;
+    color: var(--hph-color-gray-800);
+  }
+
+  .total-payment {
+    border-top: 2px solid var(--hph-color-gray-200);
+    background: var(--hph-color-gray-50);
+
+    .payment-item.total {
+      .payment-label {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+
+      .payment-amount {
+        font-size: 1.25rem;
+        color: var(--hph-color-primary-600);
+      }
+    }
+  }
+
+  // Disclaimer
+  .calculator-disclaimer {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: var(--hph-color-primary-50);
+    border-radius: 8px;
+    border-left: 4px solid var(--hph-color-primary-400);
+
+    p {
+      margin: 0;
+      color: var(--hph-color-gray-600);
+      line-height: 1.4;
+    }
+
+    i {
+      color: var(--hph-color-primary-600);
+      margin-right: 0.5rem;
+    }
+  }
+
+  // Action Buttons
+  .calculator-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .btn-block {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    font-size: 0.9rem;
+  }
+
+  .btn-primary {
+    background: var(--hph-color-primary-400);
+    color: white;
+
+    &:hover {
+      background: var(--hph-color-primary-600);
+      transform: translateY(-1px);
+    }
+  }
+
+  .btn-outline {
+    background: white;
+    color: var(--hph-color-primary-600);
+    border: 2px solid var(--hph-color-primary-400);
+
+    &:hover {
+      background: var(--hph-color-primary-400);
+      color: white;
+    }
+  }
+
+  // Responsive Design
+  @media (max-width: 768px) {
+    .widget-header,
+    .widget-content {
+      padding: 1rem;
+    }
+    
+    .form-tabs {
+      flex-direction: column;
+
+      .tab-label {
+        border-right: none;
+        border-bottom: 1px solid var(--hph-color-gray-200);
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+    
+    .payment-item {
+      padding: 0.75rem 1rem;
+    }
+    
+    .results-header {
+      padding: 0.75rem 1rem;
+    }
+  }
+}

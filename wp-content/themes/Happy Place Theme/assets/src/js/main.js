@@ -4,9 +4,25 @@ console.log('Happy Place Theme JS loaded');
 // Import SCSS
 import '../scss/main.scss';
 
+// Import hero carousel for global use
+import { initHeroCarousels, observeHeroCarousels } from './components/hero-carousel.js';
+
+// Import property stats module for enhanced lot size display
+import { PropertyStats } from './modules/property-stats.js';
+
+// Import listing sidebar module for open house and mortgage calculator functionality
+import './modules/listing-sidebar.js';
+
 // Simple DOM ready function
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Happy Place Theme initialized');
+    
+    // Initialize hero carousels globally
+    initHeroCarousels();
+    observeHeroCarousels();
+    
+    // Initialize property stats enhancements
+    new PropertyStats();
     
     // Initialize modal functionality
     initModals();

@@ -83,85 +83,14 @@ class Listing extends Base_Post_Type {
 
     /**
      * Register taxonomies
+     * 
+     * Note: Taxonomies are now handled by the Happy Place Plugin
+     * This method is kept for compatibility but does nothing
      */
     public function register_taxonomies() {
-        // Property Type Taxonomy
-        $type_labels = [
-            'name'              => _x('Property Types', 'taxonomy general name', 'happy-place'),
-            'singular_name'     => _x('Property Type', 'taxonomy singular name', 'happy-place'),
-            'search_items'      => __('Search Property Types', 'happy-place'),
-            'all_items'         => __('All Property Types', 'happy-place'),
-            'parent_item'       => __('Parent Property Type', 'happy-place'),
-            'parent_item_colon' => __('Parent Property Type:', 'happy-place'),
-            'edit_item'         => __('Edit Property Type', 'happy-place'),
-            'update_item'       => __('Update Property Type', 'happy-place'),
-            'add_new_item'      => __('Add New Property Type', 'happy-place'),
-            'new_item_name'     => __('New Property Type Name', 'happy-place'),
-            'menu_name'         => __('Property Types', 'happy-place'),
-        ];
-
-        register_taxonomy('property_type', [$this->post_type], [
-            'labels'            => $type_labels,
-            'hierarchical'      => true,
-            'public'            => true,
-            'show_ui'           => true,
-            'show_admin_column' => true,
-            'show_in_rest'      => true,
-            'query_var'         => true,
-            'rewrite'           => ['slug' => 'property-type'],
-        ]);
-
-        // Location Taxonomy
-        $location_labels = [
-            'name'              => _x('Locations', 'taxonomy general name', 'happy-place'),
-            'singular_name'     => _x('Location', 'taxonomy singular name', 'happy-place'),
-            'search_items'      => __('Search Locations', 'happy-place'),
-            'all_items'         => __('All Locations', 'happy-place'),
-            'parent_item'       => __('Parent Location', 'happy-place'),
-            'parent_item_colon' => __('Parent Location:', 'happy-place'),
-            'edit_item'         => __('Edit Location', 'happy-place'),
-            'update_item'       => __('Update Location', 'happy-place'),
-            'add_new_item'      => __('Add New Location', 'happy-place'),
-            'new_item_name'     => __('New Location Name', 'happy-place'),
-            'menu_name'         => __('Locations', 'happy-place'),
-        ];
-
-        register_taxonomy('listing_location', [$this->post_type], [
-            'labels'            => $location_labels,
-            'hierarchical'      => true,
-            'public'            => true,
-            'show_ui'           => true,
-            'show_admin_column' => true,
-            'show_in_rest'      => true,
-            'query_var'         => true,
-            'rewrite'           => ['slug' => 'location'],
-        ]);
-
-        // Features Taxonomy
-        $features_labels = [
-            'name'              => _x('Features', 'taxonomy general name', 'happy-place'),
-            'singular_name'     => _x('Feature', 'taxonomy singular name', 'happy-place'),
-            'search_items'      => __('Search Features', 'happy-place'),
-            'all_items'         => __('All Features', 'happy-place'),
-            'parent_item'       => __('Parent Feature', 'happy-place'),
-            'parent_item_colon' => __('Parent Feature:', 'happy-place'),
-            'edit_item'         => __('Edit Feature', 'happy-place'),
-            'update_item'       => __('Update Feature', 'happy-place'),
-            'add_new_item'      => __('Add New Feature', 'happy-place'),
-            'new_item_name'     => __('New Feature Name', 'happy-place'),
-            'menu_name'         => __('Features', 'happy-place'),
-        ];
-
-        register_taxonomy('listing_feature', [$this->post_type], [
-            'labels'            => $features_labels,
-            'hierarchical'      => false,
-            'public'            => true,
-            'show_ui'           => true,
-            'show_admin_column' => true,
-            'show_in_rest'      => true,
-            'query_var'         => true,
-            'rewrite'           => ['slug' => 'feature'],
-        ]);
+        // Taxonomies are now registered by the Happy Place Plugin
+        // in /wp-content/plugins/Happy Place Plugin/includes/core/class-taxonomies.php
+        // This prevents duplicate registrations and conflicts
     }
 
     /**

@@ -1,11 +1,8 @@
 // Happy Place Theme - Main SCSS
-// Aligned with style.css design system
+// Consolidated and optimized structure
 
-/* Import Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
-/* Import Component Styles */
-@import 'components/action-btn';
+/* Import Consolidated Base */
+@import 'consolidated-main';
 
 /* Enhanced Color System - Extended Monochromatic #51bae0 */
 :root {
@@ -52,6 +49,14 @@
     --hph-color-info: var(--hph-color-primary-500);
     --hph-color-info-light: var(--hph-color-primary-50);
     --hph-color-info-dark: var(--hph-color-primary-800);
+    
+    /* FontAwesome Icon Enhancement Variables */
+    --hph-icon-size-xs: 0.75rem;
+    --hph-icon-size-sm: 0.875rem;
+    --hph-icon-size-base: 1rem;
+    --hph-icon-size-lg: 1.125rem;
+    --hph-icon-size-xl: 1.25rem;
+    --hph-icon-size-2xl: 1.5rem;
 
     /* Typography */
     --hph-font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -169,6 +174,18 @@
     --hph-container-lg: 1024px;
     --hph-container-xl: 1280px;
     --hph-container-2xl: 1400px;
+
+    /* Legacy Compatibility Variables for Components */
+    --primary-color: var(--hph-color-primary-400);
+    --primary-dark: var(--hph-color-primary-600);
+    --primary-light: var(--hph-color-primary-100);
+    --text-dark: var(--hph-color-gray-800);
+    --text-muted: var(--hph-color-gray-600);
+    --body-bg: var(--hph-color-white);
+    --error-color: var(--hph-color-danger);
+    --border-radius: var(--hph-radius-lg);
+    --shadow-base: var(--hph-shadow-base);
+    --shadow-lg: var(--hph-shadow-lg);
 }
 
 /* Reset and Base Styles */
@@ -274,82 +291,172 @@ a:focus {
 .hph-container-xl { max-width: var(--hph-container-xl); }
 .hph-container-2xl { max-width: var(--hph-container-2xl); }
 
-/* Button System */
-.btn, .hph-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--hph-spacing-2);
-    padding: var(--hph-spacing-3) var(--hph-spacing-6);
-    border-radius: var(--hph-radius-lg);
-    font-size: var(--hph-font-size-sm);
-    font-weight: var(--hph-font-medium);
-    font-family: inherit;
-    line-height: 1;
-    border: none;
-    cursor: pointer;
-    transition: all var(--hph-transition-fast);
-    text-decoration: none;
-    white-space: nowrap;
-    position: relative;
-    overflow: hidden;
-    user-select: none;
+/* Grid System */
+.hph-grid {
+    display: grid;
+    gap: var(--hph-spacing-6);
 }
 
-.btn:focus, .hph-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--hph-color-primary-200);
+.hph-grid-cols-1 { grid-template-columns: 1fr; }
+.hph-grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.hph-grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.hph-grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Layout Classes */
+.hph-main-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hph-spacing-8);
+    min-width: 0;
 }
 
-.btn:disabled, .hph-btn:disabled,
-.btn[disabled], .hph-btn[disabled] {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
-    pointer-events: none;
+.hph-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hph-spacing-6);
+    height: fit-content;
+    position: sticky;
+    top: var(--hph-spacing-6);
 }
 
-/* Primary Button */
-.btn-primary, .hph-btn-primary {
-    background: linear-gradient(135deg, var(--hph-color-primary-500), var(--hph-color-primary-600));
-    color: var(--hph-color-white) !important;
-    box-shadow: var(--hph-shadow-primary);
-    border: 1px solid transparent;
+.hph-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: var(--hph-spacing-10);
+    align-items: start;
 }
 
-.btn-primary:hover:not(:disabled), .hph-btn-primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--hph-color-primary-600), var(--hph-color-primary-700));
-    box-shadow: var(--hph-shadow-primary-lg);
-    transform: translateY(-1px);
-    color: var(--hph-color-white) !important;
+@media (max-width: 1024px) {
+    .hph-content-grid {
+        grid-template-columns: 1fr;
+        gap: var(--hph-spacing-6);
+    }
+    
+    .hph-sidebar {
+        order: -1;
+        position: static !important;
+        top: auto !important;
+    }
 }
 
-.btn-primary:active, .hph-btn-primary:active {
-    transform: translateY(0);
-    box-shadow: var(--hph-shadow-primary);
-    color: var(--hph-color-white) !important;
-}
-
-.btn-primary:focus, .hph-btn-primary:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--hph-color-primary-200);
-    color: var(--hph-color-white) !important;
-}
-
-/* Secondary Button */
-.btn-secondary, .hph-btn-secondary {
+/* Card System */
+.hph-card {
     background: var(--hph-color-white);
-    color: var(--hph-color-gray-700);
-    border: 1px solid var(--hph-color-gray-300);
-    box-shadow: var(--hph-shadow-xs);
+    border-radius: var(--hph-radius-xl);
+    box-shadow: var(--hph-shadow-base);
+    overflow: hidden;
+    transition: box-shadow var(--hph-transition-base);
 }
 
-.btn-secondary:hover:not(:disabled), .hph-btn-secondary:hover:not(:disabled) {
+.hph-card:hover {
+    box-shadow: var(--hph-shadow-lg);
+}
+
+.hph-card-header {
+    padding: var(--hph-spacing-6);
+    border-bottom: 1px solid var(--hph-color-gray-200);
+}
+
+.hph-card-body {
+    padding: var(--hph-spacing-6);
+}
+
+.hph-card-footer {
+    padding: var(--hph-spacing-6);
+    border-top: 1px solid var(--hph-color-gray-200);
     background: var(--hph-color-gray-50);
-    border-color: var(--hph-color-gray-400);
-    box-shadow: var(--hph-shadow-sm);
-    transform: translateY(-1px);
-    color: var(--hph-color-gray-700);
+}
+
+.hph-card-title {
+    font-size: var(--hph-font-size-xl);
+    font-weight: var(--hph-font-semibold);
+    color: var(--hph-color-gray-900);
+    margin: 0 0 var(--hph-spacing-2) 0;
+}
+
+.hph-card-subtitle {
+    color: var(--hph-color-gray-600);
+    font-size: var(--hph-font-size-sm);
+    margin: 0;
+}
+
+/* Legacy card classes for compatibility */
+.card {
+    background: var(--hph-color-white);
+    border-radius: var(--hph-radius-xl);
+    box-shadow: var(--hph-shadow-base);
+    overflow: hidden;
+    transition: box-shadow var(--hph-transition-base);
+}
+
+.card:hover {
+    box-shadow: var(--hph-shadow-lg);
+}
+
+.card-header {
+    padding: var(--hph-spacing-6);
+    border-bottom: 1px solid var(--hph-color-gray-200);
+}
+
+.card-body {
+    padding: var(--hph-spacing-6);
+}
+
+.card-title {
+    font-size: var(--hph-font-size-xl);
+    font-weight: var(--hph-font-semibold);
+    color: var(--hph-color-gray-900);
+    margin: 0 0 var(--hph-spacing-2) 0;
+}
+
+/* Agent Card Styles */
+.agent-card {
+    text-align: center;
+}
+
+.agent-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid var(--hph-color-gray-200);
+    margin: 0 auto var(--hph-spacing-4);
+    object-fit: cover;
+    display: block;
+}
+
+.agent-name {
+    font-size: var(--hph-font-size-lg);
+    font-weight: var(--hph-font-semibold);
+    color: var(--hph-color-gray-900);
+    margin-bottom: var(--hph-spacing-1);
+}
+
+.agent-title {
+    font-size: var(--hph-font-size-sm);
+    color: var(--hph-color-gray-600);
+    margin-bottom: var(--hph-spacing-4);
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hph-spacing-2);
+    margin-bottom: var(--hph-spacing-4);
+    text-align: left;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-spacing-2);
+    font-size: var(--hph-font-size-sm);
+    color: var(--hph-color-gray-600);
+
+    i {
+        color: var(--hph-color-primary-500);
+        width: 16px;
+        text-align: center;
+    }
 }
 
 /* Single Listing Styles */
@@ -1798,3 +1905,148 @@ a:focus {
 body.modal-open {
     overflow: hidden;
 }
+
+/* ============================================================================
+   FONTAWESOME ICON ENHANCEMENTS
+   ============================================================================ */
+
+/* Global icon styling improvements */
+.hph-icon {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    
+    /* Size utilities */
+    &.hph-icon--xs { font-size: var(--hph-icon-size-xs); }
+    &.hph-icon--sm { font-size: var(--hph-icon-size-sm); }
+    &.hph-icon--base { font-size: var(--hph-icon-size-base); }
+    &.hph-icon--lg { font-size: var(--hph-icon-size-lg); }
+    &.hph-icon--xl { font-size: var(--hph-icon-size-xl); }
+    &.hph-icon--2xl { font-size: var(--hph-icon-size-2xl); }
+}
+
+/* Property stat icons with semantic colors */
+.fa-bed, .hph-icon-bed { color: var(--hph-primary-600); }
+.fa-bath, .hph-icon-bath { color: var(--hph-color-info); }
+.fa-ruler-combined, .hph-icon-sqft { color: var(--hph-color-warning); }
+.fa-expand-arrows-alt, .hph-icon-lot { color: var(--hph-color-success); }
+.fa-calendar-alt, .hph-icon-year { color: var(--hph-color-gray-600); }
+.fa-warehouse, .hph-icon-garage { color: var(--hph-color-gray-700); }
+
+/* Interactive icon states */
+.hph-icon-interactive {
+    transition: all var(--hph-transition-normal, 0.2s ease);
+    cursor: pointer;
+    
+    &:hover {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    
+    &:active {
+        transform: scale(0.95);
+    }
+}
+
+/* Status badge icons */
+.hph-icon-status {
+    &.status-active, &.status-for-sale { color: var(--hph-color-success); }
+    &.status-sold { color: var(--hph-color-danger); }
+    &.status-pending { color: var(--hph-color-warning); }
+    &.status-off-market { color: var(--hph-color-gray-500); }
+}
+
+/* Property stats enhancements */
+.hph-stat--animated {
+    animation: statFadeIn 0.6s ease-out;
+}
+
+.hph-hero__stat, .hph-quick-fact {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    padding: 8px;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    &:focus {
+        outline: 2px solid var(--hph-primary-400);
+        outline-offset: 2px;
+    }
+    
+    .primary-value {
+        font-weight: var(--hph-font-bold);
+    }
+    
+    .unit {
+        font-size: 0.85em;
+        opacity: 0.8;
+        margin-left: 2px;
+    }
+    
+    .alt-value {
+        font-size: 0.8em;
+        opacity: 0.7;
+        margin-left: 4px;
+    }
+}
+
+/* Keyframe animations */
+@keyframes statFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    20% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* Tooltip enhancements */
+.hph-tooltip {
+    font-family: var(--hph-font-secondary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    
+    &::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: rgba(0, 0, 0, 0.9);
+    }
+}
+
+/* ============================================================================
+   TEMPLATE-SPECIFIC STYLES
+   ============================================================================ */
+
+/* Single Listing Page Components - Complete System */
+@import 'templates/single-listing';
+
+/* Hero Section Fixes */
+@import 'components/hero-section-fixes';
+
+/* ============================================================================
+   DASHBOARD STYLES
+   ============================================================================ */
+
+/* Agent Dashboard - Complete Component System */
+@import 'components/dashboard/dashboard-main';
+
+/* Advanced Multistep Listing Form */
+@import 'components/multistep-listing-form';

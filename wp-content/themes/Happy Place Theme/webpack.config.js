@@ -1,13 +1,15 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const WebpackAssetsManifest = require('webpack-assets-manifest');
+const { WebpackAssetsManifest } = require('webpack-assets-manifest');
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
   
   return {
     entry: {
-      main: './assets/src/js/main.js',
+      main: ['./assets/src/scss/main.scss', './assets/src/js/main.js'],
+      'single-listing': ['./assets/src/scss/single-listing.scss', './assets/src/js/single-listing.js'],
+      'single-listing-init': './assets/src/js/single-listing-init.js',
     },
     
     output: {
@@ -22,9 +24,33 @@ module.exports = (env, argv) => {
           test: /\.s[ac]ss$/i,
           use: [
             MiniCssExtractPlugin.loader,
-            'css-loader',
-            'postcss-loader',
-            'sass-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: !isProduction,
+              },
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  plugins: [
+                    ['autoprefixer'],
+                    ...(isProduction ? [['cssnano', { preset: 'default' }]] : []),
+                  ],
+                },
+                sourceMap: !isProduction,
+              },
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: !isProduction,
+                sassOptions: {
+                  outputStyle: isProduction ? 'compressed' : 'expanded',
+                },
+              },
+            },
           ],
         },
         {
@@ -35,6 +61,16 @@ module.exports = (env, argv) => {
             'postcss-loader',
           ],
         },
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+            },
+          },
+        },
       ],
     },
     
@@ -44,10 +80,30 @@ module.exports = (env, argv) => {
       }),
       new WebpackAssetsManifest({
         output: 'manifest.json',
-        publicPath: true,
+        publicPath: '',
         writeToDisk: true,
+        transform: (assets) => {
+          // Ensure clean paths for WordPress loading
+          const cleanAssets = {};
+          Object.keys(assets).forEach(key => {
+            cleanAssets[key] = assets[key].replace(/^\/+/, '');
+          });
+          return cleanAssets;
+        },
       }),
     ],
+    
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+        },
+      },
+    },
     
     resolve: {
       extensions: ['.js', '.scss', '.css'],

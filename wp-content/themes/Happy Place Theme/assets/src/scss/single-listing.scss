@@ -1,0 +1,39 @@
+/**
+ * Single Listing Page - Main SCSS Entry Point
+ * This file is the webpack entry point for single listing page styles
+ * All component styles are imported through the main template file
+ */
+
+// Import the main template styles (includes all components)
+@import './templates/single-listing';
+
+// Import additional hero components if they exist
+@import './components/hero-section';
+@import './components/quick-facts';
+
+// Component-specific imports (add your new components here)
+// @import './components/hero-carousel';
+// @import './components/hero-gallery';
+// @import './components/hero-interactive';
+// @import './components/photo-gallery';
+// @import './components/mortgage-calculator';
+// @import './components/living-experience';
+// @import './components/property-details';
+// @import './components/sidebar-widgets';
+
+// Ensure all components are properly included
+@import './components/action-btn';
+@import './components/features';
+@import './components/gallery';
+@import './components/mortgage-calculator';
+@import './components/photo-gallery';
+@import './components/property-details';
+@import './components/sidebar-widgets';
+@import './components/living-experience';
+@import './components/open-house';
+
+// Button components
+@import './components/buttons/action-btn';
+
+// Card components
+@import './components/cards/listing-swipe-card';

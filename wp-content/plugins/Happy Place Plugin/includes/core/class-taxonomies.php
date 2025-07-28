@@ -141,6 +141,73 @@ class Taxonomies {
                 'add_new_item' => 'Add New Category',
                 'new_item_name' => 'New Category Name',
             ]
+        ],
+        'listing_location' => [
+            'post_types' => ['listing'],
+            'args' => [
+                'hierarchical' => true,
+                'public' => true,
+                'show_in_rest' => true,
+                'show_admin_column' => true,
+                'rewrite' => ['slug' => 'location'],
+            ],
+            'labels' => [
+                'name' => 'Listing Locations',
+                'singular_name' => 'Location',
+                'menu_name' => 'Locations',
+                'search_items' => 'Search Locations',
+                'all_items' => 'All Locations',
+                'parent_item' => 'Parent Location',
+                'parent_item_colon' => 'Parent Location:',
+                'edit_item' => 'Edit Location',
+                'update_item' => 'Update Location',
+                'add_new_item' => 'Add New Location',
+                'new_item_name' => 'New Location Name',
+            ]
+        ],
+        'service_area' => [
+            'post_types' => ['agent'],
+            'args' => [
+                'hierarchical' => true,
+                'public' => true,
+                'show_in_rest' => true,
+                'show_admin_column' => true,
+                'rewrite' => ['slug' => 'service-area'],
+            ],
+            'labels' => [
+                'name' => 'Service Areas',
+                'singular_name' => 'Service Area',
+                'menu_name' => 'Service Areas',
+                'search_items' => 'Search Service Areas',
+                'all_items' => 'All Service Areas',
+                'parent_item' => 'Parent Service Area',
+                'parent_item_colon' => 'Parent Service Area:',
+                'edit_item' => 'Edit Service Area',
+                'update_item' => 'Update Service Area',
+                'add_new_item' => 'Add New Service Area',
+                'new_item_name' => 'New Service Area Name',
+            ]
+        ],
+        'listing_feature' => [
+            'post_types' => ['listing'],
+            'args' => [
+                'hierarchical' => false,
+                'public' => true,
+                'show_in_rest' => true,
+                'show_admin_column' => true,
+                'rewrite' => ['slug' => 'feature'],
+            ],
+            'labels' => [
+                'name' => 'Listing Features',
+                'singular_name' => 'Feature',
+                'menu_name' => 'Features',
+                'search_items' => 'Search Features',
+                'all_items' => 'All Features',
+                'edit_item' => 'Edit Feature',
+                'update_item' => 'Update Feature',
+                'add_new_item' => 'Add New Feature',
+                'new_item_name' => 'New Feature Name',
+            ]
         ]
     ];
 
@@ -157,6 +224,11 @@ class Taxonomies {
         
         // Log registration for debugging
         add_action('init', [$this, 'log_registered_taxonomies'], 1);
+        
+        // Initialize additional functionality
+        add_action('init', [$this, 'add_taxonomy_filters'], 20);
+        add_action('init', [$this, 'create_default_terms'], 25);
+        add_action('init', [$this, 'add_taxonomy_meta_fields'], 30);
     }
 
     /**
@@ -198,16 +270,18 @@ class Taxonomies {
      */
     public function add_taxonomy_filters(): void {
         $taxonomy_filters = [
-            'listing' => ['property_type', 'listing_status'],
-            'agent' => ['agent_specialty'],
-            'community' => ['community_amenities'],
-            'city' => ['city_highlights']
+            'listing' => ['property_type', 'property_status', 'listing_location', 'property_feature', 'listing_feature'],
+            'agent' => ['agent_specialty', 'service_area'],
+            'community' => ['community_amenity'],
         ];
 
         foreach ($taxonomy_filters as $post_type => $taxonomies) {
             foreach ($taxonomies as $taxonomy) {
                 add_filter("manage_edit-{$post_type}_columns", function($columns) use ($taxonomy) {
-                    $columns[$taxonomy] = get_taxonomy($taxonomy)->labels->singular_name;
+                    if (taxonomy_exists($taxonomy)) {
+                        $tax_obj = get_taxonomy($taxonomy);
+                        $columns[$taxonomy] = $tax_obj->labels->singular_name;
+                    }
                     return $columns;
                 });
 
@@ -240,7 +314,7 @@ class Taxonomies {
                 'Multi-Family',
                 'Vacant Land'
             ],
-            'listing_status' => [
+            'property_status' => [
                 'Active',
                 'Pending',
                 'Contingent',
@@ -257,9 +331,11 @@ class Taxonomies {
         ];
 
         foreach ($default_terms as $taxonomy => $terms) {
-            foreach ($terms as $term) {
-                if (!term_exists($term, $taxonomy)) {
-                    wp_insert_term($term, $taxonomy);
+            if (taxonomy_exists($taxonomy)) {
+                foreach ($terms as $term) {
+                    if (!term_exists($term, $taxonomy)) {
+                        wp_insert_term($term, $taxonomy);
+                    }
                 }
             }
         }

@@ -1,9 +1,0 @@
-{
-  "name": "happy-place-theme",
-  "version": "2.0.0",
-  "scripts": {
-    "build": "npx webpack --mode=production",
-    "dev": "npx webpack --mode=development"
-  },
-  "devDependencies": {}
-}

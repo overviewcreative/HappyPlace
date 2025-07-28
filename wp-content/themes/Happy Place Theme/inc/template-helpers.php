@@ -24,43 +24,71 @@ if (!defined('ABSPATH')) {
  * @param string $name Optional template name
  * @param array $args Optional arguments to pass to template
  */
-function hph_get_template_part(string $slug, string $name = null, array $args = []): void
-{
-    // Use existing template loader if available
-    if (class_exists('HPH_Template_Loader')) {
-        $template_loader = HPH_Template_Loader::instance();
+if (!function_exists('hph_get_template_part')) {
+    function hph_get_template_part(string $slug, ?string $name = null, array $args = []): void
+    {
+        // Cache key for template resolution
+        static $template_cache = [];
+        $cache_key = $slug . ($name ? "-{$name}" : '') . '-' . get_post_type();
         
-        // Build full template part path
-        $template_part = $name ? "{$slug}-{$name}" : $slug;
+        // Debug template part loading
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("HPH Template Helper: Loading template part - slug: {$slug}, name: " . ($name ?: 'none'));
+        }
         
-        // Use the existing template loader's method
-        $template_loader->get_template_part($template_part, $args);
-        return;
-    }
+        // Use existing template loader if available
+        if (class_exists('\\HappyPlace\\Core\\Template_Loader')) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("HPH Template Helper: Using Template_Loader class");
+            }
+            $template_loader = \HappyPlace\Core\Template_Loader::get_instance();
+            
+            // Use the existing template loader's method with correct parameters
+            $template_loader->get_template_part($slug, $name ?: '', $args);
+            return;
+        }
+        
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("HPH Template Helper: Template_Loader not available, using fallback");
+        }
     
     // Fallback to standard WordPress approach
     $templates = [];
     $name = (string) $name;
     
     if ($name !== '') {
-        $templates[] = "templates/template-parts/{$slug}-{$name}.php";
+        $templates[] = "template-parts/listing/{$slug}-{$name}.php";
         $templates[] = "template-parts/{$slug}-{$name}.php";
+        $templates[] = "templates/listing/{$slug}-{$name}.php";  // Legacy fallback
+        $templates[] = "templates/{$slug}-{$name}.php";
         $templates[] = "{$slug}-{$name}.php";
     }
     
-    $templates[] = "templates/template-parts/{$slug}.php";
+    $templates[] = "template-parts/listing/{$slug}.php";
     $templates[] = "template-parts/{$slug}.php";
+    $templates[] = "templates/listing/{$slug}.php";  // Legacy fallback
+    $templates[] = "templates/{$slug}.php";
     $templates[] = "{$slug}.php";
     
     $located = locate_template($templates);
     
     if ($located) {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("HPH Template Helper: Loading template: {$located}");
+        }
         if (!empty($args) && is_array($args)) {
             extract($args);
         }
         include $located;
     } else {
         error_log("HPH Theme: Template not found for slug: {$slug}" . ($name ? "-{$name}" : ''));
+        // Show a visible error for debugging
+        if (defined('WP_DEBUG') && WP_DEBUG && current_user_can('manage_options')) {
+            echo '<div style="background: #ffcccc; padding: 10px; margin: 10px; border: 1px solid #ff0000;">';
+            echo '<strong>Template Part Missing:</strong> ' . esc_html($slug . ($name ? "-{$name}" : ''));
+            echo '</div>';
+        }
+    }
     }
 }
 
@@ -71,12 +99,14 @@ function hph_get_template_part(string $slug, string $name = null, array $args = 
  * @param string $card_type Type of card (list, swipe, mini)
  * @param array $args Additional arguments
  */
-function hph_get_listing_card(int $listing_id, string $card_type = 'list', array $args = []): void
-{
+if (!function_exists('hph_get_listing_card')) {
+    function hph_get_listing_card(int $listing_id, string $card_type = 'list', array $args = []): void
+    {
     $args['listing_id'] = $listing_id;
     $args['listing'] = get_post($listing_id);
     
     hph_get_template_part("cards/listing-{$card_type}-card", null, $args);
+}
 }
 
 /**
@@ -116,37 +146,8 @@ function hph_get_community_card(int $community_id, string $card_type = 'thumb', 
  */
 function hph_get_dashboard_section(string $section, array $args = []): void
 {
-    // Use existing template loader if available
-    if (class_exists('HPH_Template_Loader')) {
-        $template_loader = HPH_Template_Loader::instance();
-        
-        // Use the existing load_dashboard_section method
-        echo $template_loader->load_dashboard_section($section, $args);
-        return;
-    }
-    
-    // Fallback template loading
-    $templates = [
-        "templates/dashboard/section-{$section}.php",
-        "templates/template-parts/dashboard/section-{$section}.php",
-        "template-parts/dashboard/section-{$section}.php",
-        "templates/template-parts/dashboard/section-default.php",
-        "template-parts/dashboard/section-default.php"
-    ];
-    
-    $located = locate_template($templates);
-    
-    if ($located) {
-        if (!empty($args) && is_array($args)) {
-            extract($args);
-        }
-        include $located;
-    } else {
-        echo '<div class="hph-dashboard-error">';
-        echo '<h3>' . __('Section Not Available', 'happy-place') . '</h3>';
-        echo '<p>' . sprintf(__('The %s section template could not be found.', 'happy-place'), esc_html($section)) . '</p>';
-        echo '</div>';
-    }
+    // Use Template_Loader instead of the missing load_dashboard_section method
+    hph_get_template_part("dashboard/section-{$section}", null, $args);
 }
 
 /**
@@ -211,7 +212,7 @@ function hph_template_exists(string $template_path): bool
  * @param string $name Optional template name
  * @return array Array of template paths in order of preference
  */
-function hph_get_template_hierarchy(string $slug, string $name = null): array
+function hph_get_template_hierarchy(string $slug, ?string $name = null): array
 {
     $templates = [];
     $name = (string) $name;
@@ -265,5 +266,111 @@ function hph_get_content_template(string $post_type, string $context = 'single',
         echo '<h2>' . get_the_title() . '</h2>';
         echo '<div class="entry-content">' . get_the_content() . '</div>';
         echo '</div>';
+    }
+}
+
+// =============================================================================
+// SCORE HELPER FUNCTIONS
+// =============================================================================
+
+/**
+ * Get walk score description based on score
+ */
+if (!function_exists('hph_get_walk_score_description')) {
+    function hph_get_walk_score_description($score) {
+        $score = (int) $score;
+        
+        if ($score >= 90) return __('Walker\'s Paradise', 'happy-place');
+        if ($score >= 70) return __('Very Walkable', 'happy-place');
+        if ($score >= 50) return __('Somewhat Walkable', 'happy-place');
+        if ($score >= 25) return __('Car-Dependent', 'happy-place');
+        return __('Car-Dependent', 'happy-place');
+    }
+}
+
+/**
+ * Get transit score description based on score
+ */
+if (!function_exists('hph_get_transit_score_description')) {
+    function hph_get_transit_score_description($score) {
+        $score = (int) $score;
+        
+        if ($score >= 90) return __('Excellent Transit', 'happy-place');
+        if ($score >= 70) return __('Great Transit', 'happy-place');
+        if ($score >= 50) return __('Good Transit', 'happy-place');
+        if ($score >= 25) return __('Some Transit', 'happy-place');
+        return __('Minimal Transit', 'happy-place');
+    }
+}
+
+/**
+ * Get bike score description based on score
+ */
+if (!function_exists('hph_get_bike_score_description')) {
+    function hph_get_bike_score_description($score) {
+        $score = (int) $score;
+        
+        if ($score >= 90) return __('Biker\'s Paradise', 'happy-place');
+        if ($score >= 70) return __('Very Bikeable', 'happy-place');
+        if ($score >= 50) return __('Bikeable', 'happy-place');
+        if ($score >= 25) return __('Somewhat Bikeable', 'happy-place');
+        return __('Not Bikeable', 'happy-place');
+    }
+}
+
+/**
+ * Format amenity name for display
+ */
+if (!function_exists('hph_format_amenity_name')) {
+    function hph_format_amenity_name($amenity) {
+        if (is_array($amenity)) {
+            return $amenity['name'] ?? $amenity['type'] ?? __('Amenity', 'happy-place');
+        }
+        
+        return ucwords(str_replace(['_', '-'], ' ', $amenity));
+    }
+}
+
+/**
+ * Parse virtual tour URL to get provider info and embed URL
+ */
+if (!function_exists('hph_parse_virtual_tour_url')) {
+    function hph_parse_virtual_tour_url($url) {
+        if (empty($url)) {
+            return [
+                'provider' => 'generic',
+                'tour_id' => '',
+                'embed_url' => ''
+            ];
+        }
+        
+        // Matterport
+        if (strpos($url, 'matterport.com') !== false) {
+            preg_match('/\/m\/([a-zA-Z0-9]+)/', $url, $matches);
+            $tour_id = $matches[1] ?? '';
+            return [
+                'provider' => 'matterport',
+                'tour_id' => $tour_id,
+                'embed_url' => $tour_id ? "https://my.matterport.com/show/?m={$tour_id}" : $url
+            ];
+        }
+        
+        // YouTube
+        if (strpos($url, 'youtube.com') !== false || strpos($url, 'youtu.be') !== false) {
+            preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/', $url, $matches);
+            $video_id = $matches[1] ?? '';
+            return [
+                'provider' => 'youtube',
+                'tour_id' => $video_id,
+                'embed_url' => $video_id ? "https://www.youtube.com/embed/{$video_id}" : $url
+            ];
+        }
+        
+        // Generic fallback
+        return [
+            'provider' => 'generic',
+            'tour_id' => '',
+            'embed_url' => $url
+        ];
     }
 }

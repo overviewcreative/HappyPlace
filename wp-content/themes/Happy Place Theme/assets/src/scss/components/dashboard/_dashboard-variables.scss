@@ -1,0 +1,61 @@
+/**
+ * Dashboard Variables
+ * Dashboard-specific custom properties and variables
+ */
+
+:root {
+  // Layout
+  --dashboard-sidebar-width: 280px;
+  --dashboard-header-height: 80px;
+  --dashboard-max-width: 1400px;
+  
+  // Component sizing
+  --card-padding: var(--spacing-6);
+  --nav-item-height: 48px;
+  --stat-icon-size: 48px;
+  --quick-action-size: 40px;
+  
+  // Z-index scale
+  --z-sidebar: 100;
+  --z-modal: 1000;
+  --z-tooltip: 1100;
+  --z-mobile-nav: 200;
+  
+  // Dashboard specific spacing
+  --dashboard-spacing-xs: var(--spacing-2);
+  --dashboard-spacing-sm: var(--spacing-3);
+  --dashboard-spacing-md: var(--spacing-4);
+  --dashboard-spacing-lg: var(--spacing-6);
+  --dashboard-spacing-xl: var(--spacing-8);
+  
+  // Dashboard colors
+  --dashboard-background: var(--color-gray-50);
+  --dashboard-surface: white;
+  --dashboard-border: var(--color-border);
+  --dashboard-text: var(--color-text);
+  --dashboard-text-muted: var(--color-text-muted);
+  
+  // Status colors
+  --status-success: var(--color-success);
+  --status-warning: var(--color-warning);
+  --status-danger: var(--color-danger);
+  --status-info: var(--hph-primary-500);
+}
+
+// Dark theme variables
+[data-theme="dark"] {
+  --dashboard-background: var(--color-gray-900);
+  --dashboard-surface: var(--color-gray-800);
+  --dashboard-border: var(--color-gray-700);
+  --dashboard-text: var(--color-gray-100);
+  --dashboard-text-muted: var(--color-gray-400);
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+// Responsive breakpoints
+$dashboard-breakpoints: (
+  'mobile': 767px,
+  'tablet': 768px,
+  'desktop': 1200px
+);

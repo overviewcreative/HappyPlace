@@ -1,0 +1,173 @@
+{
+    "key": "group_open_house_details",
+    "title": "Open House Details",
+    "fields": [
+        {
+            "key": "field_related_listing",
+            "label": "Related Listing",
+            "name": "related_listing",
+            "type": "post_object",
+            "instructions": "Select the property listing for this open house",
+            "required": 1,
+            "post_type": [
+                "listing"
+            ],
+            "return_format": "object",
+            "ui": 1
+        },
+        {
+            "key": "field_open_house_date",
+            "label": "Open House Date",
+            "name": "open_house_date",
+            "type": "date_picker",
+            "instructions": "Date of the open house event",
+            "required": 1,
+            "display_format": "F j, Y",
+            "return_format": "Y-m-d",
+            "first_day": 0
+        },
+        {
+            "key": "field_start_time",
+            "label": "Start Time",
+            "name": "start_time",
+            "type": "time_picker",
+            "instructions": "When the open house starts",
+            "required": 1,
+            "display_format": "g:i a",
+            "return_format": "H:i:s"
+        },
+        {
+            "key": "field_end_time",
+            "label": "End Time",
+            "name": "end_time",
+            "type": "time_picker",
+            "instructions": "When the open house ends",
+            "required": 1,
+            "display_format": "g:i a",
+            "return_format": "H:i:s"
+        },
+        {
+            "key": "field_hosting_agent",
+            "label": "Hosting Agent",
+            "name": "hosting_agent",
+            "type": "post_object",
+            "instructions": "Agent hosting this open house",
+            "required": 0,
+            "post_type": [
+                "agent"
+            ],
+            "return_format": "object",
+            "ui": 1
+        },
+        {
+            "key": "field_special_instructions",
+            "label": "Special Instructions",
+            "name": "special_instructions",
+            "type": "textarea",
+            "instructions": "Any special instructions for attendees (parking, entry, etc.)",
+            "required": 0,
+            "rows": 4
+        },
+        {
+            "key": "field_rsvp_required",
+            "label": "RSVP Required",
+            "name": "rsvp_required",
+            "type": "true_false",
+            "instructions": "Check if attendees must RSVP",
+            "required": 0,
+            "default_value": 0,
+            "ui": 1
+        },
+        {
+            "key": "field_max_attendees",
+            "label": "Maximum Attendees",
+            "name": "max_attendees",
+            "type": "number",
+            "instructions": "Maximum number of attendees (leave blank for unlimited)",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_rsvp_required",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ]
+        },
+        {
+            "key": "field_contact_info",
+            "label": "Contact Information",
+            "name": "contact_info",
+            "type": "group",
+            "instructions": "Contact details for this open house",
+            "required": 0,
+            "sub_fields": [
+                {
+                    "key": "field_contact_phone",
+                    "label": "Contact Phone",
+                    "name": "contact_phone",
+                    "type": "text",
+                    "required": 0
+                },
+                {
+                    "key": "field_contact_email",
+                    "label": "Contact Email",
+                    "name": "contact_email",
+                    "type": "email",
+                    "required": 0
+                }
+            ]
+        },
+        {
+            "key": "field_open_house_status",
+            "label": "Status",
+            "name": "open_house_status",
+            "type": "select",
+            "instructions": "Current status of this open house",
+            "required": 1,
+            "choices": {
+                "scheduled": "Scheduled",
+                "cancelled": "Cancelled",
+                "completed": "Completed",
+                "postponed": "Postponed"
+            },
+            "default_value": "scheduled",
+            "return_format": "value"
+        },
+        {
+            "key": "field_virtual_tour_link",
+            "label": "Virtual Tour Link",
+            "name": "virtual_tour_link",
+            "type": "url",
+            "instructions": "Link to virtual tour if available",
+            "required": 0
+        },
+        {
+            "key": "field_open_house_gallery",
+            "label": "Open House Photos",
+            "name": "open_house_gallery",
+            "type": "gallery",
+            "instructions": "Photos from the open house event",
+            "required": 0,
+            "return_format": "array"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "open-house"
+            }
+        ]
+    ],
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [],
+    "active": true,
+    "description": "Fields for managing open house events",
+    "show_in_rest": true
+}

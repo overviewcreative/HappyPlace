@@ -76,59 +76,14 @@ class Agent extends Base_Post_Type {
 
     /**
      * Register taxonomies
+     * 
+     * Note: Taxonomies are now handled by the Happy Place Plugin
+     * This method is kept for compatibility but does nothing
      */
     public function register_taxonomies() {
-        // Specialties Taxonomy
-        $specialty_labels = [
-            'name'              => _x('Specialties', 'taxonomy general name', 'happy-place'),
-            'singular_name'     => _x('Specialty', 'taxonomy singular name', 'happy-place'),
-            'search_items'      => __('Search Specialties', 'happy-place'),
-            'all_items'         => __('All Specialties', 'happy-place'),
-            'parent_item'       => __('Parent Specialty', 'happy-place'),
-            'parent_item_colon' => __('Parent Specialty:', 'happy-place'),
-            'edit_item'         => __('Edit Specialty', 'happy-place'),
-            'update_item'       => __('Update Specialty', 'happy-place'),
-            'add_new_item'      => __('Add New Specialty', 'happy-place'),
-            'new_item_name'     => __('New Specialty Name', 'happy-place'),
-            'menu_name'         => __('Specialties', 'happy-place'),
-        ];
-
-        register_taxonomy('agent_specialty', [$this->post_type], [
-            'labels'            => $specialty_labels,
-            'hierarchical'      => false,
-            'public'            => true,
-            'show_ui'           => true,
-            'show_admin_column' => true,
-            'show_in_rest'      => true,
-            'query_var'         => true,
-            'rewrite'           => ['slug' => 'specialty'],
-        ]);
-
-        // Service Areas Taxonomy
-        $area_labels = [
-            'name'              => _x('Service Areas', 'taxonomy general name', 'happy-place'),
-            'singular_name'     => _x('Service Area', 'taxonomy singular name', 'happy-place'),
-            'search_items'      => __('Search Service Areas', 'happy-place'),
-            'all_items'         => __('All Service Areas', 'happy-place'),
-            'parent_item'       => __('Parent Service Area', 'happy-place'),
-            'parent_item_colon' => __('Parent Service Area:', 'happy-place'),
-            'edit_item'         => __('Edit Service Area', 'happy-place'),
-            'update_item'       => __('Update Service Area', 'happy-place'),
-            'add_new_item'      => __('Add New Service Area', 'happy-place'),
-            'new_item_name'     => __('New Service Area Name', 'happy-place'),
-            'menu_name'         => __('Service Areas', 'happy-place'),
-        ];
-
-        register_taxonomy('service_area', [$this->post_type], [
-            'labels'            => $area_labels,
-            'hierarchical'      => true,
-            'public'            => true,
-            'show_ui'           => true,
-            'show_admin_column' => true,
-            'show_in_rest'      => true,
-            'query_var'         => true,
-            'rewrite'           => ['slug' => 'service-area'],
-        ]);
+        // Taxonomies are now registered by the Happy Place Plugin
+        // in /wp-content/plugins/Happy Place Plugin/includes/core/class-taxonomies.php
+        // This prevents duplicate registrations and conflicts
     }
 
     /**

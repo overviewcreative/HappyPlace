@@ -67,7 +67,7 @@ get_header();
                         $property = get_post($property_id);
                         if ($property) {
                             setup_postdata($property);
-                            get_template_part('templates/listing/content', 'listing');
+                            get_template_part('template-parts/listing/content', 'listing');
                             wp_reset_postdata();
                         }
                         ?>

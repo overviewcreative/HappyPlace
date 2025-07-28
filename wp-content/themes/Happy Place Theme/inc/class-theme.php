@@ -47,7 +47,7 @@ class Theme {
         // Initialize core components first
         $this->components = [
             'assets' => \HappyPlace\Core\Assets::instance(),
-            'template' => \HappyPlace\Core\Template_Manager::instance(),
+            // Template_Loader is initialized in functions.php, no need to duplicate here
         ];
 
         // Initialize optional components

@@ -1,0 +1,178 @@
+/**
+ * Hero Action Button Component
+ * A specialized button component for hero sections with larger sizing and prominent styling
+ */
+
+.hph-hero-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hph-spacing-xs);
+  padding: var(--hph-spacing-md) var(--hph-spacing-lg);
+  border: 2px solid transparent;
+  border-radius: var(--hph-border-radius-md);
+  font-family: var(--hph-font-family-primary);
+  font-size: var(--hph-font-size-md);
+  font-weight: var(--hph-font-weight-semibold);
+  line-height: 1.4;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--hph-transition-all);
+  user-select: none;
+  min-height: 48px;
+  min-width: 160px;
+
+  // Remove default button styles
+  background: none;
+  outline: none;
+  appearance: none;
+
+  // Icon styling
+  i {
+    font-size: 1.1em;
+    flex-shrink: 0;
+  }
+
+  // Disabled state
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  // Primary variant
+  &--primary {
+    background: var(--hph-color-primary);
+    color: var(--hph-color-white);
+    border-color: var(--hph-color-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--hph-color-primary-dark);
+      border-color: var(--hph-color-primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--hph-shadow-lg);
+    }
+
+    &:active:not(:disabled) {
+      background: var(--hph-color-primary-darker);
+      border-color: var(--hph-color-primary-darker);
+      transform: translateY(0);
+      box-shadow: var(--hph-shadow-md);
+    }
+  }
+
+  // Outline variant
+  &--outline {
+    background: var(--hph-color-white);
+    color: var(--hph-color-primary);
+    border-color: var(--hph-color-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--hph-color-primary);
+      color: var(--hph-color-white);
+      transform: translateY(-2px);
+      box-shadow: var(--hph-shadow-lg);
+    }
+
+    &:active:not(:disabled) {
+      background: var(--hph-color-primary-dark);
+      color: var(--hph-color-white);
+      transform: translateY(0);
+      box-shadow: var(--hph-shadow-md);
+    }
+  }
+
+  // Secondary variant
+  &--secondary {
+    background: var(--hph-color-gray-100);
+    color: var(--hph-color-gray-800);
+    border-color: var(--hph-color-gray-300);
+
+    &:hover:not(:disabled) {
+      background: var(--hph-color-gray-200);
+      border-color: var(--hph-color-gray-400);
+      transform: translateY(-2px);
+      box-shadow: var(--hph-shadow-lg);
+    }
+
+    &:active:not(:disabled) {
+      background: var(--hph-color-gray-300);
+      border-color: var(--hph-color-gray-500);
+      transform: translateY(0);
+      box-shadow: var(--hph-shadow-md);
+    }
+  }
+
+  // Loading state
+  &--loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+
+  // Focus styles
+  &:focus-visible {
+    outline: 2px solid var(--hph-color-primary);
+    outline-offset: 2px;
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    padding: var(--hph-spacing-sm) var(--hph-spacing-md);
+    font-size: var(--hph-font-size-sm);
+    min-width: 140px;
+    min-height: 44px;
+
+    // Stack buttons vertically on mobile
+    &:not(:last-child) {
+      margin-bottom: var(--hph-spacing-sm);
+    }
+  }
+}
+
+// Hero actions container
+.hph-agent-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hph-spacing-sm);
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: var(--hph-spacing-lg);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--hph-spacing-xs);
+
+    .hph-hero-action-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+// Animation keyframe
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

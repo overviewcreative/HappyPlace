@@ -1,0 +1,637 @@
+/* ============================================================================
+   BRIDGE INTEGRATION ENHANCEMENTS
+   Extends the existing comprehensive style.css with bridge-specific functionality
+   ============================================================================ */
+
+// =============================================================================
+// ENHANCED STATUS BADGE VARIANTS
+// =============================================================================
+.status-badge {
+  // Add missing status variants for complete bridge integration
+  &--off-market,
+  &.status-off-market {
+    background: var(--hph-color-gray-600);
+    color: var(--hph-color-white);
+  }
+  
+  &--coming-soon,
+  &.status-coming-soon {
+    background: var(--hph-color-info);
+    color: var(--hph-color-white);
+  }
+  
+  &--under-contract,
+  &.status-under-contract {
+    background: var(--hph-color-warning);
+    color: var(--hph-color-white);
+  }
+  
+  &--expired,
+  &.status-expired {
+    background: var(--hph-color-gray-500);
+    color: var(--hph-color-white);
+  }
+  
+  &--withdrawn,
+  &.status-withdrawn {
+    background: var(--hph-color-gray-400);
+    color: var(--hph-color-white);
+  }
+  
+  // Bridge-specific status handling
+  &[data-bridge-status] {
+    transition: all var(--hph-transition-base);
+    
+    &[data-loading="true"] {
+      opacity: 0.6;
+      animation: pulse 1.5s infinite;
+    }
+  }
+}
+
+// =============================================================================
+// ENHANCED PRICE DISPLAY FORMATTING
+// =============================================================================
+.hero-price,
+.listing-price,
+.property-price,
+.price-display {
+  // Support multiple price formats from bridge functions
+  &[data-format="short"] { 
+    font-size: var(--hph-font-size-xl);
+    
+    .price-unit {
+      font-size: var(--hph-font-size-base);
+      font-weight: var(--hph-font-medium);
+      opacity: 0.8;
+    }
+  }
+  
+  &[data-format="approximate"] {
+    position: relative;
+    
+    &::before { 
+      content: "~";
+      opacity: 0.7;
+      margin-right: var(--hph-spacing-1);
+    }
+  }
+  
+  &[data-request="true"],
+  &[data-price-on-request="true"] {
+    font-size: var(--hph-font-size-lg);
+    font-style: italic;
+    color: var(--hph-color-gray-600);
+    font-weight: var(--hph-font-medium);
+  }
+  
+  // Bridge loading state
+  &[data-bridge-loading="true"] {
+    opacity: 0.5;
+    
+    &::after {
+      content: "Loading...";
+      font-size: var(--hph-font-size-sm);
+      color: var(--hph-color-gray-500);
+      display: block;
+      margin-top: var(--hph-spacing-1);
+    }
+  }
+}
+
+// Price Per Square Foot enhancements
+.price-per-sqft {
+  &[data-format="short"] {
+    .price-label {
+      font-size: var(--hph-font-size-xs);
+    }
+  }
+  
+  &[data-unavailable="true"] {
+    opacity: 0.6;
+    
+    .price-value {
+      font-style: italic;
+      
+      &::after {
+        content: "N/A";
+      }
+    }
+  }
+}
+
+// =============================================================================
+// BRIDGE DATA LOADING STATES
+// =============================================================================
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes skeleton {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+// Global loading state for bridge-powered components
+[data-bridge-loading="true"] {
+  opacity: 0.6;
+  pointer-events: none;
+  position: relative;
+  
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.4), 
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+    border-radius: inherit;
+  }
+}
+
+// Specific component loading states
+.hph-feature-item,
+.property-detail,
+.basic-stat,
+.detail-item {
+  &[data-bridge-loading="true"] {
+    .stat-number,
+    .detail-value,
+    .feature-text {
+      background: var(--hph-color-gray-200);
+      background-image: linear-gradient(
+        90deg,
+        var(--hph-color-gray-200) 0px,
+        var(--hph-color-gray-100) 40px,
+        var(--hph-color-gray-200) 80px
+      );
+      background-size: 200px 100%;
+      animation: skeleton 1.2s ease-in-out infinite;
+      border-radius: var(--hph-radius-base);
+      color: transparent;
+      min-height: 1.2em;
+    }
+  }
+}
+
+// =============================================================================
+// EMPTY STATE STYLING
+// =============================================================================
+.empty-state {
+  text-align: center;
+  padding: var(--hph-spacing-8);
+  color: var(--hph-color-gray-500);
+  
+  .empty-icon {
+    font-size: var(--hph-font-size-3xl);
+    margin-bottom: var(--hph-spacing-3);
+    opacity: 0.5;
+    color: var(--hph-color-gray-400);
+  }
+  
+  .empty-title {
+    font-size: var(--hph-font-size-lg);
+    font-weight: var(--hph-font-semibold);
+    color: var(--hph-color-gray-600);
+    margin-bottom: var(--hph-spacing-2);
+  }
+  
+  .empty-message {
+    font-size: var(--hph-font-size-sm);
+    color: var(--hph-color-gray-500);
+    line-height: 1.5;
+  }
+}
+
+// Component-specific empty states
+.property-features[data-empty="true"],
+.hph-features-grid[data-empty="true"] {
+  .empty-state {
+    background: var(--hph-color-gray-25);
+    border: 2px dashed var(--hph-color-gray-200);
+    border-radius: var(--hph-radius-xl);
+    margin: var(--hph-spacing-4) 0;
+  }
+}
+
+.agent-card[data-empty="true"] {
+  .empty-state {
+    .empty-icon {
+      background: var(--hph-color-gray-100);
+      width: 80px;
+      height: 80px;
+      border-radius: var(--hph-radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--hph-spacing-3);
+    }
+  }
+}
+
+.gallery-container[data-empty="true"] {
+  .empty-state {
+    background: var(--hph-color-gray-50);
+    border-radius: var(--hph-radius-xl);
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+// =============================================================================
+// BRIDGE-POWERED FEATURE ENHANCEMENTS
+// =============================================================================
+.hph-features-grid {
+  // Enhanced feature item states
+  .hph-feature-item {
+    &[data-bridge-category] {
+      // Category-based styling
+      &[data-bridge-category="interior"] .feature-icon,
+      &[data-bridge-category="interior"] .fas,
+      &[data-bridge-category="interior"] .far {
+        color: var(--hph-color-primary-600);
+      }
+      
+      &[data-bridge-category="exterior"] .feature-icon,
+      &[data-bridge-category="exterior"] .fas,
+      &[data-bridge-category="exterior"] .far {
+        color: var(--hph-color-success);
+      }
+      
+      &[data-bridge-category="utility"] .feature-icon,
+      &[data-bridge-category="utility"] .fas,
+      &[data-bridge-category="utility"] .far {
+        color: var(--hph-color-warning);
+      }
+      
+      &[data-bridge-category="custom"] .feature-icon,
+      &[data-bridge-category="custom"] .fas,
+      &[data-bridge-category="custom"] .far {
+        color: var(--hph-color-info);
+      }
+    }
+    
+    // Bridge error state
+    &[data-bridge-error="true"] {
+      opacity: 0.4;
+      border-color: var(--hph-color-danger-light);
+      background: var(--hph-color-danger-light);
+      
+      .feature-text {
+        text-decoration: line-through;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// TEMPLATE-SPECIFIC BRIDGE INTEGRATION
+// =============================================================================
+
+// Template loading classes
+.template-single-listing {
+  &[data-loading="true"] {
+    .hero-section,
+    .quick-facts,
+    .hph-main-content > * {
+      opacity: 0.7;
+    }
+  }
+  
+  // Enhanced content grid for listings
+  .hph-content-grid {
+    max-width: 1400px;
+  }
+}
+
+.template-listing-archive {
+  .hph-content-grid {
+    max-width: 1200px;
+  }
+}
+
+// Quick Facts enhancements for template part integration
+.quick-facts {
+  &[data-template-part="quick-facts"] {
+    // Ensure consistent spacing with other template parts
+    margin-bottom: var(--hph-spacing-8);
+    
+    // Handle dynamic stat rendering from bridge functions
+    .basic-stat[data-bridge-field] {
+      min-width: 120px;
+      justify-content: flex-start;
+      
+      &[data-unavailable="true"] {
+        opacity: 0.6;
+        
+        .basic-value::after {
+          content: "N/A";
+          font-style: italic;
+        }
+      }
+    }
+    
+    // Enhanced responsive behavior
+    @media (max-width: 768px) {
+      .basic-stat[data-bridge-field] {
+        min-width: 100px;
+        font-size: var(--hph-font-size-sm);
+      }
+    }
+  }
+}
+
+// Description template part enhancements
+.property-description-card {
+  .description-text {
+    // Handle dynamic content from hph_get_listing_field()
+    &[data-generated="true"] {
+      border-left: 3px solid var(--hph-color-primary-200);
+      padding-left: var(--hph-spacing-4);
+      font-style: italic;
+      background: var(--hph-color-primary-25);
+      border-radius: var(--hph-radius-base);
+      padding: var(--hph-spacing-4);
+      margin: var(--hph-spacing-4) 0;
+      
+      &::before {
+        content: "✨ Generated Description";
+        display: block;
+        font-size: var(--hph-font-size-xs);
+        color: var(--hph-color-primary-600);
+        font-weight: var(--hph-font-medium);
+        margin-bottom: var(--hph-spacing-2);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+    
+    &[data-bridge-source="plugin"] {
+      // Indicate data comes from plugin
+      position: relative;
+      
+      &::after {
+        content: "";
+        position: absolute;
+        top: var(--hph-spacing-2);
+        right: var(--hph-spacing-2);
+        width: 8px;
+        height: 8px;
+        background: var(--hph-color-success);
+        border-radius: var(--hph-radius-full);
+        opacity: 0.6;
+      }
+    }
+  }
+  
+  .key-features-preview {
+    margin-top: var(--hph-spacing-6);
+    padding-top: var(--hph-spacing-6);
+    border-top: 1px solid var(--hph-color-gray-200);
+    
+    .preview-title {
+      font-size: var(--hph-font-size-lg);
+      font-weight: var(--hph-font-semibold);
+      color: var(--hph-color-gray-900);
+      margin-bottom: var(--hph-spacing-4);
+      display: flex;
+      align-items: center;
+      gap: var(--hph-spacing-2);
+      
+      .features-icon {
+        color: var(--hph-color-primary-600);
+      }
+    }
+    
+    .view-all-features {
+      margin-top: var(--hph-spacing-4);
+      text-align: center;
+      
+      .btn {
+        font-size: var(--hph-font-size-sm);
+        padding: var(--hph-spacing-2) var(--hph-spacing-4);
+      }
+    }
+  }
+}
+
+// =============================================================================
+// ENHANCED ACCESSIBILITY & FOCUS STATES
+// =============================================================================
+
+// Enhanced focus management for bridge components
+.hph-card,
+.agent-card,
+.mortgage-calculator,
+.quick-actions,
+.property-description-card {
+  &:focus-within {
+    outline: 2px solid var(--hph-color-primary-400);
+    outline-offset: 2px;
+    box-shadow: var(--hph-shadow-primary-lg);
+  }
+}
+
+// Skip links for screen readers
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  z-index: var(--hph-z-skiplink);
+  background: var(--hph-color-primary-600);
+  color: var(--hph-color-white);
+  padding: var(--hph-spacing-2) var(--hph-spacing-3);
+  text-decoration: none;
+  border-radius: var(--hph-radius-base);
+  font-size: var(--hph-font-size-sm);
+  font-weight: var(--hph-font-medium);
+  
+  &:focus {
+    top: 6px;
+  }
+}
+
+// Enhanced keyboard navigation
+.hph-feature-item,
+.basic-stat,
+.gallery-item {
+  &:focus {
+    outline: 2px solid var(--hph-color-primary-400);
+    outline-offset: 2px;
+    transform: translateY(-1px);
+  }
+}
+
+// Screen reader only content
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// =============================================================================
+// BATHROOM FORMATTING ENHANCEMENTS
+// =============================================================================
+.bathroom-display {
+  &[data-format="combined"] {
+    // Show full/half bath breakdown
+    .bath-breakdown {
+      font-size: var(--hph-font-size-xs);
+      color: var(--hph-color-gray-500);
+      margin-left: var(--hph-spacing-1);
+    }
+  }
+  
+  &[data-format="decimal"] {
+    // Handle 2.5 bath display
+    .half-indicator {
+      font-size: 0.8em;
+      vertical-align: super;
+    }
+  }
+}
+
+// =============================================================================
+// SQUARE FOOTAGE FORMATTING
+// =============================================================================
+.sqft-display {
+  &[data-format="approximate"] {
+    position: relative;
+    
+    &::before {
+      content: "~";
+      opacity: 0.7;
+      margin-right: 2px;
+    }
+  }
+  
+  &[data-format="short"] {
+    .sqft-unit {
+      font-size: 0.85em;
+      font-weight: var(--hph-font-medium);
+    }
+  }
+  
+  &[data-bridge-unavailable="true"] {
+    opacity: 0.6;
+    font-style: italic;
+    
+    &::after {
+      content: "sq ft unavailable";
+      font-size: var(--hph-font-size-xs);
+      color: var(--hph-color-gray-500);
+    }
+  }
+}
+
+// =============================================================================
+// RESPONSIVE ENHANCEMENTS FOR BRIDGE DATA
+// =============================================================================
+@media (max-width: 768px) {
+  // Mobile-specific bridge enhancements
+  [data-bridge-loading="true"] {
+    &::after {
+      border-radius: var(--hph-radius-base);
+    }
+  }
+  
+  .property-description-card .description-text[data-generated="true"] {
+    padding: var(--hph-spacing-3);
+    margin: var(--hph-spacing-3) 0;
+  }
+  
+  .quick-facts[data-template-part="quick-facts"] {
+    .basic-stat[data-bridge-field] {
+      min-width: 80px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .empty-state {
+    padding: var(--hph-spacing-6);
+    
+    .empty-icon {
+      font-size: var(--hph-font-size-2xl);
+    }
+  }
+}
+
+// =============================================================================
+// DEBUG STYLES (Remove in production)
+// =============================================================================
+[data-debug="true"] {
+  // Debug bridge data flow
+  &[data-bridge-source]::before {
+    content: "Bridge: " attr(data-bridge-source);
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--hph-color-warning);
+    color: var(--hph-color-white);
+    padding: 2px 6px;
+    font-size: 10px;
+    border-radius: 0 0 0 4px;
+    z-index: 1000;
+  }
+  
+  &[data-bridge-function]::after {
+    content: "Fn: " attr(data-bridge-function);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--hph-color-info);
+    color: var(--hph-color-white);
+    padding: 2px 6px;
+    font-size: 10px;
+    border-radius: 4px 0 0 0;
+    z-index: 1000;
+  }
+}
+
+// =============================================================================
+// PERFORMANCE OPTIMIZATIONS
+// =============================================================================
+
+// Reduce motion for users who prefer it
+@media (prefers-reduced-motion: reduce) {
+  [data-bridge-loading="true"]::after,
+  .shimmer,
+  .pulse,
+  .skeleton {
+    animation: none !important;
+  }
+  
+  [data-bridge-loading="true"] {
+    opacity: 0.7;
+  }
+}
+
+// Dark mode preparations (for future enhancement)
+@media (prefers-color-scheme: dark) {
+  .empty-state {
+    color: var(--hph-color-gray-400);
+    
+    .empty-icon {
+      color: var(--hph-color-gray-500);
+    }
+  }
+}

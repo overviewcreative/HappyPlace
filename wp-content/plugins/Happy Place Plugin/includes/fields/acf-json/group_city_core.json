@@ -1,0 +1,363 @@
+{
+  "key": "group_city_core",
+  "title": "City Details",
+  "fields": [
+    {
+      "key": "field_city_intro_tab",
+      "label": "\ud83c\udfd9\ufe0f City Overview",
+      "name": "",
+      "type": "tab",
+      "placement": "top"
+    },
+    {
+      "key": "field_city_tagline",
+      "label": "City Tagline",
+      "name": "city_tagline",
+      "type": "text",
+      "instructions": "Short descriptive hook or slogan for this city.",
+      "wrapper": {
+        "width": "100"
+      }
+    },
+    {
+      "key": "field_city_intro_text",
+      "label": "City Introduction",
+      "name": "city_intro_text",
+      "type": "wysiwyg",
+      "instructions": "Write a short editorial paragraph about the city's vibe, location, and appeal.",
+      "wrapper": {
+        "width": "100"
+      }
+    },
+    {
+      "key": "field_city_gallery",
+      "label": "Featured Gallery",
+      "name": "city_gallery",
+      "type": "gallery",
+      "instructions": "Upload featured images that showcase the city.",
+      "preview_size": "medium",
+      "return_format": "array",
+      "min": 0,
+      "max": 20
+    },
+    {
+      "key": "field_city_map",
+      "label": "City Map Location",
+      "name": "city_google_map",
+      "type": "google_map",
+      "instructions": "Mark the central location of this city."
+    },
+    {
+      "key": "field_city_stats_tab",
+      "label": "\ud83d\udcca City Stats",
+      "name": "",
+      "type": "tab",
+      "placement": "top"
+    },
+    {
+      "key": "field_city_facts",
+      "label": "Quick Facts",
+      "name": "city_facts",
+      "type": "group",
+      "layout": "block",
+      "sub_fields": [
+        {
+          "key": "field_city_population",
+          "label": "Population",
+          "name": "population",
+          "type": "number",
+          "append": "people",
+          "wrapper": {
+            "width": "25"
+          }
+        },
+        {
+          "key": "field_city_median_price",
+          "label": "Median Home Price",
+          "name": "median_home_price",
+          "type": "number",
+          "prepend": "$",
+          "wrapper": {
+            "width": "25"
+          }
+        },
+        {
+          "key": "field_city_school_district",
+          "label": "School District",
+          "name": "school_district",
+          "type": "text",
+          "wrapper": {
+            "width": "25"
+          }
+        },
+        {
+          "key": "field_city_vibe",
+          "label": "City Vibe",
+          "name": "vibe_description",
+          "type": "text",
+          "placeholder": "e.g., Coastal arts town",
+          "wrapper": {
+            "width": "25"
+          }
+        }
+      ]
+    },
+    {
+      "key": "field_city_highlights_tab",
+      "label": "\u2728 City Highlights",
+      "name": "",
+      "type": "tab",
+      "placement": "top"
+    },
+    {
+      "key": "field_city_highlights",
+      "label": "Highlights",
+      "name": "city_highlights",
+      "type": "repeater",
+      "instructions": "Quick facts, awards, or noteworthy stats about the city.",
+      "min": 0,
+      "max": 20,
+      "layout": "block",
+      "button_label": "Add Highlight",
+      "sub_fields": [
+        {
+          "key": "field_city_highlight_label",
+          "label": "Label",
+          "name": "label",
+          "type": "text",
+          "wrapper": {
+            "width": "40"
+          }
+        },
+        {
+          "key": "field_city_highlight_icon",
+          "label": "Icon",
+          "name": "icon",
+          "type": "image",
+          "return_format": "array",
+          "wrapper": {
+            "width": "30"
+          }
+        },
+        {
+          "key": "field_city_highlight_description",
+          "label": "Description",
+          "name": "description",
+          "type": "textarea",
+          "rows": 2,
+          "wrapper": {
+            "width": "100"
+          }
+        }
+      ]
+    },
+    {
+      "key": "field_city_places_tab",
+      "label": "\ud83d\udccd Local Places",
+      "name": "",
+      "type": "tab",
+      "placement": "top"
+    },
+    {
+      "key": "field_city_places_source",
+      "label": "Places Source",
+      "name": "places_source",
+      "type": "radio",
+      "choices": {
+        "manual": "Manual (select from Local Places)",
+        "api": "Auto-Populate from Google Places"
+      },
+      "default_value": "manual",
+      "layout": "horizontal"
+    },
+    {
+      "key": "field_city_places_manual",
+      "label": "Manual Places",
+      "name": "places_manual",
+      "type": "relationship",
+      "post_type": [
+        "local-place"
+      ],
+      "filters": [
+        "search"
+      ],
+      "return_format": "object",
+      "conditional_logic": [
+        [
+          {
+            "field": "field_city_places_source",
+            "operator": "==",
+            "value": "manual"
+          }
+        ]
+      ]
+    },
+    {
+      "key": "field_city_places_api",
+      "label": "Synced Places",
+      "name": "places_api",
+      "type": "repeater",
+      "instructions": "Auto-synced Google Places (managed by API integration).",
+      "readonly": 1,
+      "conditional_logic": [
+        [
+          {
+            "field": "field_city_places_source",
+            "operator": "==",
+            "value": "api"
+          }
+        ]
+      ],
+      "sub_fields": [
+        {
+          "key": "field_city_place_id",
+          "label": "Place ID",
+          "name": "place_id",
+          "type": "text",
+          "readonly": 1
+        },
+        {
+          "key": "field_city_place_name",
+          "label": "Name",
+          "name": "place_name",
+          "type": "text",
+          "readonly": 1
+        },
+        {
+          "key": "field_city_place_category",
+          "label": "Category",
+          "name": "place_category",
+          "type": "text",
+          "readonly": 1
+        },
+        {
+          "key": "field_city_place_type",
+          "label": "Place Type",
+          "name": "place_type",
+          "type": "text",
+          "readonly": 1
+        },
+        {
+          "key": "field_city_place_rating",
+          "label": "Rating",
+          "name": "place_rating",
+          "type": "number",
+          "min": 0,
+          "max": 5,
+          "step": 0.1,
+          "readonly": 1
+        },
+        {
+          "key": "field_city_place_address",
+          "label": "Address",
+          "name": "place_address",
+          "type": "text",
+          "readonly": 1
+        },
+        {
+          "key": "field_city_place_icon",
+          "label": "Icon URL",
+          "name": "place_icon",
+          "type": "url",
+          "readonly": 1
+        }
+      ]
+    },
+    {
+      "key": "field_city_nearby_tab",
+      "label": "\ud83e\udded Nearby Cities",
+      "name": "",
+      "type": "tab",
+      "placement": "top"
+    },
+    {
+      "key": "field_city_nearby",
+      "label": "Nearby Cities",
+      "name": "nearby_cities",
+      "type": "repeater",
+      "instructions": "List nearby towns or cities for geographic context.",
+      "sub_fields": [
+        {
+          "key": "field_city_nearby_city",
+          "label": "Related City",
+          "name": "related_city",
+          "type": "post_object",
+          "post_type": [
+            "city"
+          ],
+          "return_format": "object"
+        },
+        {
+          "key": "field_city_nearby_distance",
+          "label": "Distance (miles)",
+          "name": "distance_miles",
+          "type": "number",
+          "append": "mi"
+        },
+        {
+          "key": "field_city_nearby_direction",
+          "label": "Direction Note",
+          "name": "direction_note",
+          "type": "text",
+          "placeholder": "e.g., North of town"
+        }
+      ]
+    },
+    {
+      "key": "field_city_api_tab",
+      "label": "\ud83d\udd17 API Integration",
+      "name": "",
+      "type": "tab",
+      "placement": "top"
+    },
+    {
+      "key": "field_city_data_last_updated",
+      "label": "Last API Update",
+      "name": "city_data_last_updated",
+      "type": "date_time_picker",
+      "instructions": "Timestamp of the last Google API data refresh.",
+      "readonly": 1,
+      "display_format": "M j, Y g:i a",
+      "return_format": "U"
+    },
+    {
+      "key": "field_city_api_status",
+      "label": "API Status",
+      "name": "city_api_status",
+      "type": "select",
+      "instructions": "Current status of Google API integration for this city.",
+      "choices": {
+        "active": "Active - API data available",
+        "pending": "Pending - Awaiting API update",
+        "error": "Error - API connection issues",
+        "disabled": "Disabled - Manual data only"
+      },
+      "default_value": "pending",
+      "readonly": 1
+    },
+    {
+      "key": "field_city_google_place_id",
+      "label": "Google Place ID",
+      "name": "city_google_place_id",
+      "type": "text",
+      "instructions": "Google Places ID for this city (auto-populated).",
+      "readonly": 1
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "city"
+      }
+    ]
+  ],
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "menu_order": 10,
+  "active": true,
+  "description": "Contextual content, stats, and related media for enriching listings with local flavor."
+}

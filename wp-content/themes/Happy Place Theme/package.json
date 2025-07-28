@@ -5,8 +5,14 @@
   "main": "index.js",
   "scripts": {
     "build": "./build.sh",
-    "watch": "npx sass assets/src/scss/main.scss assets/dist/css/main.css --watch --style=compressed --no-source-map",
-    "dev": "./build.sh",
+    "build:webpack": "webpack --mode=production",
+    "dev": "webpack --mode=development",
+    "watch": "webpack --mode=development --watch",
+    "build:sass": "npx sass assets/src/scss/main.scss assets/dist/css/main.css --style=compressed --no-source-map && npx sass assets/src/scss/single-listing.scss assets/dist/css/single-listing.css --style=compressed --no-source-map",
+    "watch:sass": "npx sass assets/src/scss/main.scss assets/dist/css/main.css --watch --style=expanded --source-map",
+    "watch:custom": "./build.sh --watch",
+    "clean": "rm -rf assets/dist/*",
+    "lint:scss": "npx stylelint 'assets/src/scss/**/*.scss'",
     "test": "echo 'No tests configured'"
   },
   "keywords": [
@@ -17,19 +23,20 @@
   "author": "Your Name",
   "license": "GPL-2.0",
   "devDependencies": {
-    "autoprefixer": "^10.4.14",
-    "css-loader": "^6.11.0",
-    "cssnano": "^6.0.0",
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "autoprefixer": "^10.4.21",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "cssnano": "^7.1.0",
     "mini-css-extract-plugin": "^2.9.2",
-    "postcss": "^8.4.24",
-    "postcss-loader": "^7.3.0",
+    "postcss": "^8.5.6",
+    "postcss-loader": "^8.1.1",
     "sass": "^1.89.2",
-    "sass-loader": "^13.3.3",
-    "style-loader": "^4.0.0",
+    "sass-loader": "^16.0.5",
     "webpack": "^5.100.2",
-    "webpack-assets-manifest": "^5.2.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.0"
+    "webpack-assets-manifest": "^6.2.1",
+    "webpack-cli": "^6.0.1"
   },
   "directories": {
     "doc": "docs",

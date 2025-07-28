@@ -188,33 +188,7 @@ function hph_register_post_types()
 
 function hph_register_taxonomies()
 {
-    // Property type taxonomy
-    register_taxonomy('property_type', 'listing', [
-        'labels' => [
-            'name' => __('Property Types', 'happy-place'),
-            'singular_name' => __('Property Type', 'happy-place'),
-            'add_new_item' => __('Add New Property Type', 'happy-place'),
-            'edit_item' => __('Edit Property Type', 'happy-place'),
-            'menu_name' => __('Property Types', 'happy-place')
-        ],
-        'public' => true,
-        'hierarchical' => true,
-        'show_in_rest' => true,
-        'rewrite' => ['slug' => 'property-type']
-    ]);
-
-    // Listing location taxonomy
-    register_taxonomy('listing_location', 'listing', [
-        'labels' => [
-            'name' => __('Locations', 'happy-place'),
-            'singular_name' => __('Location', 'happy-place'),
-            'add_new_item' => __('Add New Location', 'happy-place'),
-            'edit_item' => __('Edit Location', 'happy-place'),
-            'menu_name' => __('Locations', 'happy-place')
-        ],
-        'public' => true,
-        'hierarchical' => true,
-        'show_in_rest' => true,
-        'rewrite' => ['slug' => 'location']
-    ]);
+    // Taxonomies are now handled by the core Taxonomies class
+    // in /includes/core/class-taxonomies.php
+    // This function is kept for compatibility but does nothing
 }

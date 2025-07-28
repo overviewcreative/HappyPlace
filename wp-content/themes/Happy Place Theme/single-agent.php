@@ -340,7 +340,7 @@ get_header();
                             
                             <?php if ($listings_query->found_posts > 6) : ?>
                                 <div class="hph-view-all-listings">
-                                    <a href="<?php echo esc_url(add_query_arg('agent', get_the_ID(), get_post_type_archive_link('listing'))); ?>" class="action-btn action-btn--primary">
+                                    <a href="<?php echo esc_url(add_query_arg('agent', get_the_ID(), get_post_type_archive_link('listing'))); ?>" class="hph-btn hph-btn--primary">
                                         View All <?php echo esc_html($listings_query->found_posts); ?> Listings
                                         <i class="fas fa-arrow-right" aria-hidden="true"></i>
                                     </a>
@@ -453,7 +453,7 @@ get_header();
                                 <textarea id="contact_message" name="contact_message" class="hph-form-textarea" rows="4" placeholder="How can I help you with your real estate needs?" required></textarea>
                             </div>
                             
-                            <button type="submit" class="action-btn action-btn--primary action-btn--block">
+                            <button type="submit" class="hph-btn hph-btn--primary hph-btn--block">
                                 <i class="fas fa-paper-plane" aria-hidden="true"></i>
                                 Send Message
                             </button>

@@ -101,7 +101,7 @@ get_header();
                             <?php
                             foreach ($nearby_listings as $post) :
                                 setup_postdata($post);
-                                get_template_part('templates/listing/content', 'listing');
+                                get_template_part('template-parts/listing/content', 'listing');
                             endforeach;
                             wp_reset_postdata();
                             ?>

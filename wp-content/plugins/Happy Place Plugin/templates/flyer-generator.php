@@ -13,12 +13,14 @@ if (!defined('ABSPATH')) {
 // Enqueue flyer generator assets
 wp_enqueue_script('fabric-js', 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js', [], '5.3.0', true);
 wp_enqueue_script('jspdf', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', [], '2.5.1', true);
+wp_enqueue_style('fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], '6.4.0');
+wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap', [], null);
 
-wp_enqueue_style('flyer-generator-css', HPH_PLUGIN_URL . 'assets/css/flyer-generator.css', [], HPH_VERSION);
-wp_enqueue_script('flyer-generator-js', HPH_PLUGIN_URL . 'assets/js/flyer-generator.js', ['jquery', 'fabric-js'], HPH_VERSION, true);
+wp_enqueue_style('flyer-generator-css', HPH_ASSETS_URL . 'css/flyer-generator.css', [], HPH_VERSION);
+wp_enqueue_script('flyer-generator', HPH_ASSETS_URL . 'js/flyer-generator.js', ['jquery', 'fabric-js'], HPH_VERSION, true);
 
 // Localize script for AJAX
-wp_localize_script('flyer-generator-js', 'flyerGenerator', [
+wp_localize_script('flyer-generator', 'flyerGenerator', [
     'ajaxUrl' => admin_url('admin-ajax.php'),
     'nonce' => wp_create_nonce('flyer_generator_nonce'),
     'pluginUrl' => HPH_PLUGIN_URL
@@ -39,10 +41,10 @@ wp_localize_script('flyer-generator-js', 'flyerGenerator', [
                 ]);
                 
                 foreach ($listings as $listing) {
-                    // Use bridge functions instead of direct get_field calls
-                    $address = hph_get_listing_address($listing->ID, 'street');
-                    $city = hph_get_listing_address($listing->ID, 'city');
-                    $price = hph_get_listing_price($listing->ID, false);
+                    // Use bridge functions for data access
+                    $address = hph_bridge_get_address($listing->ID, 'street');
+                    $city = hph_bridge_get_address($listing->ID, 'city');
+                    $price = hph_bridge_get_price($listing->ID, false);
                     
                     // Debug: Check if functions exist and data is available
                     if (defined('WP_DEBUG') && WP_DEBUG && current_user_can('manage_options')) {
@@ -64,20 +66,19 @@ wp_localize_script('flyer-generator-js', 'flyerGenerator', [
                 ?>
             </select>
         </div>
-        
+
         <div class="control-group">
-            <label for="template-select">Template:</label>
-            <select id="template-select" name="template">
-                <option value="parker_group">Parker Group Style</option>
-                <option value="luxury">Luxury Template</option>
-                <option value="modern">Modern Template</option>
+            <label for="flyer-type-select">Flyer Type:</label>
+            <select id="flyer-type-select" name="flyer_type">
+                <option value="listing">Standard Listing Flyer</option>
+                <option value="open_house">Open House Flyer</option>
             </select>
         </div>
         
         <div class="control-group">
-            <button id="generate-flyer" class="btn btn-primary">Generate Flyer</button>
-            <button id="download-flyer" class="btn btn-secondary" style="display:none;">Download PNG</button>
-            <button id="download-pdf" class="btn btn-secondary" style="display:none;">Download PDF</button>
+            <button id="generate-flyer" class="hph-btn hph-btn--primary">Generate Flyer</button>
+            <button id="download-flyer" class="hph-btn hph-btn--secondary" style="display:none;">Download PNG</button>
+            <button id="download-pdf" class="hph-btn hph-btn--secondary" style="display:none;">Download PDF</button>
         </div>
     </div>
 

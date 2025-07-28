@@ -1,51 +1,79 @@
 #!/bin/bash
 
 # Happy Place Theme Build Script
-# Manual build script for SCSS compilation
+# This script compiles SCSS to CSS and handles the build process
 
-echo "🏗️  Building Happy Place Theme Assets..."
+echo "🏗️  Happy Place Theme Build Process Starting..."
 
-# Check if sass is available
-if ! command -v sass &> /dev/null; then
-    echo "❌ Sass not found. Installing sass globally..."
-    npm install -g sass
+# Set paths
+THEME_DIR="/Users/patrickgallagher/Local Sites/tpgv12/app/public/wp-content/themes/Happy Place Theme"
+SCSS_DIR="$THEME_DIR/assets/src/scss"
+CSS_DIR="$THEME_DIR/assets/dist/css"
+JS_SRC_DIR="$THEME_DIR/assets/src/js"
+JS_DIST_DIR="$THEME_DIR/assets/dist/js"
+
+# Create dist directories if they don't exist
+mkdir -p "$CSS_DIR"
+mkdir -p "$JS_DIST_DIR"
+
+echo "📁 Directories created"
+
+# Compile main SCSS to CSS
+echo "🎨 Compiling main.scss..."
+npx sass "$SCSS_DIR/main.scss" "$CSS_DIR/main.css" --style=compressed --no-source-map
+
+# Compile single-listing SCSS to CSS
+echo "🎨 Compiling single-listing.scss..."
+npx sass "$SCSS_DIR/single-listing.scss" "$CSS_DIR/single-listing.css" --style=compressed --no-source-map
+
+# Copy JavaScript files
+echo "📦 Copying JavaScript files..."
+if [ -f "$JS_SRC_DIR/main.js" ]; then
+    cp "$JS_SRC_DIR/main.js" "$JS_DIST_DIR/main.js"
+    echo "✅ main.js copied"
 fi
 
-# Create dist directories
-mkdir -p assets/dist/css
-mkdir -p assets/dist/js
-
-# Compile SCSS to CSS
-echo "📦 Compiling SCSS..."
-npx sass assets/src/scss/main.scss assets/dist/css/main.css --style=compressed --no-source-map
-
-# Check if compilation was successful
-if [ -f "assets/dist/css/main.css" ]; then
-    echo "✅ CSS compiled successfully"
-    echo "   → assets/dist/css/main.css"
-else
-    echo "❌ CSS compilation failed"
-    exit 1
+if [ -f "$JS_SRC_DIR/single-listing.js" ]; then
+    cp "$JS_SRC_DIR/single-listing.js" "$JS_DIST_DIR/single-listing.js"
+    echo "✅ single-listing.js copied"
 fi
 
-# Copy JavaScript file
-echo "📦 Processing JavaScript..."
-cp assets/src/js/main.js assets/dist/js/main.js
+# Copy all JS modules
+if [ -d "$JS_SRC_DIR/modules" ]; then
+    cp -r "$JS_SRC_DIR/modules" "$JS_DIST_DIR/"
+    echo "✅ JavaScript modules copied"
+fi
 
-# Create a simple manifest file
-echo "📦 Creating manifest..."
-cat > assets/dist/manifest.json << EOF
+if [ -d "$JS_SRC_DIR/components" ]; then
+    cp -r "$JS_SRC_DIR/components" "$JS_DIST_DIR/"
+    echo "✅ JavaScript components copied"
+fi
+
+# Create a simple manifest.json for asset versioning
+echo "📝 Creating manifest.json..."
+TIMESTAMP=$(date +%s)
+cat > "$THEME_DIR/assets/dist/manifest.json" << EOF
 {
-  "main.css": "css/main.css",
-  "main.js": "js/main.js"
+  "main.css": "css/main.css?v=$TIMESTAMP",
+  "main.js": "js/main.js?v=$TIMESTAMP",
+  "single-listing.css": "css/single-listing.css?v=$TIMESTAMP",
+  "single-listing.js": "js/single-listing.js?v=$TIMESTAMP"
 }
 EOF
 
-echo "🎉 Build complete!"
-echo ""
-echo "Generated files:"
-echo "   - assets/dist/css/main.css"
-echo "   - assets/dist/js/main.js"
-echo "   - assets/dist/manifest.json"
-echo ""
-echo "Run this script again after making changes to SCSS or JS files."
+echo "✅ Build completed successfully!"
+echo "📊 Files generated:"
+echo "   • $CSS_DIR/main.css"
+echo "   • $CSS_DIR/single-listing.css"
+echo "   • $JS_DIST_DIR/main.js"
+echo "   • $JS_DIST_DIR/single-listing.js"
+echo "   • assets/dist/manifest.json"
+
+# Optional: Clear WordPress cache if WP-CLI is available
+if command -v wp &> /dev/null; then
+    echo "🧹 Clearing WordPress cache..."
+    cd "$THEME_DIR/../../../.."
+    wp cache flush 2>/dev/null || echo "ℹ️  Cache flush skipped (not in WordPress root or WP-CLI not available)"
+fi
+
+echo "🎉 Happy Place Theme build process complete!"

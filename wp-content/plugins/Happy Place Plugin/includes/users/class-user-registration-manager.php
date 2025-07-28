@@ -120,7 +120,7 @@ class User_Registration_Manager {
             </div>
 
             <div class="hph-form-group">
-                <button type="submit" class="hph-btn hph-btn-primary">
+                <button type="submit" class="hph-btn hph-btn--primary">
                     Register
                 </button>
             </div>
@@ -329,7 +329,7 @@ class User_Registration_Manager {
             </div>
 
             <div class="hph-form-group">
-                <button type="submit" class="hph-btn hph-btn-primary">
+                <button type="submit" class="hph-btn hph-btn--primary">
                     Log In
                 </button>
             </div>

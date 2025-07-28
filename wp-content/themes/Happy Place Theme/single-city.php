@@ -14,7 +14,7 @@ get_header();
         <?php
         while (have_posts()) :
             the_post();
-            get_template_part('templates/city/content', 'city');
+            get_template_part('template-parts/city/content', 'city');
 
             // Display neighborhoods/communities in this city
             $communities = get_posts(array(
@@ -36,7 +36,7 @@ get_header();
                         <?php
                         foreach ($communities as $post) :
                             setup_postdata($post);
-                            get_template_part('templates/community/content', 'community');
+                            get_template_part('template-parts/community/content', 'community');
                         endforeach;
                         wp_reset_postdata();
                         ?>
@@ -65,7 +65,7 @@ get_header();
                         <?php
                         foreach ($related_listings as $post) :
                             setup_postdata($post);
-                            get_template_part('templates/listing/content', 'listing');
+                            get_template_part('template-parts/listing/content', 'listing');
                         endforeach;
                         wp_reset_postdata();
                         ?>

@@ -17,8 +17,12 @@ class Template_Helper {
         $templates = [];
         if (!empty($name)) {
             $templates[] = "template-parts/{$slug}-{$name}.php";
+            $templates[] = "templates/listing/{$slug}-{$name}.php";
+            $templates[] = "happy-place/{$slug}-{$name}.php";
         }
         $templates[] = "template-parts/{$slug}.php";
+        $templates[] = "templates/listing/{$slug}.php";
+        $templates[] = "happy-place/{$slug}.php";
 
         // Look for template file
         $located = '';
@@ -31,6 +35,8 @@ class Template_Helper {
 
         if ($located) {
             include($located);
+        } else if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("Template part not found: {$slug}" . ($name ? "-{$name}" : ''));
         }
     }
 
