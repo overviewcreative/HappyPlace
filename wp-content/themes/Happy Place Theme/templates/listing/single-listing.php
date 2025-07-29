@@ -132,10 +132,7 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
     error_log('HPH: Hero Data Available: ' . ($hero_data ? 'Yes' : 'No'));
 }
 
-// Enqueue template-specific assets
-if (function_exists('hph_bridge_enqueue_template_assets')) {
-    hph_bridge_enqueue_template_assets('single-listing');
-}
+// Template-specific assets are now handled by the Asset_Manager automatically
 ?>
 
 <div id="primary" class="content-area single-listing">

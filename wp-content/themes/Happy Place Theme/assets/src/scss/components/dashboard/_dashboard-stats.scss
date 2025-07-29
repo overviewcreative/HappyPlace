@@ -1,7 +1,10 @@
 /**
- * Dashboard Statistics & Metrics
- * Charts, graphs, and data visualization components
+ * Dashboard Stats
+ * Statistics and metrics display
  */
+
+// Import mixins needed for dashboard styling
+@import '../../abstracts/mixins';
 
 .hph-dashboard-stats {
   display: grid;
@@ -254,7 +257,7 @@
       border-radius: var(--border-radius);
       
       .loading-spinner {
-        @include spinner;
+        @include spinner(24px, var(--dashboard-primary));
         width: 32px;
         height: 32px;
       }

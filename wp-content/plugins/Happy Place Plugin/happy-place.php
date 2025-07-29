@@ -78,6 +78,22 @@ require_once HPH_INCLUDES_PATH . 'template-functions.php';
 // Load shortcodes
 require_once HPH_INCLUDES_PATH . 'shortcodes.php';
 
+// Load Listing Calulator
+require_once HPH_INCLUDES_PATH . 'fields/class-listing-calculator.php';
+
+// Load Enhanced Field Manager (Phase 1)
+require_once HPH_INCLUDES_PATH . 'fields/class-enhanced-field-manager.php';
+
+// Load Validation AJAX Handlers (Phase 4+)
+require_once HPH_INCLUDES_PATH . 'class-validation-ajax.php';
+
+// Bridge functions are managed by the theme for modularity
+
+// Load Phase 1 Status Page (Development tool)
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    require_once HPH_INCLUDES_PATH . 'fields/phase1-status-page.php';
+}
+
 // =============================================================================
 // PLUGIN MANAGER INITIALIZATION
 // =============================================================================
@@ -89,6 +105,9 @@ require_once HPH_INCLUDES_PATH . 'core/class-plugin-manager.php';
 add_action('plugins_loaded', function() {
     \HappyPlace\Core\Plugin_Manager::get_instance();
 }, 5);
+
+// Load Enhanced Airtable Sync System
+require_once HPH_INCLUDES_PATH . 'integrations/init-enhanced-sync.php';
 
 // =============================================================================
 // LEGACY SUPPORT FUNCTIONS (for backward compatibility)

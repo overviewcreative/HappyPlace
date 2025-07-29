@@ -255,7 +255,20 @@ class Plugin_Manager {
             require_once HPH_INCLUDES_PATH . 'ajax/class-advanced-form-ajax.php';
         }
         
-        // Flyer Generator AJAX Handler
+        // Flyer Generator (Graphics Component) - Using Clean Version for Testing
+        if (file_exists(HPH_INCLUDES_PATH . 'graphics/class-flyer-generator-clean.php')) {
+            require_once HPH_INCLUDES_PATH . 'graphics/class-flyer-generator-clean.php';
+            if (class_exists('HappyPlace\\Graphics\\Flyer_Generator_Clean')) {
+                $this->components['flyer_generator'] = \HappyPlace\Graphics\Flyer_Generator_Clean::get_instance();
+            }
+        } elseif (file_exists(HPH_INCLUDES_PATH . 'graphics/class-flyer-generator.php')) {
+            require_once HPH_INCLUDES_PATH . 'graphics/class-flyer-generator.php';
+            if (class_exists('HappyPlace\\Graphics\\Flyer_Generator')) {
+                $this->components['flyer_generator'] = \HappyPlace\Graphics\Flyer_Generator::get_instance();
+            }
+        }
+        
+        // Legacy Flyer Generator AJAX Handler (if exists)
         if (file_exists(HPH_INCLUDES_PATH . 'ajax/flyer-generator.php')) {
             require_once HPH_INCLUDES_PATH . 'ajax/flyer-generator.php';
         }

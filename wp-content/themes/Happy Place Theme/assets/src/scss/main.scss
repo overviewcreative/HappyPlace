@@ -1,22 +1,41 @@
 /**
  * Happy Place Theme - Main SCSS Entry Point
- * Import only existing files for clean build
+ * Single source of truth for all theme styling
+ * 
+ * CRITICAL: Import order matters - DO NOT REORDER
  */
 
-// Base styles (only existing files)
-@import 'base/reset';
+// 1. TOOLS & ABSTRACTS (Foundation - ORDER CRITICAL)
+@import 'abstracts/variables';    // CSS custom properties FIRST
+@import 'abstracts/mixins';       // Mixins that use variables
+@import 'abstracts/functions';    // SCSS functions
 
-// Components (only existing files)
-@import 'components/photo-gallery';
-@import 'components/hero-section';
-@import 'components/agent-card';
-@import 'components/features';
-@import 'components/quick-facts';
-@import 'components/action-btn';
-@import 'components/living-experience';
-@import 'components/virtual-tour';
-@import 'components/property-details';
-@import 'components/gallery';
-@import 'components/open-house';
-@import 'components/sidebar-widgets';
-@import 'components/bridge-states';
+// 2. BASE LAYER (Reset & Fundamentals)
+@import 'base/reset';             // CSS reset/normalize
+@import 'base/typography';        // Font definitions
+@import 'base/forms';             // Base form styling
+@import 'base/globals';           // Global element styles
+
+// 3. LAYOUT LAYER (Structure)
+@import 'layout/grid';            // CSS Grid system
+@import 'layout/containers';      // Content containers
+@import 'layout/header';          // Site header
+@import 'layout/footer';          // Site footer
+
+// 4. COMPONENT LAYER (UI Components)
+@import 'components/buttons/buttons';
+@import 'components/cards/cards';
+// @import 'components/forms/forms';           // Temporarily disabled - has dashboard conflicts
+@import 'components/gallery/photo-gallery';
+@import 'components/hero/hero-section';
+// @import 'components/dashboard/dashboard-main';  // Temporarily disabled - complex dashboard system
+
+// 5. TEMPLATE LAYER (Page-Specific)
+@import 'templates/single-listing';
+@import 'templates/dashboard';           // Re-enabled with mixin fixes
+@import 'templates/archive-listing';
+
+// 6. UTILITY LAYER (Helpers - IMPORT LAST)
+@import 'utilities/spacing';
+@import 'utilities/typography';
+@import 'utilities/helpers';

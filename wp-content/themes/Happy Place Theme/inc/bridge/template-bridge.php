@@ -217,23 +217,6 @@ if (!function_exists('hph_get_template_agent_data')) {
 }
 
 /**
- * Enqueue template-specific assets
- * 
- * @param string $template Template name
- */
-if (!function_exists('hph_enqueue_template_assets')) {
-    function hph_enqueue_template_assets($template) {
-        // Use Asset Manager if available
-        if (class_exists('HappyPlace\Core\Asset_Manager')) {
-            $asset_manager = HappyPlace\Core\Asset_Manager::init();
-            if (method_exists($asset_manager, 'enqueue_template_assets')) {
-                $asset_manager->enqueue_template_assets($template);
-            }
-        }
-    }
-}
-
-/**
  * Check if current page is a listing
  * 
  * @return bool

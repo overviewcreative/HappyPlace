@@ -135,118 +135,18 @@ class HPH_Shortcode_Manager {
      * Conditionally enqueue assets based on detected shortcodes
      */
     public function maybe_enqueue_assets() {
-        global $post;
-        
-        if ($this->assets_enqueued) {
-            return;
-        }
-        
-        // Get detected shortcodes from post meta or detection
-        $page_shortcodes = !empty($this->page_shortcodes) ? $this->page_shortcodes : 
-                          (is_object($post) ? get_post_meta($post->ID, '_hph_page_shortcodes', true) : array());
-        
-        if (empty($page_shortcodes)) {
-            return;
-        }
-        
-        // Shortcode styles are now included in main CSS bundle via Asset_Loader
-        // wp_enqueue_style(
-        //     'hph-shortcodes',
-        //     get_template_directory_uri() . '/assets/dist/css/shortcodes.css',
-        //     array('happy-place-main'),
-        //     HPH_THEME_VERSION
-        // );
-        
-        // Enqueue component-specific styles
-        $this->enqueue_component_assets($page_shortcodes);
-        
-        // Enqueue shortcode JavaScript
-        wp_enqueue_script(
-            'hph-shortcodes',
-            get_template_directory_uri() . '/assets/dist/js/shortcodes.js',
-            array('jquery'),
-            HPH_THEME_VERSION,
-            true
-        );
-        
-        // Localize script
-        wp_localize_script('hph-shortcodes', 'hphShortcodes', array(
-            'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('hph_shortcodes_nonce'),
-            'components' => $page_shortcodes
-        ));
-        
-        $this->assets_enqueued = true;
-    }
-    
-    /**
-     * Enqueue component-specific assets
-     */
-    private function enqueue_component_assets($shortcodes) {
-        $component_map = array(
-            'hph_hero' => 'hero',
-            'hph_testimonials' => 'testimonials',
-            'hph_accordion' => 'accordion',
-            'hph_stats' => 'stats'
-        );
-        
-        foreach ($shortcodes as $shortcode) {
-            if (isset($component_map[$shortcode])) {
-                $component = $component_map[$shortcode];
-                
-                // Check if component-specific CSS exists
-                $css_file = get_template_directory() . '/assets/dist/css/components/' . $component . '.css';
-                if (file_exists($css_file)) {
-                    wp_enqueue_style(
-                        'hph-' . $component,
-                        get_template_directory_uri() . '/assets/dist/css/components/' . $component . '.css',
-                        array('hph-shortcodes'),
-                        HPH_THEME_VERSION
-                    );
-                }
-                
-                // Check if component-specific JS exists
-                $js_file = get_template_directory() . '/assets/dist/js/components/' . $component . '.js';
-                if (file_exists($js_file)) {
-                    wp_enqueue_script(
-                        'hph-' . $component,
-                        get_template_directory_uri() . '/assets/dist/js/components/' . $component . '.js',
-                        array('hph-shortcodes'),
-                        HPH_THEME_VERSION,
-                        true
-                    );
-                }
-            }
-        }
+        // All shortcode assets are now handled by the central Asset_Manager
+        // This method is kept for backward compatibility but does nothing
+        return;
     }
     
     /**
      * Enqueue admin assets
      */
     public function enqueue_admin_assets($hook) {
-        if (!in_array($hook, array('post.php', 'post-new.php', 'widgets.php'))) {
-            return;
-        }
-        
-        wp_enqueue_style(
-            'hph-shortcodes-admin',
-            get_template_directory_uri() . '/inc/shortcodes/assets/admin.css',
-            array(),
-            HPH_THEME_VERSION
-        );
-        
-        wp_enqueue_script(
-            'hph-shortcodes-admin',
-            get_template_directory_uri() . '/inc/shortcodes/assets/admin.js',
-            array('jquery'),
-            HPH_THEME_VERSION,
-            true
-        );
-        
-        wp_localize_script('hph-shortcodes-admin', 'hphShortcodesAdmin', array(
-            'shortcodes' => $this->get_shortcode_definitions(),
-            'nonce' => wp_create_nonce('hph_shortcodes_admin_nonce')
-        ));
+        // Admin assets are now handled by the central Asset_Manager
+        // This method is kept for backward compatibility but does nothing
+        return;
     }
     
     /**

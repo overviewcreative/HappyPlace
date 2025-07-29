@@ -280,9 +280,7 @@
       
       &.is-loading {
         .loading-spinner {
-          @include spinner;
-          width: 32px;
-          height: 32px;
+          @include spinner(32px, var(--dashboard-primary));
         }
       }
     }

@@ -213,7 +213,7 @@ class CRM_Sync_Manager {
     /**
      * Manual sync trigger
      */
-    public function manual_sync(string $type = null): array {
+    public function manual_sync(?string $type = null): array {
         $results = [];
 
         if ($type) {

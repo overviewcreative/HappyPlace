@@ -3,6 +3,9 @@
  * Sidebar and navigation components
  */
 
+// Import mixins needed for responsive design and utilities
+@import '../../abstracts/mixins';
+
 .hph-dashboard-nav {
   padding: var(--dashboard-spacing-lg) 0;
   flex: 1;

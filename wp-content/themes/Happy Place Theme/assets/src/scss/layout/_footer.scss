@@ -1,0 +1,123 @@
+/**
+ * Site Footer Layout
+ * Footer structure and styling
+ */
+
+.site-footer {
+    background-color: var(--color-background-secondary);
+    border-top: 1px solid var(--color-border);
+    margin-top: auto;
+    padding: var(--spacing-xl) 0 var(--spacing-lg) 0;
+}
+
+.footer-container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
+}
+
+.footer-section {
+    h3 {
+        color: var(--color-text-primary);
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    p {
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        
+        li {
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            
+            &:hover {
+                color: var(--color-primary);
+            }
+        }
+    }
+}
+
+.footer-bottom {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    
+    @media (max-width: 768px) {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+.footer-copyright {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: var(--spacing-lg);
+    
+    a {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.2s ease;
+        
+        &:hover {
+            color: var(--color-primary);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+.social-links {
+    display: flex;
+    gap: var(--spacing-md);
+    
+    a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background-color: var(--color-muted);
+        color: var(--color-text-secondary);
+        border-radius: 50%;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        
+        &:hover {
+            background-color: var(--color-primary);
+            color: white;
+        }
+    }
+}

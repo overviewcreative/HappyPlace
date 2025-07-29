@@ -1,0 +1,794 @@
+{
+    "key": "group_relationships_team_management",
+    "title": "Relationships & Team Management",
+    "fields": [
+        {
+            "key": "field_relationships_tab_primary_team",
+            "label": "Primary Team",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_listing_agent_primary",
+            "label": "Primary Listing Agent",
+            "name": "listing_agent_primary",
+            "type": "post_object",
+            "instructions": "Select the primary listing agent for this property",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "agent"
+            ],
+            "taxonomy": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "return_format": "object",
+            "ui": 1
+        },
+        {
+            "key": "field_listing_agent_secondary",
+            "label": "Co-Listing Agent",
+            "name": "listing_agent_secondary",
+            "type": "post_object",
+            "instructions": "Select the co-listing agent (if applicable)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "agent"
+            ],
+            "taxonomy": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "return_format": "object",
+            "ui": 1
+        },
+        {
+            "key": "field_listing_agent_commission_primary",
+            "label": "Primary Agent Commission (%)",
+            "name": "listing_agent_commission_primary",
+            "type": "number",
+            "instructions": "Commission percentage for primary listing agent",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "2.5",
+            "prepend": "",
+            "append": "%",
+            "min": "0",
+            "max": "10",
+            "step": "0.1"
+        },
+        {
+            "key": "field_listing_agent_commission_secondary",
+            "label": "Co-Agent Commission (%)",
+            "name": "listing_agent_commission_secondary",
+            "type": "number",
+            "instructions": "Commission percentage for co-listing agent",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_listing_agent_secondary",
+                        "operator": "!=empty"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "2.5",
+            "prepend": "",
+            "append": "%",
+            "min": "0",
+            "max": "10",
+            "step": "0.1"
+        },
+        {
+            "key": "field_buyer_agent_commission",
+            "label": "Buyer Agent Commission (%)",
+            "name": "buyer_agent_commission",
+            "type": "number",
+            "instructions": "Commission percentage offered to buyer's agent",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "2.5",
+            "placeholder": "2.5",
+            "prepend": "",
+            "append": "%",
+            "min": "0",
+            "max": "10",
+            "step": "0.1"
+        },
+        {
+            "key": "field_total_commission",
+            "label": "Total Commission (%)",
+            "name": "total_commission",
+            "type": "number",
+            "instructions": "Total commission percentage (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "5.0",
+            "prepend": "",
+            "append": "%",
+            "min": "0",
+            "max": "20",
+            "step": "0.1",
+            "readonly": 1
+        },
+        {
+            "key": "field_relationships_tab_office_info",
+            "label": "Office Information",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_listing_office_primary",
+            "label": "Primary Listing Office",
+            "name": "listing_office_primary",
+            "type": "post_object",
+            "instructions": "Select the primary listing office",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "office"
+            ],
+            "taxonomy": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "return_format": "object",
+            "ui": 1
+        },
+        {
+            "key": "field_listing_office_secondary",
+            "label": "Co-Listing Office",
+            "name": "listing_office_secondary",
+            "type": "post_object",
+            "instructions": "Select the co-listing office (if different)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "office"
+            ],
+            "taxonomy": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "return_format": "object",
+            "ui": 1
+        },
+        {
+            "key": "field_listing_office_phone",
+            "label": "Office Phone",
+            "name": "listing_office_phone",
+            "type": "text",
+            "instructions": "Primary office phone number",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "(555) 123-4567",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_listing_office_email",
+            "label": "Office Email",
+            "name": "listing_office_email",
+            "type": "email",
+            "instructions": "Primary office email address",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "office@realestate.com",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_listing_office_website",
+            "label": "Office Website",
+            "name": "listing_office_website",
+            "type": "url",
+            "instructions": "Office website URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https://office-website.com"
+        },
+        {
+            "key": "field_mls_listing_office_id",
+            "label": "MLS Office ID",
+            "name": "mls_listing_office_id",
+            "type": "text",
+            "instructions": "MLS system office identifier",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "OFF123456",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_mls_listing_agent_id",
+            "label": "MLS Agent ID",
+            "name": "mls_listing_agent_id",
+            "type": "text",
+            "instructions": "MLS system agent identifier",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "AGT123456",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_listing_agreement_type",
+            "label": "Listing Agreement Type",
+            "name": "listing_agreement_type",
+            "type": "select",
+            "instructions": "Type of listing agreement",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "exclusive_right": "Exclusive Right to Sell",
+                "exclusive_agency": "Exclusive Agency",
+                "open_listing": "Open Listing",
+                "net_listing": "Net Listing",
+                "auction": "Auction"
+            },
+            "default_value": "exclusive_right",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_listing_agreement_expiration",
+            "label": "Agreement Expiration Date",
+            "name": "listing_agreement_expiration",
+            "type": "date_picker",
+            "instructions": "When the listing agreement expires",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "m/d/Y",
+            "return_format": "Y-m-d",
+            "first_day": 1
+        },
+        {
+            "key": "field_relationships_tab_performance",
+            "label": "Performance Tracking",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_listing_views_total",
+            "label": "Total Listing Views",
+            "name": "listing_views_total",
+            "type": "number",
+            "instructions": "Total number of times this listing has been viewed",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 0,
+            "placeholder": "0",
+            "prepend": "",
+            "append": "views",
+            "min": "0",
+            "max": "",
+            "step": "1"
+        },
+        {
+            "key": "field_listing_views_this_week",
+            "label": "Views This Week",
+            "name": "listing_views_this_week",
+            "type": "number",
+            "instructions": "Number of views in the current week",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 0,
+            "placeholder": "0",
+            "prepend": "",
+            "append": "views",
+            "min": "0",
+            "max": "",
+            "step": "1"
+        },
+        {
+            "key": "field_inquiries_count_total",
+            "label": "Total Inquiries",
+            "name": "inquiries_count_total",
+            "type": "number",
+            "instructions": "Total number of inquiries received",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 0,
+            "placeholder": "0",
+            "prepend": "",
+            "append": "inquiries",
+            "min": "0",
+            "max": "",
+            "step": "1"
+        },
+        {
+            "key": "field_showings_count_total",
+            "label": "Total Showings",
+            "name": "showings_count_total",
+            "type": "number",
+            "instructions": "Total number of showings scheduled",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 0,
+            "placeholder": "0",
+            "prepend": "",
+            "append": "showings",
+            "min": "0",
+            "max": "",
+            "step": "1"
+        },
+        {
+            "key": "field_lead_source_primary",
+            "label": "Primary Lead Source",
+            "name": "lead_source_primary",
+            "type": "select",
+            "instructions": "Where most leads are coming from",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "website": "Company Website",
+                "mls": "MLS Portals",
+                "zillow": "Zillow",
+                "realtor_com": "Realtor.com",
+                "social_media": "Social Media",
+                "referrals": "Referrals",
+                "open_house": "Open Houses",
+                "yard_sign": "Yard Sign",
+                "print_ads": "Print Advertising",
+                "direct_mail": "Direct Mail",
+                "other": "Other"
+            },
+            "default_value": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_marketing_status",
+            "label": "Marketing Status",
+            "name": "marketing_status",
+            "type": "select",
+            "instructions": "Current marketing campaign status",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "not_started": "Not Started",
+                "planning": "Planning Phase",
+                "active": "Active Marketing",
+                "enhanced": "Enhanced Marketing",
+                "reduced": "Reduced Marketing",
+                "paused": "Paused",
+                "completed": "Completed"
+            },
+            "default_value": "planning",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_listing_performance_score",
+            "label": "Performance Score",
+            "name": "listing_performance_score",
+            "type": "number",
+            "instructions": "Overall listing performance score (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "85",
+            "prepend": "",
+            "append": "/100",
+            "min": "0",
+            "max": "100",
+            "step": "1",
+            "readonly": 1
+        },
+        {
+            "key": "field_relationships_tab_location_relationships",
+            "label": "Location Relationships",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_school_district_relation",
+            "label": "School District Relationship",
+            "name": "school_district_relation",
+            "type": "relationship",
+            "instructions": "Related school districts and schools",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "school"
+            ],
+            "taxonomy": "",
+            "filters": [
+                "search",
+                "taxonomy"
+            ],
+            "elements": "",
+            "min": "",
+            "max": "",
+            "return_format": "object"
+        },
+        {
+            "key": "field_nearby_places_relation",
+            "label": "Nearby Places",
+            "name": "nearby_places_relation",
+            "type": "relationship",
+            "instructions": "Notable nearby places and amenities",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "place"
+            ],
+            "taxonomy": "",
+            "filters": [
+                "search",
+                "taxonomy"
+            ],
+            "elements": "",
+            "min": "",
+            "max": "",
+            "return_format": "object"
+        },
+        {
+            "key": "field_elementary_school_rating",
+            "label": "Elementary School Rating",
+            "name": "elementary_school_rating",
+            "type": "range",
+            "instructions": "Elementary school rating (1-10 scale)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "prepend": "",
+            "append": "/10"
+        },
+        {
+            "key": "field_middle_school_rating",
+            "label": "Middle School Rating",
+            "name": "middle_school_rating",
+            "type": "range",
+            "instructions": "Middle school rating (1-10 scale)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "prepend": "",
+            "append": "/10"
+        },
+        {
+            "key": "field_high_school_rating",
+            "label": "High School Rating",
+            "name": "high_school_rating",
+            "type": "range",
+            "instructions": "High school rating (1-10 scale)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "prepend": "",
+            "append": "/10"
+        },
+        {
+            "key": "field_overall_school_rating",
+            "label": "Overall School Rating",
+            "name": "overall_school_rating",
+            "type": "range",
+            "instructions": "Overall school district rating (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "prepend": "",
+            "append": "/10",
+            "readonly": 1
+        },
+        {
+            "key": "field_walkability_score",
+            "label": "Walkability Score",
+            "name": "walkability_score",
+            "type": "number",
+            "instructions": "Walk Score (0-100, auto-populated via API)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "65",
+            "prepend": "",
+            "append": "/100",
+            "min": "0",
+            "max": "100",
+            "step": "1",
+            "readonly": 1
+        },
+        {
+            "key": "field_transit_score",
+            "label": "Transit Score",
+            "name": "transit_score",
+            "type": "number",
+            "instructions": "Public transit score (0-100, auto-populated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "45",
+            "prepend": "",
+            "append": "/100",
+            "min": "0",
+            "max": "100",
+            "step": "1",
+            "readonly": 1
+        },
+        {
+            "key": "field_bike_score",
+            "label": "Bike Score",
+            "name": "bike_score",
+            "type": "number",
+            "instructions": "Bike friendliness score (0-100, auto-populated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "55",
+            "prepend": "",
+            "append": "/100",
+            "min": "0",
+            "max": "100",
+            "step": "1",
+            "readonly": 1
+        },
+        {
+            "key": "field_lifestyle_score",
+            "label": "Lifestyle Score",
+            "name": "lifestyle_score",
+            "type": "number",
+            "instructions": "Overall lifestyle score (auto-calculated composite)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "75",
+            "prepend": "",
+            "append": "/100",
+            "min": "0",
+            "max": "100",
+            "step": "1",
+            "readonly": 1
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 3,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Comprehensive relationship and team management for listings including agent information, office details, performance tracking, and location relationships."
+}

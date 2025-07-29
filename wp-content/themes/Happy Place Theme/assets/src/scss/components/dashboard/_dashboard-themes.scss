@@ -3,6 +3,9 @@
  * Theme variations and customizations
  */
 
+// Import mixins needed for responsive design
+@import '../../abstracts/mixins';
+
 // Dark theme
 .hph-dashboard--dark {
   // Override CSS custom properties for dark theme

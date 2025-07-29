@@ -10,8 +10,8 @@
 // Variables must come first to define custom properties
 @import 'dashboard-variables';
 
-// Mixins come next to provide utility functions
-@import 'dashboard-mixins';
+// Import mixins for dashboard components
+@import '../../abstracts/mixins';
 
 // Layout foundation
 @import 'dashboard-layout';

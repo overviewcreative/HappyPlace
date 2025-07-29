@@ -1108,32 +1108,4 @@
         // Send push notification if enabled
         do_action('hph_send_lead_notification', $user_id, $lead_id);
     }
-}<?php
-/**
- * Leads Section Handler
- * 
- * Handles backend logic for the dashboard leads section
- * 
- * @package HappyPlace
- * @subpackage Dashboard\Sections
- * @since 1.0.0
- */
-
-namespace HappyPlace\Dashboard\Sections;
-
-if (!defined('ABSPATH')) {
-    exit;
 }
-
-class Leads_Section {
-    
-    /**
-     * Section identifier
-     */
-    const SECTION_ID = 'leads';
-    
-    /**
-     * Initialize the section
-     */
-    public function __construct() {
-        add_

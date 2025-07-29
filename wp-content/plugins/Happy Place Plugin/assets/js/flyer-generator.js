@@ -2,88 +2,213 @@
     'use strict';
 
     let canvas;
+    let isGenerating = false;
 
     $(document).ready(function() {
-        // Initialize Fabric.js canvas
-        canvas = new fabric.Canvas('flyer-canvas');
-
-        $('#generate-flyer').on('click', function() {
-            const listingId = $('#listing-select').val();
-            if (!listingId) {
-                alert('Please select a listing.');
-                return;
-            }
-
-            generateFlyer(listingId);
-        });
+        console.log('Flyer Generator JS: Document ready');
+        console.log('Flyer Generator JS: jQuery version:', $.fn.jquery);
+        console.log('Flyer Generator JS: flyerGenerator object:', typeof flyerGenerator !== 'undefined' ? flyerGenerator : 'NOT FOUND');
+        console.log('Flyer Generator JS: Fabric.js available:', typeof fabric !== 'undefined');
         
-        // Add download button handlers
+        initializeFlyerGenerator();
+    });
+
+    function initializeFlyerGenerator() {
+        console.log('Flyer Generator JS: Initializing...');
+        
+        // Check required dependencies
+        if (typeof fabric === 'undefined') {
+            console.error('Flyer Generator JS: Fabric.js library not loaded');
+            showError('Fabric.js library not loaded. Please refresh the page.');
+            return;
+        }
+
+        if (typeof flyerGenerator === 'undefined') {
+            console.error('Flyer Generator JS: flyerGenerator object not found');
+            showError('Configuration object not found. Please refresh the page.');
+            return;
+        }
+
+        console.log('Flyer Generator JS: Dependencies OK, initializing canvas...');
+
+        // Initialize Fabric.js canvas
+        try {
+            canvas = new fabric.Canvas('flyer-canvas', {
+                backgroundColor: '#ffffff',
+                selection: false
+            });
+            
+            // Set initial canvas size for US Letter (8.5 x 11 inches at 72 DPI)
+            canvas.setDimensions({
+                width: 612,  // 8.5 * 72
+                height: 792  // 11 * 72
+            });
+            
+            console.log('Flyer Generator JS: Canvas initialized successfully');
+        } catch (error) {
+            console.error('Flyer Generator JS: Error initializing canvas:', error);
+            showError('Failed to initialize canvas. Please refresh the page.');
+            return;
+        }
+
+        // Bind event handlers
+        $('#generate-flyer').on('click', handleGenerateFlyer);
         $('#download-flyer').on('click', downloadPNG);
         $('#download-pdf').on('click', downloadPDF);
-    });
+        $('.dismiss-error').on('click', hideError);
+
+        // Auto-select listing if only one exists
+        const listingSelect = $('#listing-select');
+        const options = listingSelect.find('option[value!=""]');
+        if (options.length === 1) {
+            listingSelect.val(options.first().val());
+            console.log('Flyer Generator JS: Auto-selected single listing');
+        }
+
+        console.log('Flyer Generator JS: Initialization complete');
+    }
+
+    function handleGenerateFlyer() {
+        console.log('Flyer Generator JS: Generate flyer button clicked');
+        
+        if (isGenerating) {
+            console.log('Flyer Generator JS: Already generating, ignoring click');
+            return; // Prevent multiple simultaneous generations
+        }
+
+        const listingId = $('#listing-select').val();
+        console.log('Flyer Generator JS: Selected listing ID:', listingId);
+        
+        if (!listingId) {
+            const errorMsg = flyerGenerator.strings?.selectListing || 'Please select a listing.';
+            console.log('Flyer Generator JS: No listing selected, showing error:', errorMsg);
+            showError(errorMsg);
+            return;
+        }
+
+        console.log('Flyer Generator JS: Calling generateFlyer with ID:', listingId);
+        generateFlyer(listingId);
+    }
 
     function showLoading(show) {
         if (show) {
+            isGenerating = true;
             $('.flyer-loading').show();
-            $('#generate-flyer').prop('disabled', true).text('Generating...');
+            $('.flyer-download-controls').hide();
+            hideError();
+            $('#generate-flyer')
+                .prop('disabled', true)
+                .text(flyerGenerator.strings?.generating || 'Generating...');
         } else {
+            isGenerating = false;
             $('.flyer-loading').hide();
-            $('#generate-flyer').prop('disabled', false).text('Generate Flyer');
+            $('#generate-flyer')
+                .prop('disabled', false)
+                .text(flyerGenerator.strings?.generateFlyer || 'Generate Flyer');
         }
     }
 
+    function showError(message) {
+        $('.flyer-error .error-message').text(message);
+        $('.flyer-error').show();
+        console.error('Flyer Generator Error:', message);
+    }
+
+    function hideError() {
+        $('.flyer-error').hide();
+    }
+
     function generateFlyer(listingId) {
-        // Check if flyerGenerator is defined
+        console.log('Flyer Generator JS: Starting generateFlyer for listing:', listingId);
+        
+        // Validate required objects
         if (typeof flyerGenerator === 'undefined') {
-            console.error('flyerGenerator object not found. Check script localization.');
-            alert('Configuration error. Please refresh the page and try again.');
+            console.error('Flyer Generator JS: flyerGenerator object not available');
+            showError('Configuration error. Please refresh and try again.');
             return;
         }
         
+        console.log('Flyer Generator JS: flyerGenerator config:', flyerGenerator);
+        
         const flyerType = $('#flyer-type-select').val() || 'listing';
+        console.log('Flyer Generator JS: Flyer type:', flyerType);
         
         showLoading(true);
         canvas.clear();
+        
+        const ajaxData = {
+            action: 'generate_flyer',
+            listing_id: listingId,
+            flyer_type: flyerType,
+            nonce: flyerGenerator.nonce
+        };
+        
+        console.log('Flyer Generator JS: Making AJAX request with data:', ajaxData);
+        console.log('Flyer Generator JS: AJAX URL:', flyerGenerator.ajaxUrl);
         
         // Make AJAX request to get listing data
         $.ajax({
             url: flyerGenerator.ajaxUrl,
             type: 'POST',
-            data: {
-                action: 'generate_flyer',
-                listing_id: listingId,
-                flyer_type: flyerType,
-                nonce: flyerGenerator.nonce
-            },
-            success: function(response) {
-                console.log('AJAX Response:', response);
-                if (response.success) {
-                    const data = response.data;
-                    console.log('Received data:', data);
-                    
-                    // Always use Parker Group style - template selection removed
-                    try {
-                        createParkerGroupDesign(data, flyerType);
-                        
-                        // Show download buttons
-                        $('#download-flyer, #download-pdf').show();
-                    } catch (error) {
-                        console.error('Error creating flyer design:', error);
-                        alert('Error creating flyer design: ' + error.message);
-                    }
-                } else {
-                    console.error('AJAX Error:', response.data);
-                    alert('Error: ' + response.data);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX Request Failed:', {xhr, status, error});
-                alert('Error generating flyer. Please try again. Status: ' + status);
-            },
+            data: ajaxData,
+            timeout: 30000, // 30 second timeout
+            success: handleAjaxSuccess,
+            error: handleAjaxError,
             complete: function() {
+                console.log('Flyer Generator JS: AJAX request completed');
                 showLoading(false);
             }
         });
+    }
+
+    function handleAjaxSuccess(response) {
+        console.log('AJAX Response:', response);
+        
+        if (response.success && response.data) {
+            const data = response.data;
+            console.log('Received data:', data);
+            
+            try {
+                const flyerType = $('#flyer-type-select').val() || 'listing';
+                createParkerGroupDesign(data, flyerType);
+                
+                // Show download buttons
+                $('.flyer-download-controls').show();
+                
+                // Scroll to canvas
+                $('html, body').animate({
+                    scrollTop: $('.flyer-canvas-container').offset().top - 100
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error creating flyer design:', error);
+                showError('Error creating flyer design: ' + error.message);
+            }
+        } else {
+            const errorMessage = response.data?.message || response.data || 'Unknown error occurred';
+            console.error('AJAX Error:', response);
+            showError('Error: ' + errorMessage);
+        }
+    }
+
+    function handleAjaxError(xhr, status, error) {
+        console.error('AJAX Request Failed:', {xhr, status, error});
+        
+        let errorMessage = 'Error generating flyer. Please try again.';
+        
+        if (xhr.status === 403) {
+            errorMessage = 'Permission denied. Please refresh and try again.';
+        } else if (xhr.status === 404) {
+            errorMessage = 'Listing not found.';
+        } else if (xhr.status === 500) {
+            errorMessage = 'Server error. Please try again later.';
+        } else if (status === 'timeout') {
+            errorMessage = 'Request timed out. Please try again.';
+        } else if (status === 'parsererror') {
+            errorMessage = 'Invalid response from server.';
+        }
+        
+        showError(errorMessage);
     }
 
     function getFontAwesomeIcon(iconType) {
@@ -1090,56 +1215,106 @@
     }
 
     function downloadPNG() {
-        if (!canvas) return;
-
-        const dataURL = canvas.toDataURL({
-            format: 'png',
-            quality: 1,
-            multiplier: 2
-        });
-
-        const link = document.createElement('a');
-        link.download = 'property-flyer.png';
-        link.href = dataURL;
-        link.click();
-    }
-
-    function downloadPDF() {
-        if (!canvas) return;
-
-        // Check if jsPDF is available (it's loaded via UMD, so check window.jspdf)
-        const { jsPDF } = window.jspdf || {};
-        
-        if (!jsPDF) {
-            alert('PDF generation not available. Please try PNG download.');
+        if (!canvas) {
+            showError('No flyer to download. Please generate a flyer first.');
             return;
         }
 
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        
-        // Calculate dimensions to fit A4 (210mm x 297mm)
-        const canvasAspectRatio = canvas.width / canvas.height;
-        const a4AspectRatio = 210 / 297;
-        
-        let imgWidth, imgHeight;
-        
-        if (canvasAspectRatio > a4AspectRatio) {
-            // Canvas is wider, fit to width
-            imgWidth = 210;
-            imgHeight = 210 / canvasAspectRatio;
-        } else {
-            // Canvas is taller, fit to height
-            imgHeight = 297;
-            imgWidth = 297 * canvasAspectRatio;
+        try {
+            // Show loading state
+            const downloadBtn = $('#download-flyer');
+            const originalText = downloadBtn.text();
+            downloadBtn.prop('disabled', true).text('Preparing Download...');
+
+            // Generate high-quality PNG
+            const dataURL = canvas.toDataURL({
+                format: 'png',
+                quality: 1,
+                multiplier: 3 // Higher resolution for print quality
+            });
+
+            // Create filename with listing info if available
+            const listingSelect = $('#listing-select');
+            const listingText = listingSelect.find('option:selected').text().split(' - ')[0] || 'Property';
+            const filename = `${listingText.replace(/[^a-zA-Z0-9]/g, '_')}_flyer.png`;
+
+            // Create and trigger download
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = dataURL;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            console.log('PNG download initiated:', filename);
+
+        } catch (error) {
+            console.error('Error downloading PNG:', error);
+            showError('Failed to download PNG. Please try again.');
+        } finally {
+            // Restore button state
+            setTimeout(() => {
+                $('#download-flyer').prop('disabled', false).text('Download PNG');
+            }, 1000);
         }
-        
-        // Center the image on the page
-        const x = (210 - imgWidth) / 2;
-        const y = (297 - imgHeight) / 2;
-        
-        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-        pdf.save('property-flyer.pdf');
+    }
+
+    function downloadPDF() {
+        if (!canvas) {
+            showError('No flyer to download. Please generate a flyer first.');
+            return;
+        }
+
+        try {
+            // Check if jsPDF is available
+            const { jsPDF } = window.jspdf || {};
+            
+            if (!jsPDF) {
+                showError('PDF generation not available. Please try PNG download instead.');
+                return;
+            }
+
+            // Show loading state
+            const downloadBtn = $('#download-pdf');
+            const originalText = downloadBtn.text();
+            downloadBtn.prop('disabled', true).text('Creating PDF...');
+
+            // Generate high-quality image data
+            const imgData = canvas.toDataURL('image/png', 1.0);
+            
+            // Create PDF in US Letter size (8.5" x 11")
+            const pdf = new jsPDF('p', 'in', 'letter');
+            
+            // Calculate dimensions (canvas is already 612x792 which is 8.5x11 at 72 DPI)
+            const pageWidth = 8.5;
+            const pageHeight = 11;
+            const margin = 0.25;
+            
+            const imgWidth = pageWidth - (margin * 2);
+            const imgHeight = pageHeight - (margin * 2);
+            
+            // Add image to PDF
+            pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+
+            // Create filename with listing info if available
+            const listingSelect = $('#listing-select');
+            const listingText = listingSelect.find('option:selected').text().split(' - ')[0] || 'Property';
+            const filename = `${listingText.replace(/[^a-zA-Z0-9]/g, '_')}_flyer.pdf`;
+
+            // Save the PDF
+            pdf.save(filename);
+
+            console.log('PDF download initiated:', filename);
+
+        } catch (error) {
+            console.error('Error downloading PDF:', error);
+            showError('Failed to create PDF. Please try PNG download instead.');
+        } finally {
+            // Restore button state
+            setTimeout(() => {
+                $('#download-pdf').prop('disabled', false).text('Download PDF');
+            }, 1000);
+        }
     }
 
     function updatePreview() {
@@ -1148,7 +1323,7 @@
             $('#generate-flyer').prop('disabled', false);
         } else {
             $('#generate-flyer').prop('disabled', true);
-            $('#download-flyer, #download-pdf').hide();
+            $('.flyer-download-controls').hide();
         }
     }
 

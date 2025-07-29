@@ -13,23 +13,6 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Format price for display
- *
- * @param mixed $price Price value
- * @param bool $include_currency Include currency symbol
- * @return string Formatted price
- */
-function hph_format_price($price, $include_currency = true) {
-    if (empty($price) || !is_numeric($price)) {
-        return $include_currency ? 'Price on Request' : '';
-    }
-    
-    $formatted = number_format($price, 0);
-    
-    return $include_currency ? '$' . $formatted : $formatted;
-}
-
-/**
  * Format square footage
  *
  * @param mixed $sqft Square footage value
@@ -156,6 +139,28 @@ function hph_format_address($address_parts) {
     }
     
     return implode('<br>', $formatted_parts);
+}
+
+/**
+ * Format bathrooms display
+ *
+ * @param float $bathrooms Bathroom count (including half baths as .5)
+ * @return string Formatted bathroom display
+ */
+function hph_format_bathrooms($bathrooms) {
+    if (empty($bathrooms) || !is_numeric($bathrooms)) {
+        return '';
+    }
+    
+    $bathrooms = floatval($bathrooms);
+    
+    // Handle whole numbers
+    if ($bathrooms == floor($bathrooms)) {
+        return number_format($bathrooms, 0) . ' bath' . ($bathrooms != 1 ? 's' : '');
+    }
+    
+    // Handle half baths (display as decimal)
+    return number_format($bathrooms, 1) . ' baths';
 }
 
 /**

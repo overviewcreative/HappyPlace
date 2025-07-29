@@ -3,6 +3,9 @@
  * Core layout system for the dashboard
  */
 
+// Import mixins needed for responsive design and focus
+@import '../../abstracts/mixins';
+
 .hph-dashboard-wrapper {
   display: grid;
   grid-template-columns: var(--dashboard-sidebar-width) 1fr;

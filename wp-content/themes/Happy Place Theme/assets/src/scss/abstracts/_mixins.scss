@@ -42,6 +42,137 @@ $breakpoints: (
     }
 }
 
+// Dashboard specific mobile breakpoint
+@mixin dashboard-mobile {
+    @media screen and (max-width: 767px) {
+        @content;
+    }
+}
+
+// Dashboard specific tablet breakpoint
+@mixin dashboard-tablet {
+    @media screen and (min-width: 768px) and (max-width: 1023px) {
+        @content;
+    }
+}
+
+// Dashboard specific desktop breakpoint
+@mixin dashboard-desktop {
+    @media screen and (min-width: 1024px) {
+        @content;
+    }
+}
+
+// Dashboard print hidden
+@mixin dashboard-print-hidden {
+    @media print {
+        display: none !important;
+    }
+}
+
+// Focus ring for accessibility
+@mixin focus-ring {
+    outline: 2px solid var(--color-primary, #0073aa);
+    outline-offset: 2px;
+}
+
+// Text truncation
+@mixin truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+// Dashboard card styling
+@mixin dashboard-card {
+    background: var(--dashboard-surface, #ffffff);
+    border-radius: var(--card-border-radius, 8px);
+    box-shadow: var(--card-shadow, 0 1px 3px rgba(0, 0, 0, 0.1));
+    padding: var(--card-padding, 1.5rem);
+}
+
+// Dashboard grid layout
+@mixin dashboard-grid($min-column-width: 300px) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax($min-column-width, 1fr));
+    gap: var(--dashboard-spacing-md, 1rem);
+}
+
+// Shimmer loading effect
+@mixin shimmer {
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0) 0%, 
+        rgba(255, 255, 255, 0.2) 20%, 
+        rgba(255, 255, 255, 0.5) 60%, 
+        rgba(255, 255, 255, 0)
+    );
+    background-size: 200px 100%;
+    background-repeat: no-repeat;
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+// Dashboard button state styling
+@mixin dashboard-button-state($theme: 'primary') {
+    @if $theme == 'hph-primary' or $theme == 'primary' {
+        background: var(--hph-primary-600);
+        color: white;
+        border: 1px solid var(--hph-primary-600);
+        
+        &:hover {
+            background: var(--hph-primary-700);
+            border-color: var(--hph-primary-700);
+        }
+        
+        &:focus {
+            @include focus-ring;
+            background: var(--hph-primary-700);
+        }
+        
+        &:active {
+            background: var(--hph-primary-800);
+            border-color: var(--hph-primary-800);
+        }
+    } @else if $theme == 'secondary' {
+        background: white;
+        color: var(--dashboard-text);
+        border: 1px solid var(--dashboard-border);
+        
+        &:hover {
+            background: var(--color-gray-50);
+            border-color: var(--dashboard-text-muted);
+        }
+        
+        &:focus {
+            @include focus-ring;
+        }
+    }
+}
+
+// Spinner/loading animation
+@mixin spinner($size: 24px, $color: var(--dashboard-primary)) {
+  display: inline-block;
+  width: $size;
+  height: $size;
+  border: 3px solid rgba(#{$color}, 0.3);
+  border-radius: 50%;
+  border-top: 3px solid #{$color};
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* ============================================
    COMPONENT MIXINS
    ============================================ */

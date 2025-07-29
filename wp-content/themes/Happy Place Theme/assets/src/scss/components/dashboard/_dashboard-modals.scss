@@ -254,10 +254,8 @@
     padding: var(--dashboard-spacing-xl);
     
     .loading-spinner {
-      width: 48px;
-      height: 48px;
       margin: 0 auto var(--dashboard-spacing-lg);
-      @include spinner;
+      @include spinner(48px, var(--dashboard-primary));
     }
     
     .loading-message {

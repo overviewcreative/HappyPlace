@@ -262,3 +262,136 @@ function hph_search_agents($args = []) {
     
     return $results;
 }
+
+/**
+ * Get agent profile URL
+ *
+ * @param int $agent_id
+ * @return string
+ */
+if (!function_exists('hph_get_agent_url')) {
+    function hph_get_agent_url($agent_id) {
+        // Check if custom post type exists for agents
+        $agent_post = get_post($agent_id);
+        if ($agent_post && $agent_post->post_type === 'hph_agent') {
+            return get_permalink($agent_id);
+        }
+        
+        // Otherwise construct URL based on plugin settings
+        $base_url = get_option('hph_agent_base_url', '/agents/');
+        $agent = hph_get_agent_data($agent_id);
+        
+        if (!$agent) {
+            return home_url($base_url);
+        }
+        
+        // Create SEO-friendly slug
+        $slug = !empty($agent['slug']) ? $agent['slug'] : sanitize_title($agent['display_name']);
+        
+        return home_url($base_url . $slug . '/');
+    }
+}
+
+/**
+ * Get agent statistics
+ *
+ * @param int $agent_id
+ * @return array
+ */
+if (!function_exists('hph_get_agent_stats')) {
+    function hph_get_agent_stats($agent_id) {
+        $cache_key = 'hph_agent_stats_' . $agent_id;
+        $stats = wp_cache_get($cache_key, 'hph_agents');
+        
+        if ($stats !== false) {
+            return $stats;
+        }
+        
+        global $wpdb;
+        
+        $current_year = date('Y');
+        
+        // Get active listings count
+        $active_listings = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->prefix}hph_listings WHERE listing_agent_id = %d AND status = 'active'",
+            $agent_id
+        ));
+        
+        // Get sales this year
+        $sales_ytd = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->prefix}hph_listings WHERE listing_agent_id = %d AND status = 'sold' AND YEAR(sold_date) = %d",
+            $agent_id,
+            $current_year
+        ));
+        
+        // Get average days on market for sold listings
+        $avg_days_on_market = $wpdb->get_var($wpdb->prepare(
+            "SELECT AVG(DATEDIFF(sold_date, created_at)) FROM {$wpdb->prefix}hph_listings WHERE listing_agent_id = %d AND status = 'sold' AND sold_date IS NOT NULL",
+            $agent_id
+        ));
+        
+        // Get total volume this year
+        $total_volume_ytd = $wpdb->get_var($wpdb->prepare(
+            "SELECT SUM(price) FROM {$wpdb->prefix}hph_listings WHERE listing_agent_id = %d AND status = 'sold' AND YEAR(sold_date) = %d",
+            $agent_id,
+            $current_year
+        ));
+        
+        $stats = [
+            'listings_active' => (int) $active_listings,
+            'sales_ytd' => (int) $sales_ytd,
+            'avg_days_on_market' => $avg_days_on_market ? round($avg_days_on_market) : 0,
+            'total_volume_ytd' => (float) $total_volume_ytd,
+            'avg_sale_price_ytd' => $sales_ytd > 0 ? round($total_volume_ytd / $sales_ytd) : 0
+        ];
+        
+        wp_cache_set($cache_key, $stats, 'hph_agents', 3600); // 1 hour cache
+        
+        return $stats;
+    }
+}
+
+/**
+ * Get agent reviews
+ *
+ * @param int $agent_id
+ * @param int $limit
+ * @return array
+ */
+if (!function_exists('hph_get_agent_reviews')) {
+    function hph_get_agent_reviews($agent_id, $limit = 5) {
+        $cache_key = 'hph_agent_reviews_' . $agent_id . '_' . $limit;
+        $reviews = wp_cache_get($cache_key, 'hph_agents');
+        
+        if ($reviews !== false) {
+            return $reviews;
+        }
+        
+        global $wpdb;
+        
+        // Get reviews from dedicated reviews table if it exists
+        $reviews_table = $wpdb->prefix . 'hph_agent_reviews';
+        $table_exists = $wpdb->get_var("SHOW TABLES LIKE '{$reviews_table}'") === $reviews_table;
+        
+        if ($table_exists) {
+            $reviews = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM {$reviews_table} WHERE agent_id = %d AND status = 'approved' ORDER BY created_at DESC LIMIT %d",
+                $agent_id,
+                $limit
+            ), ARRAY_A);
+        } else {
+            // Fallback to WordPress comments/custom fields
+            $reviews = [];
+            
+            // Check for reviews stored as custom fields or comments
+            $review_data = get_post_meta($agent_id, '_agent_reviews', true);
+            if (is_array($review_data)) {
+                $reviews = array_slice($review_data, 0, $limit);
+            }
+        }
+        
+        wp_cache_set($cache_key, $reviews, 'hph_agents', 1800); // 30 minute cache
+        
+        return $reviews ?: [];
+    }
+}

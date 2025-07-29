@@ -40,28 +40,9 @@ class HPH_Shortcode_Admin {
      * Enqueue admin scripts
      */
     public function enqueue_admin_scripts($hook) {
-        if ($hook === 'appearance_page_hph-shortcodes' || $hook === 'post.php' || $hook === 'post-new.php') {
-            wp_enqueue_script(
-                'hph-shortcode-admin',
-                get_template_directory_uri() . '/assets/src/js/admin/shortcode-admin.js',
-                array('jquery', 'wp-util'),
-                '1.0.0',
-                true
-            );
-            
-            wp_enqueue_style(
-                'hph-shortcode-admin',
-                get_template_directory_uri() . '/assets/src/css/admin/shortcode-admin.css',
-                array(),
-                '1.0.0'
-            );
-            
-            wp_localize_script('hph-shortcode-admin', 'hphShortcodeAdmin', array(
-                'ajaxUrl' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('hph_shortcode_admin'),
-                'shortcodes' => $this->get_shortcode_list()
-            ));
-        }
+        // Admin scripts are now handled by the central Asset_Manager
+        // This method is kept for backward compatibility but does nothing
+        return;
     }
     
     /**

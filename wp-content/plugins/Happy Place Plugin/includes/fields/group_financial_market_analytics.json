@@ -1,0 +1,802 @@
+{
+    "key": "group_financial_market_analytics",
+    "title": "Financial & Market Analytics",
+    "fields": [
+        {
+            "key": "field_financial_tab_property_taxes",
+            "label": "Property Taxes & Fees",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_property_tax_annual",
+            "label": "Annual Property Tax",
+            "name": "property_tax_annual",
+            "type": "number",
+            "instructions": "Annual property tax amount in dollars",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "8500",
+            "prepend": "$",
+            "append": "annually",
+            "min": "0",
+            "max": "",
+            "step": "0.01"
+        },
+        {
+            "key": "field_property_tax_monthly",
+            "label": "Monthly Property Tax",
+            "name": "property_tax_monthly",
+            "type": "number",
+            "instructions": "Monthly property tax (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "708",
+            "prepend": "$",
+            "append": "monthly",
+            "min": "0",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_hoa_fee_monthly",
+            "label": "HOA Fee (Monthly)",
+            "name": "hoa_fee_monthly",
+            "type": "number",
+            "instructions": "Monthly homeowners association fee",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "350",
+            "prepend": "$",
+            "append": "monthly",
+            "min": "0",
+            "max": "",
+            "step": "0.01"
+        },
+        {
+            "key": "field_hoa_fee_annual",
+            "label": "HOA Fee (Annual)",
+            "name": "hoa_fee_annual",
+            "type": "number",
+            "instructions": "Annual HOA fee (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "4200",
+            "prepend": "$",
+            "append": "annually",
+            "min": "0",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_special_assessments",
+            "label": "Special Assessments",
+            "name": "special_assessments",
+            "type": "number",
+            "instructions": "Any special assessments or additional fees",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "0",
+            "prepend": "$",
+            "append": "",
+            "min": "0",
+            "max": "",
+            "step": "0.01"
+        },
+        {
+            "key": "field_insurance_estimated_annual",
+            "label": "Estimated Insurance (Annual)",
+            "name": "insurance_estimated_annual",
+            "type": "number",
+            "instructions": "Estimated annual homeowners insurance cost",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "1200",
+            "prepend": "$",
+            "append": "annually",
+            "min": "0",
+            "max": "",
+            "step": "0.01"
+        },
+        {
+            "key": "field_insurance_estimated_monthly",
+            "label": "Estimated Insurance (Monthly)",
+            "name": "insurance_estimated_monthly",
+            "type": "number",
+            "instructions": "Monthly insurance cost (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "100",
+            "prepend": "$",
+            "append": "monthly",
+            "min": "0",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_utilities_estimated_monthly",
+            "label": "Estimated Utilities (Monthly)",
+            "name": "utilities_estimated_monthly",
+            "type": "number",
+            "instructions": "Estimated monthly utility costs",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "250",
+            "prepend": "$",
+            "append": "monthly",
+            "min": "0",
+            "max": "",
+            "step": "0.01"
+        },
+        {
+            "key": "field_financial_tab_buyer_calculator",
+            "label": "Buyer Calculator",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_down_payment_percentage",
+            "label": "Down Payment (%)",
+            "name": "down_payment_percentage",
+            "type": "number",
+            "instructions": "Typical down payment percentage for calculations",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 20,
+            "placeholder": "20",
+            "prepend": "",
+            "append": "%",
+            "min": "0",
+            "max": "100",
+            "step": "1"
+        },
+        {
+            "key": "field_down_payment_amount",
+            "label": "Down Payment Amount",
+            "name": "down_payment_amount",
+            "type": "number",
+            "instructions": "Down payment amount (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "90000",
+            "prepend": "$",
+            "append": "",
+            "min": "0",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_loan_amount",
+            "label": "Loan Amount",
+            "name": "loan_amount",
+            "type": "number",
+            "instructions": "Loan amount needed (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "360000",
+            "prepend": "$",
+            "append": "",
+            "min": "0",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_interest_rate",
+            "label": "Interest Rate",
+            "name": "interest_rate",
+            "type": "number",
+            "instructions": "Current mortgage interest rate",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 6.5,
+            "placeholder": "6.5",
+            "prepend": "",
+            "append": "%",
+            "min": "0",
+            "max": "20",
+            "step": "0.01"
+        },
+        {
+            "key": "field_loan_term_years",
+            "label": "Loan Term (Years)",
+            "name": "loan_term_years",
+            "type": "select",
+            "instructions": "Mortgage loan term in years",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "15": "15 Years",
+                "20": "20 Years",
+                "25": "25 Years",
+                "30": "30 Years"
+            },
+            "default_value": "30",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_estimated_monthly_payment",
+            "label": "Estimated Monthly Payment",
+            "name": "estimated_monthly_payment",
+            "type": "number",
+            "instructions": "Principal + Interest monthly payment (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "2275",
+            "prepend": "$",
+            "append": "P&I only",
+            "min": "0",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_total_monthly_payment",
+            "label": "Total Monthly Payment (PITI)",
+            "name": "total_monthly_payment",
+            "type": "number",
+            "instructions": "Total payment including taxes, insurance (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "3183",
+            "prepend": "$",
+            "append": "PITI + HOA",
+            "min": "0",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_affordability_income_required",
+            "label": "Income Required (Annual)",
+            "name": "affordability_income_required",
+            "type": "number",
+            "instructions": "Annual income required for affordability (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "136571",
+            "prepend": "$",
+            "append": "annually",
+            "min": "0",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_financial_tab_market_intelligence",
+            "label": "Market Intelligence",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_estimated_market_value",
+            "label": "Estimated Market Value",
+            "name": "estimated_market_value",
+            "type": "number",
+            "instructions": "Automated valuation model estimate",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "475000",
+            "prepend": "$",
+            "append": "",
+            "min": "0",
+            "max": "",
+            "step": "0.01"
+        },
+        {
+            "key": "field_market_value_confidence",
+            "label": "Market Value Confidence",
+            "name": "market_value_confidence",
+            "type": "range",
+            "instructions": "Confidence level in market value estimate",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "prepend": "",
+            "append": "/10"
+        },
+        {
+            "key": "field_market_position",
+            "label": "Market Position",
+            "name": "market_position",
+            "type": "select",
+            "instructions": "How this listing compares to market",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "underpriced": "Under Market Value",
+                "fair_value": "At Market Value",
+                "overpriced": "Above Market Value",
+                "premium": "Premium Pricing",
+                "unknown": "Market Position Unknown"
+            },
+            "default_value": "fair_value",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_price_trend_direction",
+            "label": "Price Trend Direction",
+            "name": "price_trend_direction",
+            "type": "select",
+            "instructions": "Local market price trend",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "rising": "Prices Rising",
+                "stable": "Prices Stable",
+                "declining": "Prices Declining",
+                "volatile": "Prices Volatile",
+                "unknown": "Trend Unknown"
+            },
+            "default_value": "stable",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_comparable_sales_count",
+            "label": "Comparable Sales Count",
+            "name": "comparable_sales_count",
+            "type": "number",
+            "instructions": "Number of comparable sales found",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "8",
+            "prepend": "",
+            "append": "comps",
+            "min": "0",
+            "max": "",
+            "step": "1"
+        },
+        {
+            "key": "field_comparable_sales_avg_price",
+            "label": "Comparable Sales Avg Price",
+            "name": "comparable_sales_avg_price",
+            "type": "number",
+            "instructions": "Average price of comparable sales",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "465000",
+            "prepend": "$",
+            "append": "",
+            "min": "0",
+            "max": "",
+            "step": "0.01"
+        },
+        {
+            "key": "field_comparable_sales_avg_sqft_price",
+            "label": "Comparable Sales Avg $/SqFt",
+            "name": "comparable_sales_avg_sqft_price",
+            "type": "number",
+            "instructions": "Average price per square foot of comparables",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "185",
+            "prepend": "$",
+            "append": "/sqft",
+            "min": "0",
+            "max": "",
+            "step": "0.01"
+        },
+        {
+            "key": "field_days_on_market_avg_area",
+            "label": "Area Avg Days on Market",
+            "name": "days_on_market_avg_area",
+            "type": "number",
+            "instructions": "Average days on market for the area",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "45",
+            "prepend": "",
+            "append": "days",
+            "min": "0",
+            "max": "",
+            "step": "1"
+        },
+        {
+            "key": "field_financial_tab_investment_analysis",
+            "label": "Investment Analysis",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_rental_potential_monthly",
+            "label": "Rental Potential (Monthly)",
+            "name": "rental_potential_monthly",
+            "type": "number",
+            "instructions": "Estimated monthly rental income",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "2800",
+            "prepend": "$",
+            "append": "monthly",
+            "min": "0",
+            "max": "",
+            "step": "0.01"
+        },
+        {
+            "key": "field_rental_yield_gross",
+            "label": "Gross Rental Yield",
+            "name": "rental_yield_gross",
+            "type": "number",
+            "instructions": "Gross rental yield percentage (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "7.5",
+            "prepend": "",
+            "append": "%",
+            "min": "0",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_cap_rate_estimated",
+            "label": "Estimated Cap Rate",
+            "name": "cap_rate_estimated",
+            "type": "number",
+            "instructions": "Estimated capitalization rate (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "5.2",
+            "prepend": "",
+            "append": "%",
+            "min": "0",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_cash_flow_monthly",
+            "label": "Estimated Cash Flow (Monthly)",
+            "name": "cash_flow_monthly",
+            "type": "number",
+            "instructions": "Monthly cash flow after expenses (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "-383",
+            "prepend": "$",
+            "append": "monthly",
+            "min": "",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_appreciation_rate_historical",
+            "label": "Historical Appreciation Rate",
+            "name": "appreciation_rate_historical",
+            "type": "number",
+            "instructions": "Historical annual appreciation rate for area",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "3.2",
+            "prepend": "",
+            "append": "%/year",
+            "min": "-10",
+            "max": "20",
+            "step": "0.1"
+        },
+        {
+            "key": "field_break_even_ratio",
+            "label": "Break-Even Ratio",
+            "name": "break_even_ratio",
+            "type": "number",
+            "instructions": "Break-even ratio for rental (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "1.14",
+            "prepend": "",
+            "append": "ratio",
+            "min": "0",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        },
+        {
+            "key": "field_investment_grade",
+            "label": "Investment Grade",
+            "name": "investment_grade",
+            "type": "select",
+            "instructions": "Overall investment grade (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "A+": "A+ (Excellent Investment)",
+                "A": "A (Very Good Investment)",
+                "B+": "B+ (Good Investment)",
+                "B": "B (Fair Investment)",
+                "C+": "C+ (Below Average Investment)",
+                "C": "C (Poor Investment)",
+                "D": "D (High Risk Investment)",
+                "F": "F (Not Recommended)"
+            },
+            "default_value": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": "",
+            "readonly": 1
+        },
+        {
+            "key": "field_roi_projected_5year",
+            "label": "Projected 5-Year ROI",
+            "name": "roi_projected_5year",
+            "type": "number",
+            "instructions": "Projected return on investment over 5 years (auto-calculated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "12.5",
+            "prepend": "",
+            "append": "%",
+            "min": "",
+            "max": "",
+            "step": "0.01",
+            "readonly": 1
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 4,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Comprehensive financial analysis and market intelligence for listings including property taxes, buyer calculations, market comparisons, and investment analysis."
+}

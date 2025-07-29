@@ -3,6 +3,9 @@
  * Form styling for dashboard components
  */
 
+// Import mixins needed for responsive design
+@import '../../abstracts/mixins';
+
 .hph-dashboard-form {
   .form-row {
     margin-bottom: var(--dashboard-spacing-lg);

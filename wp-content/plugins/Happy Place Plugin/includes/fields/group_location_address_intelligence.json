@@ -1,0 +1,783 @@
+{
+    "key": "group_location_address_intelligence",
+    "title": "Location & Address Intelligence",
+    "fields": [
+        {
+            "key": "field_address_main_tab",
+            "label": "Primary Address",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_street_address",
+            "label": "Street Address",
+            "name": "street_address",
+            "type": "text",
+            "instructions": "Full street address (e.g., 123 Main Street)",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Enter street address",
+            "prepend": "",
+            "append": "",
+            "maxlength": 255
+        },
+        {
+            "key": "field_unit_number",
+            "label": "Unit\/Apt Number",
+            "name": "unit_number",
+            "type": "text",
+            "instructions": "Unit, apartment, or suite number",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Unit #",
+            "prepend": "",
+            "append": "",
+            "maxlength": 50
+        },
+        {
+            "key": "field_address_visibility",
+            "label": "Address Display",
+            "name": "address_visibility",
+            "type": "select",
+            "instructions": "How should the address be displayed publicly?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "full": "Show Full Address",
+                "street_only": "Street Name Only",
+                "neighborhood": "Neighborhood Only",
+                "city_only": "City Only",
+                "hidden": "Do Not Display"
+            },
+            "default_value": "full",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_city",
+            "label": "City",
+            "name": "city",
+            "type": "text",
+            "instructions": "City name",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Enter city",
+            "prepend": "",
+            "append": "",
+            "maxlength": 100
+        },
+        {
+            "key": "field_state",
+            "label": "State\/Province",
+            "name": "state",
+            "type": "select",
+            "instructions": "State or province",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "20",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "AL": "Alabama",
+                "AK": "Alaska",
+                "AZ": "Arizona",
+                "AR": "Arkansas",
+                "CA": "California",
+                "CO": "Colorado",
+                "CT": "Connecticut",
+                "DE": "Delaware",
+                "FL": "Florida",
+                "GA": "Georgia",
+                "HI": "Hawaii",
+                "ID": "Idaho",
+                "IL": "Illinois",
+                "IN": "Indiana",
+                "IA": "Iowa",
+                "KS": "Kansas",
+                "KY": "Kentucky",
+                "LA": "Louisiana",
+                "ME": "Maine",
+                "MD": "Maryland",
+                "MA": "Massachusetts",
+                "MI": "Michigan",
+                "MN": "Minnesota",
+                "MS": "Mississippi",
+                "MO": "Missouri",
+                "MT": "Montana",
+                "NE": "Nebraska",
+                "NV": "Nevada",
+                "NH": "New Hampshire",
+                "NJ": "New Jersey",
+                "NM": "New Mexico",
+                "NY": "New York",
+                "NC": "North Carolina",
+                "ND": "North Dakota",
+                "OH": "Ohio",
+                "OK": "Oklahoma",
+                "OR": "Oregon",
+                "PA": "Pennsylvania",
+                "RI": "Rhode Island",
+                "SC": "South Carolina",
+                "SD": "South Dakota",
+                "TN": "Tennessee",
+                "TX": "Texas",
+                "UT": "Utah",
+                "VT": "Vermont",
+                "VA": "Virginia",
+                "WA": "Washington",
+                "WV": "West Virginia",
+                "WI": "Wisconsin",
+                "WY": "Wyoming"
+            },
+            "default_value": "",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 1,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_zip_code",
+            "label": "ZIP Code",
+            "name": "zip_code",
+            "type": "text",
+            "instructions": "ZIP or postal code",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "12345",
+            "prepend": "",
+            "append": "",
+            "maxlength": 10
+        },
+        {
+            "key": "field_county",
+            "label": "County",
+            "name": "county",
+            "type": "text",
+            "instructions": "County name (auto-populated from geocoding)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Auto-populated",
+            "prepend": "",
+            "append": "",
+            "maxlength": 100,
+            "readonly": 1
+        },
+        {
+            "key": "field_address_components_tab",
+            "label": "Address Components",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_street_number",
+            "label": "Street Number",
+            "name": "street_number",
+            "type": "text",
+            "instructions": "Parsed street number (auto-populated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "20",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "123",
+            "prepend": "",
+            "append": "",
+            "maxlength": 20,
+            "readonly": 1
+        },
+        {
+            "key": "field_street_dir_prefix",
+            "label": "Pre-Direction",
+            "name": "street_dir_prefix",
+            "type": "select",
+            "instructions": "Street direction prefix (auto-populated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "15",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "N": "North",
+                "S": "South",
+                "E": "East",
+                "W": "West",
+                "NE": "Northeast",
+                "NW": "Northwest",
+                "SE": "Southeast",
+                "SW": "Southwest"
+            },
+            "default_value": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_street_name",
+            "label": "Street Name",
+            "name": "street_name",
+            "type": "text",
+            "instructions": "Parsed street name (auto-populated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Main",
+            "prepend": "",
+            "append": "",
+            "maxlength": 100,
+            "readonly": 1
+        },
+        {
+            "key": "field_street_suffix",
+            "label": "Street Type",
+            "name": "street_suffix",
+            "type": "select",
+            "instructions": "Street type suffix (auto-populated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "20",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Ave": "Avenue",
+                "Blvd": "Boulevard",
+                "Cir": "Circle",
+                "Ct": "Court",
+                "Dr": "Drive",
+                "Ln": "Lane",
+                "Pkwy": "Parkway",
+                "Pl": "Place",
+                "Rd": "Road",
+                "St": "Street",
+                "Way": "Way",
+                "Ter": "Terrace",
+                "Trl": "Trail"
+            },
+            "default_value": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_street_dir_suffix",
+            "label": "Post-Direction",
+            "name": "street_dir_suffix",
+            "type": "select",
+            "instructions": "Street direction suffix (auto-populated)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "15",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "N": "North",
+                "S": "South",
+                "E": "East",
+                "W": "West",
+                "NE": "Northeast",
+                "NW": "Northwest",
+                "SE": "Southeast",
+                "SW": "Southwest"
+            },
+            "default_value": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_geographic_data_tab",
+            "label": "Geographic Data",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_latitude",
+            "label": "Latitude",
+            "name": "latitude",
+            "type": "number",
+            "instructions": "Geographic latitude (auto-populated from geocoding)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "40.7128",
+            "prepend": "",
+            "append": "°",
+            "min": -90,
+            "max": 90,
+            "step": "any",
+            "readonly": 1
+        },
+        {
+            "key": "field_longitude",
+            "label": "Longitude",
+            "name": "longitude",
+            "type": "number",
+            "instructions": "Geographic longitude (auto-populated from geocoding)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "-74.0060",
+            "prepend": "",
+            "append": "°",
+            "min": -180,
+            "max": 180,
+            "step": "any",
+            "readonly": 1
+        },
+        {
+            "key": "field_geocoding_accuracy",
+            "label": "Geocoding Accuracy",
+            "name": "geocoding_accuracy",
+            "type": "select",
+            "instructions": "Accuracy level of geocoded coordinates",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "rooftop": "Rooftop (Exact)",
+                "range_interpolated": "Range Interpolated",
+                "geometric_center": "Geometric Center",
+                "approximate": "Approximate"
+            },
+            "default_value": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": "",
+            "readonly": 1
+        },
+        {
+            "key": "field_geocoding_source",
+            "label": "Geocoding Source",
+            "name": "geocoding_source",
+            "type": "select",
+            "instructions": "Source of geocoding data",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "google": "Google Maps API",
+                "mapbox": "Mapbox Geocoding API",
+                "opencage": "OpenCage Geocoding API",
+                "manual": "Manually Entered",
+                "mls": "MLS Data"
+            },
+            "default_value": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": "",
+            "readonly": 1
+        },
+        {
+            "key": "field_parcel_number",
+            "label": "Parcel Number",
+            "name": "parcel_number",
+            "type": "text",
+            "instructions": "Property parcel identification number",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Enter parcel number",
+            "prepend": "",
+            "append": "",
+            "maxlength": 50
+        },
+        {
+            "key": "field_walkability_score",
+            "label": "Walkability Score",
+            "name": "walkability_score",
+            "type": "number",
+            "instructions": "Walk Score (0-100, auto-populated if available)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "0-100",
+            "prepend": "",
+            "append": "/100",
+            "min": 0,
+            "max": 100,
+            "step": 1
+        },
+        {
+            "key": "field_transit_score",
+            "label": "Transit Score",
+            "name": "transit_score",
+            "type": "number",
+            "instructions": "Public transit accessibility score (0-100)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "0-100",
+            "prepend": "",
+            "append": "/100",
+            "min": 0,
+            "max": 100,
+            "step": 1
+        },
+        {
+            "key": "field_neighborhood_data_tab",
+            "label": "Neighborhood & Community",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_neighborhood",
+            "label": "Neighborhood",
+            "name": "neighborhood",
+            "type": "text",
+            "instructions": "Neighborhood or district name",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Enter neighborhood name",
+            "prepend": "",
+            "append": "",
+            "maxlength": 100
+        },
+        {
+            "key": "field_community_relation",
+            "label": "Community\/Subdivision",
+            "name": "community_relation",
+            "type": "relationship",
+            "instructions": "Link to community or subdivision post",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "community"
+            ],
+            "taxonomy": [],
+            "filters": [
+                "search"
+            ],
+            "elements": [
+                "featured_image"
+            ],
+            "min": "",
+            "max": 1,
+            "return_format": "object"
+        },
+        {
+            "key": "field_school_district",
+            "label": "School District",
+            "name": "school_district",
+            "type": "text",
+            "instructions": "School district name",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Enter school district",
+            "prepend": "",
+            "append": "",
+            "maxlength": 100
+        },
+        {
+            "key": "field_city_relation",
+            "label": "City Profile",
+            "name": "city_relation",
+            "type": "relationship",
+            "instructions": "Link to city information page",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "city"
+            ],
+            "taxonomy": [],
+            "filters": [
+                "search"
+            ],
+            "elements": [
+                "featured_image"
+            ],
+            "min": "",
+            "max": 1,
+            "return_format": "object"
+        },
+        {
+            "key": "field_mls_area_code",
+            "label": "MLS Area Code",
+            "name": "mls_area_code",
+            "type": "text",
+            "instructions": "MLS-specific area or zone code",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Area code",
+            "prepend": "",
+            "append": "",
+            "maxlength": 20
+        },
+        {
+            "key": "field_zoning",
+            "label": "Zoning",
+            "name": "zoning",
+            "type": "text",
+            "instructions": "Property zoning classification",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "R-1, C-1, etc.",
+            "prepend": "",
+            "append": "",
+            "maxlength": 50
+        },
+        {
+            "key": "field_flood_zone",
+            "label": "Flood Zone",
+            "name": "flood_zone",
+            "type": "select",
+            "instructions": "FEMA flood zone designation",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "AE": "AE - High Risk",
+                "AO": "AO - High Risk",
+                "AH": "AH - High Risk",
+                "A": "A - High Risk",
+                "VE": "VE - Very High Risk",
+                "X": "X - Moderate to Low Risk",
+                "X500": "X (500-year) - Moderate Risk",
+                "D": "D - Undetermined Risk"
+            },
+            "default_value": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_hoa_name",
+            "label": "HOA Name",
+            "name": "hoa_name",
+            "type": "text",
+            "instructions": "Homeowners Association name",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "HOA name",
+            "prepend": "",
+            "append": "",
+            "maxlength": 100
+        },
+        {
+            "key": "field_address_notes",
+            "label": "Address Notes",
+            "name": "address_notes",
+            "type": "textarea",
+            "instructions": "Additional address information, directions, or special notes",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Enter any special address information, access instructions, or notes...",
+            "maxlength": 500,
+            "rows": 3,
+            "new_lines": "wpautop"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 3,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Comprehensive address intelligence with geocoding, street component parsing, and neighborhood data for enhanced location-based features."
+}

@@ -1,7 +1,10 @@
 /**
  * Dashboard Cards
- * Card components based on Listing Swipe Card feel
+ * Card components for dashboard layout
  */
+
+// Import mixins needed for dashboard styling
+@import '../../abstracts/mixins';
 
 .hph-dashboard-card {
   @include dashboard-card;

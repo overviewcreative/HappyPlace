@@ -3,6 +3,9 @@
  * Page headers and titles
  */
 
+// Import mixins needed for responsive design
+@import '../../abstracts/mixins';
+
 .hph-dashboard-header {
   display: flex;
   justify-content: space-between;
@@ -190,9 +193,22 @@
   
   select, 
   input {
-    // Inherits from global form styling
-    @extend .form-input;
+    // Form input styling
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    transition: border-color 0.2s ease;
     min-width: 150px;
+    
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
+    }
     
     @include dashboard-mobile {
       min-width: 120px;
@@ -211,9 +227,22 @@
   }
   
   .search-input {
-    @extend .form-input;
-    padding-left: 40px;
+    // Form input styling
+    display: block;
     width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    transition: border-color 0.2s ease;
+    padding-left: 40px;
+    
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
+    }
     
     &::placeholder {
       color: var(--dashboard-text-muted);
