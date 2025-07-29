@@ -50,7 +50,7 @@ class HPH_Shortcode_Manager {
      */
     private function __construct() {
         add_action('init', array($this, 'register_shortcodes'));
-        add_action('wp_enqueue_scripts', array($this, 'maybe_enqueue_assets'), 20);
+        // Asset loading now handled by Asset_Loader per Phase 5 consolidation
         add_action('wp_head', array($this, 'detect_shortcodes_in_content'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_filter('widget_text', 'do_shortcode');
@@ -149,13 +149,13 @@ class HPH_Shortcode_Manager {
             return;
         }
         
-        // Enqueue base shortcode styles (always needed if any shortcode is present)
-        wp_enqueue_style(
-            'hph-shortcodes',
-            get_template_directory_uri() . '/assets/dist/css/shortcodes.css',
-            array('happy-place-main'),
-            HPH_THEME_VERSION
-        );
+        // Shortcode styles are now included in main CSS bundle via Asset_Loader
+        // wp_enqueue_style(
+        //     'hph-shortcodes',
+        //     get_template_directory_uri() . '/assets/dist/css/shortcodes.css',
+        //     array('happy-place-main'),
+        //     HPH_THEME_VERSION
+        // );
         
         // Enqueue component-specific styles
         $this->enqueue_component_assets($page_shortcodes);

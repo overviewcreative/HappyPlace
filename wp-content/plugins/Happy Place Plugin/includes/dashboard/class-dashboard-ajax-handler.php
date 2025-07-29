@@ -172,7 +172,9 @@ class HPH_Dashboard_Ajax_Handler
      */
     private function ensure_dependencies(): void
     {
-        // Load plugin core classes
+        // Note: Dependencies may load after this check in Plugin Manager
+        // This is just for debugging and will not cause failures
+        
         $required_classes = [
             'HappyPlace\\Core\\Post_Types',
             'HappyPlace\\Users\\User_Roles_Manager',
@@ -181,7 +183,10 @@ class HPH_Dashboard_Ajax_Handler
 
         foreach ($required_classes as $class) {
             if (!class_exists($class)) {
-                error_log("HPH Dashboard: Required class {$class} not found");
+                // Only log as debug info, not error - classes may load later
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log("HPH Dashboard: Class {$class} not yet loaded (may load later)");
+                }
             }
         }
 

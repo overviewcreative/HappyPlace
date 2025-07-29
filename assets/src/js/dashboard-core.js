@@ -597,22 +597,11 @@ class AgentDashboard {
         // Initialize section-specific components
         switch (section) {
             case 'performance':
-                this.initializeCharts();
                 break;
             case 'marketing':
-                this.initializeFlyerTemplates();
+                // Marketing section initialization would go here
                 break;
         }
-    }
-
-    initializeCharts() {
-        // Initialize Chart.js charts for performance section
-        // This would be implemented when Chart.js is loaded
-    }
-
-    initializeFlyerTemplates() {
-        // Initialize flyer template functionality
-        // This would load and configure available templates
     }
 
     // Search and filter methods
@@ -634,7 +623,6 @@ class AgentDashboard {
     filterContent(filters) {
         // This would implement the actual filtering logic
         // based on the current section and filter criteria
-        console.log('Filtering content with:', filters);
     }
 
     toggleView(view) {

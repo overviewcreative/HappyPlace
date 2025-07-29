@@ -1,114 +1,214 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { WebpackAssetsManifest } = require('webpack-assets-manifest');
+const TerserPlugin = require('terser-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = (env, argv) => {
-  const isProduction = argv.mode === 'production';
-  
-  return {
-    entry: {
-      main: ['./assets/src/scss/main.scss', './assets/src/js/main.js'],
-      'single-listing': ['./assets/src/scss/single-listing.scss', './assets/src/js/single-listing.js'],
-      'single-listing-init': './assets/src/js/single-listing-init.js',
-    },
+    const isProduction = argv.mode === 'production';
+    const isDevelopment = !isProduction;
     
-    output: {
-      path: path.resolve(__dirname, 'assets/dist'),
-      filename: isProduction ? 'js/[name].[contenthash].js' : 'js/[name].js',
-      clean: true,
-    },
-    
-    module: {
-      rules: [
-        {
-          test: /\.s[ac]ss$/i,
-          use: [
-            MiniCssExtractPlugin.loader,
-            {
-              loader: 'css-loader',
-              options: {
-                sourceMap: !isProduction,
-              },
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                postcssOptions: {
-                  plugins: [
-                    ['autoprefixer'],
-                    ...(isProduction ? [['cssnano', { preset: 'default' }]] : []),
-                  ],
+    return {
+        entry: {
+            // Main theme scripts
+            main: './assets/src/js/main.js',
+            
+            // Dashboard system
+            dashboard: './assets/src/js/dashboard-entry.js',
+            
+            // Individual pages (using enhanced version)
+            'single-listing': './assets/src/js/single-listing-enhanced.js',
+            'listing-search': './assets/src/js/listing-search.js',
+            
+            // Admin scripts
+            admin: './assets/src/js/admin.js'
+        },
+        
+        output: {
+            path: path.resolve(__dirname, 'assets/dist'),
+            filename: 'js/[name].[contenthash].js',
+            chunkFilename: 'js/[name].[contenthash].chunk.js',
+            publicPath: '/wp-content/themes/Happy Place Theme/assets/dist/',
+            clean: true
+        },
+        
+        module: {
+            rules: [
+                // JavaScript
+                {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [
+                                ['@babel/preset-env', {
+                                    targets: {
+                                        browsers: ['defaults', 'not IE 11']
+                                    }
+                                }]
+                            ]
+                        }
+                    }
                 },
-                sourceMap: !isProduction,
-              },
-            },
-            {
-              loader: 'sass-loader',
-              options: {
-                sourceMap: !isProduction,
-                sassOptions: {
-                  outputStyle: isProduction ? 'compressed' : 'expanded',
+                
+                // SCSS/CSS
+                {
+                    test: /\.(scss|css)$/,
+                    use: [
+                        isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                importLoaders: 2,
+                                sourceMap: isDevelopment
+                            }
+                        },
+                        {
+                            loader: 'postcss-loader',
+                            options: {
+                                postcssOptions: {
+                                    plugins: [
+                                        ['autoprefixer'],
+                                        ...(isProduction ? [['cssnano', { preset: 'default' }]] : [])
+                                    ]
+                                },
+                                sourceMap: isDevelopment
+                            }
+                        },
+                        {
+                            loader: 'sass-loader',
+                            options: {
+                                sourceMap: isDevelopment,
+                                sassOptions: {
+                                    outputStyle: isProduction ? 'compressed' : 'expanded'
+                                }
+                            }
+                        }
+                    ]
                 },
-              },
+                
+                // Images
+                {
+                    test: /\.(png|jpg|jpeg|gif|svg)$/,
+                    type: 'asset',
+                    generator: {
+                        filename: 'images/[name].[hash][ext]'
+                    },
+                    parser: {
+                        dataUrlCondition: {
+                            maxSize: 8 * 1024 // 8kb
+                        }
+                    }
+                },
+                
+                // Fonts
+                {
+                    test: /\.(woff|woff2|eot|ttf|otf)$/,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'fonts/[name].[hash][ext]'
+                    }
+                }
+            ]
+        },
+        
+        plugins: [
+            // Extract CSS
+            new MiniCssExtractPlugin({
+                filename: isProduction ? 'css/[name].[contenthash].css' : 'css/[name].css',
+                chunkFilename: isProduction ? 'css/[name].[contenthash].chunk.css' : 'css/[name].chunk.css'
+            }),
+            
+            // Bundle analyzer (only when --analyze flag is passed)
+            ...(process.env.ANALYZE ? [
+                new BundleAnalyzerPlugin({
+                    analyzerMode: 'static',
+                    openAnalyzer: false,
+                    reportFilename: '../reports/bundle-analysis.html'
+                })
+            ] : [])
+        ],
+        
+        optimization: {
+            minimize: isProduction,
+            minimizer: [
+                new TerserPlugin({
+                    terserOptions: {
+                        compress: {
+                            drop_console: isProduction,
+                            drop_debugger: isProduction
+                        },
+                        format: {
+                            comments: false
+                        }
+                    },
+                    extractComments: false
+                })
+            ],
+            
+            splitChunks: {
+                chunks: 'all',
+                cacheGroups: {
+                    vendor: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        chunks: 'all',
+                        priority: 10
+                    },
+                    common: {
+                        name: 'common',
+                        minChunks: 2,
+                        chunks: 'all',
+                        priority: 5,
+                        reuseExistingChunk: true
+                    },
+                    dashboard: {
+                        test: /[\\/]assets[\\/]src[\\/]js[\\/]dashboard[\\/]/,
+                        name: 'dashboard-components',
+                        chunks: 'all',
+                        priority: 8
+                    }
+                }
             },
-          ],
+            
+            runtimeChunk: {
+                name: 'runtime'
+            }
         },
-        {
-          test: /\.css$/i,
-          use: [
-            MiniCssExtractPlugin.loader,
-            'css-loader',
-            'postcss-loader',
-          ],
+        
+        resolve: {
+            extensions: ['.js', '.json'],
+            alias: {
+                '@': path.resolve(__dirname, 'assets/src'),
+                '@js': path.resolve(__dirname, 'assets/src/js'),
+                '@scss': path.resolve(__dirname, 'assets/src/scss'),
+                '@dashboard': path.resolve(__dirname, 'assets/src/js/dashboard'),
+                '@components': path.resolve(__dirname, 'assets/src/js/components'),
+                '@utils': path.resolve(__dirname, 'assets/src/js/utils')
+            }
         },
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env'],
-            },
-          },
+        
+        externals: {
+            jquery: 'jQuery',
+            wp: 'wp'
         },
-      ],
-    },
-    
-    plugins: [
-      new MiniCssExtractPlugin({
-        filename: isProduction ? 'css/[name].[contenthash].css' : 'css/[name].css',
-      }),
-      new WebpackAssetsManifest({
-        output: 'manifest.json',
-        publicPath: '',
-        writeToDisk: true,
-        transform: (assets) => {
-          // Ensure clean paths for WordPress loading
-          const cleanAssets = {};
-          Object.keys(assets).forEach(key => {
-            cleanAssets[key] = assets[key].replace(/^\/+/, '');
-          });
-          return cleanAssets;
+        
+        devtool: isDevelopment ? 'eval-source-map' : false,
+        
+        stats: {
+            colors: true,
+            modules: false,
+            chunks: false,
+            chunkModules: false,
+            entrypoints: false,
+            assets: isProduction
         },
-      }),
-    ],
-    
-    optimization: {
-      splitChunks: {
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-          },
-        },
-      },
-    },
-    
-    resolve: {
-      extensions: ['.js', '.scss', '.css'],
-    },
-    
-    devtool: isProduction ? false : 'source-map',
-  };
+        
+        performance: {
+            hints: isProduction ? 'warning' : false,
+            maxEntrypointSize: 512000,
+            maxAssetSize: 512000
+        }
+    };
 };

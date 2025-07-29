@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Assets Manager Class
+ * Assets Manager Class - Simplified for Plugin
  *
- * Handles all asset (CSS/JS) management for the Happy Place Plugin
+ * Registers plugin assets with theme's Asset_Manager
+ * No longer handles direct enqueuing - delegates to theme
  *
  * @package HappyPlace
  * @subpackage Core
@@ -24,181 +25,89 @@ class Assets_Manager
     private static ?self $instance = null;
 
     /**
-     * @var array Cached asset requirements
-     */
-    private array $asset_cache = [];
-
-    /**
-     * @var array Asset dependencies
-     */
-    private array $dependencies = [];
-
-    /**
      * Get singleton instance
      */
-    public static function instance(): self
-    {
+    public static function get_instance(): self {
         return self::$instance ??= new self();
     }
 
     /**
-     * Constructor
+     * Alternative method name for compatibility
      */
-    private function __construct()
-    {
-        add_action('wp_enqueue_scripts', [$this, 'register_assets'], 5);
-        add_action('admin_enqueue_scripts', [$this, 'register_admin_assets'], 5);
-        add_action('init', [$this, 'setup_asset_dependencies'], 5);
+    public static function instance(): self {
+        return self::get_instance();
     }
 
     /**
-     * Setup asset dependencies
+     * Initialize plugin assets
      */
-    public function setup_asset_dependencies(): void
-    {
-        $this->dependencies = [
-            'styles' => [
-                'listing' => ['core', 'grid'],
-                'agent' => ['core', 'profile'],
-                'dashboard' => ['core', 'dashboard', 'forms'],
-                'community' => ['core', 'maps'],
-                'city' => ['core', 'maps', 'charts']
-            ],
-            'scripts' => [
-                'listing' => ['core', 'maps', 'filters'],
-                'agent' => ['core', 'profile'],
-                'dashboard' => ['core', 'dashboard', 'forms'],
-                'community' => ['core', 'maps'],
-                'city' => ['core', 'maps', 'charts']
-            ],
-            'api_deps' => [
-                'maps' => ['google-maps'],
-                'charts' => ['google-charts'],
-                'listings' => ['google-maps', 'markerclustererplus']
-            ]
-        ];
-
-        do_action('hph_after_asset_dependencies_setup', $this->dependencies);
+    private function __construct() {
+        add_action('init', [$this, 'register_plugin_assets'], 5);
     }
 
     /**
-     * Register main assets
+     * Register plugin assets with theme
      */
-    public function register_assets(): void
-    {
-        // Core styles
-        wp_register_style(
-            'hph-core',
-            HPH_PLUGIN_URL . 'assets/css/core.css',
-            [],
-            defined('HPH_VERSION') ? HPH_VERSION : '1.0.0'
-        );
-
-        // Core scripts
-        wp_register_script(
-            'hph-core',
-            HPH_PLUGIN_URL . 'assets/js/core.js',
-            ['jquery'],
-            defined('HPH_VERSION') ? HPH_VERSION : '1.0.0',
-            true
-        );
-
-        // Let other components register their assets
-        do_action('hph_register_assets');
+    public function register_plugin_assets(): void {
+        // Register plugin's specific assets that theme should know about
+        $this->register_admin_assets();
+        $this->register_frontend_assets();
     }
 
     /**
-     * Register admin assets
+     * Register admin-specific assets
      */
-    public function register_admin_assets(): void
-    {
-        wp_register_style(
-            'hph-admin',
-            HPH_PLUGIN_URL . 'assets/css/admin.css',
-            [],
-            defined('HPH_VERSION') ? HPH_VERSION : '1.0.0'
-        );
-
-        wp_register_script(
-            'hph-admin',
-            HPH_PLUGIN_URL . 'assets/js/admin.js',
-            ['jquery'],
-            defined('HPH_VERSION') ? HPH_VERSION : '1.0.0',
-            true
-        );
-
-        do_action('hph_register_admin_assets');
-    }
-
-    /**
-     * Enqueue template-specific assets
-     */
-    public function enqueue_template_assets_by_name(string $template_name): void
-    {
-        // Check cache first
-        if (isset($this->asset_cache[$template_name])) {
-            $this->enqueue_cached_assets($template_name);
+    private function register_admin_assets(): void {
+        if (!is_admin()) {
             return;
         }
 
-        // Get base requirements
-        $requirements = $this->get_template_base_requirements($template_name);
-
-        // Cache for future use
-        $this->asset_cache[$template_name] = $requirements;
-
-        // Enqueue all required assets
-        $this->enqueue_cached_assets($template_name);
+        // Register with WordPress directly for admin
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
     }
 
     /**
-     * Get base requirements for a template
+     * Register frontend assets
      */
-    private function get_template_base_requirements(string $template_name): array
-    {
-        $template_type = $this->get_template_type($template_name);
-
-        return [
-            'styles' => $this->dependencies['styles'][$template_type] ?? ['core'],
-            'scripts' => $this->dependencies['scripts'][$template_type] ?? ['core'],
-            'api_deps' => $this->dependencies['api_deps'][$template_type] ?? []
-        ];
+    private function register_frontend_assets(): void {
+        // Frontend assets are handled by theme's Asset_Manager
+        // This is now just a placeholder for plugin-specific frontend assets
     }
 
     /**
-     * Enqueue cached assets
+     * Enqueue admin assets directly
      */
-    private function enqueue_cached_assets(string $template_name): void
-    {
-        $requirements = $this->asset_cache[$template_name];
-
-        // Enqueue styles
-        foreach ($requirements['styles'] as $style) {
-            wp_enqueue_style("hph-{$style}");
+    public function enqueue_admin_assets(): void {
+        $screen = get_current_screen();
+        
+        if (!$screen || strpos($screen->id, 'happy-place') === false) {
+            return;
         }
 
-        // Enqueue scripts
-        foreach ($requirements['scripts'] as $script) {
-            wp_enqueue_script("hph-{$script}");
-        }
-
-        // Handle API dependencies
-        foreach ($requirements['api_deps'] as $api) {
-            do_action("hph_load_{$api}");
-        }
+        // Enqueue admin-specific CSS/JS here
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
     }
 
     /**
-     * Get template type from template name
+     * Legacy method for template assets - now handled by theme
      */
-    private function get_template_type(string $template_name): string
-    {
-        if (strpos($template_name, 'listing') !== false) return 'listing';
-        if (strpos($template_name, 'agent') !== false) return 'agent';
-        if (strpos($template_name, 'dashboard') !== false) return 'dashboard';
-        if (strpos($template_name, 'community') !== false) return 'community';
-        if (strpos($template_name, 'city') !== false) return 'city';
+    public function enqueue_template_assets_by_name($template_name): void {
+        // This method is called by theme Template_Loader
+        // For now, do nothing - let theme handle template assets
+    }
 
-        return 'core';
+    /**
+     * Get plugin asset URL
+     */
+    public function get_asset_url($asset_path): string {
+        return plugins_url('assets/' . ltrim($asset_path, '/'), dirname(__DIR__));
+    }
+
+    /**
+     * Get plugin asset path
+     */
+    public function get_asset_path($asset_path): string {
+        return plugin_dir_path(dirname(__DIR__)) . 'assets/' . ltrim($asset_path, '/');
     }
 }
