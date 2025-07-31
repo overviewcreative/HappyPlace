@@ -452,7 +452,7 @@ class Search_Form extends Base_Component {
                 'type' => 'select',
                 'label' => __('Property Type', 'happy-place'),
                 'placeholder' => __('Any Type', 'happy-place'),
-                'options' => hph_get_property_types()
+                'options' => \hph_get_property_types()
             ],
             'price_range' => [
                 'type' => 'price_range',

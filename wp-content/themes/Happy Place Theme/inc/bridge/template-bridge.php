@@ -11,27 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-/**
- * Get formatted template data (display-ready)
- * @param int $listing_id Listing post ID
- * @return array Formatted template data ready for display
- */
-function hph_get_template_listing_data($listing_id) {
-    $raw_data = hph_get_listing_data($listing_id);
-    
-    if (!$raw_data) {
-        return [];
-    }
-    
-    return [
-        'title' => esc_html($raw_data['title'] ?? get_the_title($listing_id)),
-        'price' => hph_format_price($raw_data['price'] ?? ''),
-        'features' => hph_format_features($raw_data['features'] ?? []),
-        'url' => get_permalink($listing_id),
-        'status' => esc_html($raw_data['status'] ?? 'active'),
-        'address' => hph_get_listing_address($listing_id, true)
-    ];
-}
+
 
 /**
  * Get template part with args and caching

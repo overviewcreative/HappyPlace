@@ -23,6 +23,8 @@ require_once HPH_THEME_DIR . '/inc/core/class-template-engine.php';
 require_once HPH_THEME_DIR . '/inc/core/class-component-manager.php';
 
 // Load bridge modules (data access layer)
+require_once HPH_THEME_DIR . '/inc/bridge/template-helpers.php';
+require_once HPH_THEME_DIR . '/inc/bridge/template-bridge.php';
 require_once HPH_THEME_DIR . '/inc/bridge/api-key-manager.php';
 require_once HPH_THEME_DIR . '/inc/bridge/interface-data-contract.php';
 require_once HPH_THEME_DIR . '/inc/bridge/class-fallback-data-provider.php';

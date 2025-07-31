@@ -6,6 +6,12 @@
  * @return array Agent data
  */
 function hph_bridge_get_agent_data($agent_id) {
+    // Ensure we have a valid ID
+    if (is_object($agent_id) && isset($agent_id->ID)) {
+        $agent_id = $agent_id->ID;
+    }
+    
+    $agent_id = intval($agent_id);
     if (empty($agent_id)) {
         return [];
     }

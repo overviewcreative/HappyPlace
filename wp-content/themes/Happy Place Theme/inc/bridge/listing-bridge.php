@@ -106,7 +106,8 @@ function hph_get_acf_listing_data($listing_id) {
     $data['gallery'] = is_array($gallery) ? $gallery : [];
     
     // Agent information
-    $agent_id = get_field('listing_agent', $listing_id);
+    $agent_field = get_field('listing_agent', $listing_id);
+    $agent_id = is_object($agent_field) ? $agent_field->ID : $agent_field;
     $data['agent_id'] = $agent_id;
     $data['agent'] = $agent_id ? hph_bridge_get_agent_data($agent_id) : [];
     
