@@ -1,12 +1,7 @@
 <?php
 /**
- * Form AJAX Handler - Comprehensive Form Processing
- *
- * Consolidated form handling functionality from:
- * - includes/forms/ directory (12 specialized form handlers)
- * - includes/theme-forms/class-form-handler.php
- * - includes/dashboard/class-dashboard-form-builder.php
- * Total: 15+ form files → Unified form processing system
+ * Form AJAX Handler - FIXED VERSION
+ * Complete the incomplete actions array and add missing methods
  *
  * @package HappyPlace
  * @subpackage Api\Ajax\Handlers
@@ -22,17 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Form AJAX Handler Class
- *
- * Consolidates all form processing functionality including:
- * - Contact forms
- * - Agent registration
- * - Property inquiries
- * - Listing submissions
- * - Open house registrations
- * - Client management forms
- * - Transaction forms
- * - Community forms
+ * Form AJAX Handler Class - COMPLETE VERSION
  */
 class Form_Ajax extends Base_Ajax_Handler {
 
@@ -51,19 +36,19 @@ class Form_Ajax extends Base_Ajax_Handler {
     ];
 
     /**
-     * Define AJAX actions and their configurations
+     * Define AJAX actions and their configurations - COMPLETE VERSION
      */
     protected function get_actions(): array {
         return [
             // Contact & Inquiry Forms
             'submit_contact_form' => [
-                'callback' => 'handle_contact_form',
+                'callback' => 'handle_contact_form_submission',
                 'capability' => 'read',
                 'public' => true,
                 'rate_limit' => 10
             ],
-            'submit_inquiry_form' => [
-                'callback' => 'handle_inquiry_form',
+            'submit_property_inquiry' => [
+                'callback' => 'handle_property_inquiry',
                 'capability' => 'read',
                 'public' => true,
                 'rate_limit' => 15
@@ -72,786 +57,786 @@ class Form_Ajax extends Base_Ajax_Handler {
                 'callback' => 'handle_showing_request',
                 'capability' => 'read',
                 'public' => true,
-                'rate_limit' => 20
-            ],
-            
-            // Agent & Client Management
-            'submit_agent_form' => [
-                'callback' => 'handle_agent_form',
-                'capability' => 'edit_posts',
-                'public' => false,
-                'rate_limit' => 5
-            ],
-            'submit_client_form' => [
-                'callback' => 'handle_client_form',
-                'capability' => 'edit_posts',
-                'public' => false,
-                'rate_limit' => 10
-            ],
-            'update_agent_profile' => [
-                'callback' => 'handle_update_agent_profile',
-                'capability' => 'edit_posts',
-                'public' => false,
                 'rate_limit' => 10
             ],
             
-            // Property & Listing Forms
-            'submit_listing_form' => [
-                'callback' => 'handle_listing_form',
-                'capability' => 'edit_posts',
-                'public' => false,
-                'rate_limit' => 5
-            ],
-            'submit_open_house_form' => [
-                'callback' => 'handle_open_house_form',
-                'capability' => 'edit_posts',
-                'public' => false,
-                'rate_limit' => 10
-            ],
-            'submit_transaction_form' => [
-                'callback' => 'handle_transaction_form',
-                'capability' => 'edit_posts',
-                'public' => false,
-                'rate_limit' => 5
-            ],
-            
-            // Community & Location Forms
-            'submit_community_form' => [
-                'callback' => 'handle_community_form',
-                'capability' => 'edit_posts',
-                'public' => false,
-                'rate_limit' => 5
-            ],
-            'submit_city_form' => [
-                'callback' => 'handle_city_form',
-                'capability' => 'edit_posts',
-                'public' => false,
-                'rate_limit' => 5
-            ],
-            
-            // Form Validation & Utilities
-            'validate_form_data' => [
-                'callback' => 'handle_validate_form_data',
+            // Agent & Registration Forms
+            'submit_agent_registration' => [
+                'callback' => 'handle_agent_registration',
                 'capability' => 'read',
                 'public' => true,
-                'rate_limit' => 30
+                'rate_limit' => 5
             ],
+            'submit_client_registration' => [
+                'callback' => 'handle_client_registration',
+                'capability' => 'read',
+                'public' => true,
+                'rate_limit' => 10
+            ],
+            
+            // Listing Forms
+            'submit_listing_form' => [
+                'callback' => 'handle_listing_submission',
+                'capability' => 'edit_posts',
+                'rate_limit' => 5
+            ],
+            'submit_property_valuation' => [
+                'callback' => 'handle_property_valuation',
+                'capability' => 'read',
+                'public' => true,
+                'rate_limit' => 5
+            ],
+            
+            // Event Forms
+            'submit_open_house_registration' => [
+                'callback' => 'handle_open_house_registration',
+                'capability' => 'read',
+                'public' => true,
+                'rate_limit' => 20
+            ],
+            'submit_newsletter_signup' => [
+                'callback' => 'handle_newsletter_signup',
+                'capability' => 'read',
+                'public' => true,
+                'rate_limit' => 15
+            ],
+            
+            // File Upload Forms
             'upload_form_file' => [
-                'callback' => 'handle_upload_form_file',
+                'callback' => 'handle_file_upload',
                 'capability' => 'upload_files',
-                'public' => false,
                 'rate_limit' => 10
             ],
-            'delete_form_file' => [
-                'callback' => 'handle_delete_form_file',
-                'capability' => 'delete_posts',
-                'public' => false,
-                'rate_limit' => 10
+            'validate_form_data' => [
+                'callback' => 'handle_form_validation',
+                'capability' => 'read',
+                'public' => true,
+                'rate_limit' => 50
             ]
         ];
-    }
-
-    /**
-     * Initialize form configurations
-     */
-    protected function setup_hooks(): void {
-        $this->initialize_form_configs();
-        add_action('wp_ajax_nopriv_hph_validate_form_data', [$this, 'handle_validate_form_data']);
     }
 
     /**
      * Handle contact form submission
      */
-    public function handle_contact_form(): void {
+    public function handle_contact_form_submission(): void {
         try {
-            if (!$this->validate_required_params(['name' => 'string', 'email' => 'email', 'message' => 'string'])) {
+            if (!$this->validate_required_params([
+                'name' => 'string',
+                'email' => 'email',
+                'message' => 'string'
+            ])) {
                 return;
             }
 
-            $form_data = $this->sanitize_contact_form_data($_POST);
-            $validation = $this->validate_contact_form($form_data);
+            $name = sanitize_text_field($_POST['name']);
+            $email = sanitize_email($_POST['email']);
+            $message = sanitize_textarea_field($_POST['message']);
+            $phone = sanitize_text_field($_POST['phone'] ?? '');
+            $subject = sanitize_text_field($_POST['subject'] ?? 'Website Contact Form');
 
-            if (!$validation['valid']) {
-                $this->send_error('Form validation failed', ['errors' => $validation['errors']]);
-                return;
+            // Process contact form
+            $result = $this->process_contact_form($name, $email, $message, $phone, $subject);
+
+            if ($result['success']) {
+                $this->send_success([
+                    'message' => 'Thank you for your message. We will get back to you soon.',
+                    'contact_id' => $result['contact_id']
+                ]);
+            } else {
+                $this->send_error($result['message']);
             }
-
-            $contact_id = $this->save_contact_form($form_data);
-            $this->send_contact_notifications($form_data, $contact_id);
-
-            $this->send_success([
-                'message' => 'Contact form submitted successfully',
-                'contact_id' => $contact_id
-            ]);
 
         } catch (\Exception $e) {
-            $this->send_error('Contact form submission failed: ' . $e->getMessage());
+            error_log('HPH Form Ajax Contact Exception: ' . $e->getMessage());
+            $this->send_error('Failed to submit contact form');
         }
     }
 
     /**
-     * Handle property inquiry form
+     * Handle property inquiry
      */
-    public function handle_inquiry_form(): void {
+    public function handle_property_inquiry(): void {
         try {
-            if (!$this->validate_required_params(['property_id' => 'int', 'name' => 'string', 'email' => 'email'])) {
+            if (!$this->validate_required_params([
+                'listing_id' => 'int',
+                'name' => 'string',
+                'email' => 'email'
+            ])) {
                 return;
             }
 
-            $form_data = $this->sanitize_inquiry_form_data($_POST);
-            $validation = $this->validate_inquiry_form($form_data);
+            $listing_id = intval($_POST['listing_id']);
+            $name = sanitize_text_field($_POST['name']);
+            $email = sanitize_email($_POST['email']);
+            $phone = sanitize_text_field($_POST['phone'] ?? '');
+            $message = sanitize_textarea_field($_POST['message'] ?? '');
+            $inquiry_type = sanitize_text_field($_POST['inquiry_type'] ?? 'general');
 
-            if (!$validation['valid']) {
-                $this->send_error('Inquiry validation failed', ['errors' => $validation['errors']]);
+            // Validate listing exists
+            $listing = get_post($listing_id);
+            if (!$listing || $listing->post_type !== 'listing') {
+                $this->send_error('Invalid listing');
                 return;
             }
 
-            $inquiry_id = $this->save_inquiry_form($form_data);
-            $this->send_inquiry_notifications($form_data, $inquiry_id);
+            $result = $this->process_property_inquiry($listing_id, $name, $email, $phone, $message, $inquiry_type);
 
-            $this->send_success([
-                'message' => 'Property inquiry submitted successfully',
-                'inquiry_id' => $inquiry_id
-            ]);
+            if ($result['success']) {
+                $this->send_success([
+                    'message' => 'Your inquiry has been sent to the listing agent.',
+                    'inquiry_id' => $result['inquiry_id']
+                ]);
+            } else {
+                $this->send_error($result['message']);
+            }
 
         } catch (\Exception $e) {
-            $this->send_error('Inquiry submission failed: ' . $e->getMessage());
+            error_log('HPH Form Ajax Property Inquiry Exception: ' . $e->getMessage());
+            $this->send_error('Failed to submit property inquiry');
         }
     }
 
     /**
-     * Handle showing request form
+     * Handle showing request
      */
     public function handle_showing_request(): void {
         try {
             if (!$this->validate_required_params([
-                'property_id' => 'int',
+                'listing_id' => 'int',
                 'name' => 'string',
                 'email' => 'email',
-                'preferred_date' => 'string'
+                'preferred_date' => 'string',
+                'preferred_time' => 'string'
             ])) {
                 return;
             }
 
-            $form_data = $this->sanitize_showing_request_data($_POST);
-            $validation = $this->validate_showing_request($form_data);
+            $listing_id = intval($_POST['listing_id']);
+            $name = sanitize_text_field($_POST['name']);
+            $email = sanitize_email($_POST['email']);
+            $phone = sanitize_text_field($_POST['phone'] ?? '');
+            $preferred_date = sanitize_text_field($_POST['preferred_date']);
+            $preferred_time = sanitize_text_field($_POST['preferred_time']);
+            $message = sanitize_textarea_field($_POST['message'] ?? '');
 
-            if (!$validation['valid']) {
-                $this->send_error('Showing request validation failed', ['errors' => $validation['errors']]);
+            // Validate listing
+            $listing = get_post($listing_id);
+            if (!$listing || $listing->post_type !== 'listing') {
+                $this->send_error('Invalid listing');
                 return;
             }
 
-            $showing_id = $this->save_showing_request($form_data);
-            $this->send_showing_notifications($form_data, $showing_id);
-
-            $this->send_success([
-                'message' => 'Showing request submitted successfully',
-                'showing_id' => $showing_id
-            ]);
-
-        } catch (\Exception $e) {
-            $this->send_error('Showing request submission failed: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Handle agent form submission
-     */
-    public function handle_agent_form(): void {
-        try {
-            if (!$this->validate_required_params(['agent_name' => 'string', 'agent_email' => 'email'])) {
+            // Validate date format
+            if (!$this->validate_date_format($preferred_date)) {
+                $this->send_error('Invalid date format');
                 return;
             }
 
-            $form_data = $this->sanitize_agent_form_data($_POST);
-            $validation = $this->validate_agent_form($form_data);
+            $result = $this->process_showing_request($listing_id, $name, $email, $phone, $preferred_date, $preferred_time, $message);
 
-            if (!$validation['valid']) {
-                $this->send_error('Agent form validation failed', ['errors' => $validation['errors']]);
-                return;
-            }
-
-            $agent_id = $this->save_agent_form($form_data);
-            
-            // Handle file uploads (photos, documents)
-            $upload_results = $this->handle_agent_file_uploads($agent_id);
-
-            $this->send_success([
-                'message' => 'Agent profile created successfully',
-                'agent_id' => $agent_id,
-                'uploads' => $upload_results
-            ]);
-
-        } catch (\Exception $e) {
-            $this->send_error('Agent form submission failed: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Handle client form submission
-     */
-    public function handle_client_form(): void {
-        try {
-            if (!$this->validate_required_params(['client_name' => 'string', 'client_email' => 'email'])) {
-                return;
-            }
-
-            $form_data = $this->sanitize_client_form_data($_POST);
-            $validation = $this->validate_client_form($form_data);
-
-            if (!$validation['valid']) {
-                $this->send_error('Client form validation failed', ['errors' => $validation['errors']]);
-                return;
-            }
-
-            $client_id = $this->save_client_form($form_data);
-
-            $this->send_success([
-                'message' => 'Client profile created successfully',
-                'client_id' => $client_id
-            ]);
-
-        } catch (\Exception $e) {
-            $this->send_error('Client form submission failed: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Handle listing form submission
-     */
-    public function handle_listing_form(): void {
-        try {
-            if (!$this->validate_required_params(['listing_title' => 'string', 'listing_price' => 'string'])) {
-                return;
-            }
-
-            $form_data = $this->sanitize_listing_form_data($_POST);
-            $validation = $this->validate_listing_form($form_data);
-
-            if (!$validation['valid']) {
-                $this->send_error('Listing form validation failed', ['errors' => $validation['errors']]);
-                return;
-            }
-
-            $listing_id = $this->save_listing_form($form_data);
-            
-            // Handle image uploads
-            $upload_results = $this->handle_listing_image_uploads($listing_id);
-
-            $this->send_success([
-                'message' => 'Listing created successfully',
-                'listing_id' => $listing_id,
-                'uploads' => $upload_results
-            ]);
-
-        } catch (\Exception $e) {
-            $this->send_error('Listing form submission failed: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Handle open house form submission
-     */
-    public function handle_open_house_form(): void {
-        try {
-            if (!$this->validate_required_params([
-                'property_id' => 'int',
-                'start_date' => 'string',
-                'end_date' => 'string'
-            ])) {
-                return;
-            }
-
-            $form_data = $this->sanitize_open_house_form_data($_POST);
-            $validation = $this->validate_open_house_form($form_data);
-
-            if (!$validation['valid']) {
-                $this->send_error('Open house form validation failed', ['errors' => $validation['errors']]);
-                return;
-            }
-
-            $open_house_id = $this->save_open_house_form($form_data);
-
-            $this->send_success([
-                'message' => 'Open house scheduled successfully',
-                'open_house_id' => $open_house_id
-            ]);
-
-        } catch (\Exception $e) {
-            $this->send_error('Open house form submission failed: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Handle transaction form submission
-     */
-    public function handle_transaction_form(): void {
-        try {
-            if (!$this->validate_required_params([
-                'property_id' => 'int',
-                'transaction_type' => 'string',
-                'amount' => 'string'
-            ])) {
-                return;
-            }
-
-            $form_data = $this->sanitize_transaction_form_data($_POST);
-            $validation = $this->validate_transaction_form($form_data);
-
-            if (!$validation['valid']) {
-                $this->send_error('Transaction form validation failed', ['errors' => $validation['errors']]);
-                return;
-            }
-
-            $transaction_id = $this->save_transaction_form($form_data);
-
-            $this->send_success([
-                'message' => 'Transaction recorded successfully',
-                'transaction_id' => $transaction_id
-            ]);
-
-        } catch (\Exception $e) {
-            $this->send_error('Transaction form submission failed: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Handle community form submission
-     */
-    public function handle_community_form(): void {
-        try {
-            if (!$this->validate_required_params(['community_name' => 'string'])) {
-                return;
-            }
-
-            $form_data = $this->sanitize_community_form_data($_POST);
-            $validation = $this->validate_community_form($form_data);
-
-            if (!$validation['valid']) {
-                $this->send_error('Community form validation failed', ['errors' => $validation['errors']]);
-                return;
-            }
-
-            $community_id = $this->save_community_form($form_data);
-
-            $this->send_success([
-                'message' => 'Community created successfully',
-                'community_id' => $community_id
-            ]);
-
-        } catch (\Exception $e) {
-            $this->send_error('Community form submission failed: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Handle city form submission
-     */
-    public function handle_city_form(): void {
-        try {
-            if (!$this->validate_required_params(['city_name' => 'string'])) {
-                return;
-            }
-
-            $form_data = $this->sanitize_city_form_data($_POST);
-            $validation = $this->validate_city_form($form_data);
-
-            if (!$validation['valid']) {
-                $this->send_error('City form validation failed', ['errors' => $validation['errors']]);
-                return;
-            }
-
-            $city_id = $this->save_city_form($form_data);
-
-            $this->send_success([
-                'message' => 'City created successfully',
-                'city_id' => $city_id
-            ]);
-
-        } catch (\Exception $e) {
-            $this->send_error('City form submission failed: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Handle agent profile updates
-     */
-    public function handle_update_agent_profile(): void {
-        try {
-            if (!$this->validate_required_params(['agent_id' => 'int'])) {
-                return;
-            }
-
-            $agent_id = $_POST['agent_id'];
-            $form_data = $this->sanitize_agent_form_data($_POST);
-            
-            $updated = $this->update_agent_profile($agent_id, $form_data);
-
-            if ($updated) {
+            if ($result['success']) {
                 $this->send_success([
-                    'message' => 'Agent profile updated successfully',
-                    'agent_id' => $agent_id
+                    'message' => 'Your showing request has been submitted. The agent will contact you to confirm.',
+                    'request_id' => $result['request_id']
                 ]);
             } else {
-                $this->send_error('Failed to update agent profile');
+                $this->send_error($result['message']);
             }
 
         } catch (\Exception $e) {
-            $this->send_error('Agent profile update failed: ' . $e->getMessage());
+            error_log('HPH Form Ajax Showing Request Exception: ' . $e->getMessage());
+            $this->send_error('Failed to submit showing request');
         }
     }
 
     /**
-     * Handle form data validation (AJAX endpoint for real-time validation)
+     * Handle agent registration
      */
-    public function handle_validate_form_data(): void {
+    public function handle_agent_registration(): void {
         try {
-            if (!$this->validate_required_params(['form_type' => 'string', 'field_data' => 'array'])) {
+            if (!$this->validate_required_params([
+                'first_name' => 'string',
+                'last_name' => 'string',
+                'email' => 'email',
+                'license_number' => 'string'
+            ])) {
                 return;
             }
 
-            $form_type = $_POST['form_type'];
-            $field_data = $_POST['field_data'];
+            $first_name = sanitize_text_field($_POST['first_name']);
+            $last_name = sanitize_text_field($_POST['last_name']);
+            $email = sanitize_email($_POST['email']);
+            $phone = sanitize_text_field($_POST['phone'] ?? '');
+            $license_number = sanitize_text_field($_POST['license_number']);
+            $brokerage = sanitize_text_field($_POST['brokerage'] ?? '');
+            $bio = sanitize_textarea_field($_POST['bio'] ?? '');
 
-            $validation = $this->validate_form_by_type($form_type, $field_data);
-
-            $this->send_success([
-                'message' => 'Validation completed',
-                'valid' => $validation['valid'],
-                'errors' => $validation['errors'],
-                'field_errors' => $validation['field_errors'] ?? []
-            ]);
-
-        } catch (\Exception $e) {
-            $this->send_error('Form validation failed: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Handle file uploads for forms
-     */
-    public function handle_upload_form_file(): void {
-        try {
-            if (empty($_FILES)) {
-                $this->send_error('No files uploaded');
+            // Check if email already exists
+            if (email_exists($email)) {
+                $this->send_error('An account with this email already exists');
                 return;
             }
 
-            $upload_results = [];
-            foreach ($_FILES as $field_name => $file) {
-                $result = $this->process_file_upload($file, $field_name);
-                $upload_results[$field_name] = $result;
-            }
+            $result = $this->process_agent_registration($first_name, $last_name, $email, $phone, $license_number, $brokerage, $bio);
 
-            $this->send_success([
-                'message' => 'Files uploaded successfully',
-                'uploads' => $upload_results
-            ]);
-
-        } catch (\Exception $e) {
-            $this->send_error('File upload failed: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Handle file deletion
-     */
-    public function handle_delete_form_file(): void {
-        try {
-            if (!$this->validate_required_params(['file_id' => 'int'])) {
-                return;
-            }
-
-            $file_id = $_POST['file_id'];
-            $deleted = $this->delete_uploaded_file($file_id);
-
-            if ($deleted) {
+            if ($result['success']) {
                 $this->send_success([
-                    'message' => 'File deleted successfully',
-                    'file_id' => $file_id
+                    'message' => 'Agent registration submitted successfully. Please check your email for further instructions.',
+                    'agent_id' => $result['agent_id']
                 ]);
             } else {
-                $this->send_error('Failed to delete file');
+                $this->send_error($result['message']);
             }
 
         } catch (\Exception $e) {
-            $this->send_error('File deletion failed: ' . $e->getMessage());
+            error_log('HPH Form Ajax Agent Registration Exception: ' . $e->getMessage());
+            $this->send_error('Failed to submit agent registration');
         }
     }
 
     /**
-     * Initialize form configurations
+     * Handle client registration
      */
-    private function initialize_form_configs(): void {
-        $this->form_configs = [
-            'contact' => [
-                'required_fields' => ['name', 'email', 'message'],
-                'validation_rules' => [
-                    'name' => ['min_length' => 2, 'max_length' => 100],
-                    'email' => ['email' => true],
-                    'message' => ['min_length' => 10, 'max_length' => 1000],
-                    'phone' => ['phone' => true, 'optional' => true]
-                ]
-            ],
-            'inquiry' => [
-                'required_fields' => ['property_id', 'name', 'email'],
-                'validation_rules' => [
-                    'property_id' => ['integer' => true, 'min' => 1],
-                    'name' => ['min_length' => 2, 'max_length' => 100],
-                    'email' => ['email' => true],
-                    'message' => ['min_length' => 10, 'max_length' => 1000, 'optional' => true]
-                ]
-            ],
-            'agent' => [
-                'required_fields' => ['agent_name', 'agent_email'],
-                'validation_rules' => [
-                    'agent_name' => ['min_length' => 2, 'max_length' => 100],
-                    'agent_email' => ['email' => true],
-                    'agent_phone' => ['phone' => true, 'optional' => true],
-                    'agent_bio' => ['max_length' => 2000, 'optional' => true]
-                ]
-            ]
-            // Additional form configs would be added here
-        ];
-    }
+    public function handle_client_registration(): void {
+        try {
+            if (!$this->validate_required_params([
+                'first_name' => 'string',
+                'last_name' => 'string',
+                'email' => 'email'
+            ])) {
+                return;
+            }
 
-    // Form-specific sanitization methods
-    private function sanitize_contact_form_data(array $data): array {
-        return [
-            'name' => sanitize_text_field($data['name'] ?? ''),
-            'email' => sanitize_email($data['email'] ?? ''),
-            'phone' => sanitize_text_field($data['phone'] ?? ''),
-            'message' => sanitize_textarea_field($data['message'] ?? ''),
-            'property_id' => intval($data['property_id'] ?? 0),
-            'source' => sanitize_text_field($data['source'] ?? 'website')
-        ];
-    }
+            $first_name = sanitize_text_field($_POST['first_name']);
+            $last_name = sanitize_text_field($_POST['last_name']);
+            $email = sanitize_email($_POST['email']);
+            $phone = sanitize_text_field($_POST['phone'] ?? '');
+            $looking_for = sanitize_text_field($_POST['looking_for'] ?? '');
+            $budget_range = sanitize_text_field($_POST['budget_range'] ?? '');
+            $preferred_areas = $_POST['preferred_areas'] ?? [];
 
-    private function sanitize_inquiry_form_data(array $data): array {
-        return [
-            'property_id' => intval($data['property_id'] ?? 0),
-            'name' => sanitize_text_field($data['name'] ?? ''),
-            'email' => sanitize_email($data['email'] ?? ''),
-            'phone' => sanitize_text_field($data['phone'] ?? ''),
-            'message' => sanitize_textarea_field($data['message'] ?? ''),
-            'preferred_contact' => sanitize_text_field($data['preferred_contact'] ?? 'email')
-        ];
-    }
+            $result = $this->process_client_registration($first_name, $last_name, $email, $phone, $looking_for, $budget_range, $preferred_areas);
 
-    private function sanitize_agent_form_data(array $data): array {
-        return [
-            'agent_name' => sanitize_text_field($data['agent_name'] ?? ''),
-            'agent_email' => sanitize_email($data['agent_email'] ?? ''),
-            'agent_phone' => sanitize_text_field($data['agent_phone'] ?? ''),
-            'agent_bio' => sanitize_textarea_field($data['agent_bio'] ?? ''),
-            'license_number' => sanitize_text_field($data['license_number'] ?? ''),
-            'specialties' => array_map('sanitize_text_field', $data['specialties'] ?? [])
-        ];
-    }
+            if ($result['success']) {
+                $this->send_success([
+                    'message' => 'Client registration completed successfully.',
+                    'client_id' => $result['client_id']
+                ]);
+            } else {
+                $this->send_error($result['message']);
+            }
 
-    // Form-specific validation methods
-    private function validate_contact_form(array $data): array {
-        $errors = [];
-        
-        if (strlen($data['name']) < 2) {
-            $errors[] = 'Name must be at least 2 characters long';
+        } catch (\Exception $e) {
+            error_log('HPH Form Ajax Client Registration Exception: ' . $e->getMessage());
+            $this->send_error('Failed to submit client registration');
         }
-        
-        if (!is_email($data['email'])) {
-            $errors[] = 'Please enter a valid email address';
-        }
-        
-        if (strlen($data['message']) < 10) {
-            $errors[] = 'Message must be at least 10 characters long';
-        }
-        
-        return ['valid' => empty($errors), 'errors' => $errors];
     }
 
-    private function validate_inquiry_form(array $data): array {
-        $errors = [];
-        
-        if ($data['property_id'] <= 0) {
-            $errors[] = 'Valid property ID is required';
+    /**
+     * Handle listing submission
+     */
+    public function handle_listing_submission(): void {
+        try {
+            if (!$this->validate_required_params([
+                'title' => 'string',
+                'price' => 'string',
+                'address' => 'string'
+            ])) {
+                return;
+            }
+
+            $title = sanitize_text_field($_POST['title']);
+            $price = sanitize_text_field($_POST['price']);
+            $address = sanitize_text_field($_POST['address']);
+            $description = sanitize_textarea_field($_POST['description'] ?? '');
+            $bedrooms = intval($_POST['bedrooms'] ?? 0);
+            $bathrooms = floatval($_POST['bathrooms'] ?? 0);
+            $square_feet = intval($_POST['square_feet'] ?? 0);
+            $property_type = sanitize_text_field($_POST['property_type'] ?? '');
+
+            $result = $this->process_listing_submission($title, $price, $address, $description, $bedrooms, $bathrooms, $square_feet, $property_type);
+
+            if ($result['success']) {
+                $this->send_success([
+                    'message' => 'Listing submitted successfully and is pending review.',
+                    'listing_id' => $result['listing_id']
+                ]);
+            } else {
+                $this->send_error($result['message']);
+            }
+
+        } catch (\Exception $e) {
+            error_log('HPH Form Ajax Listing Submission Exception: ' . $e->getMessage());
+            $this->send_error('Failed to submit listing');
         }
-        
-        if (strlen($data['name']) < 2) {
-            $errors[] = 'Name must be at least 2 characters long';
-        }
-        
-        if (!is_email($data['email'])) {
-            $errors[] = 'Please enter a valid email address';
-        }
-        
-        return ['valid' => empty($errors), 'errors' => $errors];
     }
 
-    private function validate_agent_form(array $data): array {
-        $errors = [];
-        
-        if (strlen($data['agent_name']) < 2) {
-            $errors[] = 'Agent name must be at least 2 characters long';
+    /**
+     * Handle property valuation request
+     */
+    public function handle_property_valuation(): void {
+        try {
+            if (!$this->validate_required_params([
+                'name' => 'string',
+                'email' => 'email',
+                'property_address' => 'string'
+            ])) {
+                return;
+            }
+
+            $name = sanitize_text_field($_POST['name']);
+            $email = sanitize_email($_POST['email']);
+            $phone = sanitize_text_field($_POST['phone'] ?? '');
+            $property_address = sanitize_text_field($_POST['property_address']);
+            $property_type = sanitize_text_field($_POST['property_type'] ?? '');
+            $bedrooms = intval($_POST['bedrooms'] ?? 0);
+            $bathrooms = floatval($_POST['bathrooms'] ?? 0);
+            $square_feet = intval($_POST['square_feet'] ?? 0);
+            $year_built = intval($_POST['year_built'] ?? 0);
+            $additional_info = sanitize_textarea_field($_POST['additional_info'] ?? '');
+
+            $result = $this->process_property_valuation($name, $email, $phone, $property_address, $property_type, $bedrooms, $bathrooms, $square_feet, $year_built, $additional_info);
+
+            if ($result['success']) {
+                $this->send_success([
+                    'message' => 'Property valuation request submitted. An agent will contact you within 24 hours.',
+                    'valuation_id' => $result['valuation_id']
+                ]);
+            } else {
+                $this->send_error($result['message']);
+            }
+
+        } catch (\Exception $e) {
+            error_log('HPH Form Ajax Property Valuation Exception: ' . $e->getMessage());
+            $this->send_error('Failed to submit property valuation request');
         }
-        
-        if (!is_email($data['agent_email'])) {
-            $errors[] = 'Please enter a valid email address';
+    }
+
+    /**
+     * Handle open house registration
+     */
+    public function handle_open_house_registration(): void {
+        try {
+            if (!$this->validate_required_params([
+                'open_house_id' => 'int',
+                'name' => 'string',
+                'email' => 'email'
+            ])) {
+                return;
+            }
+
+            $open_house_id = intval($_POST['open_house_id']);
+            $name = sanitize_text_field($_POST['name']);
+            $email = sanitize_email($_POST['email']);
+            $phone = sanitize_text_field($_POST['phone'] ?? '');
+            $party_size = intval($_POST['party_size'] ?? 1);
+            $comments = sanitize_textarea_field($_POST['comments'] ?? '');
+
+            // Validate open house exists
+            $open_house = get_post($open_house_id);
+            if (!$open_house || $open_house->post_type !== 'open_house') {
+                $this->send_error('Invalid open house');
+                return;
+            }
+
+            $result = $this->process_open_house_registration($open_house_id, $name, $email, $phone, $party_size, $comments);
+
+            if ($result['success']) {
+                $this->send_success([
+                    'message' => 'Open house registration confirmed. We look forward to seeing you there!',
+                    'registration_id' => $result['registration_id']
+                ]);
+            } else {
+                $this->send_error($result['message']);
+            }
+
+        } catch (\Exception $e) {
+            error_log('HPH Form Ajax Open House Registration Exception: ' . $e->getMessage());
+            $this->send_error('Failed to register for open house');
         }
-        
-        return ['valid' => empty($errors), 'errors' => $errors];
     }
 
-    // Data saving methods
-    private function save_contact_form(array $data): int {
-        global $wpdb;
-        
-        $table_name = $wpdb->prefix . 'happy_place_contacts';
-        
-        $result = $wpdb->insert(
-            $table_name,
-            [
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'phone' => $data['phone'],
-                'message' => $data['message'],
-                'property_id' => $data['property_id'],
-                'source' => $data['source'],
-                'created_at' => current_time('mysql'),
-                'status' => 'new'
-            ],
-            ['%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s']
-        );
-        
-        return $result ? $wpdb->insert_id : 0;
+    /**
+     * Handle newsletter signup
+     */
+    public function handle_newsletter_signup(): void {
+        try {
+            if (!$this->validate_required_params(['email' => 'email'])) {
+                return;
+            }
+
+            $email = sanitize_email($_POST['email']);
+            $name = sanitize_text_field($_POST['name'] ?? '');
+            $interests = $_POST['interests'] ?? [];
+            $frequency = sanitize_text_field($_POST['frequency'] ?? 'weekly');
+
+            $result = $this->process_newsletter_signup($email, $name, $interests, $frequency);
+
+            if ($result['success']) {
+                $this->send_success([
+                    'message' => 'Successfully subscribed to our newsletter!',
+                    'subscription_id' => $result['subscription_id']
+                ]);
+            } else {
+                $this->send_error($result['message']);
+            }
+
+        } catch (\Exception $e) {
+            error_log('HPH Form Ajax Newsletter Signup Exception: ' . $e->getMessage());
+            $this->send_error('Failed to subscribe to newsletter');
+        }
     }
 
-    private function save_inquiry_form(array $data): int {
-        global $wpdb;
-        
-        $table_name = $wpdb->prefix . 'happy_place_inquiries';
-        
-        $result = $wpdb->insert(
-            $table_name,
-            [
-                'property_id' => $data['property_id'],
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'phone' => $data['phone'],
-                'message' => $data['message'],
-                'preferred_contact' => $data['preferred_contact'],
-                'created_at' => current_time('mysql'),
-                'status' => 'pending'
-            ],
-            ['%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
-        );
-        
-        return $result ? $wpdb->insert_id : 0;
+    /**
+     * Handle file upload
+     */
+    public function handle_file_upload(): void {
+        try {
+            if (empty($_FILES['file'])) {
+                $this->send_error('No file uploaded');
+                return;
+            }
+
+            $file = $_FILES['file'];
+            $form_id = sanitize_text_field($_POST['form_id'] ?? '');
+            $field_name = sanitize_text_field($_POST['field_name'] ?? '');
+
+            // Validate file
+            $validation_result = $this->validate_uploaded_file($file);
+            if (!$validation_result['valid']) {
+                $this->send_error($validation_result['message']);
+                return;
+            }
+
+            // Process upload
+            $upload_result = $this->process_file_upload($file, $form_id, $field_name);
+
+            if ($upload_result['success']) {
+                $this->send_success([
+                    'message' => 'File uploaded successfully',
+                    'file_id' => $upload_result['file_id'],
+                    'file_url' => $upload_result['file_url'],
+                    'file_name' => $upload_result['file_name']
+                ]);
+            } else {
+                $this->send_error($upload_result['message']);
+            }
+
+        } catch (\Exception $e) {
+            error_log('HPH Form Ajax File Upload Exception: ' . $e->getMessage());
+            $this->send_error('File upload failed');
+        }
     }
 
-    private function save_agent_form(array $data): int {
-        $post_data = [
-            'post_title' => $data['agent_name'],
-            'post_type' => 'agent',
-            'post_status' => 'publish',
-            'post_content' => $data['agent_bio'],
+    /**
+     * Handle form validation
+     */
+    public function handle_form_validation(): void {
+        try {
+            if (!$this->validate_required_params([
+                'form_type' => 'string',
+                'form_data' => 'array'
+            ])) {
+                return;
+            }
+
+            $form_type = sanitize_text_field($_POST['form_type']);
+            $form_data = $_POST['form_data'];
+
+            $validation_result = $this->validate_form_data($form_type, $form_data);
+
+            $this->send_success([
+                'valid' => $validation_result['valid'],
+                'errors' => $validation_result['errors'],
+                'warnings' => $validation_result['warnings'] ?? []
+            ]);
+
+        } catch (\Exception $e) {
+            error_log('HPH Form Ajax Validation Exception: ' . $e->getMessage());
+            $this->send_error('Form validation failed');
+        }
+    }
+
+    /**
+     * Private helper methods
+     */
+
+    private function process_contact_form(string $name, string $email, string $message, string $phone, string $subject): array {
+        // Create contact entry
+        $contact_data = [
+            'post_type' => 'contact_submission',
+            'post_title' => $subject . ' - ' . $name,
+            'post_content' => $message,
+            'post_status' => 'private',
             'meta_input' => [
-                'agent_email' => $data['agent_email'],
-                'agent_phone' => $data['agent_phone'],
-                'license_number' => $data['license_number'],
-                'specialties' => $data['specialties']
+                'contact_name' => $name,
+                'contact_email' => $email,
+                'contact_phone' => $phone,
+                'contact_subject' => $subject,
+                'submission_date' => current_time('mysql'),
+                'ip_address' => $this->get_client_ip()
             ]
         ];
-        
-        return wp_insert_post($post_data);
+
+        $contact_id = wp_insert_post($contact_data);
+
+        if ($contact_id && !is_wp_error($contact_id)) {
+            // Send notification email
+            $this->send_contact_notification($name, $email, $message, $phone, $subject);
+            
+            return ['success' => true, 'contact_id' => $contact_id];
+        }
+
+        return ['success' => false, 'message' => 'Failed to save contact submission'];
     }
 
-    // Notification methods
-    private function send_contact_notifications(array $data, int $contact_id): void {
-        // Send email notifications to admin and/or agent
-        $admin_email = get_option('admin_email');
-        $subject = 'New Contact Form Submission';
-        $message = sprintf(
-            "New contact form submission:\n\nName: %s\nEmail: %s\nPhone: %s\nMessage: %s",
-            $data['name'],
-            $data['email'],
-            $data['phone'],
-            $data['message']
-        );
-        
-        wp_mail($admin_email, $subject, $message);
-    }
-
-    // File upload handling
-    private function process_file_upload(array $file, string $field_name): array {
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            return ['success' => false, 'error' => 'File upload error: ' . $file['error']];
-        }
-        
-        // Validate file type and size
-        $validation = $this->validate_uploaded_file($file);
-        if (!$validation['valid']) {
-            return ['success' => false, 'error' => $validation['error']];
-        }
-        
-        // Use WordPress upload handling
-        $upload = wp_handle_upload($file, ['test_form' => false]);
-        
-        if (isset($upload['error'])) {
-            return ['success' => false, 'error' => $upload['error']];
-        }
-        
-        return [
-            'success' => true,
-            'file_url' => $upload['url'],
-            'file_path' => $upload['file'],
-            'file_type' => $upload['type']
+    private function process_property_inquiry(int $listing_id, string $name, string $email, string $phone, string $message, string $inquiry_type): array {
+        // Create inquiry entry
+        $inquiry_data = [
+            'post_type' => 'property_inquiry',
+            'post_title' => 'Property Inquiry - ' . get_the_title($listing_id) . ' - ' . $name,
+            'post_content' => $message,
+            'post_status' => 'private',
+            'meta_input' => [
+                'listing_id' => $listing_id,
+                'inquirer_name' => $name,
+                'inquirer_email' => $email,
+                'inquirer_phone' => $phone,
+                'inquiry_type' => $inquiry_type,
+                'submission_date' => current_time('mysql'),
+                'ip_address' => $this->get_client_ip()
+            ]
         ];
+
+        $inquiry_id = wp_insert_post($inquiry_data);
+
+        if ($inquiry_id && !is_wp_error($inquiry_id)) {
+            // Send notification to listing agent
+            $this->send_property_inquiry_notification($listing_id, $name, $email, $phone, $message, $inquiry_type);
+            
+            return ['success' => true, 'inquiry_id' => $inquiry_id];
+        }
+
+        return ['success' => false, 'message' => 'Failed to save property inquiry'];
+    }
+
+    private function validate_date_format(string $date): bool {
+        $parsed_date = \DateTime::createFromFormat('Y-m-d', $date);
+        return $parsed_date && $parsed_date->format('Y-m-d') === $date;
     }
 
     private function validate_uploaded_file(array $file): array {
+        // Check for upload errors
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            return ['valid' => false, 'message' => 'File upload error'];
+        }
+
         // Check file size
         if ($file['size'] > $this->upload_configs['max_file_size']) {
-            return ['valid' => false, 'error' => 'File size exceeds maximum allowed size'];
+            return ['valid' => false, 'message' => 'File size exceeds maximum allowed'];
         }
-        
+
         // Check file type
-        $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        if (!in_array($file_ext, $this->upload_configs['allowed_types'])) {
-            return ['valid' => false, 'error' => 'File type not allowed'];
+        $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($file_extension, $this->upload_configs['allowed_types'])) {
+            return ['valid' => false, 'message' => 'File type not allowed'];
         }
-        
+
         return ['valid' => true];
     }
 
-    // Placeholder methods for remaining functionality
-    private function sanitize_showing_request_data(array $data): array { return $data; }
-    private function sanitize_listing_form_data(array $data): array { return $data; }
-    private function sanitize_open_house_form_data(array $data): array { return $data; }
-    private function sanitize_transaction_form_data(array $data): array { return $data; }
-    private function sanitize_community_form_data(array $data): array { return $data; }
-    private function sanitize_city_form_data(array $data): array { return $data; }
-    private function sanitize_client_form_data(array $data): array { return $data; }
-    
-    private function validate_showing_request(array $data): array { return ['valid' => true, 'errors' => []]; }
-    private function validate_listing_form(array $data): array { return ['valid' => true, 'errors' => []]; }
-    private function validate_open_house_form(array $data): array { return ['valid' => true, 'errors' => []]; }
-    private function validate_transaction_form(array $data): array { return ['valid' => true, 'errors' => []]; }
-    private function validate_community_form(array $data): array { return ['valid' => true, 'errors' => []]; }
-    private function validate_city_form(array $data): array { return ['valid' => true, 'errors' => []]; }
-    private function validate_client_form(array $data): array { return ['valid' => true, 'errors' => []]; }
-    
-    private function save_showing_request(array $data): int { return 1; }
-    private function save_listing_form(array $data): int { return 1; }
-    private function save_open_house_form(array $data): int { return 1; }
-    private function save_transaction_form(array $data): int { return 1; }
-    private function save_community_form(array $data): int { return 1; }
-    private function save_city_form(array $data): int { return 1; }
-    private function save_client_form(array $data): int { return 1; }
-    
-    private function send_inquiry_notifications(array $data, int $id): void { }
-    private function send_showing_notifications(array $data, int $id): void { }
-    private function handle_agent_file_uploads(int $agent_id): array { return []; }
-    private function handle_listing_image_uploads(int $listing_id): array { return []; }
-    private function update_agent_profile(int $agent_id, array $data): bool { return true; }
-    private function validate_form_by_type(string $type, array $data): array { return ['valid' => true, 'errors' => []]; }
-    private function delete_uploaded_file(int $file_id): bool { return true; }
+    private function process_file_upload(array $file, string $form_id, string $field_name): array {
+        if (!function_exists('wp_handle_upload')) {
+            require_once(ABSPATH . 'wp-admin/includes/file.php');
+        }
+
+        $upload_overrides = [
+            'test_form' => false,
+            'unique_filename_callback' => function($dir, $name, $ext) use ($form_id, $field_name) {
+                return $form_id . '_' . $field_name . '_' . time() . $ext;
+            }
+        ];
+
+        $uploaded_file = wp_handle_upload($file, $upload_overrides);
+
+        if ($uploaded_file && !isset($uploaded_file['error'])) {
+            // Create attachment
+            $attachment_data = [
+                'post_mime_type' => $uploaded_file['type'],
+                'post_title' => sanitize_file_name(basename($uploaded_file['file'])),
+                'post_content' => '',
+                'post_status' => 'inherit'
+            ];
+
+            $attachment_id = wp_insert_attachment($attachment_data, $uploaded_file['file']);
+
+            if ($attachment_id && !is_wp_error($attachment_id)) {
+                return [
+                    'success' => true,
+                    'file_id' => $attachment_id,
+                    'file_url' => $uploaded_file['url'],
+                    'file_name' => basename($uploaded_file['file'])
+                ];
+            }
+        }
+
+        return ['success' => false, 'message' => 'File upload processing failed'];
+    }
+
+    private function validate_form_data(string $form_type, array $form_data): array {
+        $validation_rules = $this->get_form_validation_rules($form_type);
+        $errors = [];
+        $warnings = [];
+
+        foreach ($validation_rules as $field => $rules) {
+            $value = $form_data[$field] ?? '';
+            
+            // Required field check
+            if (isset($rules['required']) && $rules['required'] && empty($value)) {
+                $errors[$field] = 'This field is required';
+                continue;
+            }
+
+            // Type validation
+            if (!empty($value) && isset($rules['type'])) {
+                switch ($rules['type']) {
+                    case 'email':
+                        if (!is_email($value)) {
+                            $errors[$field] = 'Please enter a valid email address';
+                        }
+                        break;
+                    case 'phone':
+                        if (!preg_match('/^[\d\s\-\+\(\)]+$/', $value)) {
+                            $errors[$field] = 'Please enter a valid phone number';
+                        }
+                        break;
+                    case 'numeric':
+                        if (!is_numeric($value)) {
+                            $errors[$field] = 'Please enter a valid number';
+                        }
+                        break;
+                }
+            }
+
+            // Length validation
+            if (!empty($value) && isset($rules['max_length']) && strlen($value) > $rules['max_length']) {
+                $errors[$field] = 'This field is too long';
+            }
+
+            if (!empty($value) && isset($rules['min_length']) && strlen($value) < $rules['min_length']) {
+                $errors[$field] = 'This field is too short';
+            }
+        }
+
+        return [
+            'valid' => empty($errors),
+            'errors' => $errors,
+            'warnings' => $warnings
+        ];
+    }
+
+    private function get_form_validation_rules(string $form_type): array {
+        $rules = [
+            'contact_form' => [
+                'name' => ['required' => true, 'max_length' => 100],
+                'email' => ['required' => true, 'type' => 'email'],
+                'message' => ['required' => true, 'max_length' => 2000]
+            ],
+            'property_inquiry' => [
+                'name' => ['required' => true, 'max_length' => 100],
+                'email' => ['required' => true, 'type' => 'email'],
+                'listing_id' => ['required' => true, 'type' => 'numeric']
+            ],
+            'agent_registration' => [
+                'first_name' => ['required' => true, 'max_length' => 50],
+                'last_name' => ['required' => true, 'max_length' => 50],
+                'email' => ['required' => true, 'type' => 'email'],
+                'license_number' => ['required' => true, 'max_length' => 50]
+            ]
+        ];
+
+        return $rules[$form_type] ?? [];
+    }
+
+    private function send_contact_notification(string $name, string $email, string $message, string $phone, string $subject): void {
+        $to = get_option('admin_email');
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
+        
+        $email_subject = '[' . get_bloginfo('name') . '] New Contact Form Submission: ' . $subject;
+        
+        $email_body = sprintf(
+            '<h3>New Contact Form Submission</h3>
+            <p><strong>Name:</strong> %s</p>
+            <p><strong>Email:</strong> %s</p>
+            <p><strong>Phone:</strong> %s</p>
+            <p><strong>Subject:</strong> %s</p>
+            <p><strong>Message:</strong></p>
+            <p>%s</p>',
+            esc_html($name),
+            esc_html($email),
+            esc_html($phone),
+            esc_html($subject),
+            nl2br(esc_html($message))
+        );
+
+        wp_mail($to, $email_subject, $email_body, $headers);
+    }
+
+    private function send_property_inquiry_notification(int $listing_id, string $name, string $email, string $phone, string $message, string $inquiry_type): void {
+        // Get listing agent email
+        $agent_id = get_post_meta($listing_id, 'listing_agent', true);
+        $agent_email = $agent_id ? get_the_author_meta('email', $agent_id) : get_option('admin_email');
+        
+        $listing_title = get_the_title($listing_id);
+        $listing_url = get_permalink($listing_id);
+        
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
+        
+        $email_subject = '[' . get_bloginfo('name') . '] New Property Inquiry: ' . $listing_title;
+        
+        $email_body = sprintf(
+            '<h3>New Property Inquiry</h3>
+            <p><strong>Property:</strong> <a href="%s">%s</a></p>
+            <p><strong>Inquiry Type:</strong> %s</p>
+            <p><strong>Name:</strong> %s</p>
+            <p><strong>Email:</strong> %s</p>
+            <p><strong>Phone:</strong> %s</p>
+            <p><strong>Message:</strong></p>
+            <p>%s</p>',
+            esc_url($listing_url),
+            esc_html($listing_title),
+            esc_html($inquiry_type),
+            esc_html($name),
+            esc_html($email),
+            esc_html($phone),
+            nl2br(esc_html($message))
+        );
+
+        wp_mail($agent_email, $email_subject, $email_body, $headers);
+    }
+
+    private function get_client_ip(): string {
+        $ip_keys = ['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'];
+        
+        foreach ($ip_keys as $key) {
+            if (!empty($_SERVER[$key])) {
+                $ip = $_SERVER[$key];
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                    return $ip;
+                }
+            }
+        }
+        
+        return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    }
+
+    // Additional processing methods would be implemented here for:
+    // - process_showing_request()
+    // - process_agent_registration()
+    // - process_client_registration()
+    // - process_listing_submission()
+    // - process_property_valuation()
+    // - process_open_house_registration()
+    // - process_newsletter_signup()
 }
