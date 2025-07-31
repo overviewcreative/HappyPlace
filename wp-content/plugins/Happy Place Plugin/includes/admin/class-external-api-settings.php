@@ -14,12 +14,19 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+use HappyPlace\Core\Config_Manager;
+
 class External_API_Settings {
     
     /**
      * Instance
      */
     private static ?self $instance = null;
+    
+    /**
+     * Config Manager
+     */
+    private Config_Manager $config_manager;
     
     /**
      * Option name for API settings
@@ -40,6 +47,7 @@ class External_API_Settings {
      * Constructor
      */
     private function __construct() {
+        $this->config_manager = Config_Manager::get_instance();
         add_action('admin_menu', [$this, 'add_admin_menu'], 20); // Later priority to ensure parent menu exists
         add_action('admin_init', [$this, 'register_settings']);
         add_action('wp_ajax_hph_test_api_connection', [$this, 'test_api_connection']);
@@ -215,15 +223,7 @@ class External_API_Settings {
      * Get default settings
      */
     private function get_default_settings(): array {
-        return [
-            'google_maps_api_key' => get_option('hph_google_maps_api_key', ''),
-            'google_places_enabled' => true,
-            'walkscore_api_key' => '',
-            'school_api_enabled' => true,
-            'property_tax_enabled' => true,
-            'auto_populate_on_save' => true,
-            'cache_duration' => 24,
-        ];
+        return $this->config_manager->get_group('api');
     }
     
     /**
@@ -251,11 +251,30 @@ class External_API_Settings {
      * Render settings page
      */
     public function render_settings_page(): void {
+        // Test connections when page loads
+        $connection_tests = $this->test_all_connections();
+        
         ?>
         <div class="wrap">
             <h1><?php _e('External API Settings', 'happy-place'); ?></h1>
             <p><?php _e('Configure external API integrations for auto-populating location intelligence data.', 'happy-place'); ?></p>
             
+            <!-- Connection Status Section -->
+            <div class="hph-connection-status">
+                <h2>Connection Status</h2>
+                <?php foreach ($connection_tests as $service => $result): ?>
+                    <div class="connection-test <?php echo $result['success'] ? 'success' : 'error'; ?>">
+                        <span class="dashicons <?php echo $result['success'] ? 'dashicons-yes-alt' : 'dashicons-warning'; ?>"></span>
+                        <strong><?php echo ucfirst(str_replace('_', ' ', $service)); ?>:</strong>
+                        <?php echo esc_html($result['message']); ?>
+                        <?php if (!$result['success'] && isset($result['user_action'])): ?>
+                            <br><em><?php echo esc_html($result['user_action']); ?></em>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            
+            <!-- Settings Form -->
             <form method="post" action="options.php" id="hph-external-api-form">
                 <?php
                 settings_fields('hph_external_api_settings');
@@ -268,6 +287,35 @@ class External_API_Settings {
         </div>
         
         <style>
+        .hph-connection-status {
+            background: #fff;
+            border: 1px solid #ccd0d4;
+            border-radius: 4px;
+            margin: 20px 0;
+            padding: 20px;
+        }
+        
+        .connection-test {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .connection-test.success {
+            background: #d1edff;
+            border: 1px solid #0073aa;
+            color: #0073aa;
+        }
+        
+        .connection-test.error {
+            background: #fbeaea;
+            border: 1px solid #d63638;
+            color: #d63638;
+        }
+        
         .hph-api-section {
             background: #fff;
             border: 1px solid #ccd0d4;
@@ -547,6 +595,112 @@ class External_API_Settings {
                 'message' => 'API Error: Invalid response or API key'
             ];
         }
+    }
+
+    /**
+     * Test all configured API connections
+     */
+    private function test_all_connections(): array {
+        $results = [];
+        
+        // Test Airtable
+        $airtable_settings = get_option('hph_airtable_settings', []);
+        if (!empty($airtable_settings['access_token']) && !empty($airtable_settings['base_id'])) {
+            try {
+                if (class_exists('HappyPlace\\Integrations\\Airtable_Two_Way_Sync')) {
+                    $airtable = new \HappyPlace\Integrations\Airtable_Two_Way_Sync(
+                        $airtable_settings['base_id'],
+                        $airtable_settings['table_name'] ?? 'Listings'
+                    );
+                    $results['airtable'] = $airtable->test_api_connection();
+                } else {
+                    $results['airtable'] = [
+                        'success' => false,
+                        'message' => 'Airtable class not found',
+                        'user_action' => 'Please check plugin installation'
+                    ];
+                }
+            } catch (\Exception $e) {
+                $results['airtable'] = [
+                    'success' => false,
+                    'error' => $e->getMessage()
+                ];
+            }
+        } else {
+            $results['airtable'] = [
+                'success' => false,
+                'message' => 'Not configured',
+                'user_action' => 'Please add Airtable access token and base ID'
+            ];
+        }
+        
+        // Test Google Maps
+        $settings = get_option($this->option_name, []);
+        $google_key = $settings['google_maps_api_key'] ?? '';
+        if (!empty($google_key)) {
+            $results['google_maps'] = $this->test_google_maps_connection($google_key);
+        } else {
+            $results['google_maps'] = [
+                'success' => false,
+                'message' => 'API key not configured',
+                'user_action' => 'Please add Google Maps API key'
+            ];
+        }
+        
+        // Test Walk Score
+        $walkscore_key = $settings['walkscore_api_key'] ?? '';
+        if (!empty($walkscore_key)) {
+            $results['walk_score'] = $this->test_walkscore_api($walkscore_key);
+        } else {
+            $results['walk_score'] = [
+                'success' => false,
+                'message' => 'API key not configured',
+                'user_action' => 'Please add Walk Score API key'
+            ];
+        }
+        
+        return $results;
+    }
+
+    /**
+     * Test Google Maps API connection
+     */
+    private function test_google_maps_connection(string $api_key): array {
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key={$api_key}";
+        
+        $response = wp_remote_get($url, ['timeout' => 10]);
+        
+        if (is_wp_error($response)) {
+            return [
+                'success' => false,
+                'message' => 'Connection failed: ' . $response->get_error_message(),
+                'user_action' => 'Check your internet connection and try again'
+            ];
+        }
+        
+        $code = wp_remote_retrieve_response_code($response);
+        $data = json_decode(wp_remote_retrieve_body($response), true);
+        
+        if ($code === 200 && isset($data['status'])) {
+            if ($data['status'] === 'OK') {
+                return [
+                    'success' => true,
+                    'message' => 'Google Maps API connection successful'
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'API Error: ' . ($data['error_message'] ?? $data['status']),
+                    'user_action' => 'Please check your API key and billing status'
+                ];
+            }
+        }
+        
+        return [
+            'success' => false,
+            'message' => 'Unexpected response from Google Maps API',
+            'user_action' => 'Please verify your API key'
+        ];
     }
 }
 

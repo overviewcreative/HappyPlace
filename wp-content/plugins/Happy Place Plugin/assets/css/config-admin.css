@@ -1,0 +1,138 @@
+/**
+ * Configuration Manager Admin Styles
+ */
+
+.hph-config-manager .env-badge {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.hph-config-manager .env-development { 
+    background: #fff3cd; 
+    color: #856404; 
+    border: 1px solid #ffeaa7;
+}
+
+.hph-config-manager .env-staging { 
+    background: #d1ecf1; 
+    color: #0c5460; 
+    border: 1px solid #bee5eb;
+}
+
+.hph-config-manager .env-production { 
+    background: #d4edda; 
+    color: #155724; 
+    border: 1px solid #c3e6cb;
+}
+
+.hph-config-manager .tab-content {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    border-top: none;
+    min-height: 400px;
+}
+
+.hph-config-manager .form-table th {
+    width: 200px;
+    padding: 15px 10px 15px 0;
+}
+
+.hph-config-manager .form-table td {
+    padding: 15px 0;
+}
+
+.hph-config-manager .notice {
+    margin: 15px 0;
+}
+
+.hph-config-manager details {
+    margin-top: 10px;
+}
+
+.hph-config-manager details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #0073aa;
+}
+
+.hph-config-manager details ul {
+    margin: 10px 0 0 20px;
+    list-style: disc;
+}
+
+.hph-config-manager .nav-tab-wrapper {
+    margin-bottom: 0;
+}
+
+.hph-config-manager .button-secondary {
+    margin-left: 10px;
+}
+
+/* Auto-save indicator */
+.hph-config-manager .auto-save-indicator {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 2px 8px;
+    background: #f0f0f1;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #646970;
+}
+
+.hph-config-manager .auto-save-indicator.saving {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.hph-config-manager .auto-save-indicator.saved {
+    background: #d4edda;
+    color: #155724;
+}
+
+/* Field styling */
+.hph-config-manager input[type="text"],
+.hph-config-manager input[type="number"],
+.hph-config-manager select,
+.hph-config-manager textarea {
+    border-radius: 4px;
+    border: 1px solid #8c8f94;
+}
+
+.hph-config-manager input[type="text"]:focus,
+.hph-config-manager input[type="number"]:focus,
+.hph-config-manager select:focus,
+.hph-config-manager textarea:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+.hph-config-manager .description {
+    font-style: italic;
+    color: #646970;
+    margin-top: 5px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hph-config-manager .form-table th,
+    .hph-config-manager .form-table td {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+    }
+    
+    .hph-config-manager .form-table th {
+        padding-bottom: 5px;
+    }
+    
+    .hph-config-manager .env-badge {
+        display: block;
+        text-align: center;
+        margin-top: 5px;
+        max-width: 120px;
+    }
+}

@@ -19,11 +19,11 @@ class Flyer_Generator_Clean {
     }
 
     private function __construct() {
-        // Register hooks
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
-        add_action('wp_ajax_generate_flyer', [$this, 'ajax_generate_flyer']);
-        add_action('wp_ajax_nopriv_generate_flyer', [$this, 'ajax_generate_flyer']);
-        add_shortcode('listing_flyer_generator', [$this, 'render_flyer_generator']);
+        // Register hooks for both frontend and admin
+        \add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
+        \add_action('admin_enqueue_scripts', [$this, 'enqueue_scripts']);
+        // AJAX actions migrated to centralized system (class-ajax-registry.php)
+        \add_shortcode('listing_flyer_generator', [$this, 'render_flyer_generator']);
         
         // Debug logging
         if (defined('WP_DEBUG') && WP_DEBUG) {
@@ -35,23 +35,63 @@ class Flyer_Generator_Clean {
      * Enqueue scripts and styles
      */
     public function enqueue_scripts(): void {
-        // Always enqueue for testing
-        $assets_url = defined('HPH_ASSETS_URL') ? HPH_ASSETS_URL : plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/';
+        // Check if we're on an admin page that needs the marketing suite
+        $screen = \is_admin() ? \get_current_screen() : null;
+        $is_marketing_page = false;
+        
+        if ($screen) {
+            $is_marketing_page = (
+                strpos($screen->id, 'marketing-suite') !== false ||
+                strpos($screen->id, 'hph-marketing') !== false ||
+                strpos($screen->id, 'happy-place-marketing-suite') !== false ||
+                strpos($screen->id, 'happy-place_page_happy-place-marketing-suite') !== false ||
+                (isset($_GET['page']) && (
+                    strpos($_GET['page'], 'marketing') !== false ||
+                    $_GET['page'] === 'happy-place-marketing-suite'
+                ))
+            );
+        }
+        
+        // Also check for shortcode usage or specific template
+        $is_shortcode_page = false;
+        if (!\is_admin()) {
+            global $post;
+            if ($post && \has_shortcode($post->post_content, 'listing_flyer_generator')) {
+                $is_shortcode_page = true;
+            }
+        }
+        
+        // Enable debugging for development
+        $debug_mode = defined('WP_DEBUG') && WP_DEBUG;
+        
+        // Always enqueue if debugging, on marketing page, or shortcode page
+        if (!$is_marketing_page && !$is_shortcode_page && !$debug_mode) {
+            if ($debug_mode) {
+                error_log('Flyer Generator: Not loading scripts. Screen: ' . ($screen ? $screen->id : 'frontend') . ', Page param: ' . ($_GET['page'] ?? 'none'));
+            }
+            return;
+        }
+        
+        if ($debug_mode) {
+            error_log('Flyer Generator: Loading scripts on screen: ' . ($screen ? $screen->id : 'frontend') . ', Marketing page: ' . ($is_marketing_page ? 'yes' : 'no') . ', Shortcode: ' . ($is_shortcode_page ? 'yes' : 'no'));
+        }
+        
+        $assets_url = defined('HPH_ASSETS_URL') ? HPH_ASSETS_URL : \plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/';
         $version = defined('HPH_VERSION') ? HPH_VERSION : time(); // Use timestamp for cache busting
         
         // CDN libraries
-        wp_enqueue_script('fabric-js', 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js', [], '5.3.0', true);
-        wp_enqueue_script('qrcode-js', 'https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js', [], '1.5.3', true);
-        wp_enqueue_script('jspdf', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', [], '2.5.1', true);
+        \wp_enqueue_script('fabric-js', 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js', [], '5.3.0', true);
+        \wp_enqueue_script('qrcode-js', 'https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js', [], '1.5.3', true);
+        \wp_enqueue_script('jspdf', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', [], '2.5.1', true);
         
         // Main script
-        wp_enqueue_script('flyer-generator', $assets_url . 'js/flyer-generator.js', ['fabric-js', 'qrcode-js', 'jspdf', 'jquery'], $version, true);
+        \wp_enqueue_script('hph-marketing-suite', $assets_url . 'js/marketing-suite-generator.js', ['fabric-js', 'qrcode-js', 'jspdf', 'jquery'], $version, true);
         
         // Localize script
-        wp_localize_script('flyer-generator', 'flyerGenerator', [
-            'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('flyer_generator_nonce'),
-            'pluginUrl' => plugin_dir_url(dirname(dirname(__FILE__))),
+        \wp_localize_script('hph-marketing-suite', 'flyerGenerator', [
+            'ajaxUrl' => \admin_url('admin-ajax.php'),
+            'nonce' => \wp_create_nonce('hph_ajax_nonce'),
+            'pluginUrl' => \plugin_dir_url(dirname(dirname(__FILE__))),
             'assetsUrl' => $assets_url,
             'isDebug' => defined('WP_DEBUG') && WP_DEBUG,
             'strings' => [
@@ -65,8 +105,13 @@ class Flyer_Generator_Clean {
         ]);
         
         // CSS
-        wp_enqueue_style('flyer-generator-styles', $assets_url . 'css/flyer-generator.css', [], $version);
-        wp_enqueue_style('fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], '6.4.0');
+        \wp_enqueue_style('hph-marketing-suite-styles', $assets_url . 'css/marketing-suite-generator.css', [], $version);
+        \wp_enqueue_style('fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], '6.4.0');
+        
+        // Debug logging
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Flyer Generator: Scripts enqueued for screen: ' . ($screen ? $screen->id : 'unknown'));
+        }
         
         if (defined('WP_DEBUG') && WP_DEBUG) {
             error_log('Flyer Generator Clean: Scripts enqueued');
@@ -86,7 +131,7 @@ class Flyer_Generator_Clean {
         try {
             // Very basic validation first
             if (!isset($_POST['action']) || $_POST['action'] !== 'generate_flyer') {
-                wp_send_json_error(['message' => 'Invalid action'], 400);
+                \wp_send_json_error(['message' => 'Invalid action'], 400);
                 return;
             }
 
@@ -97,31 +142,31 @@ class Flyer_Generator_Clean {
                     error_log('Received nonce: ' . ($_POST['nonce'] ?? 'NONE'));
                     error_log('Expected nonce for: flyer_generator_nonce');
                 }
-                wp_send_json_error(['message' => 'Security verification failed'], 403);
+                \wp_send_json_error(['message' => 'Security verification failed'], 403);
                 return;
             }
 
             // Get and validate listing ID
             $listing_id = intval($_POST['listing_id'] ?? 0);
             if (!$listing_id) {
-                wp_send_json_error(['message' => 'No listing ID provided'], 400);
+                \wp_send_json_error(['message' => 'No listing ID provided'], 400);
                 return;
             }
 
             // Check if listing exists
-            $listing = get_post($listing_id);
+            $listing = \get_post($listing_id);
             if (!$listing) {
-                wp_send_json_error(['message' => 'Listing not found'], 404);
+                \wp_send_json_error(['message' => 'Listing not found'], 404);
                 return;
             }
 
             if ($listing->post_type !== 'listing') {
-                wp_send_json_error(['message' => 'Post is not a listing'], 400);
+                \wp_send_json_error(['message' => 'Post is not a listing'], 400);
                 return;
             }
 
             if ($listing->post_status !== 'publish') {
-                wp_send_json_error(['message' => 'Listing is not published'], 400);
+                \wp_send_json_error(['message' => 'Listing is not published'], 400);
                 return;
             }
 
@@ -132,13 +177,13 @@ class Flyer_Generator_Clean {
                 error_log('Flyer Generator Clean: Success - returning data for listing ' . $listing_id);
             }
 
-            wp_send_json_success($data);
+            \wp_send_json_success($data);
 
         } catch (Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log('Flyer Generator Clean: Exception - ' . $e->getMessage());
             }
-            wp_send_json_error(['message' => 'Server error: ' . $e->getMessage()], 500);
+            \wp_send_json_error(['message' => 'Server error: ' . $e->getMessage()], 500);
         }
     }
 
@@ -146,7 +191,7 @@ class Flyer_Generator_Clean {
      * Get basic listing data without complex bridge functions
      */
     private function get_basic_listing_data(int $listing_id): array {
-        $listing = get_post($listing_id);
+        $listing = \get_post($listing_id);
         
         // Get basic ACF fields
         $price = get_field('price', $listing_id) ?: get_field('listing_price', $listing_id);

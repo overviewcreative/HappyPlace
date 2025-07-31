@@ -34,6 +34,16 @@ class Plugin_Manager {
     private bool $loaded = false;
     
     /**
+     * @var \HappyPlace\Core\Environment_Config Environment configuration
+     */
+    private ?\HappyPlace\Core\Environment_Config $env_config = null;
+    
+    /**
+     * @var \HappyPlace\Core\Config_Manager Configuration manager
+     */
+    private ?\HappyPlace\Core\Config_Manager $config_manager = null;
+    
+    /**
      * Get singleton instance
      */
     public static function get_instance(): self {
@@ -59,6 +69,39 @@ class Plugin_Manager {
     public function load_plugin(): void {
         // Load translations
         $this->load_textdomain();
+        
+        // Load configuration classes first
+        $env_config_file = HPH_INCLUDES_PATH . 'core/class-environment-config.php';
+        $config_manager_file = HPH_INCLUDES_PATH . 'core/class-config-manager.php';
+        
+        if (file_exists($env_config_file)) {
+            require_once $env_config_file;
+            error_log('HPH: Environment Config file loaded successfully');
+        } else {
+            error_log('HPH: Environment Config file not found: ' . $env_config_file);
+        }
+        
+        if (file_exists($config_manager_file)) {
+            require_once $config_manager_file;
+            error_log('HPH: Config Manager file loaded successfully');
+        } else {
+            error_log('HPH: Config Manager file not found: ' . $config_manager_file);
+        }
+        
+        // Initialize configuration system
+        try {
+            $this->env_config = \HappyPlace\Core\Environment_Config::get_instance();
+            error_log('HPH: Environment Config initialized successfully');
+        } catch (\Exception $e) {
+            error_log('HPH: Error initializing Environment Config: ' . $e->getMessage());
+        }
+        
+        try {
+            $this->config_manager = \HappyPlace\Core\Config_Manager::get_instance();
+            error_log('HPH: Config Manager initialized successfully');
+        } catch (\Exception $e) {
+            error_log('HPH: Error initializing Config Manager: ' . $e->getMessage());
+        }
         
         // Load core components
         $this->load_core_components();
@@ -128,182 +171,89 @@ class Plugin_Manager {
      */
     private function load_core_components(): void {
         // Post Types (uses HappyPlace namespace)
-        if (file_exists(HPH_INCLUDES_PATH . 'core/class-post-types.php')) {
-            require_once HPH_INCLUDES_PATH . 'core/class-post-types.php';
-            if (class_exists('HappyPlace\\Core\\Post_Types')) {
-                // This class uses initialize() method, not singleton
-                \HappyPlace\Core\Post_Types::initialize();
-                $this->components['post_types'] = 'initialized';
-            }
+        require_once HPH_INCLUDES_PATH . 'core/class-post-types.php';
+        if (class_exists('HappyPlace\\Core\\Post_Types')) {
+            \HappyPlace\Core\Post_Types::initialize();
+            $this->components['post_types'] = 'initialized';
         }
         
         // Taxonomies (uses HappyPlace namespace)
-        if (file_exists(HPH_INCLUDES_PATH . 'core/class-taxonomies.php')) {
-            require_once HPH_INCLUDES_PATH . 'core/class-taxonomies.php';
-            if (class_exists('HappyPlace\\Core\\Taxonomies')) {
-                $this->components['taxonomies'] = \HappyPlace\Core\Taxonomies::get_instance();
-            }
+        require_once HPH_INCLUDES_PATH . 'core/class-taxonomies.php';
+        if (class_exists('HappyPlace\\Core\\Taxonomies')) {
+            $this->components['taxonomies'] = \HappyPlace\Core\Taxonomies::get_instance();
         }
         
         // Assets Manager (uses HappyPlace namespace)
-        if (file_exists(HPH_INCLUDES_PATH . 'core/class-assets-manager.php')) {
-            require_once HPH_INCLUDES_PATH . 'core/class-assets-manager.php';
-            if (class_exists('HappyPlace\\Core\\Assets_Manager')) {
-                if (method_exists('HappyPlace\\Core\\Assets_Manager', 'get_instance')) {
-                    $this->components['assets'] = \HappyPlace\Core\Assets_Manager::get_instance();
-                } elseif (method_exists('HappyPlace\\Core\\Assets_Manager', 'instance')) {
-                    $this->components['assets'] = \HappyPlace\Core\Assets_Manager::instance();
-                }
-            }
+        require_once HPH_INCLUDES_PATH . 'core/class-assets-manager.php';
+        if (class_exists('HappyPlace\\Core\\Assets_Manager')) {
+            $this->components['assets'] = \HappyPlace\Core\Assets_Manager::get_instance();
         }
         
-        // Database Manager (check if exists)
-        if (file_exists(HPH_INCLUDES_PATH . 'core/class-database.php')) {
-            require_once HPH_INCLUDES_PATH . 'core/class-database.php';
-            if (class_exists('HappyPlace\\Core\\Database')) {
-                $this->components['database'] = \HappyPlace\Core\Database::get_instance();
-            }
-        }
+        // Load modern AJAX system early
+        require_once HPH_INCLUDES_PATH . 'api/ajax/class-ajax-coordinator.php';
+        $this->components['ajax'] = \HappyPlace\Api\Ajax\Ajax_Coordinator::init();
         
-        // Template Engine (uses HappyPlace namespace)
-        if (file_exists(HPH_INCLUDES_PATH . 'core/class-template-engine.php')) {
-            require_once HPH_INCLUDES_PATH . 'core/class-template-engine.php';
-            if (class_exists('HappyPlace\\Core\\Template_Engine')) {
-                if (method_exists('HappyPlace\\Core\\Template_Engine', 'get_instance')) {
-                    $this->components['template_engine'] = \HappyPlace\Core\Template_Engine::get_instance();
-                } elseif (method_exists('HappyPlace\\Core\\Template_Engine', 'instance')) {
-                    $this->components['template_engine'] = \HappyPlace\Core\Template_Engine::instance();
-                }
-            }
-        }
+        // Fields Manager
+        require_once HPH_INCLUDES_PATH . 'fields/class-enhanced-field-manager.php';
+        require_once HPH_INCLUDES_PATH . 'fields/class-listing-calculator.php';
+        
+        error_log('HPH: Core components loaded');
     }
     
     /**
      * Load admin components
      */
     private function load_admin_components(): void {
-        // Admin Menu (uses HPH namespace)
-        if (file_exists(HPH_INCLUDES_PATH . 'admin/class-admin-menu.php')) {
-            require_once HPH_INCLUDES_PATH . 'admin/class-admin-menu.php';
-            if (class_exists('HPH\\Admin\\Admin_Menu')) {
-                $this->components['admin_menu'] = \HPH\Admin\Admin_Menu::get_instance();
-            }
+        // Config Admin
+        require_once HPH_INCLUDES_PATH . 'admin/class-config-admin.php';
+        if (class_exists('HappyPlace\\Admin\\Config_Admin')) {
+            $this->components['config_admin'] = \HappyPlace\Admin\Config_Admin::get_instance();
         }
         
-        // Settings Page (uses HPH namespace)
-        if (file_exists(HPH_INCLUDES_PATH . 'admin/class-settings-page.php')) {
-            require_once HPH_INCLUDES_PATH . 'admin/class-settings-page.php';
-            if (class_exists('HPH\\Admin\\Settings_Page')) {
-                $this->components['settings'] = \HPH\Admin\Settings_Page::get_instance();
-            }
+        // Modern Admin Menu (uses HappyPlace namespace)
+        require_once HPH_INCLUDES_PATH . 'admin/class-admin-menu-modern.php';
+        if (class_exists('HappyPlace\\Admin\\Admin_Menu')) {
+            $this->components['admin_menu'] = \HappyPlace\Admin\Admin_Menu::get_instance();
         }
         
         // User Roles Manager (uses HappyPlace namespace)
-        if (file_exists(HPH_INCLUDES_PATH . 'users/class-user-roles-manager.php')) {
-            require_once HPH_INCLUDES_PATH . 'users/class-user-roles-manager.php';
-            if (class_exists('HappyPlace\\Users\\User_Roles_Manager')) {
-                $this->components['user_roles'] = \HappyPlace\Users\User_Roles_Manager::get_instance();
-            }
+        require_once HPH_INCLUDES_PATH . 'users/class-user-roles-manager.php';
+        if (class_exists('HappyPlace\\Users\\User_Roles_Manager')) {
+            $this->components['user_roles'] = \HappyPlace\Users\User_Roles_Manager::get_instance();
         }
         
-        // Dashboard Manager (uses HappyPlace namespace)
-        if (file_exists(HPH_INCLUDES_PATH . 'users/class-user-dashboard-manager.php')) {
-            require_once HPH_INCLUDES_PATH . 'users/class-user-dashboard-manager.php';
-            if (class_exists('HappyPlace\\Users\\User_Dashboard_Manager')) {
-                if (method_exists('HappyPlace\\Users\\User_Dashboard_Manager', 'get_instance')) {
-                    $this->components['dashboard'] = \HappyPlace\Users\User_Dashboard_Manager::get_instance();
-                } elseif (method_exists('HappyPlace\\Users\\User_Dashboard_Manager', 'instance')) {
-                    $this->components['dashboard'] = \HappyPlace\Users\User_Dashboard_Manager::instance();
-                }
-            }
-        }
+        error_log('HPH: Admin components loaded');
     }
     
     /**
      * Load frontend components
      */
     private function load_frontend_components(): void {
-        // Template Functions
-        if (file_exists(HPH_INCLUDES_PATH . 'template-functions.php')) {
-            require_once HPH_INCLUDES_PATH . 'template-functions.php';
-        }
-        
-        // Shortcodes
-        if (file_exists(HPH_INCLUDES_PATH . 'shortcodes.php')) {
-            require_once HPH_INCLUDES_PATH . 'shortcodes.php';
-        }
-        
-        // Dashboard AJAX Handler (critical for frontend dashboard)
-        if (file_exists(HPH_INCLUDES_PATH . 'dashboard/class-dashboard-ajax-handler.php')) {
-            require_once HPH_INCLUDES_PATH . 'dashboard/class-dashboard-ajax-handler.php';
-            if (class_exists('HappyPlace\\Dashboard\\HPH_Dashboard_Ajax_Handler')) {
-                if (method_exists('HappyPlace\\Dashboard\\HPH_Dashboard_Ajax_Handler', 'instance')) {
-                    $this->components['dashboard_ajax'] = \HappyPlace\Dashboard\HPH_Dashboard_Ajax_Handler::instance();
-                } elseif (method_exists('HappyPlace\\Dashboard\\HPH_Dashboard_Ajax_Handler', 'get_instance')) {
-                    $this->components['dashboard_ajax'] = \HappyPlace\Dashboard\HPH_Dashboard_Ajax_Handler::get_instance();
-                }
-            }
-        }
-        
-        // Load AJAX handlers that work for both admin and frontend
-        if (file_exists(HPH_INCLUDES_PATH . 'api/class-ajax-handler.php')) {
-            require_once HPH_INCLUDES_PATH . 'api/class-ajax-handler.php';
-        }
-        
-        // Advanced Form AJAX Handler
-        if (file_exists(HPH_INCLUDES_PATH . 'ajax/class-advanced-form-ajax.php')) {
-            require_once HPH_INCLUDES_PATH . 'ajax/class-advanced-form-ajax.php';
-        }
-        
-        // Flyer Generator (Graphics Component) - Using Clean Version for Testing
-        if (file_exists(HPH_INCLUDES_PATH . 'graphics/class-flyer-generator-clean.php')) {
-            require_once HPH_INCLUDES_PATH . 'graphics/class-flyer-generator-clean.php';
-            if (class_exists('HappyPlace\\Graphics\\Flyer_Generator_Clean')) {
-                $this->components['flyer_generator'] = \HappyPlace\Graphics\Flyer_Generator_Clean::get_instance();
-            }
-        } elseif (file_exists(HPH_INCLUDES_PATH . 'graphics/class-flyer-generator.php')) {
-            require_once HPH_INCLUDES_PATH . 'graphics/class-flyer-generator.php';
-            if (class_exists('HappyPlace\\Graphics\\Flyer_Generator')) {
-                $this->components['flyer_generator'] = \HappyPlace\Graphics\Flyer_Generator::get_instance();
-            }
-        }
-        
-        // Legacy Flyer Generator AJAX Handler (if exists)
-        if (file_exists(HPH_INCLUDES_PATH . 'ajax/flyer-generator.php')) {
-            require_once HPH_INCLUDES_PATH . 'ajax/flyer-generator.php';
+        // Flyer Generator (Graphics Component) - Using Clean Version
+        require_once HPH_INCLUDES_PATH . 'graphics/class-flyer-generator-clean.php';
+        if (class_exists('HappyPlace\\Graphics\\Flyer_Generator_Clean')) {
+            $this->components['flyer_generator'] = \HappyPlace\Graphics\Flyer_Generator_Clean::get_instance();
         }
         
         // Utility classes
-        if (file_exists(HPH_INCLUDES_PATH . 'utilities/class-data-validator.php')) {
-            require_once HPH_INCLUDES_PATH . 'utilities/class-data-validator.php';
-        }
-        
         if (file_exists(HPH_INCLUDES_PATH . 'utilities/class-image-processor.php')) {
             require_once HPH_INCLUDES_PATH . 'utilities/class-image-processor.php';
             if (class_exists('HappyPlace\\Utilities\\Image_Processor')) {
                 $this->components['image_processor'] = new \HappyPlace\Utilities\Image_Processor();
             }
         }
+        
+        error_log('HPH: Frontend components loaded');
     }
     
     /**
      * Load integrations
      */
     private function load_integrations(): void {
-        // Load Airtable Two-Way Sync
-        if (file_exists(HPH_INCLUDES_PATH . 'integrations/class-airtable-two-way-sync.php')) {
-            require_once HPH_INCLUDES_PATH . 'integrations/class-airtable-two-way-sync.php';
-            if (class_exists('HappyPlace\\Integrations\\Airtable_Two_Way_Sync')) {
-                // Note: This class may not use singleton pattern
-                // $this->components['airtable_sync'] = \HappyPlace\Integrations\Airtable_Two_Way_Sync::get_instance();
-            }
-        }
+        // Enhanced Airtable Sync System - Already handled by AJAX Integration handler
+        require_once HPH_INCLUDES_PATH . 'integrations/init-enhanced-sync.php';
         
-        // Load other integration classes as they're created
-        // Base Integration class for future use
-        if (file_exists(HPH_INCLUDES_PATH . 'integrations/class-base-integration.php')) {
-            require_once HPH_INCLUDES_PATH . 'integrations/class-base-integration.php';
-        }
+        error_log('HPH: Integration systems loaded');
     }
     
     /**
@@ -317,6 +267,15 @@ class Plugin_Manager {
                 $this->components['acf_manager'] = \HappyPlace\Fields\ACF_Manager::get_instance();
             }
         }
+        
+        // Development tools only in debug mode
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            if (file_exists(HPH_INCLUDES_PATH . 'fields/phase1-status-page.php')) {
+                require_once HPH_INCLUDES_PATH . 'fields/phase1-status-page.php';
+            }
+        }
+        
+        error_log('HPH: ACF enhancements loaded');
     }
     
     /**
@@ -405,5 +364,67 @@ class Plugin_Manager {
      */
     public function get_plugin_url(string $path = ''): string {
         return HPH_URL . ltrim($path, '/');
+    }
+
+    /**
+     * Log integration error for admin display and debugging
+     */
+    public function log_integration_error(string $integration, string $error, array $context = []): void {
+        $log_entry = [
+            'timestamp' => current_time('mysql'),
+            'integration' => $integration,
+            'error' => $error,
+            'context' => $context,
+            'user_id' => get_current_user_id()
+        ];
+        
+        // Log to WordPress
+        error_log("HPH Integration Error [{$integration}]: {$error}");
+        
+        // Store for admin display
+        $errors = get_option('hph_integration_errors', []);
+        $errors[] = $log_entry;
+        
+        // Keep only last 50 errors
+        if (count($errors) > 50) {
+            $errors = array_slice($errors, -50);
+        }
+        
+        update_option('hph_integration_errors', $errors);
+    }
+
+    /**
+     * Get recent integration errors for admin display
+     */
+    public function get_integration_errors(int $limit = 10): array {
+        $errors = get_option('hph_integration_errors', []);
+        return array_slice($errors, -$limit);
+    }
+
+    /**
+     * Clear integration error log
+     */
+    public function clear_integration_errors(): void {
+        delete_option('hph_integration_errors');
+    }
+    
+    /**
+     * Get plugin status for diagnostics
+     */
+    public function get_status(): array {
+        return [
+            'loaded' => $this->loaded,
+            'components_count' => count($this->components),
+            'components' => array_keys($this->components),
+            'version' => $this->get_version(),
+            'last_rebuild' => get_option('hph_last_rebuild', 'Never'),
+            'debug_mode' => defined('WP_DEBUG') && WP_DEBUG,
+            'constants' => [
+                'HPH_VERSION' => defined('HPH_VERSION') ? HPH_VERSION : 'Not defined',
+                'HPH_PATH' => defined('HPH_PATH') ? HPH_PATH : 'Not defined',
+                'HPH_URL' => defined('HPH_URL') ? HPH_URL : 'Not defined',
+                'HPH_ASSETS_URL' => defined('HPH_ASSETS_URL') ? HPH_ASSETS_URL : 'Not defined'
+            ]
+        ];
     }
 }

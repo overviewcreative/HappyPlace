@@ -71,21 +71,21 @@ class Performance_Optimization_Manager
     private function init_hooks(): void
     {
         // Performance optimization hooks
-        add_action('wp_enqueue_scripts', [$this, 'optimize_asset_loading']);
-        add_action('wp_head', [$this, 'add_performance_headers'], 1);
-        add_filter('wp_resource_hints', [$this, 'add_resource_hints'], 10, 2);
+        \add_action('wp_enqueue_scripts', [$this, 'optimize_asset_loading']);
+        \add_action('wp_head', [$this, 'add_performance_headers'], 1);
+        \add_filter('wp_resource_hints', [$this, 'add_resource_hints'], 10, 2);
         
         // Lazy loading hooks
-        add_filter('wp_get_attachment_image_attributes', [$this, 'add_lazy_loading'], 10, 3);
-        add_filter('the_content', [$this, 'add_content_lazy_loading']);
+        \add_filter('wp_get_attachment_image_attributes', [$this, 'add_lazy_loading'], 10, 3);
+        \add_filter('the_content', [$this, 'add_content_lazy_loading']);
         
         // Cache management hooks
-        add_action('hph_clear_performance_cache', [$this, 'clear_all_caches']);
-        add_action('wp_ajax_hph_performance_report', [$this, 'get_performance_report']);
-        add_action('wp_ajax_hph_clear_cache', [$this, 'ajax_clear_cache']);
+        \add_action('hph_clear_performance_cache', [$this, 'clear_all_caches']);
+        \add_action('wp_ajax_hph_performance_report', [$this, 'get_performance_report']);
+        \add_action('wp_ajax_hph_clear_cache', [$this, 'ajax_clear_cache']);
         
         // Database optimization
-        add_action('hph_optimize_database', [$this, 'optimize_database']);
+        \add_action('hph_optimize_database', [$this, 'optimize_database']);
         
         // CDN integration
         add_filter('wp_get_attachment_url', [$this, 'maybe_use_cdn_url']);

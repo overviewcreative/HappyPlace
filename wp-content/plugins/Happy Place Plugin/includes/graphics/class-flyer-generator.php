@@ -43,8 +43,7 @@ class Flyer_Generator {
         }
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
-        add_action('wp_ajax_generate_flyer', [$this, 'ajax_generate_flyer']);
-        add_action('wp_ajax_nopriv_generate_flyer', [$this, 'ajax_generate_flyer']);
+        // AJAX actions migrated to centralized system (class-ajax-registry.php)
         add_shortcode('listing_flyer_generator', [$this, 'render_flyer_generator']);
         
         // Add admin notice for debugging (only in debug mode)
@@ -109,17 +108,17 @@ class Flyer_Generator {
 
         // Enqueue custom flyer generator script
         wp_enqueue_script(
-            'flyer-generator',
-            $assets_url . 'js/flyer-generator.js',
-            ['fabric-js', 'qrcode-js', 'jspdf', 'jquery'],
+            'hph-marketing-suite',
+            $assets_url . 'js/marketing-suite-generator.js',
+            ['jquery', 'fabric'],
             $version,
             true
         );
 
         // Enhanced localized data
-        wp_localize_script('flyer-generator', 'flyerGenerator', [
+        wp_localize_script('hph-marketing-suite', 'flyerGenerator', [
             'ajaxUrl'     => admin_url('admin-ajax.php'),
-            'nonce'       => wp_create_nonce('flyer_generator_nonce'),
+            'nonce'       => wp_create_nonce('hph_ajax_nonce'),
             'pluginUrl'   => $plugin_url,
             'assetsUrl'   => $assets_url,
             'templateUrl' => get_template_directory_uri(),
@@ -134,10 +133,10 @@ class Flyer_Generator {
             ]
         ]);
 
-        // Enqueue flyer-specific styles
+        // Enqueue marketing suite styles
         wp_enqueue_style(
-            'flyer-generator-styles',
-            $assets_url . 'css/flyer-generator.css',
+            'hph-marketing-suite-styles',
+            $assets_url . 'css/marketing-suite-generator.css',
             [],
             $version
         );
@@ -195,7 +194,7 @@ class Flyer_Generator {
     public function ajax_generate_flyer(): void {
         try {
             // Verify nonce
-            if (!check_ajax_referer('flyer_generator_nonce', 'nonce', false)) {
+            if (!check_ajax_referer('hph_ajax_nonce', 'nonce', false)) {
                 wp_send_json_error([
                     'message' => __('Security verification failed. Please refresh the page and try again.', 'happy-place'),
                     'code' => 'NONCE_FAILED'
@@ -585,8 +584,8 @@ class Flyer_Generator {
             $version = defined('HPH_VERSION') ? HPH_VERSION : 'NOT DEFINED';
             
             // Check if required files exist
-            $js_file = $assets_url . 'js/flyer-generator.js';
-            $css_file = $assets_url . 'css/flyer-generator.css';
+            $js_file = $assets_url . 'js/marketing-suite-generator.js';
+            $css_file = $assets_url . 'css/marketing-suite-generator.css';
             $template_file = plugin_dir_path(dirname(dirname(__FILE__))) . 'templates/flyer-generator.php';
             
             echo '<div class="notice notice-info is-dismissible">';

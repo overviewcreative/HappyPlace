@@ -1,11 +1,12 @@
 <?php
 
-namespace HPH\Admin;
-
 /**
- * Integrations Manager
- * Handles all third-party integration settings and configurations
+ * Integrations Manager for Happy Place Plugin
+ * 
+ * @package Happy_Place_Plugin
  */
+
+namespace HappyPlace\Admin;
 class Integrations_Manager
 {
     private static ?self $instance = null;

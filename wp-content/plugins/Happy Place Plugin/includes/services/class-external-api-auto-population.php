@@ -41,6 +41,26 @@ class External_API_Auto_Population {
     private int $cache_duration = 86400;
     
     /**
+     * Circuit breaker settings for API failure management
+     */
+    private array $circuit_breaker_config = [
+        'failure_threshold' => 5,      // Number of failures before opening circuit
+        'recovery_timeout' => 300,     // 5 minutes before attempting recovery
+        'rate_limit_window' => 60,     // 1 minute rate limiting window
+        'max_requests_per_window' => 100 // Max requests per window
+    ];
+    
+    /**
+     * Retry configuration for API calls
+     */
+    private array $retry_config = [
+        'max_attempts' => 3,
+        'base_delay' => 1000,          // 1 second base delay (milliseconds)
+        'max_delay' => 8000,           // 8 seconds max delay
+        'backoff_multiplier' => 2      // Exponential backoff multiplier
+    ];
+    
+    /**
      * Get instance
      */
     public static function get_instance(): self {
@@ -68,6 +88,191 @@ class External_API_Auto_Population {
         add_action('wp_ajax_hph_refresh_walkability_data', [$this, 'ajax_refresh_walkability_data']);
         add_action('wp_ajax_hph_refresh_nearby_amenities', [$this, 'ajax_refresh_nearby_amenities']);
         add_action('wp_ajax_hph_geocode_listing', [$this, 'ajax_geocode_listing']);
+    }
+    
+    /**
+     * Circuit breaker for API reliability
+     */
+    private function is_circuit_open(string $api_name): bool {
+        $circuit_data = get_option("hph_circuit_breaker_{$api_name}", [
+            'failure_count' => 0,
+            'last_failure_time' => 0,
+            'state' => 'closed' // closed, open, half-open
+        ]);
+        
+        // If circuit is open, check if recovery timeout has passed
+        if ($circuit_data['state'] === 'open') {
+            $time_since_failure = time() - $circuit_data['last_failure_time'];
+            if ($time_since_failure >= $this->circuit_breaker_config['recovery_timeout']) {
+                // Move to half-open state for testing
+                $circuit_data['state'] = 'half-open';
+                \update_option("hph_circuit_breaker_{$api_name}", $circuit_data);
+                return false; // Allow one test request
+            }
+            return true; // Circuit is still open
+        }
+        
+        return false; // Circuit is closed or half-open
+    }
+    
+    /**
+     * Record API success for circuit breaker
+     */
+    private function record_api_success(string $api_name): void {
+        $circuit_data = get_option("hph_circuit_breaker_{$api_name}", [
+            'failure_count' => 0,
+            'last_failure_time' => 0,
+            'state' => 'closed'
+        ]);
+        
+        // Reset circuit breaker on success
+        \update_option("hph_circuit_breaker_{$api_name}", [
+            'failure_count' => 0,
+            'last_failure_time' => 0,
+            'state' => 'closed'
+        ]);
+        
+        // Log success for debugging
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("HPH: API success recorded for {$api_name}, circuit breaker reset");
+        }
+    }
+    
+    /**
+     * Record API failure for circuit breaker
+     */
+    private function record_api_failure(string $api_name, string $error_message): void {
+        $circuit_data = get_option("hph_circuit_breaker_{$api_name}", [
+            'failure_count' => 0,
+            'last_failure_time' => 0,
+            'state' => 'closed'
+        ]);
+        
+        $circuit_data['failure_count']++;
+        $circuit_data['last_failure_time'] = time();
+        
+        // Open circuit if failure threshold exceeded
+        if ($circuit_data['failure_count'] >= $this->circuit_breaker_config['failure_threshold']) {
+            $circuit_data['state'] = 'open';
+            
+            // Log circuit breaker opening
+            error_log("HPH: Circuit breaker opened for {$api_name} after {$circuit_data['failure_count']} failures. Error: {$error_message}");
+            
+            // Log to Plugin Manager for admin visibility
+            if (class_exists('\HappyPlace\Core\Plugin_Manager')) {
+                $plugin_manager = \HappyPlace\Core\Plugin_Manager::get_instance();
+                $plugin_manager->log_integration_error($api_name, "Circuit breaker opened after {$circuit_data['failure_count']} failures: {$error_message}");
+            }
+        }
+        
+        update_option("hph_circuit_breaker_{$api_name}", $circuit_data);
+    }
+    
+    /**
+     * Check rate limiting for API
+     */
+    private function is_rate_limited(string $api_name): bool {
+        $rate_limit_key = "hph_rate_limit_{$api_name}";
+        $current_window = floor(time() / $this->circuit_breaker_config['rate_limit_window']);
+        
+        $rate_data = get_transient($rate_limit_key);
+        if ($rate_data === false) {
+            $rate_data = ['window' => $current_window, 'count' => 0];
+        }
+        
+        // Reset counter if we're in a new window
+        if ($rate_data['window'] !== $current_window) {
+            $rate_data = ['window' => $current_window, 'count' => 0];
+        }
+        
+        // Check if we've exceeded the rate limit
+        if ($rate_data['count'] >= $this->circuit_breaker_config['max_requests_per_window']) {
+            return true;
+        }
+        
+        // Increment counter and save
+        $rate_data['count']++;
+        set_transient($rate_limit_key, $rate_data, $this->circuit_breaker_config['rate_limit_window']);
+        
+        return false;
+    }
+    
+    /**
+     * Make API request with circuit breaker and retry logic
+     */
+    private function make_api_request_with_retries(string $api_name, string $url, array $args = []): ?array {
+        // Check circuit breaker
+        if ($this->is_circuit_open($api_name)) {
+            error_log("HPH: API request blocked by circuit breaker for {$api_name}");
+            return null;
+        }
+        
+        // Check rate limiting
+        if ($this->is_rate_limited($api_name)) {
+            error_log("HPH: API request blocked by rate limiting for {$api_name}");
+            return null;
+        }
+        
+        $default_args = [
+            'timeout' => 15,
+            'sslverify' => true,
+            'headers' => [
+                'User-Agent' => 'Happy Place Real Estate Plugin v1.0'
+            ]
+        ];
+        
+        $args = wp_parse_args($args, $default_args);
+        $last_error = null;
+        
+        // Retry logic with exponential backoff
+        for ($attempt = 1; $attempt <= $this->retry_config['max_attempts']; $attempt++) {
+            $response = wp_remote_get($url, $args);
+            
+            if (!is_wp_error($response)) {
+                $response_code = wp_remote_retrieve_response_code($response);
+                $body = wp_remote_retrieve_body($response);
+                
+                // Check for successful response
+                if ($response_code >= 200 && $response_code < 300) {
+                    $data = json_decode($body, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $this->record_api_success($api_name);
+                        return $data;
+                    }
+                }
+                
+                // Handle specific error codes
+                if ($response_code === 429) { // Too Many Requests
+                    $last_error = "Rate limited by {$api_name} API";
+                } elseif ($response_code >= 500) { // Server error - retry
+                    $last_error = "Server error from {$api_name} API (HTTP {$response_code})";
+                } else { // Client error - don't retry
+                    $last_error = "Client error from {$api_name} API (HTTP {$response_code})";
+                    break;
+                }
+            } else {
+                $last_error = $response->get_error_message();
+            }
+            
+            // Wait before retry (except on last attempt)
+            if ($attempt < $this->retry_config['max_attempts']) {
+                $delay = min(
+                    $this->retry_config['base_delay'] * pow($this->retry_config['backoff_multiplier'], $attempt - 1),
+                    $this->retry_config['max_delay']
+                );
+                usleep($delay * 1000); // Convert to microseconds
+                
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log("HPH: API retry attempt {$attempt} for {$api_name} after {$delay}ms delay. Error: {$last_error}");
+                }
+            }
+        }
+        
+        // All attempts failed - record failure
+        $final_error = "All {$this->retry_config['max_attempts']} attempts failed for {$api_name}. Last error: {$last_error}";
+        $this->record_api_failure($api_name, $final_error);
+        
+        return null;
     }
     
     /**
@@ -190,7 +395,7 @@ class External_API_Auto_Population {
     }
     
     /**
-     * Geocode an address using Google Maps API
+     * Geocode an address using Google Maps API with circuit breaker protection
      */
     private function geocode_address($address): ?array {
         if (empty($this->google_api_key) || empty($address)) {
@@ -202,19 +407,16 @@ class External_API_Auto_Population {
             'key' => $this->google_api_key
         ]);
         
-        $response = wp_remote_get($url, ['timeout' => 10]);
+        $data = $this->make_api_request_with_retries('google_geocoding', $url);
         
-        if (is_wp_error($response)) {
-            error_log('HPH Geocoding Error: ' . $response->get_error_message());
+        if (!$data) {
             return null;
         }
-        
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body, true);
         
         if (!isset($data['status']) || $data['status'] !== 'OK') {
             $error_message = isset($data['error_message']) ? $data['error_message'] : 'Unknown geocoding error';
             error_log("HPH Geocoding failed for address '{$address}': {$error_message}");
+            $this->record_api_failure('google_geocoding', $error_message);
             return null;
         }
         
@@ -388,20 +590,20 @@ class External_API_Auto_Population {
     }
     
     /**
-     * Get Walk Score data from API
+     * Get Walk Score data from API with circuit breaker protection
      */
     private function get_walkscore_data($lat, $lng): array {
         $url = "https://api.walkscore.com/score?format=json&lat={$lat}&lon={$lng}&wsapikey={$this->walkscore_api_key}";
         
-        $response = wp_remote_get($url, ['timeout' => 10]);
+        $data = $this->make_api_request_with_retries('walkscore', $url);
         
-        if (is_wp_error($response)) {
+        if (!$data) {
             return [];
         }
         
-        $data = json_decode(wp_remote_retrieve_body($response), true);
-        
         if (!isset($data['walkscore'])) {
+            $error_message = isset($data['error']) ? $data['error'] : 'Walk Score API error';
+            $this->record_api_failure('walkscore', $error_message);
             return [];
         }
         
@@ -590,14 +792,12 @@ class External_API_Auto_Population {
     }
     
     /**
-     * Find nearby places using Google Places API
+     * Find nearby places using Google Places API with circuit breaker protection
      */
     private function find_nearby_places($lat, $lng, $type, $radius = 1600, $keyword = '', $limit = 5): array {
         if (empty($this->google_api_key)) {
             return [];
         }
-        
-        $url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
         
         $params = [
             'location' => "{$lat},{$lng}",
@@ -610,17 +810,17 @@ class External_API_Auto_Population {
             $params['keyword'] = $keyword;
         }
         
-        $url .= http_build_query($params);
+        $url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?' . http_build_query($params);
         
-        $response = wp_remote_get($url, ['timeout' => 15]);
+        $data = $this->make_api_request_with_retries('google_places', $url);
         
-        if (is_wp_error($response)) {
+        if (!$data) {
             return [];
         }
         
-        $data = json_decode(wp_remote_retrieve_body($response), true);
-        
         if (!isset($data['results']) || $data['status'] !== 'OK') {
+            $error_message = isset($data['error_message']) ? $data['error_message'] : 'Places API error';
+            $this->record_api_failure('google_places', $error_message);
             return [];
         }
         
@@ -808,6 +1008,113 @@ class External_API_Auto_Population {
         } else {
             wp_send_json_error('Failed to geocode address. Please check that the address fields are filled out correctly.');
         }
+    }
+    
+    /**
+     * Get circuit breaker status for all APIs
+     */
+    public function get_circuit_breaker_status(): array {
+        $apis = ['google_geocoding', 'google_places', 'walkscore'];
+        $status = [];
+        
+        foreach ($apis as $api_name) {
+            $circuit_data = get_option("hph_circuit_breaker_{$api_name}", [
+                'failure_count' => 0,
+                'last_failure_time' => 0,
+                'state' => 'closed'
+            ]);
+            
+            $status[$api_name] = [
+                'state' => $circuit_data['state'],
+                'failure_count' => $circuit_data['failure_count'],
+                'last_failure_time' => $circuit_data['last_failure_time'],
+                'last_failure_ago' => $circuit_data['last_failure_time'] ? 
+                    human_time_diff($circuit_data['last_failure_time']) . ' ago' : 'Never',
+                'recovery_time_remaining' => 0
+            ];
+            
+            // Calculate recovery time remaining for open circuits
+            if ($circuit_data['state'] === 'open') {
+                $time_since_failure = time() - $circuit_data['last_failure_time'];
+                $recovery_time_remaining = max(0, $this->circuit_breaker_config['recovery_timeout'] - $time_since_failure);
+                $status[$api_name]['recovery_time_remaining'] = $recovery_time_remaining;
+            }
+        }
+        
+        return $status;
+    }
+    
+    /**
+     * Reset circuit breaker for specific API
+     */
+    public function reset_circuit_breaker(string $api_name): bool {
+        if (!in_array($api_name, ['google_geocoding', 'google_places', 'walkscore'])) {
+            return false;
+        }
+        
+        update_option("hph_circuit_breaker_{$api_name}", [
+            'failure_count' => 0,
+            'last_failure_time' => 0,
+            'state' => 'closed'
+        ]);
+        
+        // Also clear rate limiting
+        delete_transient("hph_rate_limit_{$api_name}");
+        
+        error_log("HPH: Circuit breaker manually reset for {$api_name}");
+        
+        return true;
+    }
+    
+    /**
+     * Reset all circuit breakers
+     */
+    public function reset_all_circuit_breakers(): void {
+        $apis = ['google_geocoding', 'google_places', 'walkscore'];
+        
+        foreach ($apis as $api_name) {
+            $this->reset_circuit_breaker($api_name);
+        }
+        
+        error_log("HPH: All circuit breakers manually reset");
+    }
+    
+    /**
+     * Get API health summary
+     */
+    public function get_api_health_summary(): array {
+        $circuit_status = $this->get_circuit_breaker_status();
+        $summary = [
+            'overall_health' => 'healthy',
+            'apis' => [],
+            'issues' => []
+        ];
+        
+        foreach ($circuit_status as $api_name => $status) {
+            $api_health = 'healthy';
+            
+            if ($status['state'] === 'open') {
+                $api_health = 'down';
+                $summary['overall_health'] = 'degraded';
+                $summary['issues'][] = "API {$api_name} is down (circuit breaker open)";
+            } elseif ($status['state'] === 'half-open') {
+                $api_health = 'recovering';
+                if ($summary['overall_health'] === 'healthy') {
+                    $summary['overall_health'] = 'degraded';
+                }
+                $summary['issues'][] = "API {$api_name} is recovering";
+            } elseif ($status['failure_count'] > 2) {
+                $api_health = 'unstable';
+                if ($summary['overall_health'] === 'healthy') {
+                    $summary['overall_health'] = 'degraded';
+                }
+                $summary['issues'][] = "API {$api_name} has recent failures ({$status['failure_count']})";
+            }
+            
+            $summary['apis'][$api_name] = $api_health;
+        }
+        
+        return $summary;
     }
 }
 

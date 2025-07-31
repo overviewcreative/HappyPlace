@@ -51,7 +51,7 @@ class RealEstateFlyerGenerator {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: new URLSearchParams({
-                    action: 'generate_flyer',
+                    action: 'hph_generate_flyer',
                     listing_id: listingId,
                     nonce: flyerAjax.nonce
                 })

@@ -1,6 +1,6 @@
 <?php
 
-namespace HPH\Admin;
+namespace HappyPlace\Admin;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -923,7 +923,7 @@ class CSV_Import_Manager
 
         wp_enqueue_script(
             'hph-csv-import',
-            HPH_URL . 'assets/js/csv-import.js',
+            HPH_URL . 'assets/js/csv-operations.js',
             ['jquery'],
             HPH_VERSION,
             true

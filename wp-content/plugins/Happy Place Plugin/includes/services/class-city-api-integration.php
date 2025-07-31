@@ -46,17 +46,17 @@ class City_API_Integration {
      * Constructor
      */
     private function __construct() {
-        $this->google_api_key = get_option('hph_google_maps_api_key', '');
+        $this->google_api_key = \get_option('hph_google_maps_api_key', '');
         
         // Hook into city save to auto-populate places data
-        add_action('acf/save_post', [$this, 'auto_populate_city_data'], 25);
+        \add_action('acf/save_post', [$this, 'auto_populate_city_data'], 25);
         
         // Add AJAX handlers for manual refresh
-        add_action('wp_ajax_hph_refresh_city_places', [$this, 'ajax_refresh_city_places']);
-        add_action('wp_ajax_hph_geocode_city', [$this, 'ajax_geocode_city']);
+        \add_action('wp_ajax_hph_refresh_city_places', [$this, 'ajax_refresh_city_places']);
+        \add_action('wp_ajax_hph_geocode_city', [$this, 'ajax_geocode_city']);
         
         // Add admin enhancements for city editing
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_city_admin_scripts']);
+        \add_action('admin_enqueue_scripts', [$this, 'enqueue_city_admin_scripts']);
     }
     
     /**
@@ -330,22 +330,22 @@ class City_API_Integration {
      * AJAX handler for refreshing city places
      */
     public function ajax_refresh_city_places(): void {
-        check_ajax_referer('hph_city_ajax', 'nonce');
+        \check_ajax_referer('hph_city_ajax', 'nonce');
         
-        if (!current_user_can('edit_posts')) {
-            wp_die('Insufficient permissions');
+        if (!\current_user_can('edit_posts')) {
+            \wp_die('Insufficient permissions');
         }
         
         $post_id = intval($_POST['post_id'] ?? 0);
         
-        if (!$post_id || get_post_type($post_id) !== 'city') {
-            wp_send_json_error('Invalid city ID');
+        if (!$post_id || \get_post_type($post_id) !== 'city') {
+            \wp_send_json_error('Invalid city ID');
         }
         
-        $map_data = get_field('city_google_map', $post_id);
+        $map_data = \get_field('city_google_map', $post_id);
         
         if (empty($map_data['lat']) || empty($map_data['lng'])) {
-            wp_send_json_error('City coordinates not found');
+            \wp_send_json_error('City coordinates not found');
         }
         
         // Clear cache
@@ -355,32 +355,32 @@ class City_API_Integration {
         // Repopulate places
         $this->populate_city_places_from_api($post_id, (float)$map_data['lat'], (float)$map_data['lng']);
         
-        wp_send_json_success('City places refreshed successfully');
+        \wp_send_json_success('City places refreshed successfully');
     }
     
     /**
      * AJAX handler for geocoding city
      */
     public function ajax_geocode_city(): void {
-        check_ajax_referer('hph_city_ajax', 'nonce');
+        \check_ajax_referer('hph_city_ajax', 'nonce');
         
-        if (!current_user_can('edit_posts')) {
-            wp_die('Insufficient permissions');
+        if (!\current_user_can('edit_posts')) {
+            \wp_die('Insufficient permissions');
         }
         
         $post_id = intval($_POST['post_id'] ?? 0);
         
-        if (!$post_id || get_post_type($post_id) !== 'city') {
-            wp_send_json_error('Invalid city ID');
+        if (!$post_id || \get_post_type($post_id) !== 'city') {
+            \wp_send_json_error('Invalid city ID');
         }
         
         // Force geocoding
         $this->auto_geocode_city($post_id);
         
-        $map_data = get_field('city_google_map', $post_id);
+        $map_data = \get_field('city_google_map', $post_id);
         
         if (!empty($map_data['lat']) && !empty($map_data['lng'])) {
-            wp_send_json_success([
+            \wp_send_json_success([
                 'message' => 'City geocoded successfully',
                 'coordinates' => [
                     'lat' => $map_data['lat'],
@@ -388,7 +388,7 @@ class City_API_Integration {
                 ]
             ]);
         } else {
-            wp_send_json_error('Geocoding failed');
+            \wp_send_json_error('Geocoding failed');
         }
     }
     
@@ -402,17 +402,17 @@ class City_API_Integration {
         if (($hook === 'post.php' || $hook === 'post-new.php') && 
             isset($post->post_type) && $post->post_type === 'city') {
             
-            wp_enqueue_script(
+            \wp_enqueue_script(
                 'hph-city-admin',
-                plugin_dir_url(__FILE__) . '../../assets/js/city-admin.js',
+                \plugin_dir_url(__FILE__) . '../../assets/js/city-admin.js',
                 ['jquery'],
                 '1.0.0',
                 true
             );
             
-            wp_localize_script('hph-city-admin', 'hph_city_ajax', [
-                'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('hph_city_ajax'),
+            \wp_localize_script('hph-city-admin', 'hph_city_ajax', [
+                'ajax_url' => \admin_url('admin-ajax.php'),
+                'nonce' => \wp_create_nonce('hph_city_ajax'),
                 'post_id' => $post->ID ?? 0
             ]);
         }

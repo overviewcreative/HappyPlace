@@ -60,27 +60,27 @@ class Enhanced_Analytics_Service
         if (!$this->analytics_enabled) return;
         
         // Tracking hooks
-        add_action('wp_footer', [$this, 'add_tracking_script']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_analytics_scripts']);
+        \add_action('wp_footer', [$this, 'add_tracking_script']);
+        \add_action('wp_enqueue_scripts', [$this, 'enqueue_analytics_scripts']);
         
         // AJAX handlers for analytics data
-        add_action('wp_ajax_hph_track_event', [$this, 'track_event']);
-        add_action('wp_ajax_nopriv_hph_track_event', [$this, 'track_event']);
-        add_action('wp_ajax_hph_analytics_report', [$this, 'get_analytics_report']);
+        \add_action('wp_ajax_hph_track_event', [$this, 'track_event']);
+        \add_action('wp_ajax_nopriv_hph_track_event', [$this, 'track_event']);
+        \add_action('wp_ajax_hph_analytics_report', [$this, 'get_analytics_report']);
         
         // Automatic tracking hooks
-        add_action('wp', [$this, 'track_page_view']);
-        add_action('hph_listing_view', [$this, 'track_listing_view']);
-        add_action('hph_search_performed', [$this, 'track_search_event']);
-        add_action('hph_filter_applied', [$this, 'track_filter_usage']);
-        add_action('hph_lead_submitted', [$this, 'track_conversion']);
+        \add_action('wp', [$this, 'track_page_view']);
+        \add_action('hph_listing_view', [$this, 'track_listing_view']);
+        \add_action('hph_search_performed', [$this, 'track_search_event']);
+        \add_action('hph_filter_applied', [$this, 'track_filter_usage']);
+        \add_action('hph_lead_submitted', [$this, 'track_conversion']);
         
         // Cleanup old data
-        add_action('hph_analytics_cleanup', [$this, 'cleanup_old_data']);
+        \add_action('hph_analytics_cleanup', [$this, 'cleanup_old_data']);
         
         // Schedule cleanup
-        if (!wp_next_scheduled('hph_analytics_cleanup')) {
-            wp_schedule_event(time(), 'daily', 'hph_analytics_cleanup');
+        if (!\wp_next_scheduled('hph_analytics_cleanup')) {
+            \wp_schedule_event(\time(), 'daily', 'hph_analytics_cleanup');
         }
     }
 
@@ -296,7 +296,7 @@ class Enhanced_Analytics_Service
      */
     public function track_page_view(): void
     {
-        if (!$this->analytics_enabled || is_admin()) return;
+        if (!$this->analytics_enabled || \is_admin()) return;
         
         $session_id = $this->get_session_id();
         
@@ -437,11 +437,11 @@ class Enhanced_Analytics_Service
         $event_data = $_POST['event_data'] ?? [];
         
         if (empty($event_type)) {
-            wp_send_json_error('Event type required');
+            \wp_send_json_error('Event type required');
         }
         
         $this->track_custom_event($event_type, $event_data);
-        wp_send_json_success('Event tracked');
+        \wp_send_json_success('Event tracked');
     }
 
     /**
@@ -543,14 +543,14 @@ class Enhanced_Analytics_Service
      */
     public function get_analytics_report(): void
     {
-        if (!current_user_can('administrator')) {
-            wp_die('Access denied');
+        if (!\current_user_can('administrator')) {
+            \wp_die('Access denied');
         }
         
         $period = sanitize_text_field($_POST['period'] ?? '7days');
         $report_data = $this->generate_analytics_report($period);
         
-        wp_send_json_success($report_data);
+        \wp_send_json_success($report_data);
     }
 
     /**
@@ -642,7 +642,7 @@ class Enhanced_Analytics_Service
      */
     public function add_tracking_script(): void
     {
-        if (!$this->analytics_enabled || is_admin()) return;
+        if (!$this->analytics_enabled || \is_admin()) return;
         
         ?>
         <script>

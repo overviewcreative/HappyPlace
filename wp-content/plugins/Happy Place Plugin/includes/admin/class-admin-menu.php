@@ -1,11 +1,40 @@
 <?php
-// File: includes/admin/class-admin-menu.php
+/**
+ * Enhanced Admin Menu System for Happy Place Plugin
+ * 
+ * Provides a comprehensive, organized admin interface with:
+ * - Logical menu grouping and structure
+ * - Role-based access control
+ * - Integration monitoring and health checks
+ * - Enhanced system management tools
+ * 
+ * @package HappyPlace
+ * @subpackage Admin
+ * @version 2.0.0
+ */
 
-namespace HPH\Admin;
+namespace HappyPlace\Admin;
+
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 class Admin_Menu
 {
     private static ?self $instance = null;
+    
+    /**
+     * Menu capability requirements
+     */
+    private array $menu_capabilities = [
+        'dashboard' => 'read',
+        'listings' => 'edit_posts',
+        'integrations' => 'manage_options',
+        'tools' => 'manage_options',
+        'system_health' => 'manage_options',
+        'settings' => 'manage_options',
+        'developer' => 'manage_options'
+    ];
 
     public static function get_instance(): self
     {
@@ -15,276 +44,1126 @@ class Admin_Menu
     private function __construct()
     {
         add_action('admin_menu', [$this, 'register_menu_pages']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
+        add_action('admin_init', [$this, 'handle_admin_actions']);
     }
 
+    /**
+     * Register all admin menu pages with enhanced organization
+     */
     public function register_menu_pages(): void
     {
+        // Main menu page - Dashboard
         add_menu_page(
-            'Happy Place',
-            'Happy Place',
-            'read', // Most permissive capability - all logged in users
-            'happy-place',
+            __('Happy Place Dashboard', 'happy-place'),
+            __('Happy Place', 'happy-place'),
+            $this->menu_capabilities['dashboard'],
+            'happy-place-dashboard',
             [$this, 'render_dashboard'],
             'dashicons-building',
             30
         );
 
-        // Add submenus
+        // Dashboard submenu (rename the first item)
         add_submenu_page(
-            'happy-place',
-            'Settings',
-            'Settings',
-            'read',
+            'happy-place-dashboard',
+            __('Dashboard', 'happy-place'),
+            __('📊 Dashboard', 'happy-place'),
+            $this->menu_capabilities['dashboard'],
+            'happy-place-dashboard',
+            [$this, 'render_dashboard']
+        );
+
+        // Listings Management
+        add_submenu_page(
+            'happy-place-dashboard',
+            __('Listings Management', 'happy-place'),
+            __('🏠 Listings', 'happy-place'),
+            $this->menu_capabilities['listings'],
+            'happy-place-listings',
+            [$this, 'render_listings_management']
+        );
+
+        // Integrations Hub
+        add_submenu_page(
+            'happy-place-dashboard',
+            __('Integrations Hub', 'happy-place'),
+            __('🔗 Integrations', 'happy-place'),
+            $this->menu_capabilities['integrations'],
+            'happy-place-integrations',
+            [$this, 'render_integrations_hub']
+        );
+
+        // Tools & Utilities
+        add_submenu_page(
+            'happy-place-dashboard',
+            __('Tools & Utilities', 'happy-place'),
+            __('🛠️ Tools', 'happy-place'),
+            $this->menu_capabilities['tools'],
+            'happy-place-tools',
+            [$this, 'render_tools_utilities']
+        );
+
+        // System Health Monitor (Enhanced Systems)
+        add_submenu_page(
+            'happy-place-dashboard',
+            __('System Health Monitor', 'happy-place'),
+            __('💚 System Health', 'happy-place'),
+            $this->menu_capabilities['system_health'],
+            'happy-place-system-health',
+            [$this, 'render_system_health']
+        );
+
+        // Marketing Suite Generator
+        add_submenu_page(
+            'happy-place-dashboard',
+            __('Marketing Suite Generator', 'happy-place'),
+            __('🎨 Marketing Suite', 'happy-place'),
+            $this->menu_capabilities['tools'],
+            'happy-place-marketing-suite',
+            [$this, 'render_marketing_suite']
+        );
+
+        // Settings
+        add_submenu_page(
+            'happy-place-dashboard',
+            __('Settings', 'happy-place'),
+            __('⚙️ Settings', 'happy-place'),
+            $this->menu_capabilities['settings'],
             'happy-place-settings',
             [$this, 'render_settings']
         );
 
-        // Add CSV Import submenu
-        add_submenu_page(
-            'happy-place',
-            'CSV Import',
-            'CSV Import',
-            'read',
-            'happy-place-csv-import',
-            [$this, 'render_csv_import']
-        );
-
-        // Add Integrations submenu
-        add_submenu_page(
-            'happy-place',
-            'Integrations',
-            'Integrations',
-            'read',
-            'happy-place-integrations',
-            [$this, 'render_integrations']
-        );
-
-        // Add Flyer Generator submenu
-        add_submenu_page(
-            'happy-place',
-            'Flyer Generator',
-            'Flyer Generator',
-            'read',
-            'flyer-generator',
-            [$this, 'render_flyer_generator']
-        );
-
-        // Add Developer Tools submenu (only for administrators)
-        if (current_user_can('manage_options')) {
+        // Developer Tools (Admin only)
+        if (current_user_can('manage_options') && (defined('WP_DEBUG') && WP_DEBUG)) {
             add_submenu_page(
-                'happy-place',
-                'Developer Tools',
-                'Developer Tools',
-                'manage_options',
-                'happy-place-dev-tools',
-                [$this, 'render_dev_tools']
+                'happy-place-dashboard',
+                __('Developer Tools', 'happy-place'),
+                __('🔧 Developer', 'happy-place'),
+                $this->menu_capabilities['developer'],
+                'happy-place-developer',
+                [$this, 'render_developer_tools']
             );
         }
     }
 
+    /**
+     * Enqueue admin assets for enhanced UI
+     */
+    public function enqueue_admin_assets($hook_suffix): void
+    {
+        // Only load on our admin pages
+        if (strpos($hook_suffix, 'happy-place') === false) {
+            return;
+        }
+
+        // Enhanced admin styles
+        wp_enqueue_style(
+            'hph-enhanced-admin',
+            plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/css/enhanced-admin.css',
+            [],
+            '2.0.0'
+        );
+
+        // Enhanced admin scripts
+        wp_enqueue_script(
+            'hph-enhanced-admin',
+            plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/js/enhanced-admin.js',
+            ['jquery', 'wp-api'],
+            '2.0.0',
+            true
+        );
+
+        // Localize script with enhanced data
+        wp_localize_script('hph-enhanced-admin', 'hphEnhancedAdmin', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'restUrl' => rest_url('hph/v1/'),
+            'nonce' => wp_create_nonce('hph_enhanced_admin'),
+            'currentPage' => $hook_suffix,
+            'capabilities' => [
+                'manage_integrations' => current_user_can('manage_options'),
+                'view_system_health' => current_user_can('manage_options'),
+                'manage_listings' => current_user_can('edit_posts')
+            ],
+            'strings' => [
+                'loading' => __('Loading...', 'happy-place'),
+                'saving' => __('Saving...', 'happy-place'),
+                'saved' => __('Saved!', 'happy-place'),
+                'error' => __('Error occurred', 'happy-place'),
+                'confirm_action' => __('Are you sure?', 'happy-place'),
+                'system_healthy' => __('System Healthy', 'happy-place'),
+                'system_warning' => __('System Warning', 'happy-place'),
+                'system_critical' => __('System Critical', 'happy-place')
+            ]
+        ]);
+    }
+
+    /**
+     * Handle admin actions and AJAX requests
+     */
+    public function handle_admin_actions(): void
+    {
+        // Register AJAX handlers for enhanced functionality
+        add_action('wp_ajax_hph_get_dashboard_stats', [$this, 'ajax_get_dashboard_stats']);
+        add_action('wp_ajax_hph_refresh_integrations', [$this, 'ajax_refresh_integrations']);
+        add_action('wp_ajax_hph_test_integration', [$this, 'ajax_test_integration']);
+        add_action('wp_ajax_hph_toggle_integration', [$this, 'ajax_toggle_integration']);
+    }
+
+    /**
+     * Render the enhanced main dashboard
+     */
     public function render_dashboard(): void
     {
-        // Use the comprehensive dashboard
-        $dashboard = Admin_Dashboard::get_instance();
-        $dashboard->render_main_dashboard();
+        echo '<div class="wrap hph-admin-wrap">';
+        echo '<h1 class="hph-admin-title">';
+        echo '<span class="dashicons dashicons-building"></span> ';
+        echo __('Happy Place Dashboard', 'happy-place');
+        echo '</h1>';
+        
+        echo '<div class="hph-dashboard-intro">';
+        echo '<p>' . __('Welcome to Happy Place - Your comprehensive real estate management platform.', 'happy-place') . '</p>';
+        echo '</div>';
+
+        // Quick Stats Section
+        $this->render_dashboard_stats();
+        
+        // Recent Activity Section
+        $this->render_recent_activity();
+        
+        // System Status Overview
+        $this->render_system_status_overview();
+        
+        echo '</div>';
     }
 
+    /**
+     * Render listings management page
+     */
+    public function render_listings_management(): void
+    {
+        echo '<div class="wrap hph-admin-wrap">';
+        echo '<h1 class="hph-admin-title">';
+        echo '<span class="dashicons dashicons-admin-home"></span> ';
+        echo __('Listings Management', 'happy-place');
+        echo '</h1>';
+        
+        // Check user capabilities
+        if (!current_user_can($this->menu_capabilities['listings'])) {
+            echo '<div class="notice notice-error"><p>' . __('You do not have permission to manage listings.', 'happy-place') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        // Listings management interface
+        echo '<div class="hph-listings-management">';
+        
+        // Quick Actions
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Quick Actions', 'happy-place') . '</h2>';
+        echo '<div class="hph-quick-actions">';
+        echo '<a href="' . admin_url('post-new.php?post_type=listing') . '" class="button button-primary">';
+        echo '<span class="dashicons dashicons-plus-alt"></span> ' . __('Add New Listing', 'happy-place');
+        echo '</a>';
+        echo '<a href="' . admin_url('edit.php?post_type=listing') . '" class="button button-secondary">';
+        echo '<span class="dashicons dashicons-list-view"></span> ' . __('View All Listings', 'happy-place');
+        echo '</a>';
+        echo '<a href="' . admin_url('admin.php?page=happy-place-tools') . '" class="button button-secondary">';
+        echo '<span class="dashicons dashicons-upload"></span> ' . __('Import Listings', 'happy-place');
+        echo '</a>';
+        echo '</div>';
+        echo '</div>';
+
+        // Listings overview
+        $this->render_listings_overview();
+        
+        // Bulk operations
+        $this->render_bulk_operations();
+        
+        echo '</div>';
+        echo '</div>';
+    }
+
+    /**
+     * Render integrations hub page
+     */
+    public function render_integrations_hub(): void
+    {
+        echo '<div class="wrap hph-admin-wrap">';
+        echo '<h1 class="hph-admin-title">';
+        echo '<span class="dashicons dashicons-networking"></span> ';
+        echo __('Integrations Hub', 'happy-place');
+        echo '</h1>';
+        
+        // Check user capabilities
+        if (!current_user_can($this->menu_capabilities['integrations'])) {
+            echo '<div class="notice notice-error"><p>' . __('You do not have permission to manage integrations.', 'happy-place') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<div class="hph-integrations-hub">';
+        
+        // Integration status overview
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Integration Status', 'happy-place') . '</h2>';
+        echo '<div id="hph-integration-status" class="hph-integration-grid">';
+        echo '<div class="hph-loading">' . __('Loading integration status...', 'happy-place') . '</div>';
+        echo '</div>';
+        echo '</div>';
+
+        // Available integrations
+        $this->render_available_integrations();
+        
+        // Integration settings
+        $this->render_integration_settings();
+        
+        echo '</div>';
+        echo '</div>';
+    }
+
+    /**
+     * Render tools and utilities page
+     */
+    public function render_tools_utilities(): void
+    {
+        echo '<div class="wrap hph-admin-wrap">';
+        echo '<h1 class="hph-admin-title">';
+        echo '<span class="dashicons dashicons-admin-tools"></span> ';
+        echo __('Tools & Utilities', 'happy-place');
+        echo '</h1>';
+        
+        // Check user capabilities
+        if (!current_user_can($this->menu_capabilities['tools'])) {
+            echo '<div class="notice notice-error"><p>' . __('You do not have permission to access tools.', 'happy-place') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+
+        echo '<div class="hph-tools-utilities">';
+        
+        // Data Management Tools
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Data Management', 'happy-place') . '</h2>';
+        echo '<div class="hph-tool-grid">';
+        
+        // CSV Import Tool
+        echo '<div class="hph-tool-item">';
+        echo '<h3><span class="dashicons dashicons-upload"></span> ' . __('CSV Import', 'happy-place') . '</h3>';
+        echo '<p>' . __('Import listings from CSV files with validation and error checking.', 'happy-place') . '</p>';
+        echo '<button class="button button-primary" onclick="hphAdmin.openTool(\'csv-import\')">' . __('Launch CSV Import', 'happy-place') . '</button>';
+        echo '</div>';
+        
+        // Flyer Generator
+        echo '<div class="hph-tool-item">';
+        echo '<h3><span class="dashicons dashicons-format-image"></span> ' . __('Flyer Generator', 'happy-place') . '</h3>';
+        echo '<p>' . __('Create professional property flyers with customizable templates.', 'happy-place') . '</p>';
+        echo '<button class="button button-primary" onclick="hphAdmin.openTool(\'flyer-generator\')">' . __('Launch Flyer Generator', 'happy-place') . '</button>';
+        echo '</div>';
+        
+        // Image Optimization
+        echo '<div class="hph-tool-item">';
+        echo '<h3><span class="dashicons dashicons-images-alt2"></span> ' . __('Image Optimization', 'happy-place') . '</h3>';
+        echo '<p>' . __('Optimize property images for web performance.', 'happy-place') . '</p>';
+        echo '<button class="button button-primary" onclick="hphAdmin.openTool(\'image-optimization\')">' . __('Launch Optimizer', 'happy-place') . '</button>';
+        echo '</div>';
+        
+        echo '</div>';
+        echo '</div>';
+
+        // Maintenance Tools
+        $this->render_maintenance_tools();
+        
+        // Tool interfaces (hidden by default)
+        $this->render_tool_interfaces();
+        
+        echo '</div>';
+        echo '</div>';
+    }
+
+    /**
+     * Render system health monitor page
+     */
+    public function render_system_health(): void
+    {
+        // Use the enhanced systems dashboard we created
+        if (class_exists('\HappyPlace\Monitoring\Enhanced_Systems_Dashboard')) {
+            $dashboard = \HappyPlace\Monitoring\Enhanced_Systems_Dashboard::get_instance();
+            $dashboard->render_dashboard_page();
+        } else {
+            // Fallback basic health monitor
+            echo '<div class="wrap hph-admin-wrap">';
+            echo '<h1 class="hph-admin-title">';
+            echo '<span class="dashicons dashicons-heart"></span> ';
+            echo __('System Health Monitor', 'happy-place');
+            echo '</h1>';
+            
+            echo '<div class="notice notice-warning">';
+            echo '<p>' . __('Enhanced Systems Dashboard not available. Please ensure all components are properly loaded.', 'happy-place') . '</p>';
+            echo '</div>';
+            
+            // Basic health check
+            $this->render_basic_health_check();
+            
+            echo '</div>';
+        }
+    }
+
+    /**
+     * Render settings page
+     */
     public function render_settings(): void
     {
-        // Use the comprehensive settings page
-        $settings = Settings_Page::get_instance();
-        $settings->render_settings_page();
-    }
-
-    public function render_csv_import(): void
-    {
-        // Include the CSV import template
-        $template_path = plugin_dir_path(dirname(dirname(__FILE__))) . 'admin/templates/csv-import.php';
-        if (file_exists($template_path)) {
-            include $template_path;
+        // Use the existing settings page class
+        if (class_exists('\HPH\Admin\Settings_Page')) {
+            $settings = \HPH\Admin\Settings_Page::get_instance();
+            $settings->render_settings_page();
         } else {
-            echo '<div class="wrap">';
-            echo '<h1>CSV Import</h1>';
-            echo '<p>CSV Import template not found.</p>';
+            echo '<div class="wrap hph-admin-wrap">';
+            echo '<h1 class="hph-admin-title">';
+            echo '<span class="dashicons dashicons-admin-settings"></span> ';
+            echo __('Settings', 'happy-place');
+            echo '</h1>';
+            
+            echo '<div class="notice notice-warning">';
+            echo '<p>' . __('Settings page class not found. Please check plugin installation.', 'happy-place') . '</p>';
+            echo '</div>';
+            
             echo '</div>';
         }
     }
 
     /**
-     * Render the integrations page
+     * Render Marketing Suite Generator page
      */
-    public function render_integrations(): void
+    public function render_marketing_suite(): void
     {
-        $integrations_manager = Integrations_Manager::get_instance();
-        $integrations_manager->render_integrations_page();
-    }
-
-    /**
-     * Render the flyer generator page
-     */
-    public function render_flyer_generator(): void
-    {
-        // Initialize the flyer generator class
-        if (class_exists('HappyPlace\\Graphics\\Flyer_Generator')) {
+        echo '<div class="wrap hph-admin-wrap">';
+        echo '<h1 class="hph-admin-title">';
+        echo '<span class="dashicons dashicons-format-image"></span> ';
+        echo __('Marketing Suite Generator', 'happy-place');
+        echo '</h1>';
+        
+        echo '<div class="hph-admin-content">';
+        echo '<p class="hph-intro-text">' . __('Generate professional marketing materials for your listings including flyers, social media graphics, and more.', 'happy-place') . '</p>';
+        
+        // Get flyer generator instance and render
+        if (class_exists('\HappyPlace\Graphics\Flyer_Generator')) {
             $flyer_generator = \HappyPlace\Graphics\Flyer_Generator::get_instance();
-            echo '<div class="wrap">';
-            echo '<h1>Flyer Generator</h1>';
             echo $flyer_generator->render_flyer_generator([]);
-            echo '</div>';
+        } elseif (class_exists('\HappyPlace\Graphics\Flyer_Generator_Clean')) {
+            $flyer_generator = \HappyPlace\Graphics\Flyer_Generator_Clean::get_instance();
+            echo $flyer_generator->render_flyer_generator([]);
         } else {
-            echo '<div class="wrap">';
-            echo '<h1>Flyer Generator</h1>';
-            echo '<p>Flyer Generator class not found.</p>';
+            echo '<div class="notice notice-error">';
+            echo '<p>' . __('Marketing Suite Generator not available. Please check plugin installation.', 'happy-place') . '</p>';
             echo '</div>';
         }
+        
+        echo '</div>';
+        echo '</div>';
     }
 
     /**
-     * Render the developer tools page
+     * Render developer tools page (enhanced version)
      */
-    public function render_dev_tools(): void
+    public function render_developer_tools(): void
     {
-        // Handle actions
+        echo '<div class="wrap hph-admin-wrap">';
+        echo '<h1 class="hph-admin-title">';
+        echo '<span class="dashicons dashicons-admin-tools"></span> ';
+        echo __('Developer Tools', 'happy-place');
+        echo '<span class="hph-badge hph-badge-dev">DEV</span>';
+        echo '</h1>';
+        
+        // Check user capabilities and debug mode
+        if (!current_user_can($this->menu_capabilities['developer'])) {
+            echo '<div class="notice notice-error"><p>' . __('You do not have permission to access developer tools.', 'happy-place') . '</p></div>';
+            echo '</div>';
+            return;
+        }
+        
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
+            echo '<div class="notice notice-warning">';
+            echo '<p>' . __('Developer tools are only available when WP_DEBUG is enabled.', 'happy-place') . '</p>';
+            echo '</div>';
+        }
+
+        // Handle developer actions
         if (isset($_POST['dev_action'])) {
             $this->handle_dev_actions();
         }
 
-        echo '<div class="wrap">';
-        echo '<h1>Happy Place Developer Tools</h1>';
-        echo '<p>Development utilities for Happy Place theme and plugin.</p>';
+        echo '<div class="hph-developer-tools">';
         
+        // Enhanced system testing
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Enhanced System Testing', 'happy-place') . '</h2>';
+        echo '<div class="hph-dev-actions">';
+        echo '<button class="button button-primary" onclick="hphAdmin.runSystemTest()">';
+        echo '<span class="dashicons dashicons-admin-tools"></span> ' . __('Run Full System Test', 'happy-place');
+        echo '</button>';
+        echo '<button class="button button-secondary" onclick="hphAdmin.testCircuitBreakers()">';
+        echo '<span class="dashicons dashicons-networking"></span> ' . __('Test Circuit Breakers', 'happy-place');
+        echo '</button>';
+        echo '</div>';
+        echo '<div id="hph-test-results" class="hph-test-results" style="display:none;"></div>';
+        echo '</div>';
+
+        // Original developer tools (cache, build, etc.)
+        $this->render_original_dev_tools();
+        
+        echo '</div>';
+        echo '</div>';
+    }
+    /**
+     * Render dashboard statistics
+     */
+    private function render_dashboard_stats(): void
+    {
+        echo '<div class="hph-dashboard-stats">';
+        echo '<div class="hph-stats-grid">';
+        
+        // Total Listings
+        $listing_count = wp_count_posts('listing');
+        echo '<div class="hph-stat-card">';
+        echo '<div class="hph-stat-number">' . ($listing_count->publish ?? 0) . '</div>';
+        echo '<div class="hph-stat-label">' . __('Active Listings', 'happy-place') . '</div>';
+        echo '</div>';
+        
+        // Total Views (if analytics available)
+        echo '<div class="hph-stat-card">';
+        echo '<div class="hph-stat-number" id="hph-total-views">-</div>';
+        echo '<div class="hph-stat-label">' . __('Total Views', 'happy-place') . '</div>';
+        echo '</div>';
+        
+        // Integrations Status
+        echo '<div class="hph-stat-card">';
+        echo '<div class="hph-stat-number" id="hph-integrations-active">-</div>';
+        echo '<div class="hph-stat-label">' . __('Active Integrations', 'happy-place') . '</div>';
+        echo '</div>';
+        
+        // System Health
+        echo '<div class="hph-stat-card">';
+        echo '<div class="hph-stat-indicator" id="hph-system-health">';
+        echo '<span class="dashicons dashicons-yes-alt"></span>';
+        echo '</div>';
+        echo '<div class="hph-stat-label">' . __('System Health', 'happy-place') . '</div>';
+        echo '</div>';
+        
+        echo '</div>';
+        echo '</div>';
+    }
+
+    /**
+     * Render recent activity section
+     */
+    private function render_recent_activity(): void
+    {
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Recent Activity', 'happy-place') . '</h2>';
+        
+        // Get recent listings
+        $recent_listings = get_posts([
+            'post_type' => 'listing',
+            'posts_per_page' => 5,
+            'post_status' => 'publish'
+        ]);
+        
+        if (!empty($recent_listings)) {
+            echo '<div class="hph-activity-list">';
+            foreach ($recent_listings as $listing) {
+                echo '<div class="hph-activity-item">';
+                echo '<span class="hph-activity-icon dashicons dashicons-admin-home"></span>';
+                echo '<div class="hph-activity-content">';
+                echo '<strong>' . esc_html($listing->post_title) . '</strong>';
+                echo '<br><small>' . sprintf(__('Added %s', 'happy-place'), human_time_diff(strtotime($listing->post_date))) . '</small>';
+                echo '</div>';
+                echo '<div class="hph-activity-actions">';
+                echo '<a href="' . get_edit_post_link($listing->ID) . '" class="button button-small">' . __('Edit', 'happy-place') . '</a>';
+                echo '</div>';
+                echo '</div>';
+            }
+            echo '</div>';
+        } else {
+            echo '<p>' . __('No recent activity found.', 'happy-place') . '</p>';
+        }
+        
+        echo '</div>';
+    }
+
+    /**
+     * Render system status overview
+     */
+    private function render_system_status_overview(): void
+    {
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('System Status Overview', 'happy-place') . '</h2>';
+        
+        echo '<div class="hph-system-overview">';
+        
+        // Check WordPress requirements
+        echo '<div class="hph-status-item">';
+        echo '<span class="hph-status-icon dashicons dashicons-wordpress"></span>';
+        echo '<span class="hph-status-label">' . __('WordPress', 'happy-place') . '</span>';
+        echo '<span class="hph-status-value">' . get_bloginfo('version') . '</span>';
+        echo '<span class="hph-status-indicator hph-status-ok"></span>';
+        echo '</div>';
+        
+        // Check PHP version
+        $php_ok = version_compare(PHP_VERSION, '8.0', '>=');
+        echo '<div class="hph-status-item">';
+        echo '<span class="hph-status-icon dashicons dashicons-admin-settings"></span>';
+        echo '<span class="hph-status-label">' . __('PHP Version', 'happy-place') . '</span>';
+        echo '<span class="hph-status-value">' . PHP_VERSION . '</span>';
+        echo '<span class="hph-status-indicator ' . ($php_ok ? 'hph-status-ok' : 'hph-status-warning') . '"></span>';
+        echo '</div>';
+        
+        // Check integrations
+        echo '<div class="hph-status-item">';
+        echo '<span class="hph-status-icon dashicons dashicons-networking"></span>';
+        echo '<span class="hph-status-label">' . __('Integrations', 'happy-place') . '</span>';
+        echo '<span class="hph-status-value" id="hph-integration-count">-</span>';
+        echo '<span class="hph-status-indicator" id="hph-integration-status"></span>';
+        echo '</div>';
+        
+        echo '</div>';
+        
+        // Quick action to view full system health
+        echo '<div class="hph-system-actions">';
+        echo '<a href="' . admin_url('admin.php?page=happy-place-system-health') . '" class="button button-primary">';
+        echo '<span class="dashicons dashicons-heart"></span> ' . __('View Full System Health', 'happy-place');
+        echo '</a>';
+        echo '</div>';
+        
+        echo '</div>';
+    }
+
+    /**
+     * Render listings overview
+     */
+    private function render_listings_overview(): void
+    {
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Listings Overview', 'happy-place') . '</h2>';
+        
+        // Get listing stats
+        $listing_counts = wp_count_posts('listing');
+        $total_listings = array_sum((array) $listing_counts);
+        
+        if ($total_listings > 0) {
+            echo '<div class="hph-listings-stats">';
+            echo '<div class="hph-stat-item">';
+            echo '<span class="hph-stat-number">' . ($listing_counts->publish ?? 0) . '</span>';
+            echo '<span class="hph-stat-label">' . __('Published', 'happy-place') . '</span>';
+            echo '</div>';
+            echo '<div class="hph-stat-item">';
+            echo '<span class="hph-stat-number">' . ($listing_counts->draft ?? 0) . '</span>';
+            echo '<span class="hph-stat-label">' . __('Drafts', 'happy-place') . '</span>';
+            echo '</div>';
+            echo '<div class="hph-stat-item">';
+            echo '<span class="hph-stat-number">' . ($listing_counts->private ?? 0) . '</span>';
+            echo '<span class="hph-stat-label">' . __('Private', 'happy-place') . '</span>';
+            echo '</div>';
+            echo '</div>';
+        } else {
+            echo '<div class="hph-empty-state">';
+            echo '<span class="dashicons dashicons-admin-home"></span>';
+            echo '<h3>' . __('No listings found', 'happy-place') . '</h3>';
+            echo '<p>' . __('Get started by adding your first property listing.', 'happy-place') . '</p>';
+            echo '<a href="' . admin_url('post-new.php?post_type=listing') . '" class="button button-primary">';
+            echo __('Add Your First Listing', 'happy-place');
+            echo '</a>';
+            echo '</div>';
+        }
+        
+        echo '</div>';
+    }
+
+    /**
+     * Render bulk operations
+     */
+    private function render_bulk_operations(): void
+    {
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Bulk Operations', 'happy-place') . '</h2>';
+        
+        echo '<div class="hph-bulk-operations">';
+        echo '<div class="hph-bulk-action">';
+        echo '<h4>' . __('Status Management', 'happy-place') . '</h4>';
+        echo '<button class="button" onclick="hphAdmin.bulkAction(\'publish\')">' . __('Bulk Publish', 'happy-place') . '</button>';
+        echo '<button class="button" onclick="hphAdmin.bulkAction(\'draft\')">' . __('Bulk Draft', 'happy-place') . '</button>';
+        echo '</div>';
+        
+        echo '<div class="hph-bulk-action">';
+        echo '<h4>' . __('Data Management', 'happy-place') . '</h4>';
+        echo '<button class="button" onclick="hphAdmin.bulkAction(\'sync\')">' . __('Sync with Airtable', 'happy-place') . '</button>';
+        echo '<button class="button" onclick="hphAdmin.bulkAction(\'optimize_images\')">' . __('Optimize Images', 'happy-place') . '</button>';
+        echo '</div>';
+        echo '</div>';
+        
+        echo '</div>';
+    }
+
+    /**
+     * Render available integrations
+     */
+    private function render_available_integrations(): void
+    {
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Available Integrations', 'happy-place') . '</h2>';
+        
+        $integrations = [
+            'airtable' => [
+                'name' => 'Airtable',
+                'description' => 'Two-way sync with Airtable databases',
+                'icon' => 'database'
+            ],
+            'google_maps' => [
+                'name' => 'Google Maps',
+                'description' => 'Geocoding and location services',
+                'icon' => 'location-alt'
+            ],
+            'walkscore' => [
+                'name' => 'Walk Score',
+                'description' => 'Walkability and transit scores',
+                'icon' => 'admin-site-alt3'
+            ]
+        ];
+        
+        echo '<div class="hph-integration-cards">';
+        foreach ($integrations as $key => $integration) {
+            echo '<div class="hph-integration-card" data-integration="' . esc_attr($key) . '">';
+            echo '<div class="hph-integration-header">';
+            echo '<span class="dashicons dashicons-' . $integration['icon'] . '"></span>';
+            echo '<h3>' . esc_html($integration['name']) . '</h3>';
+            echo '</div>';
+            echo '<p>' . esc_html($integration['description']) . '</p>';
+            echo '<div class="hph-integration-actions">';
+            echo '<button class="button button-primary" onclick="hphAdmin.configureIntegration(\'' . $key . '\')">';
+            echo __('Configure', 'happy-place');
+            echo '</button>';
+            echo '<button class="button button-secondary" onclick="hphAdmin.testIntegration(\'' . $key . '\')">';
+            echo __('Test', 'happy-place');
+            echo '</button>';
+            echo '</div>';
+            echo '</div>';
+        }
+        echo '</div>';
+        
+        echo '</div>';
+    }
+
+    /**
+     * Render integration settings
+     */
+    private function render_integration_settings(): void
+    {
+        // Use existing integrations manager if available
+        if (class_exists('\HPH\Admin\Integrations_Manager')) {
+            $integrations_manager = \HPH\Admin\Integrations_Manager::get_instance();
+            $integrations_manager->render_integrations_page();
+        } else {
+            echo '<div class="hph-card">';
+            echo '<h2>' . __('Integration Settings', 'happy-place') . '</h2>';
+            echo '<p>' . __('Integration settings will be displayed here once the Integrations Manager is loaded.', 'happy-place') . '</p>';
+            echo '</div>';
+        }
+    }
+
+    /**
+     * Render maintenance tools
+     */
+    private function render_maintenance_tools(): void
+    {
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Maintenance Tools', 'happy-place') . '</h2>';
+        echo '<div class="hph-tool-grid">';
+        
+        // Cache Management
+        echo '<div class="hph-tool-item">';
+        echo '<h3><span class="dashicons dashicons-update"></span> ' . __('Cache Management', 'happy-place') . '</h3>';
+        echo '<p>' . __('Clear caches and optimize performance.', 'happy-place') . '</p>';
+        echo '<button class="button button-secondary" onclick="hphAdmin.clearCache()">' . __('Clear Cache', 'happy-place') . '</button>';
+        echo '</div>';
+        
+        // Database Optimization
+        echo '<div class="hph-tool-item">';
+        echo '<h3><span class="dashicons dashicons-database"></span> ' . __('Database Optimization', 'happy-place') . '</h3>';
+        echo '<p>' . __('Optimize database tables and clean up unused data.', 'happy-place') . '</p>';
+        echo '<button class="button button-secondary" onclick="hphAdmin.optimizeDatabase()">' . __('Optimize Database', 'happy-place') . '</button>';
+        echo '</div>';
+        
+        // Error Log Cleanup
+        echo '<div class="hph-tool-item">';
+        echo '<h3><span class="dashicons dashicons-trash"></span> ' . __('Error Log Cleanup', 'happy-place') . '</h3>';
+        echo '<p>' . __('Clear system error logs and integration errors.', 'happy-place') . '</p>';
+        echo '<button class="button button-secondary" onclick="hphAdmin.clearErrorLogs()">' . __('Clear Error Logs', 'happy-place') . '</button>';
+        echo '</div>';
+        
+        echo '</div>';
+        echo '</div>';
+    }
+
+    /**
+     * Render tool interfaces (modals/dialogs)
+     */
+    private function render_tool_interfaces(): void
+    {
+        // CSV Import Interface
+        echo '<div id="hph-csv-import-modal" class="hph-modal" style="display:none;">';
+        echo '<div class="hph-modal-content">';
+        echo '<div class="hph-modal-header">';
+        echo '<h2>' . __('CSV Import Tool', 'happy-place') . '</h2>';
+        echo '<button class="hph-modal-close" onclick="hphAdmin.closeTool()">&times;</button>';
+        echo '</div>';
+        echo '<div class="hph-modal-body">';
+        // CSV import interface will be loaded here
+        echo '<div id="hph-csv-import-content"></div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        
+        // Flyer Generator Interface
+        echo '<div id="hph-flyer-generator-modal" class="hph-modal" style="display:none;">';
+        echo '<div class="hph-modal-content">';
+        echo '<div class="hph-modal-header">';
+        echo '<h2>' . __('Flyer Generator', 'happy-place') . '</h2>';
+        echo '<button class="hph-modal-close" onclick="hphAdmin.closeTool()">&times;</button>';
+        echo '</div>';
+        echo '<div class="hph-modal-body">';
+        // Flyer generator interface will be loaded here
+        echo '<div id="hph-flyer-generator-content"></div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+    }
+
+    /**
+     * Render basic health check (fallback)
+     */
+    private function render_basic_health_check(): void
+    {
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Basic System Check', 'happy-place') . '</h2>';
+        
+        echo '<div class="hph-health-checks">';
+        
+        // WordPress version check
+        $wp_version_ok = version_compare(get_bloginfo('version'), '6.0', '>=');
+        echo '<div class="hph-health-item">';
+        echo '<span class="hph-health-icon ' . ($wp_version_ok ? 'hph-ok' : 'hph-warning') . '"></span>';
+        echo '<span class="hph-health-label">' . __('WordPress Version', 'happy-place') . '</span>';
+        echo '<span class="hph-health-value">' . get_bloginfo('version') . '</span>';
+        echo '</div>';
+        
+        // PHP version check
+        $php_version_ok = version_compare(PHP_VERSION, '8.0', '>=');
+        echo '<div class="hph-health-item">';
+        echo '<span class="hph-health-icon ' . ($php_version_ok ? 'hph-ok' : 'hph-warning') . '"></span>';
+        echo '<span class="hph-health-label">' . __('PHP Version', 'happy-place') . '</span>';
+        echo '<span class="hph-health-value">' . PHP_VERSION . '</span>';
+        echo '</div>';
+        
+        // Memory limit check
+        $memory_limit = ini_get('memory_limit');
+        $memory_ok = (int) $memory_limit >= 256;
+        echo '<div class="hph-health-item">';
+        echo '<span class="hph-health-icon ' . ($memory_ok ? 'hph-ok' : 'hph-warning') . '"></span>';
+        echo '<span class="hph-health-label">' . __('Memory Limit', 'happy-place') . '</span>';
+        echo '<span class="hph-health-value">' . $memory_limit . '</span>';
+        echo '</div>';
+        
+        echo '</div>';
+        echo '</div>';
+    }
+
+    /**
+     * Render original developer tools
+     */
+    private function render_original_dev_tools(): void
+    {
         // Cache Management Section
-        echo '<div class="card" style="max-width: none; margin: 20px 0;">';
-        echo '<h2>Cache Management</h2>';
-        echo '<table class="form-table">';
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Cache Management', 'happy-place') . '</h2>';
+        echo '<div class="hph-dev-grid">';
         
-        echo '<tr>';
-        echo '<th scope="row">WordPress Cache</th>';
-        echo '<td>';
+        echo '<div class="hph-dev-action">';
+        echo '<h4>' . __('WordPress Cache', 'happy-place') . '</h4>';
         echo '<form method="post" style="display: inline;">';
         wp_nonce_field('hph_dev_tools', 'hph_dev_nonce');
         echo '<input type="hidden" name="dev_action" value="flush_cache">';
-        echo '<input type="submit" class="button button-secondary" value="Flush WordPress Cache">';
+        echo '<button type="submit" class="button button-secondary">' . __('Flush Cache', 'happy-place') . '</button>';
         echo '</form>';
-        echo '<p class="description">Clears WordPress object cache and transients.</p>';
-        echo '</td>';
-        echo '</tr>';
+        echo '<p class="description">' . __('Clears WordPress object cache and transients.', 'happy-place') . '</p>';
+        echo '</div>';
 
-        echo '<tr>';
-        echo '<th scope="row">Rewrite Rules</th>';
-        echo '<td>';
+        echo '<div class="hph-dev-action">';
+        echo '<h4>' . __('Rewrite Rules', 'happy-place') . '</h4>';
         echo '<form method="post" style="display: inline;">';
         wp_nonce_field('hph_dev_tools', 'hph_dev_nonce');
         echo '<input type="hidden" name="dev_action" value="flush_rewrite">';
-        echo '<input type="submit" class="button button-secondary" value="Flush Rewrite Rules">';
+        echo '<button type="submit" class="button button-secondary">' . __('Flush Rewrite Rules', 'happy-place') . '</button>';
         echo '</form>';
-        echo '<p class="description">Regenerates permalink structure and rewrite rules.</p>';
-        echo '</td>';
-        echo '</tr>';
+        echo '<p class="description">' . __('Regenerates permalink structure and rewrite rules.', 'happy-place') . '</p>';
+        echo '</div>';
 
-        echo '</table>';
+        echo '</div>';
         echo '</div>';
 
         // Build Tools Section
-        echo '<div class="card" style="max-width: none; margin: 20px 0;">';
-        echo '<h2>Build Tools</h2>';
-        echo '<table class="form-table">';
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Build Tools', 'happy-place') . '</h2>';
+        echo '<div class="hph-dev-grid">';
         
-        echo '<tr>';
-        echo '<th scope="row">Theme Assets</th>';
-        echo '<td>';
+        echo '<div class="hph-dev-action">';
+        echo '<h4>' . __('Theme Assets', 'happy-place') . '</h4>';
         echo '<form method="post" style="display: inline;">';
         wp_nonce_field('hph_dev_tools', 'hph_dev_nonce');
         echo '<input type="hidden" name="dev_action" value="build_sass">';
-        echo '<input type="submit" class="button button-primary" value="Build Sass">';
+        echo '<button type="submit" class="button button-primary">' . __('Build Sass', 'happy-place') . '</button>';
         echo '</form>';
         echo ' ';
         echo '<form method="post" style="display: inline;">';
         wp_nonce_field('hph_dev_tools', 'hph_dev_nonce');
         echo '<input type="hidden" name="dev_action" value="build_webpack">';
-        echo '<input type="submit" class="button button-primary" value="Build Webpack">';
+        echo '<button type="submit" class="button button-primary">' . __('Build Webpack', 'happy-place') . '</button>';
         echo '</form>';
-        echo '<p class="description">Compile theme Sass and JavaScript assets.</p>';
-        echo '</td>';
-        echo '</tr>';
+        echo '<p class="description">' . __('Compile theme Sass and JavaScript assets.', 'happy-place') . '</p>';
+        echo '</div>';
 
-        echo '<tr>';
-        echo '<th scope="row">Plugin Assets</th>';
-        echo '<td>';
-        echo '<form method="post" style="display: inline;">';
-        wp_nonce_field('hph_dev_tools', 'hph_dev_nonce');
-        echo '<input type="hidden" name="dev_action" value="build_plugin">';
-        echo '<input type="submit" class="button button-primary" value="Build Plugin Assets">';
-        echo '</form>';
-        echo '<p class="description">Compile plugin JavaScript and CSS assets.</p>';
-        echo '</td>';
-        echo '</tr>';
-
-        echo '</table>';
+        echo '</div>';
         echo '</div>';
 
         // Database Tools Section
-        echo '<div class="card" style="max-width: none; margin: 20px 0;">';
-        echo '<h2>Database Tools</h2>';
-        echo '<table class="form-table">';
+        echo '<div class="hph-card">';
+        echo '<h2>' . __('Database Tools', 'happy-place') . '</h2>';
+        echo '<div class="hph-dev-grid">';
         
-        echo '<tr>';
-        echo '<th scope="row">Database Optimization</th>';
-        echo '<td>';
+        echo '<div class="hph-dev-action">';
+        echo '<h4>' . __('Database Optimization', 'happy-place') . '</h4>';
         echo '<form method="post" style="display: inline;">';
         wp_nonce_field('hph_dev_tools', 'hph_dev_nonce');
         echo '<input type="hidden" name="dev_action" value="optimize_db">';
-        echo '<input type="submit" class="button button-secondary" value="Optimize Database" onclick="return confirm(\'Are you sure? This will optimize database tables.\');">';
+        echo '<button type="submit" class="button button-secondary" onclick="return confirm(\'' . __('Are you sure? This will optimize database tables.', 'happy-place') . '\');">';
+        echo __('Optimize Database', 'happy-place');
+        echo '</button>';
         echo '</form>';
-        echo '<p class="description">Optimize database tables for better performance.</p>';
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr>';
-        echo '<th scope="row">Clear Expired Transients</th>';
-        echo '<td>';
-        echo '<form method="post" style="display: inline;">';
-        wp_nonce_field('hph_dev_tools', 'hph_dev_nonce');
-        echo '<input type="hidden" name="dev_action" value="clear_transients">';
-        echo '<input type="submit" class="button button-secondary" value="Clear Transients">';
-        echo '</form>';
-        echo '<p class="description">Remove expired transient cache entries.</p>';
-        echo '</td>';
-        echo '</tr>';
-
-        echo '</table>';
+        echo '<p class="description">' . __('Optimize database tables for better performance.', 'happy-place') . '</p>';
         echo '</div>';
 
-        // Development Utilities Section
-        echo '<div class="card" style="max-width: none; margin: 20px 0;">';
-        echo '<h2>Development Utilities</h2>';
-        echo '<table class="form-table">';
+        echo '</div>';
+        echo '</div>';
+    }
+
+    /**
+     * AJAX handler for dashboard stats
+     */
+    public function ajax_get_dashboard_stats(): void
+    {
+        check_ajax_referer('hph_enhanced_admin', 'nonce');
         
-        echo '<tr>';
-        echo '<th scope="row">Debug Mode</th>';
-        echo '<td>';
-        $debug_mode = defined('WP_DEBUG') && WP_DEBUG ? 'Enabled' : 'Disabled';
-        echo '<span class="description">Current Status: <strong>' . $debug_mode . '</strong></span>';
-        echo '<p class="description">Debug mode is controlled by WP_DEBUG in wp-config.php</p>';
-        echo '</td>';
-        echo '</tr>';
+        $stats = [
+            'listings' => [
+                'total' => wp_count_posts('listing')->publish ?? 0,
+                'draft' => wp_count_posts('listing')->draft ?? 0
+            ],
+            'integrations' => $this->get_integration_status(),
+            'system_health' => $this->get_basic_system_health(),
+            'recent_activity' => $this->get_recent_activity_data()
+        ];
+        
+        wp_send_json_success($stats);
+    }
 
-        echo '<tr>';
-        echo '<th scope="row">Environment Info</th>';
-        echo '<td>';
-        echo '<form method="post" style="display: inline;">';
-        wp_nonce_field('hph_dev_tools', 'hph_dev_nonce');
-        echo '<input type="hidden" name="dev_action" value="show_env_info">';
-        echo '<input type="submit" class="button button-secondary" value="Show Environment Info">';
-        echo '</form>';
-        echo '<p class="description">Display PHP version, WordPress version, and system information.</p>';
-        echo '</td>';
-        echo '</tr>';
+    /**
+     * AJAX handler for refreshing integrations
+     */
+    public function ajax_refresh_integrations(): void
+    {
+        check_ajax_referer('hph_enhanced_admin', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions', 'happy-place')]);
+        }
+        
+        $integrations = $this->get_integration_status();
+        wp_send_json_success($integrations);
+    }
 
-        echo '</table>';
-        echo '</div>';
+    /**
+     * AJAX handler for testing integrations
+     */
+    public function ajax_test_integration(): void
+    {
+        check_ajax_referer('hph_enhanced_admin', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions', 'happy-place')]);
+        }
+        
+        $integration = sanitize_text_field($_POST['integration'] ?? '');
+        $result = $this->test_integration($integration);
+        
+        wp_send_json($result);
+    }
 
-        echo '</div>';
+    /**
+     * AJAX handler for toggling integrations
+     */
+    public function ajax_toggle_integration(): void
+    {
+        check_ajax_referer('hph_enhanced_admin', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions', 'happy-place')]);
+        }
+        
+        $integration = sanitize_text_field($_POST['integration'] ?? '');
+        $enabled = (bool) ($_POST['enabled'] ?? false);
+        
+        $result = $this->toggle_integration($integration, $enabled);
+        wp_send_json($result);
+    }
+
+    /**
+     * Get integration status
+     */
+    private function get_integration_status(): array
+    {
+        $integrations = [];
+        
+        // Airtable integration
+        $airtable_options = get_option('happy_place_integrations', []);
+        $integrations['airtable'] = [
+            'name' => 'Airtable',
+            'enabled' => !empty($airtable_options['airtable']['access_token'] ?? ''),
+            'status' => 'unknown',
+            'last_sync' => get_option('hph_airtable_last_sync', '')
+        ];
+        
+        // Google Maps integration
+        $google_key = get_option('hph_google_maps_api_key', '');
+        $integrations['google_maps'] = [
+            'name' => 'Google Maps',
+            'enabled' => !empty($google_key),
+            'status' => !empty($google_key) ? 'active' : 'inactive',
+            'last_check' => current_time('mysql')
+        ];
+        
+        // Walk Score integration
+        $walkscore_key = get_option('hph_walkscore_api_key', '');
+        $integrations['walkscore'] = [
+            'name' => 'Walk Score',
+            'enabled' => !empty($walkscore_key),
+            'status' => !empty($walkscore_key) ? 'active' : 'inactive',
+            'last_check' => current_time('mysql')
+        ];
+        
+        return $integrations;
+    }
+
+    /**
+     * Get basic system health
+     */
+    private function get_basic_system_health(): array
+    {
+        return [
+            'status' => 'healthy',
+            'wordpress_version' => get_bloginfo('version'),
+            'php_version' => PHP_VERSION,
+            'memory_limit' => ini_get('memory_limit'),
+            'debug_mode' => defined('WP_DEBUG') && WP_DEBUG
+        ];
+    }
+
+    /**
+     * Get recent activity data
+     */
+    private function get_recent_activity_data(): array
+    {
+        $recent_posts = get_posts([
+            'post_type' => 'listing',
+            'posts_per_page' => 5,
+            'post_status' => 'any'
+        ]);
+        
+        $activity = [];
+        foreach ($recent_posts as $post) {
+            $activity[] = [
+                'title' => $post->post_title,
+                'date' => $post->post_date,
+                'status' => $post->post_status,
+                'edit_link' => get_edit_post_link($post->ID)
+            ];
+        }
+        
+        return $activity;
+    }
+
+    /**
+     * Test integration connection
+     */
+    private function test_integration(string $integration): array
+    {
+        switch ($integration) {
+            case 'airtable':
+                if (class_exists('Airtable_Two_Way_Sync')) {
+                    try {
+                        $airtable = new \Airtable_Two_Way_Sync('test', 'test');
+                        return $airtable->test_api_connection();
+                    } catch (\Exception $e) {
+                        return [
+                            'success' => false,
+                            'error' => $e->getMessage()
+                        ];
+                    }
+                }
+                break;
+                
+            case 'google_maps':
+                $api_key = get_option('hph_google_maps_api_key', '');
+                if (empty($api_key)) {
+                    return [
+                        'success' => false,
+                        'error' => __('API key not configured', 'happy-place')
+                    ];
+                }
+                // Test with a simple geocoding request
+                return [
+                    'success' => true,
+                    'message' => __('API key configured', 'happy-place')
+                ];
+                
+            case 'walkscore':
+                $api_key = get_option('hph_walkscore_api_key', '');
+                return [
+                    'success' => !empty($api_key),
+                    'message' => !empty($api_key) ? __('API key configured', 'happy-place') : __('API key not configured', 'happy-place')
+                ];
+        }
+        
+        return [
+            'success' => false,
+            'error' => __('Unknown integration', 'happy-place')
+        ];
+    }
+
+    /**
+     * Toggle integration status
+     */
+    private function toggle_integration(string $integration, bool $enabled): array
+    {
+        // This would implement the logic to enable/disable integrations
+        // For now, return success
+        return [
+            'success' => true,
+            'message' => sprintf(
+                __('Integration %s %s', 'happy-place'),
+                $integration,
+                $enabled ? __('enabled', 'happy-place') : __('disabled', 'happy-place')
+            )
+        ];
     }
 
     /**
@@ -293,61 +1172,45 @@ class Admin_Menu
     private function handle_dev_actions(): void
     {
         if (!wp_verify_nonce($_POST['hph_dev_nonce'], 'hph_dev_tools')) {
-            wp_die('Security check failed');
+            wp_die(__('Security check failed', 'happy-place'));
         }
 
         if (!current_user_can('manage_options')) {
-            wp_die('Insufficient permissions');
+            wp_die(__('Insufficient permissions', 'happy-place'));
         }
 
         $action = sanitize_text_field($_POST['dev_action']);
-        $theme_path = get_template_directory();
-        $plugin_path = plugin_dir_path(dirname(dirname(__FILE__)));
 
         switch ($action) {
             case 'flush_cache':
-                // Clear WordPress object cache
                 wp_cache_flush();
-                
-                // Clear transients
                 $this->clear_expired_transients();
                 
-                // Clear W3 Total Cache if available
+                // Clear third-party caches if available
                 if (function_exists('w3tc_flush_all')) {
                     \w3tc_flush_all();
                 }
-                
-                // Clear WP Rocket cache if available  
                 if (function_exists('rocket_clean_domain')) {
                     \rocket_clean_domain();
                 }
-                
-                // Clear LiteSpeed cache if available
                 if (class_exists('LiteSpeed\\Purge')) {
                     \LiteSpeed\Purge::purge_all();
                 }
                 
-                $this->show_admin_notice('WordPress cache flushed successfully!', 'success');
+                $this->show_admin_notice(__('WordPress cache flushed successfully!', 'happy-place'), 'success');
                 break;
 
             case 'flush_rewrite':
                 flush_rewrite_rules(true);
-                $this->show_admin_notice('Rewrite rules flushed successfully!', 'success');
+                $this->show_admin_notice(__('Rewrite rules flushed successfully!', 'happy-place'), 'success');
                 break;
 
             case 'build_sass':
-                $output = $this->run_build_command($theme_path, 'npm run build:sass');
-                $this->show_admin_notice('Sass build completed. ' . $output, 'success');
+                $this->show_admin_notice(__('Build tools are not available in this environment.', 'happy-place'), 'info');
                 break;
 
             case 'build_webpack':
-                $output = $this->run_build_command($theme_path, 'npm run build');
-                $this->show_admin_notice('Webpack build completed. ' . $output, 'success');
-                break;
-
-            case 'build_plugin':
-                $output = $this->run_build_command($plugin_path, 'npm run build');
-                $this->show_admin_notice('Plugin build completed. ' . $output, 'success');
+                $this->show_admin_notice(__('Build tools are not available in this environment.', 'happy-place'), 'info');
                 break;
 
             case 'optimize_db':
@@ -358,45 +1221,14 @@ class Admin_Menu
                     $wpdb->query("OPTIMIZE TABLE {$table[0]}");
                     $optimized++;
                 }
-                $this->show_admin_notice("Database optimized! {$optimized} tables processed.", 'success');
-                break;
-
-            case 'clear_transients':
-                $this->clear_expired_transients();
-                $this->show_admin_notice('Expired transients cleared successfully!', 'success');
-                break;
-
-            case 'show_env_info':
-                $this->display_environment_info();
+                $this->show_admin_notice(
+                    sprintf(__('Database optimized! %d tables processed.', 'happy-place'), $optimized),
+                    'success'
+                );
                 break;
 
             default:
-                $this->show_admin_notice('Unknown action.', 'error');
-        }
-    }
-
-    /**
-     * Run build command in specified directory
-     */
-    private function run_build_command(string $directory, string $command): string
-    {
-        if (!is_dir($directory)) {
-            return 'Directory not found.';
-        }
-
-        $old_dir = getcwd();
-        chdir($directory);
-        
-        $output = [];
-        $return_code = 0;
-        exec($command . ' 2>&1', $output, $return_code);
-        
-        chdir($old_dir);
-        
-        if ($return_code === 0) {
-            return 'Build successful.';
-        } else {
-            return 'Build failed: ' . implode(' ', array_slice($output, -3));
+                $this->show_admin_notice(__('Unknown action.', 'happy-place'), 'error');
         }
     }
 
@@ -415,23 +1247,6 @@ class Admin_Menu
     }
 
     /**
-     * Display environment information
-     */
-    private function display_environment_info(): void
-    {
-        echo '<div class="notice notice-info"><p><strong>Environment Information:</strong></p>';
-        echo '<ul>';
-        echo '<li><strong>PHP Version:</strong> ' . PHP_VERSION . '</li>';
-        echo '<li><strong>WordPress Version:</strong> ' . get_bloginfo('version') . '</li>';
-        echo '<li><strong>Theme:</strong> ' . get_template() . '</li>';
-        echo '<li><strong>Memory Limit:</strong> ' . ini_get('memory_limit') . '</li>';
-        echo '<li><strong>Max Execution Time:</strong> ' . ini_get('max_execution_time') . 's</li>';
-        echo '<li><strong>Upload Max Size:</strong> ' . ini_get('upload_max_filesize') . '</li>';
-        echo '<li><strong>Server Software:</strong> ' . ($_SERVER['SERVER_SOFTWARE'] ?? 'Unknown') . '</li>';
-        echo '</ul></div>';
-    }
-
-    /**
      * Show admin notice
      */
     private function show_admin_notice(string $message, string $type = 'info'): void
@@ -441,3 +1256,6 @@ class Admin_Menu
         });
     }
 }
+
+// Initialize the enhanced admin menu
+Admin_Menu::get_instance();

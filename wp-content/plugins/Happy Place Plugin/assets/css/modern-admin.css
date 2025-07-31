@@ -1,0 +1,523 @@
+/**
+ * Modern Admin Styles for Happy Place Plugin
+ * Clean, responsive design with consistent patterns
+ * Version 3.0.0
+ */
+
+/* Base Modern Admin Styles */
+.hph-modern-admin {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    background: #f1f1f1;
+    margin: 20px 0 0 0;
+}
+
+.hph-admin-header {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-admin-title {
+    margin: 0;
+    font-size: 23px;
+    font-weight: 400;
+    line-height: 29px;
+    color: #23282d;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hph-admin-title .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #2271b1;
+}
+
+/* Loading States */
+.hph-loading-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    color: #646970;
+    font-style: italic;
+}
+
+.hph-loading-placeholder::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    border: 2px solid #ccd0d4;
+    border-radius: 50%;
+    border-top-color: #2271b1;
+    animation: hph-spin 1s ease-in-out infinite;
+}
+
+@keyframes hph-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Card Components */
+.hph-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-card h2 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.hph-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+/* Dashboard Specific */
+.hph-modern-dashboard {
+    display: grid;
+    gap: 20px;
+}
+
+.hph-dashboard-section {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.hph-stat-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2271b1;
+    margin-bottom: 5px;
+}
+
+.hph-stat-label {
+    font-size: 14px;
+    color: #646970;
+    font-weight: 500;
+}
+
+.hph-stat-indicator {
+    font-size: 24px;
+    color: #00a32a;
+}
+
+/* Activity List */
+.hph-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hph-activity-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.hph-activity-icon {
+    color: #2271b1;
+    font-size: 16px;
+}
+
+.hph-activity-content {
+    flex: 1;
+}
+
+.hph-activity-actions {
+    display: flex;
+    gap: 5px;
+}
+
+/* Toolbar */
+.hph-toolbar {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-toolbar-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Marketing Suite */
+.hph-modern-marketing-suite {
+    display: grid;
+    gap: 20px;
+}
+
+.hph-format-selection {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-format-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.hph-format-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 2px solid #ccd0d4;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.hph-format-option:hover {
+    border-color: #2271b1;
+    box-shadow: 0 2px 4px rgba(34, 113, 177, 0.1);
+}
+
+.hph-format-option.selected {
+    border-color: #2271b1;
+    background: #f0f6fc;
+}
+
+.hph-format-icon {
+    font-size: 32px;
+    color: #2271b1;
+    margin-bottom: 10px;
+}
+
+.hph-format-name {
+    font-weight: 500;
+    color: #23282d;
+    text-align: center;
+}
+
+.hph-generator-interface {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+/* Tools */
+.hph-modern-tools {
+    display: grid;
+    gap: 20px;
+}
+
+.hph-tool-category {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.hph-tool-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 8px;
+    background: #fff;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.hph-tool-card:hover {
+    border-color: #2271b1;
+    box-shadow: 0 2px 4px rgba(34, 113, 177, 0.1);
+}
+
+.hph-tool-icon {
+    font-size: 32px;
+    color: #2271b1;
+    margin-bottom: 10px;
+}
+
+.hph-tool-content h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.hph-tool-content p {
+    margin: 0 0 15px 0;
+    color: #646970;
+    font-size: 14px;
+}
+
+/* Integrations */
+.hph-modern-integrations {
+    display: grid;
+    gap: 20px;
+}
+
+.hph-integration-status {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-integration-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.hph-integration-card {
+    padding: 15px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hph-integration-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.hph-integration-info {
+    flex: 1;
+}
+
+.hph-integration-name {
+    font-weight: 600;
+    color: #23282d;
+    margin-bottom: 4px;
+}
+
+.hph-integration-status-text {
+    font-size: 12px;
+    color: #646970;
+}
+
+.hph-integration-actions {
+    display: flex;
+    gap: 5px;
+}
+
+/* System Health */
+.hph-modern-health {
+    display: grid;
+    gap: 20px;
+}
+
+.hph-health-metrics {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-performance-monitoring {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+/* Settings */
+.hph-modern-settings {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-settings-form .form-table {
+    background: #fff;
+}
+
+.hph-save-settings {
+    margin-top: 20px;
+}
+
+/* Developer Tools */
+.hph-modern-developer {
+    display: grid;
+    gap: 20px;
+}
+
+.hph-dev-actions {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-dev-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.hph-test-results {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+/* Status Indicators */
+.hph-status-healthy {
+    color: #00a32a;
+}
+
+.hph-status-warning {
+    color: #dba617;
+}
+
+.hph-status-critical {
+    color: #d63638;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hph-stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-format-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .hph-tool-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-integration-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-toolbar-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .hph-dev-buttons {
+        flex-direction: column;
+    }
+}
+
+/* Animations */
+.hph-fade-in {
+    animation: hph-fadeIn 0.3s ease-in-out;
+}
+
+@keyframes hph-fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Button Enhancements */
+.button.hph-button-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.button.hph-button-icon .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-top: -2px;
+}
+
+/* Notice Styles */
+.hph-notice {
+    padding: 12px;
+    margin: 5px 0 15px;
+    border-left: 4px solid;
+    background: #fff;
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.hph-notice.notice-success {
+    border-left-color: #00a32a;
+}
+
+.hph-notice.notice-warning {
+    border-left-color: #dba617;
+}
+
+.hph-notice.notice-error {
+    border-left-color: #d63638;
+}
+
+.hph-notice.notice-info {
+    border-left-color: #2271b1;
+}

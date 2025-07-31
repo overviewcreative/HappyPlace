@@ -14,8 +14,8 @@ abstract class Form_Handler {
      * Initialize the form handler
      */
     public function init() {
-        add_action('admin_post_' . $this->get_action(), [$this, 'handle_submission']);
-        add_action('admin_post_nopriv_' . $this->get_action(), [$this, 'handle_submission']);
+        \add_action('admin_post_' . $this->get_action(), [$this, 'handle_submission']);
+        \add_action('admin_post_nopriv_' . $this->get_action(), [$this, 'handle_submission']);
     }
 
     /**
@@ -33,8 +33,8 @@ abstract class Form_Handler {
      * @return bool
      */
     protected function validate_nonce($nonce, $action) {
-        if (!isset($_POST[$nonce]) || !wp_verify_nonce($_POST[$nonce], $action)) {
-            wp_die('Invalid nonce specified', 'Error', [
+        if (!isset($_POST[$nonce]) || !\wp_verify_nonce($_POST[$nonce], $action)) {
+            \wp_die('Invalid nonce specified', 'Error', [
                 'response' => 403,
                 'back_link' => true,
             ]);

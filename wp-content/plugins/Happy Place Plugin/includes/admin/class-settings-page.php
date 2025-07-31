@@ -6,15 +6,18 @@
  * @package Happy_Place_Plugin
  */
 
-namespace HPH\Admin;
+namespace HappyPlace\Admin;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
+use HappyPlace\Core\Config_Manager;
+
 class Settings_Page
 {
     private static ?self $instance = null;
+    private Config_Manager $config_manager;
 
     public static function get_instance(): self
     {
@@ -23,32 +26,57 @@ class Settings_Page
 
     private function __construct()
     {
+        $this->config_manager = Config_Manager::get_instance();
         add_action('admin_init', [$this, 'register_settings']);
     }
 
     public function register_settings()
     {
-        // General Settings
-        register_setting('hph_general_settings', 'hph_plugin_enabled', [
-            'type' => 'boolean',
-            'default' => true
-        ]);
-
-        register_setting('hph_general_settings', 'hph_debug_mode', [
-            'type' => 'boolean',
-            'default' => false
-        ]);
-
-        // Display Settings
-        register_setting('hph_display_settings', 'hph_listings_per_page', [
-            'type' => 'integer',
-            'default' => 12
-        ]);
-
-        register_setting('hph_display_settings', 'hph_default_map_zoom', [
-            'type' => 'integer',
-            'default' => 13
-        ]);
+        // Use Config Manager for settings registration
+        foreach ($this->config_manager->get_all_config() as $group => $settings) {
+            $this->register_group_settings($group, $settings);
+        }
+    }
+    
+    /**
+     * Register settings for a specific group
+     */
+    private function register_group_settings(string $group, array $settings): void {
+        foreach ($settings as $setting => $value) {
+            $option_name = "hph_{$group}_{$setting}";
+            $default = $this->config_manager->get_default("{$group}.{$setting}");
+            
+            register_setting("hph_{$group}_settings", $option_name, [
+                'type' => $this->get_setting_type($value),
+                'default' => $default,
+                'sanitize_callback' => [$this, 'sanitize_setting']
+            ]);
+        }
+    }
+    
+    /**
+     * Get setting type based on value
+     */
+    private function get_setting_type($value): string {
+        if (is_bool($value)) {
+            return 'boolean';
+        } elseif (is_int($value)) {
+            return 'integer';
+        } elseif (is_float($value)) {
+            return 'number';
+        } else {
+            return 'string';
+        }
+    }
+    
+    /**
+     * Sanitize setting value
+     */
+    public function sanitize_setting($value) {
+        if (is_string($value)) {
+            return sanitize_text_field($value);
+        }
+        return $value;
 
         // Integration Settings
         register_setting('hph_integration_settings', 'hph_airtable_token', [

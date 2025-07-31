@@ -6,7 +6,7 @@
  * @package Happy_Place_Plugin
  */
 
-namespace HPH\Admin;
+namespace HappyPlace\Admin;
 
 if (!defined('ABSPATH')) {
     exit;
