@@ -1,0 +1,139 @@
+/**
+ * Happy Place Theme - Listing Details Component
+ * 
+ * Property details and specifications
+ */
+
+.hph-listing-details {
+    @include card-base;
+    padding: var(--hph-spacing-8);
+    
+    .details-header {
+        margin-bottom: var(--hph-spacing-6);
+        
+        .details-title {
+            font-size: var(--hph-font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text);
+            margin-bottom: var(--hph-spacing-2);
+        }
+        
+        .details-subtitle {
+            color: var(--color-text-muted);
+            font-size: var(--hph-font-size-lg);
+        }
+    }
+    
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--hph-spacing-6);
+        
+        @include respond-below('sm') {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .detail-group {
+        .group-title {
+            font-size: var(--hph-font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--hph-spacing-4);
+            padding-bottom: var(--hph-spacing-2);
+            border-bottom: 2px solid var(--color-primary);
+        }
+        
+        .detail-list {
+            list-style: none;
+            
+            .detail-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: var(--hph-spacing-3) 0;
+                border-bottom: 1px solid var(--color-border-light);
+                
+                &:last-child {
+                    border-bottom: none;
+                }
+                
+                .detail-label {
+                    font-weight: var(--font-weight-medium);
+                    color: var(--color-text-light);
+                }
+                
+                .detail-value {
+                    font-weight: var(--font-weight-semibold);
+                    color: var(--color-text);
+                    text-align: right;
+                    
+                    &.highlight {
+                        color: var(--color-primary);
+                    }
+                    
+                    &.success {
+                        color: var(--color-success);
+                    }
+                    
+                    &.warning {
+                        color: var(--color-warning);
+                    }
+                }
+            }
+        }
+    }
+    
+    // Specific detail styling
+    .property-details {
+        .detail-value {
+            .icon {
+                margin-right: var(--hph-spacing-1);
+                color: var(--color-primary);
+            }
+        }
+    }
+    
+    .financial-details {
+        .price-value {
+            font-size: var(--hph-font-size-lg);
+            color: var(--color-success);
+            font-weight: var(--font-weight-bold);
+        }
+    }
+    
+    // Expandable sections
+    .detail-expandable {
+        .expand-trigger {
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            
+            &:hover {
+                color: var(--color-primary);
+            }
+            
+            .expand-icon {
+                float: right;
+                transition: transform var(--transition-fast);
+            }
+            
+            &.expanded .expand-icon {
+                transform: rotate(180deg);
+            }
+        }
+        
+        .expand-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-normal);
+            
+            &.expanded {
+                max-height: 500px;
+            }
+        }
+    }
+}

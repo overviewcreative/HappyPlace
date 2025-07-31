@@ -43,7 +43,7 @@ class Flyer_Generator {
         }
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
-        // AJAX actions migrated to centralized system (class-ajax-registry.php)
+        // AJAX actions handled by centralized AJAX system (class-ajax-coordinator.php -> class-flyer-ajax.php)
         add_shortcode('listing_flyer_generator', [$this, 'render_flyer_generator']);
         
         // Add admin notice for debugging (only in debug mode)
@@ -283,8 +283,9 @@ class Flyer_Generator {
 
     /**
      * Gather listing, agent, and community data using bridge functions
+     * Public method to allow AJAX handler access
      */
-    private function get_listing_data(int $listing_id, string $flyer_type = 'listing'): array {
+    public function get_listing_data(int $listing_id, string $flyer_type = 'listing'): array {
         // Ensure bridge functions are available
         $this->ensure_bridge_functions_loaded();
         
@@ -330,11 +331,23 @@ class Flyer_Generator {
      * Ensure bridge functions are loaded
      */
     private function ensure_bridge_functions_loaded(): void {
-        if (!function_exists('hph_bridge_get_price')) {
+        if (!function_exists('hph_get_listing_price')) {
             // Include theme bridge functions if not already loaded
-            $theme_bridge_path = get_template_directory() . '/inc/template-bridge.php';
-            if (file_exists($theme_bridge_path)) {
-                include_once $theme_bridge_path;
+            $theme_dir = get_template_directory();
+            $bridge_files = [
+                $theme_dir . '/inc/bridge/listing-bridge.php',
+                $theme_dir . '/inc/bridge/agent-bridge.php',
+                $theme_dir . '/inc/bridge/template-bridge.php',
+                $theme_dir . '/inc/template-bridge.php', // fallback location
+            ];
+            
+            foreach ($bridge_files as $bridge_file) {
+                if (file_exists($bridge_file)) {
+                    include_once $bridge_file;
+                    if (defined('WP_DEBUG') && WP_DEBUG) {
+                        error_log('Flyer Generator: Loaded bridge file: ' . $bridge_file);
+                    }
+                }
             }
         }
     }
@@ -355,7 +368,7 @@ class Flyer_Generator {
     }
 
     /**
-     * Extract listing fields safely
+     * Extract listing fields safely using existing bridge functions
      */
     private function extract_listing_fields(int $listing_id): array {
         $fields = [
@@ -366,49 +379,69 @@ class Flyer_Generator {
             'permalink'        => get_permalink($listing_id),
         ];
 
-        // Price data
-        $price = $this->safe_bridge_call('hph_bridge_get_price', $listing_id, false);
+        // Price data using existing bridge function
+        $price = $this->safe_bridge_call('hph_get_listing_price', $listing_id, 'display');
+        $price_raw = $this->safe_bridge_call('hph_get_listing_price', $listing_id, 'raw');
         $fields['price'] = $price;
         $fields['listing_price'] = $price;
+        $fields['price_raw'] = $price_raw;
 
-        // Bedroom/bathroom data
-        $bedrooms = $this->safe_bridge_call('hph_bridge_get_bedrooms', $listing_id);
-        $fields['bedrooms'] = $bedrooms;
-        $fields['beds'] = $bedrooms;
+        // Address data using existing bridge function
+        $address_array = $this->safe_bridge_call('hph_get_listing_address', $listing_id, false);
+        $address_formatted = $this->safe_bridge_call('hph_get_listing_address', $listing_id, true);
+        
+        if (is_array($address_array)) {
+            $fields['street_address'] = $address_array['street'] ?? '';
+            $fields['city'] = $address_array['city'] ?? '';
+            $fields['state'] = $address_array['state'] ?? '';
+            $fields['region'] = $address_array['state'] ?? '';
+            $fields['zip_code'] = $address_array['zip'] ?? '';
+            $fields['zip'] = $address_array['zip'] ?? '';
+            $fields['full_address'] = $address_array['full'] ?? '';
+            $fields['address'] = $address_array['full'] ?: $fields['street_address'];
+        }
+        
+        if ($address_formatted) {
+            $fields['address'] = $address_formatted;
+        }
 
-        $bathrooms = $this->safe_bridge_call('hph_bridge_get_bathrooms', $listing_id);
-        $fields['bathrooms'] = $bathrooms;
-        $fields['baths'] = $bathrooms;
+        // Property features using existing bridge function
+        $features = $this->safe_bridge_call('hph_get_listing_features', $listing_id) ?: [];
+        
+        $fields['bedrooms'] = $features['bedrooms'] ?? null;
+        $fields['beds'] = $features['bedrooms'] ?? null;
+        $fields['bathrooms'] = $features['bathrooms_total'] ?? $features['bathrooms'] ?? null;
+        $fields['baths'] = $fields['bathrooms'];
+        $fields['square_footage'] = $features['square_feet'] ?? null;
+        $fields['sqft'] = $fields['square_footage'];
+        $fields['living_area'] = $fields['square_footage'];
+        $fields['lot_size'] = $features['lot_size'] ?? null;
+        $fields['year_built'] = $features['year_built'] ?? null;
 
-        // Square footage
-        $sqft = $this->safe_bridge_call('hph_bridge_get_sqft', $listing_id);
-        $fields['square_footage'] = $sqft;
-        $fields['sqft'] = $sqft;
-        $fields['living_area'] = $sqft;
+        // Property type from features
+        $fields['property_type'] = $features['property_type'] ?? null;
 
-        // Address data
-        $street_address = $this->safe_bridge_call('hph_bridge_get_address', $listing_id, 'street');
-        $city = $this->safe_bridge_call('hph_bridge_get_address', $listing_id, 'city');
-        $state = $this->safe_bridge_call('hph_bridge_get_address', $listing_id, 'state');
-        $zip = $this->safe_bridge_call('hph_bridge_get_address', $listing_id, 'zip');
-        $full_address = $this->safe_bridge_call('hph_bridge_get_address', $listing_id, 'full');
+        // Status using existing bridge function
+        $status = $this->safe_bridge_call('hph_get_listing_status', $listing_id);
+        $fields['listing_status'] = $status;
+        $fields['status'] = $status;
 
-        $fields['street_address'] = $street_address;
-        $fields['address'] = $full_address ?: $street_address;
-        $fields['full_address'] = $full_address;
-        $fields['city'] = $city;
-        $fields['state'] = $state;
-        $fields['region'] = $state;
-        $fields['zip_code'] = $zip;
-        $fields['zip'] = $zip;
+        // Images using existing bridge function
+        $images = $this->safe_bridge_call('hph_get_listing_images', $listing_id, 'large') ?: [];
+        $fields['gallery'] = $images;
+        $fields['photo_gallery'] = $images;
+        
+        // Main photo (first image or featured)
+        $featured_image = get_the_post_thumbnail_url($listing_id, 'large');
+        $main_photo = $featured_image ?: ($images[0]['url'] ?? null);
+        $fields['main_photo'] = $main_photo;
+        $fields['featured_image'] = $main_photo;
 
-        // Property type
-        $fields['property_type'] = $this->safe_bridge_call('hph_bridge_get_property_type', $listing_id);
-
-        // Description
+        // Description from ACF fields (direct access since no specific bridge function)
         $description = get_field('property_description', $listing_id) 
                       ?: get_field('description', $listing_id) 
-                      ?: get_field('public_remarks', $listing_id);
+                      ?: get_field('public_remarks', $listing_id)
+                      ?: get_field('marketing_remarks', $listing_id);
         
         $fields['short_description'] = $description;
         $fields['description'] = $description;
@@ -419,32 +452,17 @@ class Flyer_Generator {
         $fields['brief_description'] = $description;
         $fields['remarks'] = $description;
 
-        // Images
-        $main_photo = $this->safe_bridge_call('hph_get_main_image', $listing_id);
-        $fields['main_photo'] = $main_photo;
-        $fields['featured_image'] = $main_photo;
+        // MLS number (direct ACF access)
+        $fields['mls_number'] = get_field('mls_number', $listing_id) ?: get_field('listing_number', $listing_id);
 
-        $gallery = $this->safe_bridge_call('hph_bridge_get_gallery', $listing_id) ?: [];
-        $fields['photo_gallery'] = $gallery;
-        $fields['gallery'] = $gallery;
-
-        // MLS and status
-        $fields['mls_number'] = $this->safe_bridge_call('hph_bridge_get_mls_number', $listing_id);
-        $status = $this->safe_bridge_call('hph_bridge_get_status', $listing_id);
-        $fields['listing_status'] = $status;
-        $fields['status'] = $status;
-
-        // Additional features
-        $fields['year_built'] = $this->safe_bridge_call('hph_bridge_get_features', $listing_id, 'year_built');
-
-        // Lot size data
-        $lot_size = $this->safe_bridge_call('hph_bridge_get_lot_size', $listing_id) 
-                   ?: get_field('lot_size', $listing_id);
-        $lot_acres = $this->safe_bridge_call('hph_bridge_get_lot_size', $listing_id, true) 
-                    ?: get_field('lot_acres', $listing_id);
-
-        $fields['lot_size'] = $lot_size;
-        $fields['lot_acres'] = $lot_acres;
+        // Lot acres calculation if lot size is available
+        if (!empty($fields['lot_size'])) {
+            // Convert square feet to acres (43,560 sq ft = 1 acre)
+            $lot_sqft = floatval(preg_replace('/[^0-9.]/', '', $fields['lot_size']));
+            $fields['lot_acres'] = $lot_sqft > 0 ? round($lot_sqft / 43560, 2) : null;
+        } else {
+            $fields['lot_acres'] = null;
+        }
 
         // Debug logging
         if (defined('WP_DEBUG') && WP_DEBUG) {
@@ -462,16 +480,39 @@ class Flyer_Generator {
     }
 
     /**
-     * Get agent data with comprehensive field mapping
+     * Get agent data with comprehensive field mapping using existing bridge functions
      */
     private function get_agent_data(int $listing_id): array {
-        $agent_data = $this->safe_bridge_call('hph_get_listing_agent', $listing_id) ?: [];
+        // First try to get agent from listing relationships
+        $agent_post = get_field('listing_agent', $listing_id) ?: get_field('agent', $listing_id);
         
-        if (empty($agent_data)) {
-            return $this->get_fallback_agent_data();
+        if ($agent_post && is_object($agent_post) && isset($agent_post->ID)) {
+            $agent_id = $agent_post->ID;
+            
+            // Use existing agent bridge functions
+            $agent_data = $this->safe_bridge_call('hph_get_agent_data', $agent_id) ?: [];
+            $agent_contact = $this->safe_bridge_call('hph_get_agent_contact', $agent_id) ?: [];
+            $agent_photo = $this->safe_bridge_call('hph_get_agent_photo', $agent_id, 'medium');
+            
+            // Merge and normalize the data
+            $combined_data = array_merge($agent_data, $agent_contact);
+            $combined_data['photo'] = $agent_photo;
+            $combined_data['image'] = $agent_photo;
+            
+            return $this->normalize_agent_data($combined_data);
         }
-
-        return $this->normalize_agent_data($agent_data);
+        
+        // Fallback: try direct agent ID field
+        $agent_id = get_field('agent_id', $listing_id);
+        if ($agent_id) {
+            $agent_data = $this->safe_bridge_call('hph_get_agent_data', $agent_id) ?: [];
+            if (!empty($agent_data)) {
+                return $this->normalize_agent_data($agent_data);
+            }
+        }
+        
+        // Final fallback
+        return $this->get_fallback_agent_data();
     }
 
     /**

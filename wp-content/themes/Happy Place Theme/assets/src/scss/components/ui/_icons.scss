@@ -1,0 +1,492 @@
+/**
+ * Happy Place Theme - UI Icons Component
+ * 
+ * Icon styling and enhancement utilities
+ */
+
+.hph-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    
+    // Sizes
+    &.icon-xs {
+        width: 0.75rem;
+        height: 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    &.icon-sm {
+        width: 1rem;
+        height: 1rem;
+        font-size: 1rem;
+    }
+    
+    &.icon-md {
+        width: 1.25rem;
+        height: 1.25rem;
+        font-size: 1.25rem;
+    }
+    
+    &.icon-lg {
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 1.5rem;
+    }
+    
+    &.icon-xl {
+        width: 2rem;
+        height: 2rem;
+        font-size: 2rem;
+    }
+    
+    &.icon-2xl {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 2.5rem;
+    }
+    
+    &.icon-3xl {
+        width: 3rem;
+        height: 3rem;
+        font-size: 3rem;
+    }
+    
+    // Colors
+    &.icon-primary {
+        color: var(--color-primary);
+    }
+    
+    &.icon-secondary {
+        color: var(--color-secondary);
+    }
+    
+    &.icon-success {
+        color: var(--color-success);
+    }
+    
+    &.icon-warning {
+        color: var(--color-warning);
+    }
+    
+    &.icon-danger {
+        color: var(--color-danger);
+    }
+    
+    &.icon-info {
+        color: var(--color-info);
+    }
+    
+    &.icon-muted {
+        color: var(--color-text-muted);
+    }
+    
+    // Styles
+    &.icon-circle {
+        background: var(--color-surface);
+        border-radius: var(--hph-border-radius-full);
+        padding: var(--hph-spacing-2);
+    }
+    
+    &.icon-square {
+        background: var(--color-surface);
+        border-radius: var(--hph-border-radius-lg);
+        padding: var(--hph-spacing-2);
+    }
+    
+    &.icon-bordered {
+        border: 1px solid var(--color-border);
+        border-radius: var(--hph-border-radius-lg);
+        padding: var(--hph-spacing-2);
+    }
+    
+    // Background variants
+    &.icon-bg-primary {
+        background: var(--color-primary);
+        color: var(--color-white);
+    }
+    
+    &.icon-bg-secondary {
+        background: var(--color-secondary);
+        color: var(--color-white);
+    }
+    
+    &.icon-bg-success {
+        background: var(--color-success);
+        color: var(--color-white);
+    }
+    
+    &.icon-bg-warning {
+        background: var(--color-warning);
+        color: var(--color-white);
+    }
+    
+    &.icon-bg-danger {
+        background: var(--color-danger);
+        color: var(--color-white);
+    }
+    
+    &.icon-bg-info {
+        background: var(--color-info);
+        color: var(--color-white);
+    }
+    
+    // Light background variants
+    &.icon-bg-primary-light {
+        background: var(--color-primary-light);
+        color: var(--color-primary-dark);
+    }
+    
+    &.icon-bg-success-light {
+        background: var(--color-success-light);
+        color: var(--color-success-dark);
+    }
+    
+    &.icon-bg-warning-light {
+        background: var(--color-warning-light);
+        color: var(--color-warning-dark);
+    }
+    
+    &.icon-bg-danger-light {
+        background: var(--color-danger-light);
+        color: var(--color-danger-dark);
+    }
+    
+    &.icon-bg-info-light {
+        background: var(--color-info-light);
+        color: var(--color-info-dark);
+    }
+    
+    // Animations
+    &.icon-spin {
+        animation: spin 1s linear infinite;
+    }
+    
+    &.icon-pulse {
+        animation: pulse 2s infinite;
+    }
+    
+    &.icon-bounce {
+        animation: bounce 1s infinite;
+    }
+    
+    &.icon-shake {
+        animation: shake 0.5s ease-in-out infinite;
+    }
+    
+    &.icon-fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+    
+    // Hover effects
+    &.icon-hover-scale {
+        transition: transform var(--transition-fast);
+        
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+    
+    &.icon-hover-rotate {
+        transition: transform var(--transition-fast);
+        
+        &:hover {
+            transform: rotate(90deg);
+        }
+    }
+    
+    &.icon-hover-color {
+        transition: color var(--transition-fast);
+        
+        &:hover {
+            color: var(--color-primary);
+        }
+    }
+}
+
+// Icon Groups
+.icon-group {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-spacing-2);
+    
+    &.icon-group-stacked {
+        flex-direction: column;
+    }
+    
+    &.icon-group-connected {
+        gap: 0;
+        
+        .hph-icon {
+            border-radius: 0;
+            border-right-width: 0;
+            
+            &:first-child {
+                border-top-left-radius: var(--hph-border-radius-lg);
+                border-bottom-left-radius: var(--hph-border-radius-lg);
+            }
+            
+            &:last-child {
+                border-top-right-radius: var(--hph-border-radius-lg);
+                border-bottom-right-radius: var(--hph-border-radius-lg);
+                border-right-width: 1px;
+            }
+        }
+    }
+}
+
+// Property specific icons
+.property-icon {
+    &.bathrooms-icon {
+        color: var(--color-info);
+    }
+    
+    &.bedrooms-icon {
+        color: var(--color-success);
+    }
+    
+    &.area-icon {
+        color: var(--color-warning);
+    }
+    
+    &.location-icon {
+        color: var(--color-primary);
+    }
+    
+    &.price-icon {
+        color: var(--color-danger);
+    }
+    
+    &.featured-icon {
+        color: var(--color-warning);
+        animation: sparkle 2s ease-in-out infinite;
+    }
+}
+
+// Icon with text
+.icon-text {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-spacing-2);
+    
+    &.icon-text-vertical {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--hph-spacing-1);
+    }
+    
+    .icon-text-label {
+        font-size: var(--hph-font-size-sm);
+        color: var(--color-text-muted);
+        font-weight: var(--font-weight-medium);
+    }
+}
+
+// Social Media Icons
+.social-icons {
+    display: flex;
+    gap: var(--hph-spacing-3);
+    
+    .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: var(--hph-border-radius-full);
+        color: var(--color-white);
+        text-decoration: none;
+        transition: var(--transition-all);
+        
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        &.facebook {
+            background: #1877f2;
+        }
+        
+        &.twitter {
+            background: #1da1f2;
+        }
+        
+        &.instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+        
+        &.linkedin {
+            background: #0077b5;
+        }
+        
+        &.youtube {
+            background: #ff0000;
+        }
+        
+        &.pinterest {
+            background: #bd081c;
+        }
+        
+        i {
+            font-size: 1.25rem;
+        }
+    }
+    
+    &.social-icons-outline {
+        .social-icon {
+            background: transparent;
+            border: 2px solid var(--color-border);
+            color: var(--color-text);
+            
+            &:hover {
+                border-color: var(--color-primary);
+                color: var(--color-primary);
+            }
+        }
+    }
+}
+
+// Loading icon
+.loading-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    .spinner {
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid var(--color-border-light);
+        border-top-color: var(--color-primary);
+        border-radius: var(--hph-border-radius-full);
+        animation: spin 1s linear infinite;
+    }
+    
+    &.loading-lg .spinner {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-width: 3px;
+    }
+    
+    &.loading-sm .spinner {
+        width: 0.75rem;
+        height: 0.75rem;
+        border-width: 1px;
+    }
+}
+
+// Icon buttons
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--hph-border-radius-lg);
+    cursor: pointer;
+    transition: var(--transition-all);
+    
+    &:hover {
+        background: var(--color-primary);
+        color: var(--color-white);
+        border-color: var(--color-primary);
+        transform: translateY(-1px);
+    }
+    
+    &.icon-btn-sm {
+        width: 2rem;
+        height: 2rem;
+        
+        i {
+            font-size: var(--hph-font-size-sm);
+        }
+    }
+    
+    &.icon-btn-lg {
+        width: 3rem;
+        height: 3rem;
+        
+        i {
+            font-size: var(--hph-font-size-lg);
+        }
+    }
+    
+    &.icon-btn-circle {
+        border-radius: var(--hph-border-radius-full);
+    }
+    
+    &.icon-btn-primary {
+        background: var(--color-primary);
+        color: var(--color-white);
+        border-color: var(--color-primary);
+        
+        &:hover {
+            background: var(--color-primary-dark);
+            border-color: var(--color-primary-dark);
+        }
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 53%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40%, 43% {
+        transform: translateY(-8px);
+    }
+    70% {
+        transform: translateY(-4px);
+    }
+    90% {
+        transform: translateY(-2px);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}

@@ -1,289 +1,196 @@
 <?php
 /**
- * Financial Bridge Functions
- * Pure financial calculations and property value operations
+ * Get financial data for mortgage calculations
  * 
- * @package HappyPlace
- * @subpackage Bridge
+ * @param int $listing_id Listing ID
+ * @return array Financial data
  */
-
-if (!defined('ABSPATH')) {
-    exit;
+function hph_bridge_get_financial_data($listing_id) {
+    $cache_key = "hph_financial_data_{$listing_id}";
+    $cached_data = wp_cache_get($cache_key, 'hph_financial');
+    
+    if ($cached_data !== false) {
+        return $cached_data;
+    }
+    
+    $listing_data = hph_bridge_get_listing_data($listing_id);
+    $price = is_numeric($listing_data['price']) ? floatval($listing_data['price']) : 0;
+    
+    if ($price <= 0) {
+        return [];
+    }
+    
+    // Get or calculate financial details
+    $financial_data = [
+        'price' => $price,
+        'down_payment_percent' => 20, // Default 20%
+        'interest_rate' => hph_get_current_interest_rate(),
+        'loan_term' => 30, // Default 30 years
+        'property_taxes' => hph_calculate_property_taxes($price, $listing_id),
+        'insurance' => hph_calculate_insurance($price, $listing_id),
+        'hoa_fees' => floatval($listing_data['hoa_fees'] ?? 0),
+        'pmi_rate' => 0.5 // Default PMI rate percentage
+    ];
+    
+    // Calculate various down payment scenarios
+    $financial_data['payment_scenarios'] = hph_calculate_payment_scenarios($financial_data);
+    
+    wp_cache_set($cache_key, $financial_data, 'hph_financial', 3600);
+    
+    return $financial_data;
 }
 
 /**
- * Calculate monthly mortgage payment
- * @param float $principal Loan amount
- * @param float $interest_rate Annual interest rate (as percentage)
- * @param int $term_years Loan term in years
- * @return float Monthly payment amount
+ * Get current interest rate (fallback to default)
+ * 
+ * @return float Current interest rate
  */
-function hph_calculate_mortgage_payment($principal, $interest_rate, $term_years = 30) {
-    if ($principal <= 0 || $interest_rate < 0 || $term_years <= 0) {
-        return 0;
-    }
-
-    $cache_key = 'mortgage_' . md5($principal . '_' . $interest_rate . '_' . $term_years);
-    $cached_payment = wp_cache_get($cache_key, 'hph_financial');
+function hph_get_current_interest_rate() {
+    // Try to get from theme options or plugin settings
+    $rate = get_option('hph_current_interest_rate', 6.5);
     
-    if ($cached_payment !== false) {
-        return $cached_payment;
-    }
+    // Fallback to reasonable default
+    return is_numeric($rate) ? floatval($rate) : 6.5;
+}
 
-    // Convert annual rate to monthly decimal
+/**
+ * Calculate property taxes
+ * 
+ * @param float $price Property price
+ * @param int $listing_id Listing ID
+ * @return float Annual property tax estimate
+ */
+function hph_calculate_property_taxes($price, $listing_id) {
+    // Try to get actual property tax data
+    $actual_taxes = function_exists('get_field') 
+        ? get_field('property_taxes', $listing_id) 
+        : get_post_meta($listing_id, 'property_taxes', true);
+    
+    if (!empty($actual_taxes) && is_numeric($actual_taxes)) {
+        return floatval($actual_taxes);
+    }
+    
+    // Estimate based on location and price
+    // Default rate of 1.2% annually
+    $tax_rate = hph_get_tax_rate_by_location($listing_id);
+    
+    return $price * ($tax_rate / 100);
+}
+
+/**
+ * Get tax rate by location
+ * 
+ * @param int $listing_id Listing ID
+ * @return float Tax rate percentage
+ */
+function hph_get_tax_rate_by_location($listing_id) {
+    $listing_data = hph_bridge_get_listing_data($listing_id);
+    $state = strtoupper($listing_data['state'] ?? '');
+    
+    // State-based tax rate estimates
+    $state_rates = [
+        'CA' => 0.75,
+        'TX' => 1.8,
+        'NY' => 1.4,
+        'FL' => 0.9,
+        'IL' => 2.3,
+        'NJ' => 2.5,
+        'DE' => 0.6, // Delaware
+        // Add more states as needed
+    ];
+    
+    return isset($state_rates[$state]) ? $state_rates[$state] : 1.2; // Default
+}
+
+/**
+ * Calculate homeowner's insurance
+ * 
+ * @param float $price Property price
+ * @param int $listing_id Listing ID
+ * @return float Annual insurance estimate
+ */
+function hph_calculate_insurance($price, $listing_id) {
+    // Try to get actual insurance data
+    $actual_insurance = function_exists('get_field') 
+        ? get_field('insurance_cost', $listing_id) 
+        : get_post_meta($listing_id, 'insurance_cost', true);
+    
+    if (!empty($actual_insurance) && is_numeric($actual_insurance)) {
+        return floatval($actual_insurance);
+    }
+    
+    // Estimate: typically 0.3% to 0.5% of home value annually
+    return $price * 0.004; // 0.4% default
+}
+
+/**
+ * Calculate payment scenarios with different down payments
+ * 
+ * @param array $financial_data Base financial data
+ * @return array Payment scenarios
+ */
+function hph_calculate_payment_scenarios($financial_data) {
+    $scenarios = [];
+    $down_payment_options = [5, 10, 15, 20, 25, 30];
+    
+    foreach ($down_payment_options as $down_percent) {
+        $scenario = hph_calculate_monthly_payment($financial_data, $down_percent);
+        $scenarios[$down_percent] = $scenario;
+    }
+    
+    return $scenarios;
+}
+
+/**
+ * Calculate monthly payment
+ * 
+ * @param array $financial_data Financial data
+ * @param float $down_payment_percent Down payment percentage
+ * @return array Payment breakdown
+ */
+function hph_calculate_monthly_payment($financial_data, $down_payment_percent = null) {
+    $price = $financial_data['price'];
+    $down_percent = $down_payment_percent ?? $financial_data['down_payment_percent'];
+    $interest_rate = $financial_data['interest_rate'];
+    $loan_term = $financial_data['loan_term'];
+    
+    $down_payment = $price * ($down_percent / 100);
+    $loan_amount = $price - $down_payment;
+    
+    // Calculate principal and interest
     $monthly_rate = ($interest_rate / 100) / 12;
-    $num_payments = $term_years * 12;
-
-    // Calculate monthly payment using amortization formula
+    $num_payments = $loan_term * 12;
+    
     if ($monthly_rate > 0) {
-        $payment = $principal * (
-            ($monthly_rate * pow(1 + $monthly_rate, $num_payments)) /
-            (pow(1 + $monthly_rate, $num_payments) - 1)
-        );
+        $monthly_pi = $loan_amount * ($monthly_rate * pow(1 + $monthly_rate, $num_payments)) / (pow(1 + $monthly_rate, $num_payments) - 1);
     } else {
-        // Handle 0% interest rate
-        $payment = $principal / $num_payments;
+        $monthly_pi = $loan_amount / $num_payments;
     }
-
-    // Cache for 24 hours
-    wp_cache_set($cache_key, $payment, 'hph_financial', 86400);
     
-    return round($payment, 2);
-}
-
-/**
- * Calculate property taxes (estimated)
- * @param float $property_value Property value
- * @param float $tax_rate Annual tax rate (as percentage)
- * @return float Annual property tax amount
- */
-function hph_calculate_property_tax($property_value, $tax_rate = 1.2) {
-    if ($property_value <= 0 || $tax_rate < 0) {
-        return 0;
-    }
-
-    return round(($property_value * $tax_rate) / 100, 2);
-}
-
-/**
- * Calculate monthly property tax
- * @param float $property_value Property value
- * @param float $tax_rate Annual tax rate (as percentage)
- * @return float Monthly property tax amount
- */
-function hph_calculate_monthly_property_tax($property_value, $tax_rate = 1.2) {
-    $annual_tax = hph_calculate_property_tax($property_value, $tax_rate);
-    return round($annual_tax / 12, 2);
-}
-
-/**
- * Calculate homeowners insurance (estimated)
- * @param float $property_value Property value
- * @param float $insurance_rate Annual insurance rate (as percentage of value)
- * @return float Annual insurance cost
- */
-function hph_calculate_homeowners_insurance($property_value, $insurance_rate = 0.35) {
-    if ($property_value <= 0 || $insurance_rate < 0) {
-        return 0;
-    }
-
-    return round(($property_value * $insurance_rate) / 100, 2);
-}
-
-/**
- * Calculate monthly homeowners insurance
- * @param float $property_value Property value
- * @param float $insurance_rate Annual insurance rate (as percentage of value)
- * @return float Monthly insurance cost
- */
-function hph_calculate_monthly_insurance($property_value, $insurance_rate = 0.35) {
-    $annual_insurance = hph_calculate_homeowners_insurance($property_value, $insurance_rate);
-    return round($annual_insurance / 12, 2);
-}
-
-/**
- * Calculate PMI (Private Mortgage Insurance)
- * @param float $loan_amount Loan amount
- * @param float $down_payment Down payment amount
- * @param float $pmi_rate Annual PMI rate (as percentage)
- * @return float Annual PMI cost
- */
-function hph_calculate_pmi($loan_amount, $down_payment, $pmi_rate = 0.5) {
-    $loan_to_value = $loan_amount / ($loan_amount + $down_payment);
+    // Add taxes, insurance, HOA
+    $monthly_taxes = ($financial_data['property_taxes'] ?? 0) / 12;
+    $monthly_insurance = ($financial_data['insurance'] ?? 0) / 12;
+    $monthly_hoa = $financial_data['hoa_fees'] ?? 0;
     
-    // PMI typically required if LTV > 80%
-    if ($loan_to_value <= 0.8) {
-        return 0;
+    // PMI if down payment < 20%
+    $monthly_pmi = 0;
+    if ($down_percent < 20) {
+        $pmi_rate = $financial_data['pmi_rate'] ?? 0.5;
+        $monthly_pmi = ($loan_amount * ($pmi_rate / 100)) / 12;
     }
-
-    return round(($loan_amount * $pmi_rate) / 100, 2);
-}
-
-/**
- * Calculate monthly PMI
- * @param float $loan_amount Loan amount
- * @param float $down_payment Down payment amount
- * @param float $pmi_rate Annual PMI rate (as percentage)
- * @return float Monthly PMI cost
- */
-function hph_calculate_monthly_pmi($loan_amount, $down_payment, $pmi_rate = 0.5) {
-    $annual_pmi = hph_calculate_pmi($loan_amount, $down_payment, $pmi_rate);
-    return round($annual_pmi / 12, 2);
-}
-
-/**
- * Calculate total monthly payment (PITI + PMI)
- * @param array $params Array with keys: principal, interest_rate, term_years, property_value, down_payment
- * @return array Breakdown of monthly payment components
- */
-function hph_calculate_total_monthly_payment($params) {
-    $defaults = [
-        'principal' => 0,
-        'interest_rate' => 4.5,
-        'term_years' => 30,
-        'property_value' => 0,
-        'down_payment' => 0,
-        'tax_rate' => 1.2,
-        'insurance_rate' => 0.35,
-        'pmi_rate' => 0.5
+    
+    $total_monthly = $monthly_pi + $monthly_taxes + $monthly_insurance + $monthly_hoa + $monthly_pmi;
+    
+    return [
+        'down_payment' => $down_payment,
+        'loan_amount' => $loan_amount,
+        'monthly_pi' => $monthly_pi,
+        'monthly_taxes' => $monthly_taxes,
+        'monthly_insurance' => $monthly_insurance,
+        'monthly_hoa' => $monthly_hoa,
+        'monthly_pmi' => $monthly_pmi,
+        'total_monthly' => $total_monthly,
+        'down_payment_percent' => $down_percent,
+        'total_interest' => ($monthly_pi * $num_payments) - $loan_amount
     ];
-
-    $params = wp_parse_args($params, $defaults);
-
-    $cache_key = 'total_payment_' . md5(serialize($params));
-    $cached_payment = wp_cache_get($cache_key, 'hph_financial');
-    
-    if ($cached_payment !== false) {
-        return $cached_payment;
-    }
-
-    $payment_breakdown = [
-        'principal_interest' => hph_calculate_mortgage_payment(
-            $params['principal'], 
-            $params['interest_rate'], 
-            $params['term_years']
-        ),
-        'property_tax' => hph_calculate_monthly_property_tax(
-            $params['property_value'], 
-            $params['tax_rate']
-        ),
-        'insurance' => hph_calculate_monthly_insurance(
-            $params['property_value'], 
-            $params['insurance_rate']
-        ),
-        'pmi' => hph_calculate_monthly_pmi(
-            $params['principal'], 
-            $params['down_payment'], 
-            $params['pmi_rate']
-        )
-    ];
-
-    $payment_breakdown['total'] = array_sum($payment_breakdown);
-
-    // Cache for 6 hours
-    wp_cache_set($cache_key, $payment_breakdown, 'hph_financial', 21600);
-    
-    return $payment_breakdown;
-}
-
-/**
- * Calculate affordability based on income
- * @param float $monthly_income Gross monthly income
- * @param float $monthly_debts Existing monthly debt payments
- * @param float $debt_to_income_ratio Maximum DTI ratio (default 0.43)
- * @return float Maximum affordable monthly payment
- */
-function hph_calculate_affordability($monthly_income, $monthly_debts = 0, $debt_to_income_ratio = 0.43) {
-    if ($monthly_income <= 0) {
-        return 0;
-    }
-
-    $max_total_debt = $monthly_income * $debt_to_income_ratio;
-    $available_for_housing = $max_total_debt - $monthly_debts;
-    
-    return max(0, round($available_for_housing, 2));
-}
-
-/**
- * Calculate maximum loan amount based on payment
- * @param float $monthly_payment Desired monthly payment
- * @param float $interest_rate Annual interest rate (as percentage)
- * @param int $term_years Loan term in years
- * @return float Maximum loan amount
- */
-function hph_calculate_max_loan_amount($monthly_payment, $interest_rate, $term_years = 30) {
-    if ($monthly_payment <= 0 || $interest_rate < 0 || $term_years <= 0) {
-        return 0;
-    }
-
-    $monthly_rate = ($interest_rate / 100) / 12;
-    $num_payments = $term_years * 12;
-
-    if ($monthly_rate > 0) {
-        $max_loan = $monthly_payment * (
-            (pow(1 + $monthly_rate, $num_payments) - 1) /
-            ($monthly_rate * pow(1 + $monthly_rate, $num_payments))
-        );
-    } else {
-        // Handle 0% interest rate
-        $max_loan = $monthly_payment * $num_payments;
-    }
-
-    return round($max_loan, 2);
-}
-
-/**
- * Calculate down payment percentage
- * @param float $down_payment Down payment amount
- * @param float $purchase_price Purchase price
- * @return float Down payment percentage
- */
-function hph_calculate_down_payment_percentage($down_payment, $purchase_price) {
-    if ($purchase_price <= 0) {
-        return 0;
-    }
-
-    return round(($down_payment / $purchase_price) * 100, 2);
-}
-
-/**
- * Calculate loan-to-value ratio
- * @param float $loan_amount Loan amount
- * @param float $property_value Property value
- * @return float LTV ratio as percentage
- */
-function hph_calculate_ltv_ratio($loan_amount, $property_value) {
-    if ($property_value <= 0) {
-        return 0;
-    }
-
-    return round(($loan_amount / $property_value) * 100, 2);
-}
-
-/**
- * Get interest rate trends (placeholder for future API integration)
- * @return array Interest rate information
- */
-function hph_get_interest_rate_trends() {
-    $cache_key = 'interest_rate_trends';
-    $cached_rates = wp_cache_get($cache_key, 'hph_financial');
-    
-    if ($cached_rates !== false) {
-        return $cached_rates;
-    }
-
-    // Placeholder data - would integrate with real rate API
-    $rates = [
-        'current_rate' => 4.5,
-        'trend' => 'stable',
-        'last_updated' => current_time('Y-m-d H:i:s'),
-        'rates_30_year' => 4.5,
-        'rates_15_year' => 4.0,
-        'rates_5_1_arm' => 4.2
-    ];
-
-    // Cache for 1 hour
-    wp_cache_set($cache_key, $rates, 'hph_financial', 3600);
-    
-    return $rates;
 }

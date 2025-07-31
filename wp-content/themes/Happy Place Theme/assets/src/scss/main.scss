@@ -14,6 +14,7 @@
 @import 'base/reset';             // CSS reset/normalize
 @import 'base/typography';        // Font definitions
 @import 'base/forms';             // Base form styling
+@import 'base/base';              // New comprehensive base styles
 @import 'base/globals';           // Global element styles
 
 // 3. LAYOUT LAYER (Structure)
@@ -21,21 +22,46 @@
 @import 'layout/containers';      // Content containers
 @import 'layout/header';          // Site header
 @import 'layout/footer';          // Site footer
+@import 'layout/sidebar';         // New sidebar layout
 
 // 4. COMPONENT LAYER (UI Components)
 @import 'components/buttons/buttons';
+@import 'components/buttons';             // New comprehensive buttons
 @import 'components/cards/cards';
-// @import 'components/forms/forms';           // Temporarily disabled - has dashboard conflicts
+@import 'components/cards';               // New comprehensive cards
+@import 'components/forms';               // New comprehensive forms
+@import 'components/modals';              // New modal component
 @import 'components/gallery/photo-gallery';
 @import 'components/hero/hero-section';
-// @import 'components/dashboard/dashboard-main';  // Temporarily disabled - complex dashboard system
+@import 'components/template-parts';        // Template part fallback styles
+
+// Listing Components
+@import 'components/listing/hero';
+@import 'components/listing/card';
+@import 'components/listing/gallery';
+@import 'components/listing/details';
+@import 'components/listing/features';
+
+// Archive Components  
+@import 'components/archive/search-form';
+@import 'components/archive/listings-grid';
+@import 'components/archive/pagination';
+@import 'components/archive/filters';
+
+// UI Components
+@import 'components/ui/badges';
+@import 'components/ui/icons';
 
 // 5. TEMPLATE LAYER (Page-Specific)
-@import 'templates/single-listing';
 @import 'templates/dashboard';           // Re-enabled with mixin fixes
 @import 'templates/archive-listing';
+@import 'templates/archive-agent';
+@import 'pages/single-listing';         // New comprehensive single listing
+@import 'pages/archive-listing';        // New comprehensive archive listing
+@import 'pages/single-agent';           // New single agent page
 
 // 6. UTILITY LAYER (Helpers - IMPORT LAST)
 @import 'utilities/spacing';
 @import 'utilities/typography';
 @import 'utilities/helpers';
+@import 'utilities/utilities';           // New comprehensive utilities

@@ -249,3 +249,85 @@ $z-index: (
 @function responsive-class($property, $breakpoint, $value) {
     @return '#{$breakpoint}\\:#{$property}-#{$value}';
 }
+
+/* ============================================
+   COMPREHENSIVE UTILITY FUNCTIONS
+   ============================================ */
+
+// Convert px to rem with base
+@function rem($pixels, $base: 16) {
+    @return #{$pixels / $base}rem;
+}
+
+// Convert px to em
+@function em($pixels, $base: 16) {
+    @return #{$pixels / $base}em;
+}
+
+// Strip units from values
+@function strip-unit($value) {
+    @return $value / ($value * 0 + 1);
+}
+
+// Calculate fluid typography
+@function fluid-size($min-size, $max-size, $min-screen: 320px, $max-screen: 1200px) {
+    $slope: ($max-size - $min-size) / ($max-screen - $min-screen);
+    $yAxisIntersection: -$min-screen * $slope + $min-size;
+    @return clamp(#{$min-size}, #{$yAxisIntersection} + #{$slope * 100vw}, #{$max-size});
+}
+
+// Map deep get for nested maps
+@function map-deep-get($map, $keys...) {
+    @each $key in $keys {
+        $map: map-get($map, $key);
+    }
+    @return $map;
+}
+
+// Color contrast calculation
+@function luminance($color) {
+    $red: red($color);
+    $green: green($color);
+    $blue: blue($color);
+    
+    @if $red <= 10 {
+        $red: $red / 3294;
+    } @else {
+        $red: pow(($red + 14) / 269, 2.4);
+    }
+    
+    @if $green <= 10 {
+        $green: $green / 3294;
+    } @else {
+        $green: pow(($green + 14) / 269, 2.4);
+    }
+    
+    @if $blue <= 10 {
+        $blue: $blue / 3294;
+    } @else {
+        $blue: pow(($blue + 14) / 269, 2.4);
+    }
+    
+    @return 0.2126 * $red + 0.7152 * $green + 0.0722 * $blue;
+}
+
+@function contrast($color1, $color2) {
+    $luminance1: luminance($color1) + 0.05;
+    $luminance2: luminance($color2) + 0.05;
+    $ratio: $luminance1 / $luminance2;
+    
+    @if $luminance2 > $luminance1 {
+        $ratio: 1 / $ratio;
+    }
+    
+    @return $ratio;
+}
+
+// Power function (for luminance calculation)
+@function pow($base, $exponent) {
+    $result: 1;
+    @for $i from 1 through $exponent {
+        $result: $result * $base;
+    }
+    @return $result;
+}

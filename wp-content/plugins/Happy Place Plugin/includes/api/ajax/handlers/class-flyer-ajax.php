@@ -40,28 +40,27 @@ class Flyer_Ajax extends Base_Ajax_Handler {
             }
 
             $listing_id = intval($_POST['listing_id']);
+            $flyer_type = sanitize_text_field($_POST['flyer_type'] ?? 'listing');
 
             // Check if listing exists
             $listing = get_post($listing_id);
-            if (!$listing) {
-                $this->send_error('Listing not found');
+            if (!$listing || $listing->post_type !== 'listing' || $listing->post_status !== 'publish') {
+                $this->send_error('Listing not found or not available');
                 return;
             }
 
-            if ($listing->post_type !== 'listing') {
-                $this->send_error('Post is not a listing');
+            // Get the comprehensive Flyer Generator instance
+            $flyer_generator = \HappyPlace\Graphics\Flyer_Generator::get_instance();
+            
+            // Use the comprehensive get_listing_data method
+            $data = $flyer_generator->get_listing_data($listing_id, $flyer_type);
+            
+            if (empty($data)) {
+                $this->send_error('Unable to retrieve listing data');
                 return;
             }
 
-            if ($listing->post_status !== 'publish') {
-                $this->send_error('Listing is not published');
-                return;
-            }
-
-            // Get listing data using the proven method from Flyer_Generator_Clean
-            $data = $this->get_basic_listing_data($listing_id);
-
-            error_log("HPH Flyer Ajax: Success - returning data for listing {$listing_id}");
+            error_log("HPH Flyer Ajax: Success - returning comprehensive data for listing {$listing_id}");
             $this->send_success($data);
 
         } catch (\Exception $e) {
@@ -77,58 +76,16 @@ class Flyer_Ajax extends Base_Ajax_Handler {
             }
 
             $listing_id = intval($_POST['listing_id']);
-            $data = $this->get_basic_listing_data($listing_id);
+            
+            // Use the comprehensive Flyer Generator
+            $flyer_generator = \HappyPlace\Graphics\Flyer_Generator::get_instance();
+            $data = $flyer_generator->get_listing_data($listing_id);
+            
             $this->send_success($data);
 
         } catch (\Exception $e) {
             error_log('HPH Flyer Ajax Exception: ' . $e->getMessage());
             $this->send_error('Server error occurred');
         }
-    }
-
-    /**
-     * Get basic listing data (copied from working Flyer_Generator_Clean)
-     */
-    private function get_basic_listing_data(int $listing_id): array {
-        $listing = get_post($listing_id);
-        
-        // Get basic ACF fields
-        $price = get_field('price', $listing_id) ?: get_field('listing_price', $listing_id);
-        $bedrooms = get_field('bedrooms', $listing_id) ?: get_field('beds', $listing_id);
-        $bathrooms = get_field('bathrooms', $listing_id) ?: get_field('baths', $listing_id);
-        $sqft = get_field('square_footage', $listing_id) ?: get_field('sqft', $listing_id);
-        $address = get_field('address', $listing_id) ?: get_field('street_address', $listing_id);
-        $city = get_field('city', $listing_id);
-        $description = get_field('description', $listing_id) ?: get_field('property_description', $listing_id);
-
-        return [
-            'id' => $listing_id,
-            'title' => get_the_title($listing_id),
-            'price' => $price ? '$' . number_format($price) : null,
-            'bedrooms' => $bedrooms,
-            'bathrooms' => $bathrooms,
-            'square_footage' => $sqft,
-            'address' => $address,
-            'city' => $city,
-            'description' => $description,
-            'url' => get_permalink($listing_id),
-            'listing' => [
-                'id' => $listing_id,
-                'title' => get_the_title($listing_id),
-                'price' => $price ? '$' . number_format($price) : null,
-                'bedrooms' => $bedrooms,
-                'bathrooms' => $bathrooms,
-                'square_footage' => $sqft,
-                'address' => $address,
-                'city' => $city,
-                'description' => $description,
-            ],
-            'agent' => [
-                'name' => 'The Parker Group',
-                'phone' => '302.217.6692',
-                'email' => 'info@theparkergroup.com',
-                'image' => null
-            ]
-        ];
     }
 }

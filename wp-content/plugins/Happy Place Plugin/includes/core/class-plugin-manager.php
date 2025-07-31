@@ -229,10 +229,10 @@ class Plugin_Manager {
      * Load frontend components
      */
     private function load_frontend_components(): void {
-        // Flyer Generator (Graphics Component) - Using Clean Version
-        require_once HPH_INCLUDES_PATH . 'graphics/class-flyer-generator-clean.php';
-        if (class_exists('HappyPlace\\Graphics\\Flyer_Generator_Clean')) {
-            $this->components['flyer_generator'] = \HappyPlace\Graphics\Flyer_Generator_Clean::get_instance();
+        // Flyer Generator (Graphics Component) - Using Full Version with Bridge Integration
+        require_once HPH_INCLUDES_PATH . 'graphics/class-flyer-generator.php';
+        if (class_exists('HappyPlace\\Graphics\\Flyer_Generator')) {
+            $this->components['flyer_generator'] = \HappyPlace\Graphics\Flyer_Generator::get_instance();
         }
         
         // Utility classes

@@ -1,0 +1,488 @@
+/**
+ * Happy Place Theme - Listing Card Component
+ * 
+ * Comprehensive listing card with multiple variants and layouts
+ */
+
+.hph-listing-card {
+    @include card-base;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    
+    &.has-hover-effects {
+        @include card-hover;
+        
+        .card-image {
+            transition: transform var(--transition-normal);
+        }
+        
+        &:hover .card-image {
+            transform: scale(1.05);
+        }
+    }
+    
+    // Image Container
+    .card-image-container {
+        position: relative;
+        @include aspect-ratio(4/3);
+        overflow: hidden;
+        
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .card-image-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: var(--color-surface);
+            color: var(--color-text-muted);
+            font-size: var(--hph-font-size-3xl);
+        }
+        
+        .card-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                rgba(0, 0, 0, 0.1) 100%
+            );
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+        
+        &:hover .card-image-overlay {
+            opacity: 1;
+        }
+    }
+    
+    // Badges
+    .card-badges {
+        position: absolute;
+        top: var(--hph-spacing-3);
+        left: var(--hph-spacing-3);
+        z-index: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--hph-spacing-2);
+        
+        .card-badge {
+            padding: var(--hph-spacing-1) var(--hph-spacing-2);
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--color-white);
+            font-size: var(--hph-font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            border-radius: var(--hph-border-radius-md);
+            backdrop-filter: blur(4px);
+            
+            &.featured-badge {
+                background: var(--color-warning);
+            }
+            
+            &.new-badge {
+                background: var(--color-success);
+            }
+            
+            &.price-reduced-badge {
+                background: var(--color-error);
+            }
+            
+            &.status-for-sale {
+                background: var(--color-success);
+            }
+            
+            &.status-sold {
+                background: var(--color-error);
+            }
+            
+            &.status-pending {
+                background: var(--color-warning);
+            }
+        }
+    }
+    
+    // Quick Actions
+    .card-quick-actions {
+        position: absolute;
+        top: var(--hph-spacing-3);
+        right: var(--hph-spacing-3);
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: var(--hph-spacing-2);
+        opacity: 0;
+        transform: translateX(var(--hph-spacing-4));
+        transition: all var(--transition-normal);
+        
+        .quick-action-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--color-text);
+            border: none;
+            border-radius: var(--hph-border-radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            backdrop-filter: blur(8px);
+            box-shadow: var(--hph-shadow-sm);
+            
+            &:hover {
+                background: var(--color-white);
+                transform: scale(1.1);
+                color: var(--color-primary);
+            }
+            
+            &.favorite-btn {
+                &:hover {
+                    color: var(--color-error);
+                }
+                
+                &.favorited {
+                    color: var(--color-error);
+                    
+                    i {
+                        font-weight: 900;
+                    }
+                }
+            }
+        }
+    }
+    
+    &:hover .card-quick-actions {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    // Content
+    .card-content {
+        padding: var(--hph-spacing-6);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .card-price-section {
+        margin-bottom: var(--hph-spacing-3);
+        
+        .card-price {
+            font-size: var(--hph-font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-success);
+            line-height: var(--line-height-tight);
+        }
+        
+        .price-per-sqft {
+            font-size: var(--hph-font-size-sm);
+            color: var(--color-text-muted);
+            margin-top: var(--hph-spacing-1);
+        }
+    }
+    
+    .card-title-section {
+        margin-bottom: var(--hph-spacing-4);
+        
+        .card-title {
+            font-size: var(--hph-font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            line-height: var(--line-height-snug);
+            margin-bottom: var(--hph-spacing-2);
+            
+            a {
+                color: inherit;
+                transition: color var(--transition-fast);
+                
+                &:hover {
+                    color: var(--color-primary);
+                }
+            }
+        }
+        
+        .card-address {
+            display: flex;
+            align-items: center;
+            gap: var(--hph-spacing-2);
+            color: var(--color-text-muted);
+            font-size: var(--hph-font-size-sm);
+            
+            i {
+                color: var(--color-primary);
+            }
+        }
+    }
+    
+    .card-features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--hph-spacing-4);
+        margin-bottom: var(--hph-spacing-4);
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: var(--hph-spacing-1);
+            font-size: var(--hph-font-size-sm);
+            color: var(--color-text-light);
+            
+            i {
+                color: var(--color-primary);
+                width: 1rem;
+                text-align: center;
+            }
+            
+            &.property-type {
+                background: var(--color-primary-light);
+                color: var(--color-primary-dark);
+                padding: var(--hph-spacing-1) var(--hph-spacing-2);
+                border-radius: var(--hph-border-radius-md);
+                font-weight: var(--font-weight-medium);
+            }
+        }
+    }
+    
+    .card-description {
+        margin-bottom: var(--hph-spacing-4);
+        
+        .card-description-text {
+            color: var(--color-text-light);
+            line-height: var(--line-height-relaxed);
+        }
+    }
+    
+    .card-agent-info {
+        display: flex;
+        align-items: center;
+        gap: var(--hph-spacing-3);
+        padding: var(--hph-spacing-3);
+        background: var(--color-surface);
+        border-radius: var(--hph-border-radius-lg);
+        margin-bottom: var(--hph-spacing-4);
+        
+        .agent-photo {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: var(--hph-border-radius-full);
+            object-fit: cover;
+        }
+        
+        .agent-details {
+            flex: 1;
+            
+            .agent-name {
+                font-weight: var(--font-weight-semibold);
+                margin-bottom: var(--hph-spacing-1);
+            }
+            
+            .agent-phone a {
+                display: flex;
+                align-items: center;
+                gap: var(--hph-spacing-1);
+                color: var(--color-primary);
+                font-size: var(--hph-font-size-sm);
+                transition: color var(--transition-fast);
+                
+                &:hover {
+                    color: var(--color-primary-dark);
+                }
+            }
+        }
+    }
+    
+    .card-actions {
+        margin-top: auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--hph-spacing-3);
+        
+        .card-action-btn {
+            @include button-base;
+            font-size: var(--hph-font-size-sm);
+            padding: var(--hph-spacing-2) var(--hph-spacing-4);
+            
+            &.primary-btn {
+                @include button-primary;
+            }
+            
+            &.secondary-btn {
+                @include button-secondary;
+            }
+            
+            &.tertiary-btn {
+                background: transparent;
+                color: var(--color-primary);
+                border: 1px solid var(--color-primary);
+                
+                &:hover {
+                    background: var(--color-primary);
+                    color: var(--color-white);
+                }
+            }
+            
+            &.favorite-toggle {
+                width: 2.5rem;
+                height: 2.5rem;
+                padding: 0;
+                border-radius: var(--hph-border-radius-full);
+                
+                &.favorited {
+                    background: var(--color-error);
+                    color: var(--color-white);
+                    border-color: var(--color-error);
+                    
+                    i {
+                        font-weight: 900;
+                    }
+                }
+            }
+        }
+    }
+    
+    // Variants
+    &.variant-featured {
+        border: 2px solid var(--color-primary);
+        
+        .card-content {
+            padding: var(--hph-spacing-8);
+        }
+        
+        .card-price {
+            font-size: var(--hph-font-size-2xl);
+        }
+        
+        .card-title {
+            font-size: var(--hph-font-size-xl);
+        }
+    }
+    
+    &.variant-compact {
+        .card-content {
+            padding: var(--hph-spacing-4);
+        }
+        
+        .card-features {
+            gap: var(--hph-spacing-2);
+        }
+        
+        .card-description {
+            display: none;
+        }
+    }
+    
+    &.variant-minimal {
+        .card-features,
+        .card-description,
+        .card-agent-info {
+            display: none;
+        }
+        
+        .card-actions {
+            .card-action-btn:not(.primary-btn) {
+                display: none;
+            }
+        }
+    }
+    
+    // List Layout
+    &.layout-list {
+        flex-direction: row;
+        height: auto;
+        
+        .list-image-container {
+            flex: 0 0 300px;
+            @include aspect-ratio(4/3);
+        }
+        
+        .list-content {
+            flex: 1;
+            padding: var(--hph-spacing-6);
+            display: flex;
+            justify-content: space-between;
+            gap: var(--hph-spacing-6);
+        }
+        
+        .list-main-info {
+            flex: 1;
+        }
+        
+        .list-header {
+            margin-bottom: var(--hph-spacing-4);
+        }
+        
+        .list-features {
+            margin-bottom: var(--hph-spacing-4);
+        }
+        
+        .list-actions {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: var(--hph-spacing-4);
+        }
+        
+        @include respond-below('lg') {
+            flex-direction: column;
+            
+            .list-image-container {
+                flex: none;
+            }
+            
+            .list-content {
+                flex-direction: column;
+                gap: var(--hph-spacing-4);
+            }
+            
+            .list-actions {
+                align-items: flex-start;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+    }
+    
+    // Context Styles
+    &.context-search {
+        .card-quick-actions {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    &.context-related {
+        .card-agent-info {
+            display: none;
+        }
+    }
+    
+    // Mobile Optimizations
+    @include respond-below('sm') {
+        .card-quick-actions {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .card-features {
+            gap: var(--hph-spacing-2);
+        }
+        
+        .card-actions {
+            .card-action-btn {
+                flex: 1;
+                min-width: 0;
+            }
+        }
+    }
+}

@@ -1,0 +1,408 @@
+/**
+ * Happy Place Theme - Single Agent Page Template
+ * 
+ * Styles for individual agent pages
+ */
+
+.single-agent {
+    .agent-header {
+        margin-bottom: var(--hph-spacing-8);
+        
+        .agent-hero {
+            @include card-base;
+            padding: var(--hph-spacing-8);
+            background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+            color: var(--color-white);
+            text-align: center;
+            
+            @include respond-below('md') {
+                padding: var(--hph-spacing-6);
+            }
+            
+            .agent-avatar {
+                width: 8rem;
+                height: 8rem;
+                border-radius: var(--hph-border-radius-full);
+                margin: 0 auto var(--hph-spacing-6);
+                overflow: hidden;
+                border: 4px solid rgba(255, 255, 255, 0.2);
+                
+                @include respond-below('md') {
+                    width: 6rem;
+                    height: 6rem;
+                }
+                
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+            
+            .agent-name {
+                font-size: var(--hph-font-size-3xl);
+                font-weight: var(--font-weight-bold);
+                margin-bottom: var(--hph-spacing-3);
+                
+                @include respond-below('md') {
+                    font-size: var(--hph-font-size-2xl);
+                }
+            }
+            
+            .agent-title {
+                font-size: var(--hph-font-size-lg);
+                opacity: 0.9;
+                margin-bottom: var(--hph-spacing-4);
+            }
+            
+            .agent-stats {
+                display: flex;
+                justify-content: center;
+                gap: var(--hph-spacing-8);
+                margin-bottom: var(--hph-spacing-6);
+                
+                @include respond-below('sm') {
+                    gap: var(--hph-spacing-4);
+                    flex-wrap: wrap;
+                }
+                
+                .stat-item {
+                    text-align: center;
+                    
+                    .stat-number {
+                        display: block;
+                        font-size: var(--hph-font-size-2xl);
+                        font-weight: var(--font-weight-bold);
+                        margin-bottom: var(--hph-spacing-1);
+                    }
+                    
+                    .stat-label {
+                        font-size: var(--hph-font-size-sm);
+                        opacity: 0.8;
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                    }
+                }
+            }
+            
+            .agent-contact {
+                display: flex;
+                justify-content: center;
+                gap: var(--hph-spacing-4);
+                flex-wrap: wrap;
+                
+                .contact-btn {
+                    @include button-outline;
+                    background: rgba(255, 255, 255, 0.1);
+                    color: var(--color-white);
+                    border-color: rgba(255, 255, 255, 0.3);
+                    
+                    &:hover {
+                        background: var(--color-white);
+                        color: var(--color-primary);
+                        border-color: var(--color-white);
+                    }
+                    
+                    i {
+                        margin-right: var(--hph-spacing-2);
+                    }
+                }
+            }
+        }
+    }
+    
+    .agent-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: var(--hph-spacing-8);
+        
+        @include respond-below('lg') {
+            grid-template-columns: 1fr;
+            gap: var(--hph-spacing-6);
+        }
+        
+        .main-content {
+            .content-section {
+                margin-bottom: var(--hph-spacing-8);
+                
+                &:last-child {
+                    margin-bottom: 0;
+                }
+                
+                .section-title {
+                    font-size: var(--hph-font-size-xl);
+                    font-weight: var(--font-weight-bold);
+                    color: var(--color-text);
+                    margin-bottom: var(--hph-spacing-6);
+                    padding-bottom: var(--hph-spacing-3);
+                    border-bottom: 2px solid var(--color-primary);
+                    
+                    i {
+                        margin-right: var(--hph-spacing-2);
+                        color: var(--color-primary);
+                    }
+                }
+            }
+            
+            // Agent Bio
+            .agent-bio {
+                .bio-content {
+                    font-size: var(--hph-font-size-lg);
+                    line-height: 1.7;
+                    color: var(--color-text);
+                    
+                    p {
+                        margin-bottom: var(--hph-spacing-4);
+                        
+                        &:last-child {
+                            margin-bottom: 0;
+                        }
+                    }
+                }
+            }
+            
+            // Agent Listings
+            .agent-listings {
+                .listings-filter {
+                    display: flex;
+                    gap: var(--hph-spacing-3);
+                    margin-bottom: var(--hph-spacing-6);
+                    flex-wrap: wrap;
+                    
+                    .filter-btn {
+                        padding: var(--hph-spacing-2) var(--hph-spacing-4);
+                        background: var(--color-surface);
+                        color: var(--color-text);
+                        border: 1px solid var(--color-border);
+                        border-radius: var(--hph-border-radius-xl);
+                        font-size: var(--hph-font-size-sm);
+                        font-weight: var(--font-weight-medium);
+                        cursor: pointer;
+                        transition: var(--transition-all);
+                        
+                        &:hover,
+                        &.active {
+                            background: var(--color-primary);
+                            color: var(--color-white);
+                            border-color: var(--color-primary);
+                            transform: translateY(-1px);
+                        }
+                    }
+                }
+                
+                .listings-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                    gap: var(--hph-spacing-6);
+                }
+            }
+        }
+        
+        .sidebar-content {
+            .sidebar-section {
+                @include card-base;
+                padding: var(--hph-spacing-6);
+                margin-bottom: var(--hph-spacing-6);
+                
+                &:last-child {
+                    margin-bottom: 0;
+                }
+                
+                .sidebar-title {
+                    font-size: var(--hph-font-size-lg);
+                    font-weight: var(--font-weight-semibold);
+                    color: var(--color-text);
+                    margin-bottom: var(--hph-spacing-4);
+                    
+                    i {
+                        margin-right: var(--hph-spacing-2);
+                        color: var(--color-primary);
+                    }
+                }
+            }
+        }
+    }
+    
+    // Contact Form
+    .agent-contact-form {
+        .contact-form {
+            .form-group {
+                margin-bottom: var(--hph-spacing-4);
+                
+                label {
+                    display: block;
+                    font-weight: var(--font-weight-medium);
+                    color: var(--color-text);
+                    margin-bottom: var(--hph-spacing-2);
+                }
+                
+                input,
+                textarea,
+                select {
+                    @include form-input;
+                }
+                
+                textarea {
+                    min-height: 120px;
+                    resize: vertical;
+                }
+            }
+            
+            .form-actions {
+                .submit-btn {
+                    @include button-primary;
+                    width: 100%;
+                    padding: var(--hph-spacing-4);
+                    font-weight: var(--font-weight-semibold);
+                }
+            }
+        }
+    }
+    
+    // Agent Details
+    .agent-details {
+        .details-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            
+            .detail-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: var(--hph-spacing-3) 0;
+                border-bottom: 1px solid var(--color-border-light);
+                
+                &:last-child {
+                    border-bottom: none;
+                }
+                
+                .detail-label {
+                    font-weight: var(--font-weight-medium);
+                    color: var(--color-text-muted);
+                    
+                    i {
+                        margin-right: var(--hph-spacing-2);
+                        color: var(--color-primary);
+                        width: 1rem;
+                        text-align: center;
+                    }
+                }
+                
+                .detail-value {
+                    font-weight: var(--font-weight-semibold);
+                    color: var(--color-text);
+                }
+            }
+        }
+    }
+    
+    // Reviews/Testimonials
+    .agent-reviews {
+        .review-item {
+            padding: var(--hph-spacing-6);
+            background: var(--color-surface);
+            border-radius: var(--hph-border-radius-lg);
+            margin-bottom: var(--hph-spacing-4);
+            
+            &:last-child {
+                margin-bottom: 0;
+            }
+            
+            .review-header {
+                display: flex;
+                align-items: center;
+                gap: var(--hph-spacing-3);
+                margin-bottom: var(--hph-spacing-4);
+                
+                .reviewer-avatar {
+                    width: 3rem;
+                    height: 3rem;
+                    border-radius: var(--hph-border-radius-full);
+                    overflow: hidden;
+                    
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+                
+                .reviewer-info {
+                    flex: 1;
+                    
+                    .reviewer-name {
+                        font-weight: var(--font-weight-semibold);
+                        color: var(--color-text);
+                        margin-bottom: var(--hph-spacing-1);
+                    }
+                    
+                    .review-date {
+                        font-size: var(--hph-font-size-sm);
+                        color: var(--color-text-muted);
+                    }
+                }
+                
+                .review-rating {
+                    .stars {
+                        color: var(--color-warning);
+                        font-size: var(--hph-font-size-lg);
+                    }
+                }
+            }
+            
+            .review-content {
+                color: var(--color-text);
+                line-height: 1.6;
+                font-style: italic;
+            }
+        }
+    }
+    
+    // Team Members (if agent is part of a team)
+    .agent-team {
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--hph-spacing-4);
+            
+            .team-member {
+                text-align: center;
+                padding: var(--hph-spacing-4);
+                background: var(--color-surface);
+                border-radius: var(--hph-border-radius-lg);
+                transition: var(--transition-fast);
+                
+                &:hover {
+                    transform: translateY(-2px);
+                    box-shadow: var(--shadow-md);
+                }
+                
+                .member-avatar {
+                    width: 4rem;
+                    height: 4rem;
+                    border-radius: var(--hph-border-radius-full);
+                    margin: 0 auto var(--hph-spacing-3);
+                    overflow: hidden;
+                    
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+                
+                .member-name {
+                    font-weight: var(--font-weight-semibold);
+                    color: var(--color-text);
+                    margin-bottom: var(--hph-spacing-1);
+                }
+                
+                .member-title {
+                    font-size: var(--hph-font-size-sm);
+                    color: var(--color-text-muted);
+                }
+            }
+        }
+    }
+}

@@ -42,11 +42,22 @@ class Template_Engine {
      */
     private function __construct() {
         $this->setup_template_hierarchy();
+        
+        // Add template_include filter with high priority
         add_filter('template_include', [$this, 'template_loader'], 10);
         
         // Debug hook for development
         if (defined('WP_DEBUG') && WP_DEBUG) {
             add_action('wp_footer', [$this, 'debug_template_info']);
+            error_log("HPH Template Engine: Initialized successfully");
+            
+            // Log all template includes for debugging
+            add_action('template_redirect', function() {
+                global $template;
+                if ($template) {
+                    error_log("HPH Template: Current template being used: " . basename($template));
+                }
+            });
         }
     }
 
@@ -93,23 +104,35 @@ class Template_Engine {
     public function template_loader($template) {
         global $post;
 
+        // Always log this to make sure the filter is being called
+        $this->log_template_load("Template loader called - Current template: " . basename($template) . " | Post type: " . get_post_type() . " | Query: " . (is_singular() ? 'singular' : (is_archive() ? 'archive' : 'other')));
+
         // Single post templates
         if (is_singular()) {
             $post_type = get_post_type();
+            $this->log_template_load("Processing singular post of type: {$post_type}");
+            
             if (isset($this->template_hierarchy['single'][$post_type])) {
+                $this->log_template_load("Found template hierarchy for {$post_type}");
                 $custom_template = $this->locate_template_hierarchy(
                     $this->template_hierarchy['single'][$post_type]
                 );
                 if ($custom_template) {
                     $this->log_template_load("Single {$post_type}: {$custom_template}");
                     return $custom_template;
+                } else {
+                    $this->log_template_error("No custom template found for {$post_type}");
                 }
+            } else {
+                $this->log_template_load("No template hierarchy defined for post type: {$post_type}");
             }
         }
 
         // Archive templates
         if (is_post_type_archive()) {
             $post_type = get_query_var('post_type');
+            $this->log_template_load("Processing archive for post type: {$post_type}");
+            
             if (isset($this->template_hierarchy['archive'][$post_type])) {
                 $custom_template = $this->locate_template_hierarchy(
                     $this->template_hierarchy['archive'][$post_type]
@@ -134,7 +157,7 @@ class Template_Engine {
             }
         }
 
-        $this->log_template_load("Default WordPress: " . basename($template));
+        $this->log_template_load("Using default WordPress template: " . basename($template));
         return $template;
     }
 
@@ -145,12 +168,20 @@ class Template_Engine {
      * @return string|false Template path or false
      */
     private function locate_template_hierarchy($templates) {
+        $this->log_template_load("Searching template hierarchy: " . implode(', ', $templates));
+        
         foreach ($templates as $template) {
+            $this->log_template_load("Checking template: {$template}");
             $located = locate_template($template);
             if ($located) {
+                $this->log_template_load("Found template: {$located}");
                 return $located;
+            } else {
+                $this->log_template_load("Template not found: {$template}");
             }
         }
+        
+        $this->log_template_error("No templates found in hierarchy");
         return false;
     }
 
@@ -234,7 +265,7 @@ class Template_Engine {
             try {
                 $component = new $class_name($props);
                 return $component->display(false); // Get output without echoing
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->log_template_error("Component error ({$component_name}): " . $e->getMessage());
                 return '';
             }
@@ -285,7 +316,7 @@ class Template_Engine {
      */
     private function maybe_enqueue_template_assets($slug, $name = null) {
         // Check if Asset Manager can handle template-specific assets
-        if (method_exists('HappyPlace\\Core\\Asset_Manager', 'enqueue_template_assets')) {
+        if (class_exists('HappyPlace\\Core\\Asset_Manager') && method_exists('HappyPlace\\Core\\Asset_Manager', 'enqueue_template_assets')) {
             $template_id = $slug . ($name ? "-{$name}" : '');
             \HappyPlace\Core\Asset_Manager::enqueue_template_assets($template_id);
         }

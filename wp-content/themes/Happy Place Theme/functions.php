@@ -34,6 +34,7 @@ require_once HPH_THEME_DIR . '/inc/bridge/agent-bridge.php';
 require_once HPH_THEME_DIR . '/inc/bridge/financial-bridge.php';
 require_once HPH_THEME_DIR . '/inc/bridge/fallback-bridge.php';
 require_once HPH_THEME_DIR . '/inc/bridge/brightmls-bridge.php';
+require_once HPH_THEME_DIR . '/inc/bridge/archive-bridge.php';
 
 // Load utilities
 require_once HPH_THEME_DIR . '/inc/utilities/formatting-functions.php';
@@ -72,15 +73,38 @@ add_action('after_setup_theme', function() {
 
 // Initialize core managers (UPDATED ORDER - Asset_Manager first)
 add_action('init', function() {
+    // Debug log
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        error_log('HPH: Initializing core managers');
+    }
+    
     // 1. Initialize Asset_Manager FIRST (handles all CSS/JS loading)
     HappyPlace\Core\Asset_Manager::init();
     
     // 2. Initialize other managers
     HappyPlace\Core\Theme_Manager::get_instance();
-    HappyPlace\Core\Template_Engine::instance();
+    
+    // 3. Initialize Template Engine with error checking
+    if (class_exists('HappyPlace\\Core\\Template_Engine')) {
+        try {
+            $template_engine = HappyPlace\Core\Template_Engine::instance();
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('HPH: Template Engine initialized successfully');
+            }
+        } catch (Exception $e) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('HPH: Template Engine initialization failed: ' . $e->getMessage());
+            }
+        }
+    } else {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('HPH: Template Engine class not found');
+        }
+    }
+    
     HappyPlace\Core\Component_Manager::init();
     
-    // 3. Initialize optional components
+    // 4. Initialize optional components
     if (class_exists('HPH_Shortcode_Manager')) {
         HPH_Shortcode_Manager::get_instance();
     }

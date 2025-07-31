@@ -263,10 +263,69 @@
     --color-secondary: var(--hph-color-secondary-500);
     --color-text: var(--hph-color-gray-900);
     --color-text-light: var(--hph-color-gray-600);
+    --color-text-muted: var(--hph-color-gray-500);
     --color-background: var(--hph-color-white);
     --color-border: var(--hph-color-gray-300);
+    --color-border-light: var(--hph-color-gray-200);
+    --color-surface: var(--hph-color-gray-50);
+    --color-white: var(--hph-color-white);
+    --color-black: var(--hph-color-gray-900);
+    --color-success: var(--hph-color-success);
+    --color-warning: var(--hph-color-warning);
+    --color-error: var(--hph-color-danger);
     --spacing-4: var(--hph-spacing-4);
     --spacing-8: var(--hph-spacing-8);
     --font-size-base: var(--hph-font-size-base);
     --transition-normal: var(--hph-transition-base);
+    --transition-fast: var(--hph-transition-fast);
+    --transition-slow: var(--hph-transition-slow);
+    --transition-all: all var(--hph-transition-base);
+    
+    /* Comprehensive system aliases */
+    --font-family-primary: var(--hph-font-primary);
+    --font-family-secondary: var(--hph-font-secondary);
+    --font-family-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --font-weight-light: var(--hph-font-light);
+    --font-weight-normal: var(--hph-font-normal);
+    --font-weight-medium: var(--hph-font-medium);
+    --font-weight-semibold: var(--hph-font-semibold);
+    --font-weight-bold: var(--hph-font-bold);
+    --font-weight-extrabold: var(--hph-font-extrabold);
+    --line-height-tight: var(--hph-line-height-tight);
+    --line-height-snug: var(--hph-line-height-snug);
+    --line-height-normal: var(--hph-line-height-normal);
+    --line-height-relaxed: var(--hph-line-height-relaxed);
+    --line-height-loose: var(--hph-line-height-loose);
 }
+
+/* ========================================================================
+   SCSS MAPS FOR UTILITY GENERATION
+   ======================================================================== */
+
+// Spacing scale map for utility generation
+$spacing-scale: (
+    'px': 1px,
+    '0': 0,
+    '0-5': 0.125rem,
+    '1': 0.25rem,
+    '1-5': 0.375rem,
+    '2': 0.5rem,
+    '2-5': 0.625rem,
+    '3': 0.75rem,
+    '3-5': 0.875rem,
+    '4': 1rem,
+    '5': 1.25rem,
+    '6': 1.5rem,
+    '7': 1.75rem,
+    '8': 2rem,
+    '9': 2.25rem,
+    '10': 2.5rem,
+    '11': 2.75rem,
+    '12': 3rem,
+    '14': 3.5rem,
+    '16': 4rem,
+    '20': 5rem,
+    '24': 6rem,
+    '28': 7rem,
+    '32': 8rem
+);
