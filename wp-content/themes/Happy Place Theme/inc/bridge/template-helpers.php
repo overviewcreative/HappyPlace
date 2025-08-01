@@ -378,4 +378,185 @@ if (!function_exists('hph_get_property_types')) {
         return $types;
     }
 }
+
+/**
+ * Missing fallback functions for component integration
+ */
+
+if (!function_exists('hph_fallback_get_hero_data')) {
+    function hph_fallback_get_hero_data($listing_id) {
+        return [
+            'title' => get_the_title($listing_id),
+            'price' => 'Contact for Price',
+            'address' => get_post_meta($listing_id, '_listing_address', true) ?: 'Address not available',
+            'bedrooms' => get_post_meta($listing_id, '_listing_bedrooms', true) ?: 0,
+            'bathrooms' => get_post_meta($listing_id, '_listing_bathrooms', true) ?: 0,
+            'square_footage' => get_post_meta($listing_id, '_listing_square_footage', true) ?: 0,
+            'status' => 'Available',
+            'status_class' => 'available',
+            'images' => has_post_thumbnail($listing_id) ? [
+                [
+                    'id' => get_post_thumbnail_id($listing_id),
+                    'url' => get_the_post_thumbnail_url($listing_id, 'full'),
+                    'alt' => get_the_title($listing_id)
+                ]
+            ] : []
+        ];
+    }
+}
+
+if (!function_exists('hph_fallback_get_financial_data')) {
+    function hph_fallback_get_financial_data($listing_id) {
+        $price = get_post_meta($listing_id, '_listing_price', true) ?: 0;
+        
+        return [
+            'price' => $price,
+            'down_payment_percent' => 20,
+            'interest_rate' => 6.5,
+            'loan_term_years' => 30,
+            'property_tax_rate' => 1.2,
+            'insurance_annual' => 1200,
+            'hoa_monthly' => get_post_meta($listing_id, '_listing_hoa_fee', true) ?: 0,
+            'pmi_rate' => 0.5
+        ];
+    }
+}
+
+if (!function_exists('hph_fallback_get_gallery_data')) {
+    function hph_fallback_get_gallery_data($listing_id) {
+        $images = [];
+        
+        // Featured image
+        if (has_post_thumbnail($listing_id)) {
+            $images[] = [
+                'id' => get_post_thumbnail_id($listing_id),
+                'url' => get_the_post_thumbnail_url($listing_id, 'full'),
+                'thumbnail' => get_the_post_thumbnail_url($listing_id, 'thumbnail'),
+                'alt' => get_the_title($listing_id)
+            ];
+        }
+        
+        // Try to get gallery from ACF or post meta
+        $gallery = get_post_meta($listing_id, '_listing_gallery', true);
+        if (is_array($gallery)) {
+            foreach ($gallery as $image_id) {
+                $images[] = [
+                    'id' => $image_id,
+                    'url' => wp_get_attachment_image_url($image_id, 'full'),
+                    'thumbnail' => wp_get_attachment_image_url($image_id, 'thumbnail'),
+                    'alt' => get_post_meta($image_id, '_wp_attachment_image_alt', true)
+                ];
+            }
+        }
+        
+        return [
+            'images' => $images,
+            'total_count' => count($images),
+            'featured_image' => !empty($images) ? $images[0] : null
+        ];
+    }
+}
+
+if (!function_exists('hph_fallback_get_property_details')) {
+    function hph_fallback_get_property_details($listing_id) {
+        return [
+            'bedrooms' => get_post_meta($listing_id, '_listing_bedrooms', true) ?: 0,
+            'bathrooms' => get_post_meta($listing_id, '_listing_bathrooms', true) ?: 0,
+            'half_bathrooms' => get_post_meta($listing_id, '_listing_half_bathrooms', true) ?: 0,
+            'square_footage' => get_post_meta($listing_id, '_listing_square_footage', true) ?: 0,
+            'lot_size' => get_post_meta($listing_id, '_listing_lot_size', true) ?: '',
+            'year_built' => get_post_meta($listing_id, '_listing_year_built', true) ?: '',
+            'garage_spaces' => get_post_meta($listing_id, '_listing_garage_spaces', true) ?: 0,
+            'property_type' => get_post_meta($listing_id, '_listing_property_type', true) ?: 'House',
+            'mls_number' => get_post_meta($listing_id, '_listing_mls_number', true) ?: '',
+            'hoa_fee' => get_post_meta($listing_id, '_listing_hoa_fee', true) ?: 0
+        ];
+    }
+}
+
+if (!function_exists('hph_fallback_get_features')) {
+    function hph_fallback_get_features($listing_id) {
+        $features = get_post_meta($listing_id, '_listing_features', true);
+        
+        if (!is_array($features)) {
+            $features = [];
+        }
+        
+        return [
+            'interior_features' => $features,
+            'exterior_features' => get_post_meta($listing_id, '_listing_exterior_features', true) ?: [],
+            'appliances' => get_post_meta($listing_id, '_listing_appliances', true) ?: [],
+            'amenities' => get_post_meta($listing_id, '_listing_amenities', true) ?: []
+        ];
+    }
+}
+
+if (!function_exists('hph_fallback_get_agent_data')) {
+    function hph_fallback_get_agent_data($listing_id) {
+        $author_id = get_post_field('post_author', $listing_id);
+        $author = get_userdata($author_id);
+        
+        return [
+            'id' => $author_id,
+            'name' => $author ? $author->display_name : 'Unknown Agent',
+            'email' => $author ? $author->user_email : '',
+            'phone' => get_user_meta($author_id, 'phone', true) ?: '',
+            'license_number' => get_user_meta($author_id, 'license_number', true) ?: '',
+            'bio' => get_user_meta($author_id, 'bio', true) ?: '',
+            'photo' => get_avatar_url($author_id),
+            'listings_count' => count_user_posts($author_id, 'listing')
+        ];
+    }
+}
+
+if (!function_exists('hph_fallback_get_agent_stats')) {
+    function hph_fallback_get_agent_stats($agent_id) {
+        // Get agent's listings
+        $listings = get_posts([
+            'post_type' => 'listing',
+            'meta_query' => [
+                [
+                    'key' => '_listing_agent',
+                    'value' => $agent_id,
+                    'compare' => '='
+                ]
+            ],
+            'numberposts' => -1,
+            'post_status' => 'publish'
+        ]);
+        
+        // Calculate stats
+        $active_listings = count($listings);
+        $sales_this_year = get_post_meta($agent_id, '_agent_sales_count', true) ?: 0;
+        $experience_years = get_post_meta($agent_id, '_agent_experience_years', true) ?: 0;
+        $avg_price = 0;
+        
+        // Calculate average listing price
+        if (!empty($listings)) {
+            $total_price = 0;
+            $price_count = 0;
+            
+            foreach ($listings as $listing) {
+                $price = get_post_meta($listing->ID, '_listing_price', true);
+                if ($price && is_numeric($price)) {
+                    $total_price += $price;
+                    $price_count++;
+                }
+            }
+            
+            if ($price_count > 0) {
+                $avg_price = $total_price / $price_count;
+            }
+        }
+        
+        return [
+            'active_listings' => $active_listings,
+            'sales_this_year' => $sales_this_year,
+            'experience_years' => $experience_years,
+            'average_price' => $avg_price,
+            'total_value' => $active_listings * $avg_price,
+            'client_satisfaction' => get_post_meta($agent_id, '_agent_satisfaction_rating', true) ?: 0
+        ];
+    }
+}
 ?>

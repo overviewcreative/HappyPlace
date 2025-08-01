@@ -100,10 +100,10 @@ $dashboard_sections = [
         'icon' => 'fas fa-palette',
         'template' => 'marketing'
     ],
-    'performance' => [
-        'title' => __('Performance', 'happy-place'),
+    'analytics' => [
+        'title' => __('Analytics', 'happy-place'),
         'icon' => 'fas fa-chart-line',
-        'template' => 'performance'
+        'template' => 'analytics'
     ]
 ];
 

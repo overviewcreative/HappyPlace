@@ -210,39 +210,31 @@ if (!function_exists('hph_bridge_get_sort_options')) {
 }
 
 /**
- * Get listing data in a standardized format
+ * Archive-specific listing data wrapper
  * 
  * @param int $listing_id The listing ID
  * @return array Listing data
  */
-if (!function_exists('hph_bridge_get_listing_data')) {
-    /**
-     * Get listing data - calls main function from listing-bridge.php
-     * 
-     * @param int $listing_id
-     * @return array
-     */
-    function hph_bridge_get_listing_data($listing_id) {
-        // Ensure listing-bridge.php is loaded
-        if (function_exists('hph_bridge_get_listing_details')) {
-            return hph_bridge_get_listing_details($listing_id);
+if (!function_exists('hph_bridge_get_listing_data_archive')) {
+    function hph_bridge_get_listing_data_archive($listing_id) {
+        // Call the main function from listing-bridge.php
+        if (function_exists('hph_bridge_get_listing_data')) {
+            return hph_bridge_get_listing_data($listing_id);
         }
         
-        // Fallback for when plugin is inactive
+        // Fallback for when main bridge function isn't available
         return [
             'id' => $listing_id,
             'title' => get_the_title($listing_id),
             'status' => 'available',
             'price' => 0,
-            'bedrooms' => 0,
-            'bathrooms' => 0,
-            'square_footage' => 0,
-            'address' => '',
-            'description' => get_the_content(null, false, $listing_id),
-            'images' => [],
-            'agent_id' => 0,
-            'listing_date' => get_the_date('Y-m-d', $listing_id),
-            'features' => []
+            'price_formatted' => 'Contact for Price',
+            'bedrooms' => get_post_meta($listing_id, '_listing_bedrooms', true) ?: 0,
+            'bathrooms' => get_post_meta($listing_id, '_listing_bathrooms', true) ?: 0,
+            'square_footage' => get_post_meta($listing_id, '_listing_square_footage', true) ?: 0,
+            'address' => get_post_meta($listing_id, '_listing_address', true) ?: '',
+            'featured_image' => get_the_post_thumbnail_url($listing_id, 'medium'),
+            'url' => get_permalink($listing_id)
         ];
     }
 }
