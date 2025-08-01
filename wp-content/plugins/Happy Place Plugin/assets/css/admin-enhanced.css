@@ -1,0 +1,396 @@
+/**
+ * Enhanced Admin Styles for Happy Place Plugin
+ * 
+ * @package HappyPlace
+ * @version 1.0.0
+ */
+
+/* Admin Page Layout */
+.hph-admin-wrap {
+    background: #fff;
+    margin: 20px 0;
+}
+
+.hph-admin-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 25px;
+}
+
+.hph-admin-title .dashicons {
+    color: #0073aa;
+    font-size: 24px;
+}
+
+/* Cards */
+.hph-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.hph-card h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Loading States */
+.hph-loading-placeholder {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.hph-loading-placeholder .dashicons.spin {
+    animation: hph-spin 1s linear infinite;
+}
+
+@keyframes hph-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Stats Grid */
+.hph-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.hph-stat-card {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.hph-stat-card .stat-icon {
+    background: #0073aa;
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hph-stat-card .stat-content {
+    flex: 1;
+}
+
+.hph-stat-card .stat-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #23282d;
+    display: block;
+}
+
+.hph-stat-card .stat-label {
+    color: #666;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Quick Actions */
+.hph-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.hph-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #23282d;
+    transition: all 0.2s ease;
+}
+
+.hph-action-btn:hover {
+    border-color: #0073aa;
+    background: #f8f9fa;
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.hph-action-btn .dashicons {
+    font-size: 24px;
+    color: #0073aa;
+}
+
+.hph-action-btn .btn-content strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.hph-action-btn .btn-content span {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Listings Management */
+.hph-listings-summary {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.hph-listings-summary .hph-stat {
+    text-align: center;
+}
+
+.hph-listings-summary .number {
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+    color: #0073aa;
+}
+
+.hph-listings-summary .label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.hph-table-controls {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.hph-filters {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.hph-filters select {
+    min-width: 150px;
+}
+
+/* Integration Status */
+.hph-integration-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+}
+
+.hph-integration-card {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+    background: #fff;
+}
+
+.hph-integration-card .integration-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.hph-integration-card h3 {
+    margin: 0;
+    flex: 1;
+}
+
+.integration-status {
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.integration-status.status-good {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.integration-status.status-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.integration-status.status-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.integration-meta {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.integration-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.hph-integration-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+/* System Metrics */
+.hph-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.hph-metric-card {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.hph-metric-card h3 {
+    margin: 0 0 10px 0;
+    color: #0073aa;
+    font-size: 14px;
+}
+
+.metric-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.metric-item .label {
+    color: #666;
+    text-transform: capitalize;
+}
+
+.metric-item .value {
+    font-weight: bold;
+}
+
+/* Empty States */
+.hph-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.hph-empty-state .dashicons {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #ccc;
+    display: block;
+}
+
+.hph-empty-state h3 {
+    margin: 0 0 10px 0;
+    color: #666;
+}
+
+/* AJAX Containers */
+.hph-ajax-container {
+    min-height: 100px;
+}
+
+/* Tools Grid */
+.hph-tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.hph-tool-item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.hph-tool-item h3 {
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hph-tool-item .dashicons {
+    color: #0073aa;
+}
+
+.hph-tool-item p {
+    margin: 0 0 15px 0;
+    color: #666;
+    font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hph-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-quick-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-integration-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .hph-filters select {
+        min-width: auto;
+    }
+}
+
+/* Notice Enhancements */
+.notice.notice-dismissible .notice-dismiss:before {
+    color: inherit;
+}
+
+.notice-success {
+    border-left-color: #46b450;
+}
+
+.notice-info {
+    border-left-color: #00a0d2;
+}
+
+.notice-warning {
+    border-left-color: #ffb900;
+}
+
+.notice-error {
+    border-left-color: #dc3232;
+}

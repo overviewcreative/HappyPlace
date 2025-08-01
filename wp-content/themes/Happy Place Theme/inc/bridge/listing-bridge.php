@@ -20,13 +20,14 @@ if (!defined('ABSPATH')) {
  * @param int $listing_id Listing post ID
  * @return array Formatted listing data
  */
-function hph_bridge_get_listing_data($listing_id) {
-    $cache_key = "hph_listing_data_{$listing_id}";
-    $cached_data = wp_cache_get($cache_key, 'hph_listings');
-    
-    if ($cached_data !== false) {
-        return $cached_data;
-    }
+if (!function_exists('hph_bridge_get_listing_data')) {
+    function hph_bridge_get_listing_data($listing_id) {
+        $cache_key = "hph_listing_data_{$listing_id}";
+        $cached_data = wp_cache_get($cache_key, 'hph_listings');
+        
+        if ($cached_data !== false) {
+            return $cached_data;
+        }
     
     $listing_data = [];
     
@@ -571,4 +572,5 @@ function hph_bridge_get_similar_listings($listing_id, $count = 3) {
     wp_cache_set($cache_key, $similar_listings, 'hph_listings', 1800); // 30 minutes
     
     return $similar_listings;
+}
 }

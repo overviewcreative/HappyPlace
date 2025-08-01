@@ -32,8 +32,18 @@ if ($debug_mode) {
     echo 'Listing ID: ' . ($listing_id ?: 'Not specified') . '<br>';
     echo 'Allowed types: ' . implode(', ', $allowed_types) . '<br>';
     echo 'Assets URL: ' . (defined('HPH_ASSETS_URL') ? HPH_ASSETS_URL : 'NOT DEFINED') . '<br>';
-    echo 'Script localization: ' . (wp_script_is('flyer-generator', 'registered') ? 'Registered' : 'Not registered') . '<br>';
+    echo 'Script localization: ' . (wp_script_is('hph-marketing-suite', 'registered') ? 'Registered' : 'Not registered') . '<br>';
+    echo 'Script enqueued: ' . (wp_script_is('hph-marketing-suite', 'enqueued') ? 'Yes' : 'No') . '<br>';
+    echo 'AJAX handlers status: Dashboard=' . (has_action('wp_ajax_marketing_suite_config') ? 'Registered' : 'Missing') . '<br>';
     echo '</div>';
+    
+    // Add JavaScript debugging
+    echo '<script>';
+    echo 'console.log("=== FLYER GENERATOR DEBUG ===");';
+    echo 'console.log("flyerGenerator object:", typeof flyerGenerator !== "undefined" ? flyerGenerator : "NOT DEFINED");';
+    echo 'console.log("jQuery loaded:", typeof jQuery !== "undefined");';
+    echo 'console.log("Fabric.js loaded:", typeof fabric !== "undefined");';
+    echo '</script>';
 }
 ?>
 

@@ -210,8 +210,8 @@ class Plugin_Manager {
             $this->components['config_admin'] = \HappyPlace\Admin\Config_Admin::get_instance();
         }
         
-        // Modern Admin Menu (uses HappyPlace namespace)
-        require_once HPH_INCLUDES_PATH . 'admin/class-admin-menu-modern.php';
+        // Enhanced Admin Menu (with AJAX and improved functionality)
+        require_once HPH_INCLUDES_PATH . 'admin/class-admin-menu.php';
         if (class_exists('HappyPlace\\Admin\\Admin_Menu')) {
             $this->components['admin_menu'] = \HappyPlace\Admin\Admin_Menu::get_instance();
         }

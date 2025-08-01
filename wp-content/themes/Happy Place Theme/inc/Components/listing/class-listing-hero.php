@@ -67,17 +67,22 @@ class Listing_Hero extends Base_Component {
     protected function render() {
         $listing_id = $this->get_prop('listing_id');
         
-        // Use bridge functions for data access
-        $listing_data = hph_get_template_listing_data($listing_id);
-        $gallery = hph_get_listing_gallery($listing_id);
-        $price = hph_get_listing_price($listing_id, 'display');
-        $status = hph_get_listing_status($listing_id);
-        $address = hph_get_listing_address($listing_id, 'full');
+        // Use bridge functions for data access (check if they exist first)
+        if (!function_exists('hph_get_listing_price')) {
+            error_log('HPH Hero Component: Bridge functions not available');
+            return '<div class="hero-error">Bridge functions not loaded</div>';
+        }
+        
+        $listing_data = \hph_get_template_listing_data($listing_id);
+        $gallery = \hph_get_listing_gallery($listing_id);
+        $price = \hph_get_listing_price($listing_id, 'display');
+        $status = \hph_get_listing_status($listing_id);
+        $address = \hph_get_listing_address($listing_id, 'full');
         
         // Get key details
-        $bedrooms = hph_get_listing_bedrooms($listing_id);
-        $bathrooms = hph_get_listing_bathrooms($listing_id);
-        $sqft = hph_get_listing_square_footage($listing_id);
+        $bedrooms = \hph_get_listing_bedrooms($listing_id);
+        $bathrooms = \hph_get_listing_bathrooms($listing_id);
+        $sqft = \hph_get_listing_square_footage($listing_id);
         
         $height_class = 'hph-listing-hero--' . $this->get_prop('height');
         $overlay_class = 'hph-listing-hero--overlay-' . str_replace('-', '_', $this->get_prop('overlay_position'));
@@ -96,7 +101,7 @@ class Listing_Hero extends Base_Component {
             <?php else: ?>
                 <div class="hph-listing-hero__featured-image">
                     <?php 
-                    $featured_image = hph_get_listing_featured_image($listing_id, $this->get_prop('image_size'));
+                    $featured_image = \hph_get_listing_featured_image($listing_id, $this->get_prop('image_size'));
                     if ($featured_image): 
                     ?>
                         <img src="<?php echo esc_url($featured_image); ?>" 

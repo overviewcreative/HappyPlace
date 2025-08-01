@@ -12,7 +12,7 @@ module.exports = (env, argv) => {
   return {
     // Entry points - ONLY these two for clean architecture
     entry: {
-      main: './assets/src/main.js',     // Frontend entry point
+      main: './assets/src/js/main.js',     // Frontend entry point
       admin: './assets/src/admin.js',   // Admin/dashboard entry point
     },
 
@@ -164,12 +164,12 @@ module.exports = (env, argv) => {
 
           // Add entrypoints for easier Asset_Manager integration
           const entrypointFiles = entrypoints.main.filter(fileName => !fileName.endsWith('.map'));
-          manifestFiles['main.js'] = entrypointFiles.find(fileName => fileName.endsWith('.js'));
+          manifestFiles['main.js'] = entrypointFiles.find(fileName => fileName.includes('main.') && fileName.endsWith('.js'));
           manifestFiles['main.css'] = entrypointFiles.find(fileName => fileName.endsWith('.css'));
 
           if (entrypoints.admin) {
             const adminFiles = entrypoints.admin.filter(fileName => !fileName.endsWith('.map'));
-            manifestFiles['admin.js'] = adminFiles.find(fileName => fileName.endsWith('.js'));
+            manifestFiles['admin.js'] = adminFiles.find(fileName => fileName.includes('admin.') && fileName.endsWith('.js'));
             manifestFiles['admin.css'] = adminFiles.find(fileName => fileName.endsWith('.css'));
           }
 

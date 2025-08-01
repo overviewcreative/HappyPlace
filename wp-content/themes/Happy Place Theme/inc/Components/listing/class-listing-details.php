@@ -72,12 +72,13 @@ class Listing_Details extends Base_Component {
         $listing_id = $this->get_prop('listing_id');
         
         // Get comprehensive listing data
-        $description = hph_get_listing_description($listing_id);
-        $features = hph_get_listing_features($listing_id);
-        $specifications = hph_get_property_details($listing_id);
-        $location = hph_get_location_intelligence($listing_id);
-        $financial = $this->get_prop('show_financial') ? hph_get_financial_analytics($listing_id) : null;
-        $market = $this->get_prop('show_market_analytics') ? hph_get_market_comparison($listing_id) : null;
+        $listing_data = \hph_bridge_get_listing_data($listing_id);
+        $description = $listing_data['description'] ?? '';
+        $features = \hph_bridge_get_features($listing_id);
+        $specifications = \hph_fallback_get_property_details($listing_id);
+        $location = $listing_data; // Use main data for location info
+        $financial = $this->get_prop('show_financial') ? \hph_fallback_get_financial_data($listing_id) : null;
+        $market = $this->get_prop('show_market_analytics') ? [] : null; // No market function available
         
         $layout = $this->get_prop('layout');
         $compact_class = $this->get_prop('compact') ? 'hph-listing-details--compact' : '';
@@ -353,7 +354,8 @@ class Listing_Details extends Base_Component {
             echo '<h4 class="hph-location-subtitle">' . esc_html__('Address', 'happy-place') . '</h4>';
             echo '<div class="hph-address-details">';
             
-            $address = hph_build_full_address($location);
+            $listing_id = $this->get_prop('listing_id');
+            $address = \hph_get_listing_address($listing_id, true);
             echo '<p class="hph-full-address">' . esc_html($address) . '</p>';
             
             if (!empty($location['county'])) {
@@ -456,21 +458,21 @@ class Listing_Details extends Base_Component {
             if (!empty($taxes['property_tax_annual'])) {
                 echo '<div class="hph-financial-item">';
                 echo '<span class="hph-financial-label">' . esc_html__('Annual Property Tax', 'happy-place') . '</span>';
-                echo '<span class="hph-financial-value">' . hph_format_price($taxes['property_tax_annual']) . '</span>';
+                echo '<span class="hph-financial-value">' . \hph_format_price($taxes['property_tax_annual']) . '</span>';
                 echo '</div>';
             }
             
             if (!empty($taxes['hoa_fee_monthly'])) {
                 echo '<div class="hph-financial-item">';
                 echo '<span class="hph-financial-label">' . esc_html__('Monthly HOA', 'happy-place') . '</span>';
-                echo '<span class="hph-financial-value">' . hph_format_price($taxes['hoa_fee_monthly']) . '</span>';
+                echo '<span class="hph-financial-value">' . \hph_format_price($taxes['hoa_fee_monthly']) . '</span>';
                 echo '</div>';
             }
             
             if (!empty($taxes['insurance_annual'])) {
                 echo '<div class="hph-financial-item">';
                 echo '<span class="hph-financial-label">' . esc_html__('Annual Insurance', 'happy-place') . '</span>';
-                echo '<span class="hph-financial-value">' . hph_format_price($taxes['insurance_annual']) . '</span>';
+                echo '<span class="hph-financial-value">' . \hph_format_price($taxes['insurance_annual']) . '</span>';
                 echo '</div>';
             }
             
@@ -488,14 +490,14 @@ class Listing_Details extends Base_Component {
             if (!empty($buyer['monthly_payment_pi'])) {
                 echo '<div class="hph-payment-item">';
                 echo '<span class="hph-payment-label">' . esc_html__('Principal & Interest', 'happy-place') . '</span>';
-                echo '<span class="hph-payment-value">' . hph_format_price($buyer['monthly_payment_pi']) . '</span>';
+                echo '<span class="hph-payment-value">' . \hph_format_price($buyer['monthly_payment_pi']) . '</span>';
                 echo '</div>';
             }
             
             if (!empty($buyer['monthly_payment_total'])) {
                 echo '<div class="hph-payment-item hph-payment-item--total">';
                 echo '<span class="hph-payment-label">' . esc_html__('Total Monthly Payment', 'happy-place') . '</span>';
-                echo '<span class="hph-payment-value">' . hph_format_price($buyer['monthly_payment_total']) . '</span>';
+                echo '<span class="hph-payment-value">' . \hph_format_price($buyer['monthly_payment_total']) . '</span>';
                 echo '</div>';
             }
             
@@ -527,7 +529,7 @@ class Listing_Details extends Base_Component {
             echo '<div class="hph-market-comparisons">';
             echo '<div class="hph-comparison-item">';
             echo '<span class="hph-comparison-label">' . esc_html__('Comparable Sales Average', 'happy-place') . '</span>';
-            echo '<span class="hph-comparison-value">' . hph_format_price($market['comparable_avg']) . '</span>';
+            echo '<span class="hph-comparison-value">' . \hph_format_price($market['comparable_avg']) . '</span>';
             echo '</div>';
             
             if ($market['price_vs_comps'] != 0) {

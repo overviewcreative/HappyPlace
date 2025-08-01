@@ -87,13 +87,47 @@ class Flyer_Generator_Clean {
         // Main script
         \wp_enqueue_script('hph-marketing-suite', $assets_url . 'js/marketing-suite-generator.js', ['fabric-js', 'qrcode-js', 'jspdf', 'jquery'], $version, true);
         
-        // Localize script
+        // Localize script with comprehensive configuration
         \wp_localize_script('hph-marketing-suite', 'flyerGenerator', [
             'ajaxUrl' => \admin_url('admin-ajax.php'),
             'nonce' => \wp_create_nonce('hph_ajax_nonce'),
             'pluginUrl' => \plugin_dir_url(dirname(dirname(__FILE__))),
             'assetsUrl' => $assets_url,
             'isDebug' => defined('WP_DEBUG') && WP_DEBUG,
+            
+            // ✅ Enhanced configuration for marketing suite
+            'config' => [
+                'fabric_js_url' => 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js',
+                'canvas_config' => [
+                    'width' => 1080,
+                    'height' => 1080,
+                    'background_color' => '#ffffff'
+                ],
+                'upload_limits' => [
+                    'max_file_size' => \wp_max_upload_size(),
+                    'allowed_types' => ['jpg', 'jpeg', 'png', 'svg']
+                ]
+            ],
+            
+            // ✅ AJAX endpoints for marketing suite
+            'endpoints' => [
+                'config' => 'marketing_suite_config',
+                'templates' => 'marketing_suite_templates', 
+                'generate_flyer' => 'marketing_suite_generate_flyer',
+                'save_template' => 'marketing_suite_save_template',
+                'get_listings' => 'marketing_suite_get_listings',
+                'upload_assets' => 'marketing_suite_upload_assets',
+                'get_data' => 'get_marketing_suite_data',
+                'initialize' => 'initialize_marketing_suite'
+            ],
+            
+            // ✅ Methods that frontend expects
+            'generateFlyer' => true,
+            'saveTemplate' => true,
+            'loadTemplates' => true,
+            'uploadAsset' => true,
+            'getListings' => true,
+            
             'strings' => [
                 'selectListing' => 'Please select a listing.',
                 'generating' => 'Generating...',
@@ -111,6 +145,8 @@ class Flyer_Generator_Clean {
         // Debug logging
         if (defined('WP_DEBUG') && WP_DEBUG) {
             error_log('Flyer Generator: Scripts enqueued for screen: ' . ($screen ? $screen->id : 'unknown'));
+            error_log('Flyer Generator: flyerGenerator object localized with AJAX URL: ' . \admin_url('admin-ajax.php'));
+            error_log('Flyer Generator: flyerGenerator endpoints registered: config, templates, generate_flyer, save_template, get_listings, upload_assets');
         }
         
         if (defined('WP_DEBUG') && WP_DEBUG) {

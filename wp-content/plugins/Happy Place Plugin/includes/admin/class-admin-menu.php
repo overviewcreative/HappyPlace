@@ -157,18 +157,18 @@ class Admin_Menu
             return;
         }
 
-        // Enhanced admin styles
+        // Enhanced admin styles (fix path)
         wp_enqueue_style(
             'hph-enhanced-admin',
-            plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/css/enhanced-admin.css',
+            plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/css/admin-enhanced.css',
             [],
             '2.0.0'
         );
 
-        // Enhanced admin scripts
+        // Enhanced admin scripts (fix path)
         wp_enqueue_script(
             'hph-enhanced-admin',
-            plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/js/enhanced-admin.js',
+            plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/js/admin-enhanced.js',
             ['jquery', 'wp-api'],
             '2.0.0',
             true
@@ -178,12 +178,36 @@ class Admin_Menu
         wp_localize_script('hph-enhanced-admin', 'hphEnhancedAdmin', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restUrl' => rest_url('hph/v1/'),
-            'nonce' => wp_create_nonce('hph_enhanced_admin'),
+            'nonce' => wp_create_nonce('hph_ajax_nonce'),
             'currentPage' => $hook_suffix,
             'capabilities' => [
                 'manage_integrations' => current_user_can('manage_options'),
                 'view_system_health' => current_user_can('manage_options'),
                 'manage_listings' => current_user_can('edit_posts')
+            ],
+            'endpoints' => [
+                // Dashboard endpoints
+                'dashboard_quick_stats' => 'dashboard_quick_stats',
+                'dashboard_recent_activity' => 'dashboard_recent_activity',
+                
+                // Listings management endpoints  
+                'get_listings_overview' => 'get_listings_overview',
+                'bulk_update_listings' => 'bulk_update_listings',
+                
+                // Integrations endpoints
+                'get_integration_status' => 'get_integration_status', 
+                'test_integration_connection' => 'test_integration_connection',
+                
+                // System health endpoints
+                'get_system_metrics' => 'get_system_metrics',
+                
+                // Tools endpoints
+                'run_maintenance_task' => 'run_maintenance_task',
+                
+                // Marketing suite endpoints
+                'marketing_suite_config' => 'marketing_suite_config',
+                'marketing_suite_templates' => 'marketing_suite_templates',
+                'marketing_suite_generate_flyer' => 'marketing_suite_generate_flyer'
             ],
             'strings' => [
                 'loading' => __('Loading...', 'happy-place'),
@@ -193,7 +217,11 @@ class Admin_Menu
                 'confirm_action' => __('Are you sure?', 'happy-place'),
                 'system_healthy' => __('System Healthy', 'happy-place'),
                 'system_warning' => __('System Warning', 'happy-place'),
-                'system_critical' => __('System Critical', 'happy-place')
+                'system_critical' => __('System Critical', 'happy-place'),
+                'bulk_update_confirm' => __('Apply bulk action to selected items?', 'happy-place'),
+                'maintenance_confirm' => __('Run maintenance task? This may take a few minutes.', 'happy-place'),
+                'integration_test_running' => __('Testing connection...', 'happy-place'),
+                'cache_cleared' => __('Cache cleared successfully', 'happy-place')
             ]
         ]);
     }
@@ -203,11 +231,41 @@ class Admin_Menu
      */
     public function handle_admin_actions(): void
     {
-        // Register AJAX handlers for enhanced functionality
+        // Enhanced AJAX handlers for admin menu functionality
         add_action('wp_ajax_hph_get_dashboard_stats', [$this, 'ajax_get_dashboard_stats']);
         add_action('wp_ajax_hph_refresh_integrations', [$this, 'ajax_refresh_integrations']);
         add_action('wp_ajax_hph_test_integration', [$this, 'ajax_test_integration']);
         add_action('wp_ajax_hph_toggle_integration', [$this, 'ajax_toggle_integration']);
+        
+        // NEW: Redirect to centralized AJAX system
+        add_action('wp_ajax_hph_get_listings_overview', [$this, 'redirect_to_dashboard_ajax']);
+        add_action('wp_ajax_hph_bulk_update_listings', [$this, 'redirect_to_dashboard_ajax']);
+        add_action('wp_ajax_hph_get_integration_status', [$this, 'redirect_to_dashboard_ajax']);
+        add_action('wp_ajax_hph_test_integration_connection', [$this, 'redirect_to_dashboard_ajax']);
+        add_action('wp_ajax_hph_get_system_metrics', [$this, 'redirect_to_dashboard_ajax']);
+        add_action('wp_ajax_hph_run_maintenance_task', [$this, 'redirect_to_dashboard_ajax']);
+    }
+
+    /**
+     * Redirect legacy AJAX calls to Dashboard_Ajax handler
+     */
+    public function redirect_to_dashboard_ajax(): void
+    {
+        // Get the action name without the hph_ prefix
+        $action = str_replace('hph_', '', $_POST['action'] ?? '');
+        
+        // Call the Dashboard_Ajax handler through our AJAX system
+        if (class_exists('\HappyPlace\Api\Ajax\Ajax_Coordinator')) {
+            $coordinator = \HappyPlace\Api\Ajax\Ajax_Coordinator::get_instance();
+            
+            // Update the action in $_POST to match our naming convention
+            $_POST['action'] = $action;
+            
+            // Let the coordinator handle it
+            do_action('wp_ajax_' . $action);
+        } else {
+            wp_send_json_error(['message' => 'AJAX system not available']);
+        }
     }
 
     /**
@@ -304,11 +362,22 @@ class Admin_Menu
 
         echo '<div class="hph-integrations-hub">';
         
-        // Integration status overview
+        // Integration status overview with AJAX loading
         echo '<div class="hph-card">';
         echo '<h2>' . __('Integration Status', 'happy-place') . '</h2>';
         echo '<div id="hph-integration-status" class="hph-integration-grid">';
-        echo '<div class="hph-loading">' . __('Loading integration status...', 'happy-place') . '</div>';
+        echo '<div class="hph-loading-placeholder">';
+        echo '<span class="dashicons dashicons-update spin"></span> ';
+        echo __('Loading integration status...', 'happy-place');
+        echo '</div>';
+        echo '</div>';
+        echo '<div class="hph-integration-actions">';
+        echo '<button id="hph-refresh-integrations" class="button button-secondary">';
+        echo '<span class="dashicons dashicons-update"></span> ' . __('Refresh Status', 'happy-place');
+        echo '</button>';
+        echo '<button id="hph-test-all-integrations" class="button button-primary">';
+        echo '<span class="dashicons dashicons-admin-tools"></span> ' . __('Test All Connections', 'happy-place');
+        echo '</button>';
         echo '</div>';
         echo '</div>';
 
@@ -320,6 +389,24 @@ class Admin_Menu
         
         echo '</div>';
         echo '</div>';
+
+        // JavaScript to load integration data
+        echo '<script>';
+        echo 'jQuery(document).ready(function($) {';
+        echo '  // Load integration status on page load';
+        echo '  hphAdmin.loadIntegrationStatus();';
+        echo '  ';
+        echo '  // Refresh integrations button';
+        echo '  $("#hph-refresh-integrations").click(function() {';
+        echo '    hphAdmin.loadIntegrationStatus(true);';
+        echo '  });';
+        echo '  ';
+        echo '  // Test all integrations button';
+        echo '  $("#hph-test-all-integrations").click(function() {';
+        echo '    hphAdmin.testAllIntegrations();';
+        echo '  });';
+        echo '});';
+        echo '</script>';
     }
 
     /**
@@ -640,44 +727,62 @@ class Admin_Menu
     }
 
     /**
-     * Render listings overview
+     * Render listings overview with AJAX loading
      */
     private function render_listings_overview(): void
     {
         echo '<div class="hph-card">';
         echo '<h2>' . __('Listings Overview', 'happy-place') . '</h2>';
         
-        // Get listing stats
-        $listing_counts = wp_count_posts('listing');
-        $total_listings = array_sum((array) $listing_counts);
+        // AJAX loading container
+        echo '<div id="hph-listings-overview" class="hph-ajax-container">';
+        echo '<div class="hph-loading-placeholder">';
+        echo '<span class="dashicons dashicons-update spin"></span> ';
+        echo __('Loading listings overview...', 'happy-place');
+        echo '</div>';
+        echo '</div>';
         
-        if ($total_listings > 0) {
-            echo '<div class="hph-listings-stats">';
-            echo '<div class="hph-stat-item">';
-            echo '<span class="hph-stat-number">' . ($listing_counts->publish ?? 0) . '</span>';
-            echo '<span class="hph-stat-label">' . __('Published', 'happy-place') . '</span>';
-            echo '</div>';
-            echo '<div class="hph-stat-item">';
-            echo '<span class="hph-stat-number">' . ($listing_counts->draft ?? 0) . '</span>';
-            echo '<span class="hph-stat-label">' . __('Drafts', 'happy-place') . '</span>';
-            echo '</div>';
-            echo '<div class="hph-stat-item">';
-            echo '<span class="hph-stat-number">' . ($listing_counts->private ?? 0) . '</span>';
-            echo '<span class="hph-stat-label">' . __('Private', 'happy-place') . '</span>';
-            echo '</div>';
-            echo '</div>';
-        } else {
-            echo '<div class="hph-empty-state">';
-            echo '<span class="dashicons dashicons-admin-home"></span>';
-            echo '<h3>' . __('No listings found', 'happy-place') . '</h3>';
-            echo '<p>' . __('Get started by adding your first property listing.', 'happy-place') . '</p>';
-            echo '<a href="' . admin_url('post-new.php?post_type=listing') . '" class="button button-primary">';
-            echo __('Add Your First Listing', 'happy-place');
-            echo '</a>';
-            echo '</div>';
-        }
+        // Listings table container (loaded via AJAX)
+        echo '<div id="hph-listings-table" class="hph-ajax-container" style="display: none;">';
+        echo '<div class="hph-table-controls">';
+        echo '<div class="hph-filters">';
+        echo '<select id="hph-status-filter">';
+        echo '<option value="">' . __('All Statuses', 'happy-place') . '</option>';
+        echo '<option value="for_sale">' . __('For Sale', 'happy-place') . '</option>';
+        echo '<option value="for_rent">' . __('For Rent', 'happy-place') . '</option>';
+        echo '<option value="sold">' . __('Sold', 'happy-place') . '</option>';
+        echo '<option value="rented">' . __('Rented', 'happy-place') . '</option>';
+        echo '</select>';
+        echo '<select id="hph-price-filter">';
+        echo '<option value="">' . __('All Prices', 'happy-place') . '</option>';
+        echo '<option value="0-250000">' . __('Under $250k', 'happy-place') . '</option>';
+        echo '<option value="250000-500000">' . __('$250k - $500k', 'happy-place') . '</option>';
+        echo '<option value="500000-1000000">' . __('$500k - $1M', 'happy-place') . '</option>';
+        echo '<option value="1000000-999999999">' . __('Over $1M', 'happy-place') . '</option>';
+        echo '</select>';
+        echo '<button id="hph-apply-filters" class="button">' . __('Apply Filters', 'happy-place') . '</button>';
+        echo '</div>';
+        echo '</div>';
+        echo '<div id="hph-listings-data"></div>';
+        echo '</div>';
         
         echo '</div>';
+
+        // JavaScript to load data
+        echo '<script>';
+        echo 'jQuery(document).ready(function($) {';
+        echo '  // Load initial listings overview';
+        echo '  hphAdmin.loadListingsOverview();';
+        echo '  ';
+        echo '  // Filter handlers';
+        echo '  $("#hph-apply-filters").click(function() {';
+        echo '    hphAdmin.loadListingsOverview({';
+        echo '      status: $("#hph-status-filter").val(),';
+        echo '      price_range: $("#hph-price-filter").val()';
+        echo '    });';
+        echo '  });';
+        echo '});';
+        echo '</script>';
     }
 
     /**
@@ -834,6 +939,20 @@ class Admin_Menu
         echo '<div class="hph-modal-body">';
         // Flyer generator interface will be loaded here
         echo '<div id="hph-flyer-generator-content"></div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        
+        // Image Optimization Interface
+        echo '<div id="hph-image-optimization-modal" class="hph-modal" style="display:none;">';
+        echo '<div class="hph-modal-content">';
+        echo '<div class="hph-modal-header">';
+        echo '<h2>' . __('Image Optimization', 'happy-place') . '</h2>';
+        echo '<button class="hph-modal-close" onclick="hphAdmin.closeTool()">&times;</button>';
+        echo '</div>';
+        echo '<div class="hph-modal-body">';
+        // Image optimization interface will be loaded here
+        echo '<div id="hph-image-optimization-content"></div>';
         echo '</div>';
         echo '</div>';
         echo '</div>';

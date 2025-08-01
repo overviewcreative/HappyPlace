@@ -82,14 +82,14 @@ try {
 
 // Test component availability
 $components_status = [
-    'hero' => class_exists('HappyPlace\\Components\\Listing\\Hero'),
+    'hero' => class_exists('HappyPlace\\Components\\Listing\\Listing_Hero'),
     'gallery' => class_exists('HappyPlace\\Components\\Listing\\Gallery'),
-    'details' => class_exists('HappyPlace\\Components\\Listing\\Details'),
+    'details' => class_exists('HappyPlace\\Components\\Listing\\Listing_Details'),
     'features' => class_exists('HappyPlace\\Components\\Listing\\Features'),
-    'agent_card' => class_exists('HappyPlace\\Components\\Agent\\Card'),
+    'agent_card' => class_exists('HappyPlace\\Components\\Agent\\Agent_Card'),
     'mortgage_calculator' => class_exists('HappyPlace\\Components\\Tools\\Mortgage_Calculator'),
-    'contact_form' => class_exists('HappyPlace\\Components\\Forms\\Contact_Form'),
-    'similar_listings' => class_exists('HappyPlace\\Components\\Listing\\Similar_Grid')
+    'contact_form' => class_exists('HappyPlace\\Components\\UI\\Contact_Form'),
+    'similar_grid' => class_exists('HappyPlace\\Components\\Listing\\Similar_Grid')
 ];
 
 // Prepare template arguments
@@ -106,10 +106,11 @@ $template_args = [
     'components_status' => $components_status
 ];
 
-// Enqueue template-specific assets
-if (function_exists('hph_enqueue_template_assets')) {
-    hph_enqueue_template_assets('single-listing');
-}
+// Assets are automatically loaded by Asset_Manager for single listing pages
+// Manual enqueueing disabled to prevent 404 errors with missing files
+// if (function_exists('hph_enqueue_template_assets')) {
+//     hph_enqueue_template_assets('single-listing');
+// }
 
 // Add structured data
 if (function_exists('hph_add_listing_schema')) {
@@ -141,7 +142,7 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
         if ($components_status['hero']) {
             // Use Hero Component
             try {
-                $hero_component = new HappyPlace\Components\Listing\Hero([
+                $hero_component = new HappyPlace\Components\Listing\Listing_Hero([
                     'listing_id' => $listing_id,
                     'hero_data' => $hero_data,
                     'gallery_data' => $gallery_data,
@@ -196,7 +197,7 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
                         if ($components_status['details']) {
                             // Use Details Component
                             try {
-                                $details_component = new HappyPlace\Components\Listing\Details([
+                                $details_component = new HappyPlace\Components\Listing\Listing_Details([
                                     'listing_id' => $listing_id,
                                     'property_details' => $property_details,
                                     'variant' => 'detailed',
@@ -318,7 +319,7 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
                         if ($components_status['agent_card'] && !empty($agent_data)) {
                             // Use Agent Card Component
                             try {
-                                $agent_component = new HappyPlace\Components\Agent\Card([
+                                $agent_component = new HappyPlace\Components\Agent\Agent_Card([
                                     'agent_id' => $agent_data['id'] ?? 0,
                                     'agent_data' => $agent_data,
                                     'variant' => 'sidebar',
@@ -373,7 +374,7 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
                         if ($components_status['contact_form']) {
                             // Use Contact Form Component
                             try {
-                                $contact_component = new HappyPlace\Components\Forms\Contact_Form([
+                                $contact_component = new HappyPlace\Components\UI\Contact_Form([
                                     'listing_id' => $listing_id,
                                     'agent_id' => $agent_data['id'] ?? 0,
                                     'variant' => 'sidebar',

@@ -33,6 +33,11 @@ class Admin_Dashboard
             return;
         }
 
+        // DISABLED: Using enhanced admin system instead
+        // The enhanced admin menu (class-admin-menu.php) now handles all admin assets
+        // This prevents conflicts and duplicate script loading
+        
+        /*
         wp_enqueue_style(
             'hph-admin-dashboard',
             plugin_dir_url(dirname(dirname(__FILE__))) . 'assets/css/admin-dashboard.css',
@@ -78,6 +83,8 @@ class Admin_Dashboard
                 'saved' => __('Saved!', 'happy-place'),
                 'error' => __('Error occurred. Please try again.', 'happy-place'),
             ]
+        ]);
+        */
         ]);
     }
 
