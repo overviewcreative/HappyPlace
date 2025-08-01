@@ -574,3 +574,31 @@ function hph_bridge_get_similar_listings($listing_id, $count = 3) {
     return $similar_listings;
 }
 }
+
+/**
+ * Get financial data for mortgage calculator
+ */
+if (!function_exists('hph_bridge_get_financial_data')) {
+    function hph_bridge_get_financial_data($listing_id) {
+        $cache_key = "hph_financial_data_{$listing_id}";
+        $cached = wp_cache_get($cache_key, 'hph_listings');
+        
+        if ($cached !== false) {
+            return $cached;
+        }
+        
+        $financial_data = [
+            'price' => get_post_meta($listing_id, '_listing_price', true) ?: 0,
+            'down_payment_percent' => 20,
+            'interest_rate' => 6.5,
+            'loan_term_years' => 30,
+            'property_tax_rate' => get_post_meta($listing_id, '_listing_tax_rate', true) ?: 1.2,
+            'insurance_annual' => 1200,
+            'hoa_monthly' => get_post_meta($listing_id, '_listing_hoa_fee', true) ?: 0,
+            'pmi_rate' => 0.5
+        ];
+        
+        wp_cache_set($cache_key, $financial_data, 'hph_listings', 3600);
+        return $financial_data;
+    }
+}

@@ -67,6 +67,7 @@ class Component_Manager {
     public static function init() {
         $instance = self::instance();
         $instance->load_components();
+        $instance->ensure_components_loaded();
         $instance->setup_hooks();
         return $instance;
     }
@@ -110,6 +111,77 @@ class Component_Manager {
             $count = $this->performance_stats['components_loaded'];
             error_log("HPH Component Manager: Loaded {$count} components in {$load_time}ms");
         }
+    }
+    
+    /**
+     * Ensure all required components are loaded with placeholders if missing
+     */
+    private function ensure_components_loaded() {
+        $required_components = [
+            'listing' => [
+                'Listing_Hero',
+                'Listing_Gallery', 
+                'Listing_Card',
+                'Listing_Details'
+            ],
+            'tools' => [
+                'Mortgage_Calculator'
+            ],
+            'agent' => [
+                'Agent_Card'
+            ],
+            'ui' => [
+                'Button',
+                'Modal'
+            ]
+        ];
+        
+        foreach ($required_components as $directory => $components) {
+            foreach ($components as $component) {
+                $class_name = "HappyPlace\\Components\\" . ucfirst($directory) . "\\{$component}";
+                
+                if (!class_exists($class_name)) {
+                    $this->create_placeholder_component($class_name, $directory, $component);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Create placeholder component if missing
+     */
+    private function create_placeholder_component($class_name, $directory, $component) {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("HPH: Creating placeholder for missing component: {$class_name}");
+        }
+        
+        // For tools directory, use the actual namespace
+        $namespace = ucfirst($directory);
+        $component_type = strtolower(str_replace('_', '-', $component));
+        
+        // Create minimal working placeholder with proper eval
+        $eval_code = "
+        namespace HappyPlace\\Components\\{$namespace};
+        
+        if (!class_exists('{$class_name}')) {
+            class {$component} extends \\HappyPlace\\Components\\Base_Component {
+                protected function get_component_name() {
+                    return '{$component_type}';
+                }
+                
+                protected function get_defaults() {
+                    return [];
+                }
+                
+                protected function render() {
+                    return '<div class=\"component-placeholder component-{$component_type}\">
+                        <p>Component {$component} is not yet implemented</p>
+                    </div>';
+                }
+            }
+        }";
+        
+        eval($eval_code);
     }
     
     /**

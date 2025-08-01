@@ -67,22 +67,32 @@ class Listing_Hero extends Base_Component {
     protected function render() {
         $listing_id = $this->get_prop('listing_id');
         
-        // Use bridge functions for data access (check if they exist first)
-        if (!function_exists('hph_get_listing_price')) {
-            error_log('HPH Hero Component: Bridge functions not available');
-            return '<div class="hero-error">Bridge functions not loaded</div>';
+        // Use bridge functions for data access with fallbacks
+        if (function_exists('hph_bridge_get_hero_data')) {
+            $hero_data = \hph_bridge_get_hero_data($listing_id);
+        } else {
+            // Fallback data gathering
+            $hero_data = [
+                'title' => get_the_title($listing_id),
+                'price' => get_post_meta($listing_id, '_listing_price', true),
+                'address' => get_post_meta($listing_id, '_listing_address', true),
+                'bedrooms' => get_post_meta($listing_id, '_listing_bedrooms', true),
+                'bathrooms' => get_post_meta($listing_id, '_listing_bathrooms', true),
+                'square_footage' => get_post_meta($listing_id, '_listing_square_footage', true),
+                'status' => get_post_meta($listing_id, '_listing_status', true) ?: 'For Sale',
+                'images' => []
+            ];
         }
         
-        $listing_data = \hph_get_template_listing_data($listing_id);
-        $gallery = \hph_get_listing_gallery($listing_id);
-        $price = \hph_get_listing_price($listing_id, 'display');
-        $status = \hph_get_listing_status($listing_id);
-        $address = \hph_get_listing_address($listing_id, 'full');
-        
-        // Get key details
-        $bedrooms = \hph_get_listing_bedrooms($listing_id);
-        $bathrooms = \hph_get_listing_bathrooms($listing_id);
-        $sqft = \hph_get_listing_square_footage($listing_id);
+        // Extract data for easier use
+        $listing_data = ['title' => $hero_data['title'] ?? get_the_title($listing_id)];
+        $gallery = $hero_data['images'] ?? [];
+        $price = $hero_data['price'] ?? 0;
+        $status = $hero_data['status'] ?? 'For Sale';
+        $address = $hero_data['address'] ?? '';
+        $bedrooms = $hero_data['bedrooms'] ?? 0;
+        $bathrooms = $hero_data['bathrooms'] ?? 0;
+        $sqft = $hero_data['square_footage'] ?? 0;
         
         $height_class = 'hph-listing-hero--' . $this->get_prop('height');
         $overlay_class = 'hph-listing-hero--overlay-' . str_replace('-', '_', $this->get_prop('overlay_position'));
@@ -101,7 +111,10 @@ class Listing_Hero extends Base_Component {
             <?php else: ?>
                 <div class="hph-listing-hero__featured-image">
                     <?php 
-                    $featured_image = \hph_get_listing_featured_image($listing_id, $this->get_prop('image_size'));
+                    // Use fallback for featured image
+                    $featured_image = has_post_thumbnail($listing_id) 
+                        ? get_the_post_thumbnail_url($listing_id, $this->get_prop('image_size'))
+                        : '';
                     if ($featured_image): 
                     ?>
                         <img src="<?php echo esc_url($featured_image); ?>" 
