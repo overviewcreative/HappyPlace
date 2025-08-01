@@ -216,42 +216,33 @@ if (!function_exists('hph_bridge_get_sort_options')) {
  * @return array Listing data
  */
 if (!function_exists('hph_bridge_get_listing_data')) {
+    /**
+     * Get listing data - calls main function from listing-bridge.php
+     * 
+     * @param int $listing_id
+     * @return array
+     */
     function hph_bridge_get_listing_data($listing_id) {
-        if (!$listing_id) {
-            return [];
+        // Ensure listing-bridge.php is loaded
+        if (function_exists('hph_bridge_get_listing_details')) {
+            return hph_bridge_get_listing_details($listing_id);
         }
         
-        $cache_key = "hph_listing_data_{$listing_id}";
-        $cached = wp_cache_get($cache_key);
-        
-        if ($cached !== false) {
-            return $cached;
-        }
-        
-        $listing = get_post($listing_id);
-        if (!$listing || $listing->post_type !== 'listing') {
-            return [];
-        }
-        
-        $data = [
+        // Fallback for when plugin is inactive
+        return [
             'id' => $listing_id,
             'title' => get_the_title($listing_id),
-            'url' => get_permalink($listing_id),
-            'excerpt' => get_the_excerpt($listing_id),
-            'featured_image' => get_the_post_thumbnail($listing_id, 'medium'),
-            'price' => get_field('listing_price', $listing_id),
-            'status' => get_field('listing_status', $listing_id),
-            'property_type' => get_field('property_type', $listing_id),
-            'bedrooms' => get_field('bedrooms', $listing_id),
-            'bathrooms' => get_field('bathrooms', $listing_id),
-            'square_feet' => get_field('square_feet', $listing_id),
-            'address' => get_field('property_address', $listing_id),
-            'date' => get_the_date('c', $listing_id)
+            'status' => 'available',
+            'price' => 0,
+            'bedrooms' => 0,
+            'bathrooms' => 0,
+            'square_footage' => 0,
+            'address' => '',
+            'description' => get_the_content(null, false, $listing_id),
+            'images' => [],
+            'agent_id' => 0,
+            'listing_date' => get_the_date('Y-m-d', $listing_id),
+            'features' => []
         ];
-        
-        // Cache for 15 minutes
-        wp_cache_set($cache_key, $data, '', 15 * MINUTE_IN_SECONDS);
-        
-        return $data;
     }
 }

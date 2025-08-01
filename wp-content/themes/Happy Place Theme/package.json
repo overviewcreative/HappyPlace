@@ -6,16 +6,12 @@
   "scripts": {
     "dev": "webpack --mode=development --watch",
     "build": "npm run clean && webpack --mode=production",
-    "build:analyze": "npm run clean && webpack --mode=production --env analyze",
+    "build:dev": "npm run clean && webpack --mode=development",
     "watch": "webpack --mode=development --watch",
     "serve": "webpack serve --mode=development",
     "clean": "rimraf assets/dist/*",
     "lint:js": "eslint assets/src/js --ext .js --fix",
     "lint:scss": "stylelint 'assets/src/scss/**/*.scss' --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "format": "prettier --write 'assets/src/**/*.{js,scss,css}'",
-    "check-deps": "npm outdated",
     "prebuild": "npm run clean"
   },
   "keywords": [

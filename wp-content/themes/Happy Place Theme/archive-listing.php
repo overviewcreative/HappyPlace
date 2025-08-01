@@ -1,4 +1,25 @@
+
 <?php
+/**
+ * Import required component classes
+ */
+use HappyPlace\Components\Listing\Hero;
+use HappyPlace\Components\Listing\Gallery;
+use HappyPlace\Components\Listing\Card;
+use HappyPlace\Components\Agent\Card as AgentCard;
+use HappyPlace\Components\Agent\Profile;
+use HappyPlace\Components\Tools\Mortgage_Calculator;
+use HappyPlace\Components\UI\Button;
+use HappyPlace\Components\UI\Modal;
+
+// Safety check for component availability
+if (!class_exists('HappyPlace\Components\Listing\Hero')) {
+    // Load theme manager to ensure components are available
+    if (class_exists('HappyPlace\Core\Theme_Manager')) {
+        HappyPlace\Core\Theme_Manager::get_instance();
+    }
+}
+
 /**
  * Archive template for listings
  * 
