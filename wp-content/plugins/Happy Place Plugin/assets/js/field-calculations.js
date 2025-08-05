@@ -1,327 +1,385 @@
 /**
- * Real-time ACF Field Calculations
+ * Happy Place Plugin - Field Calculations & Admin Enhancements
+ * Real-time calculations and improved admin UX
  */
 
 (function($) {
     'use strict';
 
-    var HPHFieldCalculations = {
-        
-        init: function() {
-            this.bindEvents();
-            this.initCalculations();
-        },
-
-        bindEvents: function() {
-            // Bind to ACF field changes
-            $(document).on('change', '.acf-field-number input', this.handleFieldChange);
-            $(document).on('keyup', '.acf-field-number input', this.debounce(this.handleFieldChange, 500));
-            
-            // Specific calculation triggers
-            $(document).on('change', '[data-name="price"], [data-name="square_footage"]', this.calculatePricePerSqft);
-            $(document).on('change', '[data-name="price"], [data-name="estimated_down_payment"], [data-name="estimated_interest_rate"]', this.calculateMonthlyPayment);
-            $(document).on('change', '[data-name="hoa_monthly"], [data-name="hoa_quarterly"], [data-name="hoa_annual"]', this.calculateHOATotal);
-            
-            // Investment calculations
-            $(document).on('change', '[data-name="estimated_monthly_rent"], [data-name="price"]', this.calculateInvestmentMetrics);
-        },
-
-        initCalculations: function() {
-            // Run initial calculations on page load
-            this.calculatePricePerSqft();
-            this.calculateMonthlyPayment();
-            this.calculateHOATotal();
-            this.calculateInvestmentMetrics();
-        },
-
-        handleFieldChange: function(e) {
-            var $field = $(e.target);
-            var fieldName = $field.closest('.acf-field').data('name');
-            
-            // Trigger specific calculations based on field
-            switch(fieldName) {
-                case 'price':
-                case 'square_footage':
-                    HPHFieldCalculations.calculatePricePerSqft();
-                    HPHFieldCalculations.calculateInvestmentMetrics();
-                    break;
-                case 'bedrooms':
-                case 'bathrooms':
-                    HPHFieldCalculations.calculateRoomRatios();
-                    break;
-                case 'living_square_footage':
-                case 'garage_square_footage':
-                case 'basement_square_footage':
-                    HPHFieldCalculations.calculateTotalSquareFootage();
-                    break;
-            }
-        },
-
-        calculatePricePerSqft: function() {
-            var price = HPHFieldCalculations.getFieldValue('price');
-            var sqft = HPHFieldCalculations.getFieldValue('square_footage');
-            
-            if (price && sqft && sqft > 0) {
-                var pricePerSqft = Math.round((price / sqft) * 100) / 100;
-                HPHFieldCalculations.setFieldValue('price_per_sqft', pricePerSqft);
-                HPHFieldCalculations.updateCalculatedField('price_per_sqft', '$' + pricePerSqft.toFixed(2) + ' per sq ft');
-            }
-        },
-
-        calculateMonthlyPayment: function() {
-            var price = HPHFieldCalculations.getFieldValue('price');
-            var downPaymentPercent = HPHFieldCalculations.getFieldValue('estimated_down_payment') || 20;
-            var interestRate = HPHFieldCalculations.getFieldValue('estimated_interest_rate') || 7.0;
-            var loanTermYears = HPHFieldCalculations.getFieldValue('loan_term_years') || 30;
-            
-            if (!price) return;
-            
-            var downPayment = price * (downPaymentPercent / 100);
-            var loanAmount = price - downPayment;
-            var monthlyRate = (interestRate / 100) / 12;
-            var numPayments = loanTermYears * 12;
-            
-            var monthlyPayment;
-            if (monthlyRate > 0) {
-                monthlyPayment = loanAmount * 
-                    (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
-                    (Math.pow(1 + monthlyRate, numPayments) - 1);
-            } else {
-                monthlyPayment = loanAmount / numPayments;
-            }
-            
-            HPHFieldCalculations.setFieldValue('estimated_monthly_payment', Math.round(monthlyPayment * 100) / 100);
-            HPHFieldCalculations.setFieldValue('estimated_down_payment_amount', downPayment);
-            HPHFieldCalculations.setFieldValue('estimated_loan_amount', loanAmount);
-            
-            // Update display
-            HPHFieldCalculations.updateCalculatedField('estimated_monthly_payment', '$' + monthlyPayment.toFixed(2) + '/mo');
-            HPHFieldCalculations.updateCalculatedField('estimated_down_payment_amount', '$' + downPayment.toLocaleString());
-            
-            // Calculate total monthly cost
-            HPHFieldCalculations.calculateTotalMonthlyCost();
-        },
-
-        calculateHOATotal: function() {
-            var monthlyHOA = HPHFieldCalculations.getFieldValue('hoa_monthly') || 0;
-            var quarterlyHOA = HPHFieldCalculations.getFieldValue('hoa_quarterly') || 0;
-            var annualHOA = HPHFieldCalculations.getFieldValue('hoa_annual') || 0;
-            
-            var totalMonthlyHOA = monthlyHOA + (quarterlyHOA / 3) + (annualHOA / 12);
-            var totalAnnualHOA = totalMonthlyHOA * 12;
-            
-            HPHFieldCalculations.setFieldValue('total_monthly_hoa', Math.round(totalMonthlyHOA * 100) / 100);
-            HPHFieldCalculations.setFieldValue('total_annual_hoa', Math.round(totalAnnualHOA * 100) / 100);
-            
-            HPHFieldCalculations.updateCalculatedField('total_monthly_hoa', '$' + totalMonthlyHOA.toFixed(2) + '/mo');
-            
-            // Recalculate total monthly cost
-            HPHFieldCalculations.calculateTotalMonthlyCost();
-        },
-
-        calculateTotalMonthlyCost: function() {
-            var payment = HPHFieldCalculations.getFieldValue('estimated_monthly_payment') || 0;
-            var taxes = HPHFieldCalculations.getFieldValue('estimated_monthly_taxes') || 0;
-            var insurance = HPHFieldCalculations.getFieldValue('estimated_monthly_insurance') || 0;
-            var hoa = HPHFieldCalculations.getFieldValue('total_monthly_hoa') || 0;
-            var pmi = HPHFieldCalculations.getFieldValue('estimated_monthly_pmi') || 0;
-            
-            var total = payment + taxes + insurance + hoa + pmi;
-            var piti = payment + taxes + insurance;
-            
-            HPHFieldCalculations.setFieldValue('total_monthly_cost', Math.round(total * 100) / 100);
-            HPHFieldCalculations.setFieldValue('piti', Math.round(piti * 100) / 100);
-            
-            HPHFieldCalculations.updateCalculatedField('total_monthly_cost', '$' + total.toFixed(2) + '/mo');
-            HPHFieldCalculations.updateCalculatedField('piti', '$' + piti.toFixed(2) + '/mo (PITI)');
-        },
-
-        calculateInvestmentMetrics: function() {
-            var price = HPHFieldCalculations.getFieldValue('price');
-            var monthlyRent = HPHFieldCalculations.getFieldValue('estimated_monthly_rent');
-            
-            if (!price || !monthlyRent) return;
-            
-            var annualRent = monthlyRent * 12;
-            
-            // Gross Rent Multiplier
-            var grm = price / annualRent;
-            HPHFieldCalculations.setFieldValue('gross_rent_multiplier', Math.round(grm * 10) / 10);
-            HPHFieldCalculations.updateCalculatedField('gross_rent_multiplier', grm.toFixed(1) + 'x');
-            
-            // Monthly rent ratio (1% rule)
-            var rentRatio = (monthlyRent / price) * 100;
-            HPHFieldCalculations.setFieldValue('monthly_rent_ratio', Math.round(rentRatio * 1000) / 1000);
-            
-            var meetsOnePercent = rentRatio >= 1.0;
-            HPHFieldCalculations.setFieldValue('meets_one_percent_rule', meetsOnePercent);
-            
-            var rentRatioText = rentRatio.toFixed(3) + '%';
-            if (meetsOnePercent) {
-                rentRatioText += ' ✓ (Meets 1% Rule)';
-            }
-            HPHFieldCalculations.updateCalculatedField('monthly_rent_ratio', rentRatioText);
-            
-            // Cash flow calculation
-            var totalMonthlyCost = HPHFieldCalculations.getFieldValue('total_monthly_cost') || 0;
-            if (totalMonthlyCost > 0) {
-                var monthlyCashFlow = monthlyRent - totalMonthlyCost;
-                var annualCashFlow = monthlyCashFlow * 12;
-                
-                HPHFieldCalculations.setFieldValue('monthly_cash_flow', Math.round(monthlyCashFlow * 100) / 100);
-                HPHFieldCalculations.setFieldValue('annual_cash_flow', Math.round(annualCashFlow * 100) / 100);
-                
-                var cashFlowColor = monthlyCashFlow >= 0 ? 'green' : 'red';
-                HPHFieldCalculations.updateCalculatedField('monthly_cash_flow', 
-                    '<span style="color: ' + cashFlowColor + '">$' + monthlyCashFlow.toFixed(2) + '/mo</span>');
-                
-                // Cash-on-cash return
-                var downPayment = HPHFieldCalculations.getFieldValue('estimated_down_payment_amount');
-                if (downPayment > 0) {
-                    var cashOnCash = (annualCashFlow / downPayment) * 100;
-                    HPHFieldCalculations.setFieldValue('cash_on_cash_return', Math.round(cashOnCash * 100) / 100);
-                    HPHFieldCalculations.updateCalculatedField('cash_on_cash_return', cashOnCash.toFixed(2) + '%');
-                }
-            }
-        },
-
-        calculateRoomRatios: function() {
-            var bedrooms = HPHFieldCalculations.getFieldValue('bedrooms');
-            var bathrooms = HPHFieldCalculations.getFieldValue('bathrooms');
-            var sqft = HPHFieldCalculations.getFieldValue('square_footage');
-            
-            if (bedrooms && bathrooms) {
-                var ratio = Math.round((bedrooms / bathrooms) * 100) / 100;
-                HPHFieldCalculations.setFieldValue('bedroom_bathroom_ratio', ratio);
-                HPHFieldCalculations.updateCalculatedField('bedroom_bathroom_ratio', ratio + ':1');
-            }
-            
-            if (bedrooms && sqft) {
-                var sqftPerBedroom = Math.round(sqft / bedrooms);
-                HPHFieldCalculations.setFieldValue('sqft_per_bedroom', sqftPerBedroom);
-                HPHFieldCalculations.updateCalculatedField('sqft_per_bedroom', sqftPerBedroom + ' sq ft per bedroom');
-            }
-        },
-
-        calculateTotalSquareFootage: function() {
-            var living = HPHFieldCalculations.getFieldValue('living_square_footage') || 0;
-            var garage = HPHFieldCalculations.getFieldValue('garage_square_footage') || 0;
-            var basement = HPHFieldCalculations.getFieldValue('basement_square_footage') || 0;
-            var other = HPHFieldCalculations.getFieldValue('other_square_footage') || 0;
-            
-            var total = living + garage + basement + other;
-            
-            if (total > 0) {
-                HPHFieldCalculations.setFieldValue('square_footage', total);
-                HPHFieldCalculations.setFieldValue('calculated_from_components', true);
-                
-                // Update efficiency ratio
-                if (living > 0) {
-                    var efficiency = Math.round((living / total) * 1000) / 10;
-                    HPHFieldCalculations.setFieldValue('living_space_efficiency', efficiency);
-                    HPHFieldCalculations.updateCalculatedField('living_space_efficiency', efficiency + '% living space');
-                }
-            }
-        },
-
-        // Utility functions
-        getFieldValue: function(fieldName) {
-            var $field = $('[data-name="' + fieldName + '"] input, [data-name="' + fieldName + '"] select');
-            if ($field.length) {
-                var value = $field.val();
-                return value ? parseFloat(value) : 0;
-            }
-            return 0;
-        },
-
-        setFieldValue: function(fieldName, value) {
-            var $field = $('[data-name="' + fieldName + '"] input');
-            if ($field.length) {
-                $field.val(value).trigger('change');
-            }
-        },
-
-        updateCalculatedField: function(fieldName, displayValue) {
-            var $field = $('[data-name="' + fieldName + '"]');
-            var $calculated = $field.find('.calculated-value');
-            
-            if ($calculated.length === 0) {
-                $calculated = $('<div class="calculated-value" style="margin-top: 5px; font-size: 12px; color: #666; font-style: italic;"></div>');
-                $field.find('.acf-input').append($calculated);
-            }
-            
-            $calculated.html('Calculated: ' + displayValue);
-        },
-
-        // Debounce function to limit calculation frequency
-        debounce: function(func, wait) {
-            var timeout;
-            return function executedFunction() {
-                var context = this;
-                var args = arguments;
-                var later = function() {
-                    timeout = null;
-                    func.apply(context, args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        },
-
-        // Add visual indicators for calculated fields
-        addCalculationIndicators: function() {
-            var calculatedFields = [
-                'price_per_sqft',
-                'estimated_monthly_payment',
-                'total_monthly_hoa',
-                'total_monthly_cost',
-                'monthly_cash_flow',
-                'gross_rent_multiplier',
-                'bedroom_bathroom_ratio'
-            ];
-            
-            calculatedFields.forEach(function(fieldName) {
-                var $field = $('[data-name="' + fieldName + '"]');
-                if ($field.length) {
-                    $field.find('.acf-label label').append(' <span style="color: #0073aa;">📊</span>');
-                    $field.addClass('calculated-field');
-                }
-            });
-        },
-
-        // Show/hide advanced calculations
-        toggleAdvancedCalculations: function() {
-            var $button = $('<button type="button" class="button" style="margin: 10px 0;">Toggle Advanced Calculations</button>');
-            var $advancedFields = $('.acf-field[data-name*="cash_flow"], .acf-field[data-name*="cap_rate"], .acf-field[data-name*="roi"]');
-            
-            $button.on('click', function() {
-                $advancedFields.slideToggle();
-                $(this).text($advancedFields.is(':visible') ? 'Hide Advanced Calculations' : 'Show Advanced Calculations');
-            });
-            
-            $('.acf-field[data-name="price"]').after($button);
-            $advancedFields.hide();
-        }
-    };
-
     // Initialize when ACF is ready
     $(document).ready(function() {
-        // Wait for ACF to be fully loaded
-        setTimeout(function() {
-            if (typeof acf !== 'undefined') {
-                HPHFieldCalculations.init();
-                HPHFieldCalculations.addCalculationIndicators();
-                HPHFieldCalculations.toggleAdvancedCalculations();
-            }
-        }, 1000);
+        initializeCalculations();
+        initializeAdminEnhancements();
+        initializePhotoGallery();
+        initializeFeatureTags();
     });
 
-    // Also initialize on ACF ready event if available
-    if (typeof acf !== 'undefined') {
-        acf.addAction('ready', function() {
-            HPHFieldCalculations.init();
-            HPHFieldCalculations.addCalculationIndicators();
+    /**
+     * Initialize field calculations
+     */
+    function initializeCalculations() {
+        // Price per square foot calculation
+        $('input[name*="price"], input[name*="square_footage"]').on('input', function() {
+            calculatePricePerSqft();
+        });
+
+        // Total bathrooms calculation
+        $('input[name*="bathrooms"], input[name*="half_bathrooms"]').on('input', function() {
+            calculateTotalBathrooms();
+        });
+
+        // Monthly taxes calculation
+        $('input[name*="annual_taxes"]').on('input', function() {
+            calculateMonthlyTaxes();
+        });
+
+        // Mortgage calculations
+        $('input[name*="price"], input[name*="estimated_down_payment"], input[name*="interest_rate"]').on('input', function() {
+            calculateMortgagePayments();
+        });
+
+        // Investment calculations
+        $('input[name*="estimated_monthly_rent"], input[name*="price"]').on('input', function() {
+            calculateInvestmentMetrics();
+        });
+
+        // Days on market calculation
+        $('input[name*="listing_date"]').on('change', function() {
+            calculateDaysOnMarket();
+        });
+
+        // Total monthly cost calculation
+        $('input[name*="estimated_monthly_payment"], input[name*="estimated_monthly_taxes"], input[name*="estimated_monthly_insurance"], input[name*="hoa_fee"]').on('input', function() {
+            calculateTotalMonthlyCost();
         });
     }
+
+    /**
+     * Calculate price per square foot
+     */
+    function calculatePricePerSqft() {
+        const price = parseFloat($('input[name*="price"]').val()) || 0;
+        const sqft = parseFloat($('input[name*="square_footage"]').val()) || 0;
+        
+        if (price > 0 && sqft > 0) {
+            const pricePerSqft = (price / sqft).toFixed(2);
+            $('input[name*="price_per_sqft"]').val(pricePerSqft).addClass('calculated-updated');
+        }
+    }
+
+    /**
+     * Calculate total bathrooms
+     */
+    function calculateTotalBathrooms() {
+        const fullBaths = parseFloat($('input[name*="bathrooms"]:not([name*="half"]):not([name*="total"])').val()) || 0;
+        const halfBaths = parseFloat($('input[name*="half_bathrooms"]').val()) || 0;
+        
+        const totalBaths = fullBaths + (halfBaths * 0.5);
+        $('input[name*="bathrooms_total"]').val(totalBaths.toFixed(1)).addClass('calculated-updated');
+    }
+
+    /**
+     * Calculate monthly taxes
+     */
+    function calculateMonthlyTaxes() {
+        const annualTaxes = parseFloat($('input[name*="annual_taxes"]').val()) || 0;
+        
+        if (annualTaxes > 0) {
+            const monthlyTaxes = (annualTaxes / 12).toFixed(2);
+            $('input[name*="estimated_monthly_taxes"]').val(monthlyTaxes).addClass('calculated-updated');
+        }
+    }
+
+    /**
+     * Calculate mortgage payments
+     */
+    function calculateMortgagePayments() {
+        const price = parseFloat($('input[name*="price"]').val()) || 0;
+        const downPaymentPercent = parseFloat($('input[name*="estimated_down_payment"]').val()) || 20;
+        const interestRate = parseFloat($('input[name*="interest_rate"]').val()) || 7.0;
+        const loanTerm = parseInt($('select[name*="loan_term"]').val()) || 30;
+
+        if (price > 0) {
+            // Down payment amount
+            const downPaymentAmount = price * (downPaymentPercent / 100);
+            $('input[name*="estimated_down_payment_amount"]').val(downPaymentAmount.toFixed(2)).addClass('calculated-updated');
+
+            // Loan amount
+            const loanAmount = price - downPaymentAmount;
+            $('input[name*="estimated_loan_amount"]').val(loanAmount.toFixed(2)).addClass('calculated-updated');
+
+            // Monthly payment (P&I)
+            if (loanAmount > 0 && interestRate > 0) {
+                const monthlyRate = (interestRate / 100) / 12;
+                const numPayments = loanTerm * 12;
+                
+                const monthlyPayment = loanAmount * (
+                    monthlyRate * Math.pow(1 + monthlyRate, numPayments)
+                ) / (
+                    Math.pow(1 + monthlyRate, numPayments) - 1
+                );
+                
+                $('input[name*="estimated_monthly_payment"]').val(monthlyPayment.toFixed(2)).addClass('calculated-updated');
+            }
+        }
+    }
+
+    /**
+     * Calculate investment metrics
+     */
+    function calculateInvestmentMetrics() {
+        const price = parseFloat($('input[name*="price"]').val()) || 0;
+        const monthlyRent = parseFloat($('input[name*="estimated_monthly_rent"]').val()) || 0;
+
+        if (price > 0 && monthlyRent > 0) {
+            // Annual rent
+            const annualRent = monthlyRent * 12;
+            $('input[name*="estimated_annual_rent"]').val(annualRent.toFixed(2)).addClass('calculated-updated');
+
+            // Gross rental yield
+            const grossYield = (annualRent / price) * 100;
+            $('input[name*="gross_rental_yield"]').val(grossYield.toFixed(2)).addClass('calculated-updated');
+
+            // 1% rule ratio
+            const onePercentRatio = (monthlyRent / price) * 100;
+            $('input[name*="one_percent_rule_ratio"]').val(onePercentRatio.toFixed(2)).addClass('calculated-updated');
+        }
+    }
+
+    /**
+     * Calculate days on market
+     */
+    function calculateDaysOnMarket() {
+        const listingDate = $('input[name*="listing_date"]').val();
+        
+        if (listingDate) {
+            const listDate = new Date(listingDate);
+            const today = new Date();
+            const timeDiff = today.getTime() - listDate.getTime();
+            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            
+            $('input[name*="days_on_market"]').val(Math.max(0, daysDiff)).addClass('calculated-updated');
+        }
+    }
+
+    /**
+     * Calculate total monthly cost
+     */
+    function calculateTotalMonthlyCost() {
+        const monthlyPayment = parseFloat($('input[name*="estimated_monthly_payment"]').val()) || 0;
+        const monthlyTaxes = parseFloat($('input[name*="estimated_monthly_taxes"]').val()) || 0;
+        const monthlyInsurance = parseFloat($('input[name*="estimated_monthly_insurance"]').val()) || 0;
+        const hoaFee = parseFloat($('input[name*="hoa_fee"]').val()) || 0;
+
+        const totalMonthlyCost = monthlyPayment + monthlyTaxes + monthlyInsurance + hoaFee;
+        $('input[name*="total_monthly_cost"]').val(totalMonthlyCost.toFixed(2)).addClass('calculated-updated');
+    }
+
+    /**
+     * Initialize admin enhancements
+     */
+    function initializeAdminEnhancements() {
+        // Add visual feedback for calculated fields
+        $('.calculated-updated').each(function() {
+            $(this).addClass('success');
+            setTimeout(() => {
+                $(this).removeClass('success calculated-updated');
+            }, 2000);
+        });
+
+        // Readonly field enforcement
+        $('.hph-calculated-field input, .hph-calculated-field textarea, .hph-calculated-field select').attr('readonly', true);
+        $('.hph-auto-populated input, .hph-auto-populated textarea, .hph-auto-populated select').attr('readonly', true);
+
+        // Character counter for short description
+        $('textarea[name*="listing_description_short"]').on('input', function() {
+            const maxLength = 250;
+            const currentLength = $(this).val().length;
+            const remaining = maxLength - currentLength;
+            
+            let counter = $(this).siblings('.char-counter');
+            if (counter.length === 0) {
+                counter = $('<div class="char-counter"></div>');
+                $(this).after(counter);
+            }
+            
+            counter.text(remaining + ' characters remaining');
+            counter.toggleClass('over-limit', remaining < 0);
+        });
+    }
+
+    /**
+     * Initialize photo gallery enhancements
+     */
+    function initializePhotoGallery() {
+        // Auto-sort photos by order
+        $(document).on('change', 'input[name*="photo_order"]', function() {
+            sortPhotosByOrder();
+        });
+
+        // Featured photo management (only one featured)
+        $(document).on('change', 'input[name*="photo_featured"]', function() {
+            if ($(this).is(':checked')) {
+                // Uncheck all other featured photos
+                $('input[name*="photo_featured"]').not(this).prop('checked', false);
+                
+                // Move this photo to the top order
+                $(this).closest('.acf-row').find('input[name*="photo_order"]').val(1);
+                sortPhotosByOrder();
+            }
+        });
+
+        // Room type color coding
+        $(document).on('change', 'select[name*="photo_room_type"]', function() {
+            const roomType = $(this).val();
+            const row = $(this).closest('.acf-row');
+            
+            // Remove existing room type classes
+            row.removeClass(function(index, className) {
+                return (className.match(/(^|\s)room-type-\S+/g) || []).join(' ');
+            });
+            
+            // Add new room type class
+            if (roomType) {
+                row.addClass('room-type-' + roomType);
+            }
+        });
+    }
+
+    /**
+     * Sort photos by order field
+     */
+    function sortPhotosByOrder() {
+        const photoRepeater = $('.acf-field[data-name="listing_photos"] .acf-repeater');
+        const rows = photoRepeater.find('.acf-row').not('.acf-clone').get();
+        
+        rows.sort(function(a, b) {
+            const orderA = parseInt($(a).find('input[name*="photo_order"]').val()) || 999;
+            const orderB = parseInt($(b).find('input[name*="photo_order"]').val()) || 999;
+            return orderA - orderB;
+        });
+
+        $.each(rows, function(index, row) {
+            photoRepeater.find('.acf-tbody').append(row);
+        });
+    }
+
+    /**
+     * Initialize feature tags with Select2
+     */
+    function initializeFeatureTags() {
+        // Initialize Select2 with tagging for custom features
+        $('select[name*="custom_features"]').select2({
+            tags: true,
+            tokenSeparators: [','],
+            placeholder: 'Select or type custom features...',
+            allowClear: true,
+            createTag: function(params) {
+                const term = $.trim(params.term);
+                
+                if (term === '') {
+                    return null;
+                }
+                
+                return {
+                    id: term.toLowerCase().replace(/\s+/g, '_'),
+                    text: term,
+                    newTag: true
+                };
+            }
+        });
+
+        // Handle new tag creation
+        $('select[name*="custom_features"]').on('select2:select', function(e) {
+            if (e.params.data.newTag) {
+                console.log('New feature added:', e.params.data.text);
+            }
+        });
+    }
+
+    /**
+     * Auto-populate community HOA data when community is selected
+     */
+    $(document).on('change', 'select[name*="community"]', function() {
+        const communityId = $(this).val();
+        
+        if (communityId && typeof hphCalc !== 'undefined') {
+            $.ajax({
+                url: hphCalc.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'hph_get_community_hoa_data',
+                    community_id: communityId,
+                    nonce: hphCalc.nonce
+                },
+                success: function(response) {
+                    if (response.success && response.data) {
+                        // Populate HOA fee based on property type
+                        const propertyType = $('select[name*="property_type"]').val();
+                        let hoaFee = 0;
+                        
+                        switch(propertyType) {
+                            case 'Single Family Home':
+                                hoaFee = response.data.hoa_fee_single_family || 0;
+                                break;
+                            case 'Townhouse':
+                                hoaFee = response.data.hoa_fee_townhouse || 0;
+                                break;
+                            case 'Condo':
+                                hoaFee = response.data.hoa_fee_condo || 0;
+                                break;
+                        }
+                        
+                        if (hoaFee > 0) {
+                            $('input[name*="hoa_fee"]').val(hoaFee).addClass('auto-populated');
+                        }
+                        
+                        showNotification('HOA information auto-populated from community data', 'success');
+                    }
+                }
+            });
+        }
+    });
+
+    /**
+     * Show admin notifications
+     */
+    function showNotification(message, type = 'info') {
+        const notification = $('<div class="notice notice-' + type + ' is-dismissible"><p>' + message + '</p></div>');
+        $('.wrap h1').after(notification);
+        
+        setTimeout(function() {
+            notification.fadeOut();
+        }, 5000);
+    }
+
+    // Add dynamic CSS for visual enhancements
+    const style = $('<style>').text(`
+        .char-counter {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .char-counter.over-limit {
+            color: #dc3232;
+            font-weight: bold;
+        }
+        .calculated-updated {
+            background-color: #f0fff4 !important;
+            border-color: #46b450 !important;
+        }
+        .auto-populated {
+            background-color: #f0f8ff !important;
+            border-color: #0073aa !important;
+        }
+        .room-type-exterior { border-left: 4px solid #2ecc71; }
+        .room-type-kitchen { border-left: 4px solid #e74c3c; }
+        .room-type-living_room { border-left: 4px solid #3498db; }
+        .room-type-master_bedroom { border-left: 4px solid #9b59b6; }
+        .room-type-bathroom { border-left: 4px solid #1abc9c; }
+        .room-type-pool { border-left: 4px solid #00bcd4; }
+    `);
+    
+    $('head').append(style);
 
 })(jQuery);

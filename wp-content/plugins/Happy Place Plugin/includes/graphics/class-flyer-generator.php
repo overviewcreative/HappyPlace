@@ -79,32 +79,38 @@ class Flyer_Generator {
         $version = defined('HPH_VERSION') ? HPH_VERSION : '1.0.0';
         $plugin_url = defined('HPH_PLUGIN_URL') ? HPH_PLUGIN_URL : plugin_dir_url(dirname(dirname(__FILE__)));
 
-        // Enqueue Fabric.js from CDN with integrity check
-        wp_enqueue_script(
-            'fabric-js',
-            'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js',
-            [],
-            '5.3.0',
-            true
-        );
+        // Enqueue Fabric.js from CDN with integrity check (only if not already loaded)
+        if (!wp_script_is('fabric-js', 'registered')) {
+            wp_enqueue_script(
+                'fabric-js',
+                'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js',
+                [],
+                '5.3.0',
+                true
+            );
+        }
 
-        // Enqueue QR Code library from CDN
-        wp_enqueue_script(
-            'qrcode-js',
-            'https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js',
-            [],
-            '1.5.3',
-            true
-        );
+        // Enqueue QR Code library from CDN (only if not already loaded)
+        if (!wp_script_is('qrcode-js', 'registered')) {
+            wp_enqueue_script(
+                'qrcode-js',
+                'https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js',
+                [],
+                '1.5.3',
+                true
+            );
+        }
 
-        // Enqueue jsPDF library for PDF generation
-        wp_enqueue_script(
-            'jspdf',
-            'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-            [],
-            '2.5.1',
-            true
-        );
+        // Enqueue jsPDF library for PDF generation (only if not already loaded)
+        if (!wp_script_is('jspdf', 'registered')) {
+            wp_enqueue_script(
+                'jspdf',
+                'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+                [],
+                '2.5.1',
+                true
+            );
+        }
 
         // Enqueue custom flyer generator script
         wp_enqueue_script(
@@ -141,13 +147,15 @@ class Flyer_Generator {
             $version
         );
 
-        // Enqueue Font Awesome for icons
-        wp_enqueue_style(
-            'fontawesome',
-            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-            [],
-            '6.4.0'
-        );
+        // Enqueue Font Awesome for icons (only if not already loaded)
+        if (!wp_style_is('fontawesome', 'registered') && !wp_style_is('font-awesome', 'registered')) {
+            wp_enqueue_style(
+                'fontawesome',
+                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+                [],
+                '6.4.0'
+            );
+        }
 
         // Debug logging for enqueued assets
         if (defined('WP_DEBUG') && WP_DEBUG) {

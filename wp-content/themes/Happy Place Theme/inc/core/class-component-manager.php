@@ -60,15 +60,29 @@ class Component_Manager {
     }
     
     /**
+     * Get singleton instance (alias for instance)
+     * 
+     * @return Component_Manager
+     */
+    public static function get_instance() {
+        return self::instance();
+    }
+    
+    /**
      * Initialize component manager
      * 
      * @return Component_Manager
      */
     public static function init() {
         $instance = self::instance();
-        $instance->load_components();
-        $instance->ensure_components_loaded();
-        $instance->setup_hooks();
+        try {
+            $instance->load_components();
+            $instance->ensure_components_loaded();
+            $instance->setup_hooks();
+            error_log('HPH: Component_Manager initialized successfully');
+        } catch (\Exception $e) {
+            error_log('HPH: Error initializing Component_Manager: ' . $e->getMessage());
+        }
         return $instance;
     }
     
@@ -227,7 +241,7 @@ class Component_Manager {
                 $this->register_component($full_class_name, $directory);
             }
             
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log("HPH Component Manager: Error loading {$file}: " . $e->getMessage());
             }

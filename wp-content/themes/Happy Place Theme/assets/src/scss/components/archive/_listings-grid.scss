@@ -333,10 +333,7 @@
                 &::before {
                     content: '';
                     position: absolute;
-                    top: -2px;
-                    left: -2px;
-                    right: -2px;
-                    bottom: -2px;
+                    inset: -2px;
                     background: linear-gradient(135deg, var(--color-warning), var(--color-warning-dark));
                     border-radius: var(--hph-border-radius-lg);
                     z-index: -1;

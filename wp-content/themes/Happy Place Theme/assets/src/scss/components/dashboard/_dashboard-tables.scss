@@ -157,6 +157,7 @@
       // Truncate long content
       &.truncate {
         max-width: 200px;
+
         @include truncate;
       }
       
@@ -409,7 +410,7 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: currentColor;
+    background: currentcolor;
   }
 }
 

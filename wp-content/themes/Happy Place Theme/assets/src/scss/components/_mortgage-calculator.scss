@@ -1,52 +1,52 @@
 // assets/scss/components/_mortgage-calculator.scss
 
 .mortgage-calculator-widget {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  margin-bottom: 2rem;
+  background: var(--hph-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  margin-bottom: var(--spacing-8);
   overflow: hidden;
 
   .widget-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid #f0f0f0;
-    background: linear-gradient(135deg, var(--hph-color-primary-400) 0%, var(--hph-color-primary-600) 100%);
-    color: white;
+    padding: var(--spacing-6);
+    border-bottom: 1px solid var(--hph-gray-100);
+    background: var(--hph-primary-gradient);
+    color: var(--hph-white);
   }
 
   .widget-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    margin: 0 0 var(--spacing-2);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-2);
   }
 
   .widget-subtitle {
     margin: 0;
     opacity: 0.9;
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
   }
 
   .widget-content {
-    padding: 1.5rem;
+    padding: var(--spacing-6);
   }
 
   // Form Styles
   .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-6);
   }
 
   .form-label {
     display: block;
-    font-weight: 500;
-    color: var(--hph-color-gray-800);
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--hph-gray-800);
+    margin-bottom: var(--spacing-2);
+    font-size: var(--font-size-sm);
 
     .required {
-      color: #ef4444;
+      color: var(--hph-error-500);
     }
   }
 
@@ -56,7 +56,7 @@
 
   .input-prefix {
     position: absolute;
-    left: 12px;
+    left: var(--spacing-3);
     top: 50%;
     transform: translateY(-50%);
     color: var(--hph-color-gray-600);
@@ -66,17 +66,17 @@
 
   .form-control {
     width: 100%;
-    padding: 0.75rem 0.75rem 0.75rem 2rem;
-    border: 2px solid var(--hph-color-gray-200);
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.2s ease;
-    background: var(--hph-color-gray-50);
+    padding: var(--spacing-3) var(--spacing-3) var(--spacing-3) var(--spacing-8);
+    border: 2px solid var(--hph-gray-200);
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-base);
+    transition: var(--hph-transition-colors);
+    background: var(--hph-gray-50);
 
     &:focus {
       outline: none;
-      border-color: var(--hph-color-primary-400);
-      background: white;
+      border-color: var(--hph-primary-400);
+      background: var(--hph-white);
     }
   }
 
@@ -88,17 +88,17 @@
     background: var(--hph-color-gray-200);
     outline: none;
     appearance: none;
-    -webkit-appearance: none;
+    appearance: none;
     margin-bottom: 1rem;
 
     &::-webkit-slider-thumb {
-      -webkit-appearance: none;
+      appearance: none;
       width: 20px;
       height: 20px;
       border-radius: 50%;
       background: var(--hph-color-primary-400);
       cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
     }
 
     &::-moz-range-thumb {
@@ -108,7 +108,7 @@
       background: var(--hph-color-primary-400);
       cursor: pointer;
       border: none;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
     }
   }
 
@@ -162,62 +162,62 @@
 
   // Results
   .mortgage-results {
-    margin: 2rem 0;
-    border: 1px solid var(--hph-color-gray-200);
-    border-radius: 8px;
+    margin: var(--spacing-8) 0;
+    border: 1px solid var(--hph-gray-200);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
   }
 
   .results-header {
-    padding: 1rem 1.5rem;
-    background: var(--hph-color-gray-50);
-    border-bottom: 1px solid var(--hph-color-gray-200);
+    padding: var(--spacing-4) var(--spacing-6);
+    background: var(--hph-gray-50);
+    border-bottom: 1px solid var(--hph-gray-200);
 
     h4 {
       margin: 0;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--hph-color-gray-800);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      color: var(--hph-gray-800);
     }
   }
 
   .payment-breakdown {
-    padding: 1rem 0;
+    padding: var(--spacing-4) 0;
   }
 
   .payment-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1.5rem;
+    padding: var(--spacing-2) var(--spacing-6);
 
     &.primary {
-      background: #fef3f2;
+      background: var(--hph-error-25);
     }
 
     &.pmi {
-      background: #fff7ed;
+      background: var(--hph-warning-25);
     }
   }
 
   .payment-label {
-    font-size: 0.9rem;
-    color: var(--hph-color-gray-800);
+    font-size: var(--font-size-sm);
+    color: var(--hph-gray-800);
   }
 
   .payment-amount {
-    font-weight: 600;
-    color: var(--hph-color-gray-800);
+    font-weight: var(--font-weight-semibold);
+    color: var(--hph-gray-800);
   }
 
   .total-payment {
-    border-top: 2px solid var(--hph-color-gray-200);
-    background: var(--hph-color-gray-50);
+    border-top: 2px solid var(--hph-gray-200);
+    background: var(--hph-gray-50);
 
     .payment-item.total {
       .payment-label {
-        font-weight: 600;
-        font-size: 1rem;
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-base);
       }
 
       .payment-amount {
@@ -229,21 +229,21 @@
 
   // Disclaimer
   .calculator-disclaimer {
-    margin: 1.5rem 0;
-    padding: 1rem;
-    background: var(--hph-color-primary-50);
-    border-radius: 8px;
-    border-left: 4px solid var(--hph-color-primary-400);
+    margin: var(--spacing-6) 0;
+    padding: var(--spacing-4);
+    background: var(--hph-primary-50);
+    border-radius: var(--border-radius-lg);
+    border-left: 4px solid var(--hph-primary-400);
 
     p {
       margin: 0;
-      color: var(--hph-color-gray-600);
+      color: var(--hph-gray-600);
       line-height: 1.4;
     }
 
     i {
-      color: var(--hph-color-primary-600);
-      margin-right: 0.5rem;
+      color: var(--hph-primary-600);
+      margin-right: var(--spacing-2);
     }
   }
 
@@ -295,10 +295,10 @@
   }
 
   // Responsive Design
-  @media (max-width: 768px) {
+  @media (width <= var(--hph-breakpoint-md)) {
     .widget-header,
     .widget-content {
-      padding: 1rem;
+      padding: var(--spacing-4);
     }
     
     .form-tabs {
@@ -306,7 +306,7 @@
 
       .tab-label {
         border-right: none;
-        border-bottom: 1px solid var(--hph-color-gray-200);
+        border-bottom: 1px solid var(--hph-gray-200);
 
         &:last-child {
           border-bottom: none;

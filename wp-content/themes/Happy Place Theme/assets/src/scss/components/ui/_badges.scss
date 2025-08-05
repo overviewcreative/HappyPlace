@@ -144,13 +144,13 @@
             width: 1rem;
             height: 1rem;
             margin-left: var(--hph-spacing-2);
-            background: rgba(0, 0, 0, 0.1);
+            background: rgb(0 0 0 / 10%);
             border-radius: var(--hph-border-radius-full);
             cursor: pointer;
             transition: var(--transition-fast);
             
             &:hover {
-                background: rgba(0, 0, 0, 0.2);
+                background: rgb(0 0 0 / 20%);
             }
             
             i {
@@ -197,7 +197,7 @@
             height: 0.75rem;
             margin: -0.375rem 0 0 -0.375rem;
             border: 1px solid transparent;
-            border-top-color: currentColor;
+            border-top-color: currentcolor;
             border-radius: var(--hph-border-radius-full);
             animation: spin 1s linear infinite;
         }
@@ -263,7 +263,7 @@
             background: linear-gradient(
                 45deg,
                 transparent,
-                rgba(255, 255, 255, 0.1),
+                rgb(255 255 255 / 10%),
                 transparent
             );
             animation: shine 3s infinite;
@@ -321,6 +321,7 @@
     0%, 100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.5;
     }
@@ -330,12 +331,15 @@
     0%, 20%, 53%, 80%, 100% {
         transform: translateY(0);
     }
+
     40%, 43% {
         transform: translateY(-8px);
     }
+
     70% {
         transform: translateY(-4px);
     }
+
     90% {
         transform: translateY(-2px);
     }
@@ -351,6 +355,7 @@
         transform: scale(1);
         opacity: 1;
     }
+
     50% {
         transform: scale(1.2);
         opacity: 0.8;
@@ -361,6 +366,7 @@
     0% {
         transform: translateX(-100%) translateY(-100%) rotate(45deg);
     }
+
     100% {
         transform: translateX(100%) translateY(100%) rotate(45deg);
     }
@@ -370,6 +376,7 @@
     0%, 100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.05);
     }

@@ -48,6 +48,7 @@
       font-weight: var(--font-weight-bold);
       color: var(--dashboard-text);
       margin: 0 0 var(--dashboard-spacing-xs);
+
       @include truncate;
     }
     

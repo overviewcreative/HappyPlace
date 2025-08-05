@@ -26,6 +26,7 @@
     // Image Container
     .card-image-container {
         position: relative;
+
         @include aspect-ratio(4/3);
         overflow: hidden;
         
@@ -48,14 +49,11 @@
         
         .card-image-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: linear-gradient(
                 to bottom,
                 transparent 0%,
-                rgba(0, 0, 0, 0.1) 100%
+                rgb(0 0 0 / 10%) 100%
             );
             opacity: 0;
             transition: opacity var(--transition-fast);
@@ -78,7 +76,7 @@
         
         .card-badge {
             padding: var(--hph-spacing-1) var(--hph-spacing-2);
-            background: rgba(0, 0, 0, 0.8);
+            background: rgb(0 0 0 / 80%);
             color: var(--color-white);
             font-size: var(--hph-font-size-xs);
             font-weight: var(--font-weight-semibold);
@@ -127,7 +125,7 @@
         .quick-action-btn {
             width: 2.5rem;
             height: 2.5rem;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgb(255 255 255 / 95%);
             color: var(--color-text);
             border: none;
             border-radius: var(--hph-border-radius-full);
@@ -401,6 +399,7 @@
         
         .list-image-container {
             flex: 0 0 300px;
+
             @include aspect-ratio(4/3);
         }
         

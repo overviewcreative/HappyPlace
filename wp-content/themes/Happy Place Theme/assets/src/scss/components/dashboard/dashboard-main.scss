@@ -41,6 +41,12 @@
 // Statistics and charts
 @import 'dashboard-stats';
 
+// Missing classes required by dashboard template
+@import 'dashboard-missing-classes';
+
+// Modern UI components and enhancements
+@import 'dashboard-modern-ui';
+
 /* ============================================================================
    SECTION-SPECIFIC FILES (Page Templates)
    ============================================================================ */
@@ -134,7 +140,7 @@
       break-inside: avoid;
       margin-bottom: var(--dashboard-spacing-md) !important;
       box-shadow: none !important;
-      border: 1px solid #cccccc !important;
+      border: 1px solid #ccc !important;
     }
     
     // Optimize grid for printing

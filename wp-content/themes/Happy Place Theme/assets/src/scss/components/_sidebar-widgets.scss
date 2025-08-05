@@ -2,7 +2,7 @@
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 
     .widget-title {
         font-size: 1.25rem;
@@ -112,7 +112,7 @@
             flex: 1;
         }
 
-        @media (max-width: 480px) {
+        @media (width <= 480px) {
             flex-direction: column;
         }
     }
@@ -236,7 +236,7 @@
             }
 
             .rsvp-required {
-                background: rgba(255, 255, 255, 0.2);
+                background: rgb(255 255 255 / 20%);
                 padding: 0.5rem;
                 border-radius: 4px;
                 font-size: 0.9rem;
@@ -249,7 +249,7 @@
             }
 
             .special-instructions {
-                background: rgba(255, 255, 255, 0.15);
+                background: rgb(255 255 255 / 15%);
                 padding: 0.75rem;
                 border-radius: 4px;
                 font-size: 0.9rem;
@@ -263,9 +263,9 @@
                 flex-wrap: wrap;
 
                 .btn {
-                    background: rgba(255, 255, 255, 0.2);
+                    background: rgb(255 255 255 / 20%);
                     color: white;
-                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border: 1px solid rgb(255 255 255 / 30%);
                     padding: 0.5rem 1rem;
                     border-radius: 4px;
                     text-decoration: none;
@@ -273,12 +273,12 @@
                     transition: all 0.3s ease;
 
                     &:hover {
-                        background: rgba(255, 255, 255, 0.3);
+                        background: rgb(255 255 255 / 30%);
                         transform: translateY(-1px);
                     }
 
                     &.btn-primary {
-                        background: rgba(255, 255, 255, 0.9);
+                        background: rgb(255 255 255 / 90%);
                         color: #667eea;
                         font-weight: 600;
                     }
@@ -349,7 +349,7 @@
 }
 
 // Responsive adjustments
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .days-on-market .market-stats .stat-item {
         flex-direction: column;
         align-items: flex-start;

@@ -1,0 +1,506 @@
+{
+    "key": "group_office_profile",
+    "title": "Office Profile",
+    "fields": [
+        {
+            "key": "field_tab_office_info",
+            "label": "Office Information",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_office_name",
+            "label": "Office Name",
+            "name": "office_name",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_office_phone",
+            "label": "Main Phone",
+            "name": "office_phone",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            },
+            "placeholder": "(555) 123-4567"
+        },
+        {
+            "key": "field_office_email",
+            "label": "General Email",
+            "name": "office_email",
+            "type": "email",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_office_fax",
+            "label": "Fax Number",
+            "name": "office_fax",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            },
+            "placeholder": "(555) 123-4567"
+        },
+        {
+            "key": "field_office_license",
+            "label": "Brokerage License",
+            "name": "office_license",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_office_established",
+            "label": "Year Established",
+            "name": "office_established",
+            "type": "number",
+            "wrapper": {
+                "width": "50"
+            },
+            "min": 1900,
+            "max": 2030
+        },
+        {
+            "key": "field_tab_office_location",
+            "label": "Location",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_office_address",
+            "label": "Street Address",
+            "name": "office_address",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_office_suite",
+            "label": "Suite/Unit",
+            "name": "office_suite",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_office_city",
+            "label": "City",
+            "name": "office_city",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "33"
+            }
+        },
+        {
+            "key": "field_office_state",
+            "label": "State",
+            "name": "office_state",
+            "type": "select",
+            "required": 1,
+            "wrapper": {
+                "width": "33"
+            },
+            "choices": {
+                "AL": "Alabama",
+                "AK": "Alaska",
+                "AZ": "Arizona",
+                "AR": "Arkansas",
+                "CA": "California",
+                "CO": "Colorado",
+                "CT": "Connecticut",
+                "DE": "Delaware",
+                "FL": "Florida",
+                "GA": "Georgia",
+                "HI": "Hawaii",
+                "ID": "Idaho",
+                "IL": "Illinois",
+                "IN": "Indiana",
+                "IA": "Iowa",
+                "KS": "Kansas",
+                "KY": "Kentucky",
+                "LA": "Louisiana",
+                "ME": "Maine",
+                "MD": "Maryland",
+                "MA": "Massachusetts",
+                "MI": "Michigan",
+                "MN": "Minnesota",
+                "MS": "Mississippi",
+                "MO": "Missouri",
+                "MT": "Montana",
+                "NE": "Nebraska",
+                "NV": "Nevada",
+                "NH": "New Hampshire",
+                "NJ": "New Jersey",
+                "NM": "New Mexico",
+                "NY": "New York",
+                "NC": "North Carolina",
+                "ND": "North Dakota",
+                "OH": "Ohio",
+                "OK": "Oklahoma",
+                "OR": "Oregon",
+                "PA": "Pennsylvania",
+                "RI": "Rhode Island",
+                "SC": "South Carolina",
+                "SD": "South Dakota",
+                "TN": "Tennessee",
+                "TX": "Texas",
+                "UT": "Utah",
+                "VT": "Vermont",
+                "VA": "Virginia",
+                "WA": "Washington",
+                "WV": "West Virginia",
+                "WI": "Wisconsin",
+                "WY": "Wyoming"
+            },
+            "ui": 1
+        },
+        {
+            "key": "field_office_zip",
+            "label": "ZIP Code",
+            "name": "office_zip",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "34"
+            }
+        },
+        {
+            "key": "field_office_latitude",
+            "label": "Latitude",
+            "name": "office_latitude",
+            "type": "number",
+            "instructions": "AUTO-POPULATED",
+            "wrapper": {
+                "width": "50",
+                "class": "hph-auto-populated"
+            },
+            "readonly": 1,
+            "step": "any"
+        },
+        {
+            "key": "field_office_longitude",
+            "label": "Longitude",
+            "name": "office_longitude",
+            "type": "number",
+            "instructions": "AUTO-POPULATED",
+            "wrapper": {
+                "width": "50",
+                "class": "hph-auto-populated"
+            },
+            "readonly": 1,
+            "step": "any"
+        },
+        {
+            "key": "field_tab_office_details",
+            "label": "Office Details",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_office_description",
+            "label": "Office Description",
+            "name": "office_description",
+            "type": "wysiwyg",
+            "wrapper": {
+                "width": ""
+            },
+            "tabs": "all",
+            "toolbar": "basic",
+            "media_upload": 0
+        },
+        {
+            "key": "field_office_hours",
+            "label": "Office Hours",
+            "name": "office_hours",
+            "type": "repeater",
+            "wrapper": {
+                "width": ""
+            },
+            "layout": "table",
+            "button_label": "Add Hours",
+            "sub_fields": [
+                {
+                    "key": "field_hours_day",
+                    "label": "Day",
+                    "name": "day",
+                    "type": "select",
+                    "wrapper": {
+                        "width": "30"
+                    },
+                    "choices": {
+                        "monday": "Monday",
+                        "tuesday": "Tuesday",
+                        "wednesday": "Wednesday",
+                        "thursday": "Thursday",
+                        "friday": "Friday",
+                        "saturday": "Saturday",
+                        "sunday": "Sunday"
+                    },
+                    "required": 1
+                },
+                {
+                    "key": "field_hours_open",
+                    "label": "Open",
+                    "name": "open",
+                    "type": "time_picker",
+                    "wrapper": {
+                        "width": "30"
+                    },
+                    "display_format": "g:i A",
+                    "return_format": "H:i"
+                },
+                {
+                    "key": "field_hours_close",
+                    "label": "Close",
+                    "name": "close",
+                    "type": "time_picker",
+                    "wrapper": {
+                        "width": "30"
+                    },
+                    "display_format": "g:i A",
+                    "return_format": "H:i"
+                },
+                {
+                    "key": "field_hours_closed",
+                    "label": "Closed",
+                    "name": "closed",
+                    "type": "true_false",
+                    "wrapper": {
+                        "width": "10"
+                    },
+                    "ui": 1
+                }
+            ]
+        },
+        {
+            "key": "field_office_services",
+            "label": "Services Offered",
+            "name": "office_services",
+            "type": "checkbox",
+            "wrapper": {
+                "width": ""
+            },
+            "choices": {
+                "residential_sales": "Residential Sales",
+                "commercial_sales": "Commercial Sales",
+                "property_management": "Property Management",
+                "relocation": "Relocation Services",
+                "mortgage": "Mortgage Services",
+                "title": "Title Services",
+                "insurance": "Insurance Services",
+                "staging": "Home Staging"
+            },
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_tab_office_management",
+            "label": "Management",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_office_broker",
+            "label": "Managing Broker",
+            "name": "office_broker",
+            "type": "relationship",
+            "instructions": "Select the managing broker",
+            "wrapper": {
+                "width": "50"
+            },
+            "post_type": [
+                "agent"
+            ],
+            "filters": [
+                "search"
+            ],
+            "min": 0,
+            "max": 1,
+            "return_format": "object"
+        },
+        {
+            "key": "field_office_manager",
+            "label": "Office Manager",
+            "name": "office_manager",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_office_parent",
+            "label": "Parent Office",
+            "name": "office_parent",
+            "type": "relationship",
+            "instructions": "If this is a branch office",
+            "wrapper": {
+                "width": "50"
+            },
+            "post_type": [
+                "office"
+            ],
+            "filters": [
+                "search"
+            ],
+            "min": 0,
+            "max": 1,
+            "return_format": "object"
+        },
+        {
+            "key": "field_office_franchise",
+            "label": "Franchise",
+            "name": "office_franchise",
+            "type": "select",
+            "wrapper": {
+                "width": "50"
+            },
+            "choices": {
+                "": "Independent",
+                "remax": "RE/MAX",
+                "keller_williams": "Keller Williams",
+                "coldwell_banker": "Coldwell Banker",
+                "century21": "Century 21",
+                "berkshire_hathaway": "Berkshire Hathaway",
+                "sothebys": "Sotheby's",
+                "christies": "Christie's",
+                "compass": "Compass",
+                "exp": "eXp Realty",
+                "other": "Other"
+            },
+            "allow_null": 1
+        },
+        {
+            "key": "field_tab_office_stats",
+            "label": "Statistics",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_office_agent_count",
+            "label": "Total Agents",
+            "name": "office_agent_count",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "readonly": 1
+        },
+        {
+            "key": "field_office_active_listings",
+            "label": "Active Listings",
+            "name": "office_active_listings",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "readonly": 1
+        },
+        {
+            "key": "field_office_total_sales_volume",
+            "label": "Total Sales Volume",
+            "name": "office_total_sales_volume",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED yearly",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "prepend": "$",
+            "readonly": 1
+        },
+        {
+            "key": "field_office_average_sale_price",
+            "label": "Avg Sale Price",
+            "name": "office_average_sale_price",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "prepend": "$",
+            "readonly": 1
+        },
+        {
+            "key": "field_tab_office_online",
+            "label": "Online Presence",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_office_website",
+            "label": "Office Website",
+            "name": "office_website",
+            "type": "url",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_office_facebook",
+            "label": "Facebook Page",
+            "name": "office_facebook",
+            "type": "url",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_office_linkedin",
+            "label": "LinkedIn Page",
+            "name": "office_linkedin",
+            "type": "url",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_office_google_business",
+            "label": "Google Business Profile",
+            "name": "office_google_business",
+            "type": "url",
+            "wrapper": {
+                "width": "50"
+            }
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "office"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Office location and business information"
+}

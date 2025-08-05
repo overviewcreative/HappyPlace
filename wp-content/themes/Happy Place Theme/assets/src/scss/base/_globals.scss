@@ -87,15 +87,15 @@ code {
 
 pre {
     background-color: var(--color-muted);
-    padding: 1rem;
+    padding: var(--spacing-4);
     border-radius: var(--border-radius-sm);
     overflow-x: auto;
 }
 
 /* Blockquotes */
 blockquote {
-    margin: 2rem 0;
-    padding: 1rem 2rem;
+    margin: var(--spacing-8) 0;
+    padding: var(--spacing-4) var(--spacing-8);
     border-left: 4px solid var(--color-primary);
     background-color: var(--color-muted);
     font-style: italic;
@@ -106,5 +106,5 @@ hr {
     border: none;
     height: 1px;
     background-color: var(--color-border);
-    margin: 2rem 0;
+    margin: var(--spacing-8) 0;
 }

@@ -108,12 +108,12 @@
   // Stronger borders and shadows
   .hph-dashboard-card {
     border: 2px solid var(--dashboard-border);
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 4px 4px 0 rgb(0 0 0 / 10%);
   }
   
   // High contrast buttons
   .hph-dashboard-button {
-    border: 2px solid currentColor;
+    border: 2px solid currentcolor;
     font-weight: var(--font-weight-bold);
     
     &--primary {
@@ -360,7 +360,7 @@
     }
     
     // Show URLs for links
-    a[href]:after {
+    a[href]::after {
       content: " (" attr(href) ")";
       font-size: 0.8em;
       color: #666 !important;

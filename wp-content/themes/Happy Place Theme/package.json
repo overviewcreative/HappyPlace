@@ -74,25 +74,6 @@
     "webpack-dev-server": "^5.0.4",
     "webpack-manifest-plugin": "^5.0.0"
   },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": [
-      "<rootDir>/tests/setup.js"
-    ],
-    "testMatch": [
-      "**/tests/**/*.test.js",
-      "**/__tests__/**/*.js"
-    ],
-    "moduleNameMapping": {
-      "^@/(.*)$": "<rootDir>/assets/src/js/$1",
-      "^@components/(.*)$": "<rootDir>/assets/src/js/components/$1",
-      "^@utils/(.*)$": "<rootDir>/assets/src/js/utils/$1"
-    },
-    "collectCoverageFrom": [
-      "assets/src/js/**/*.js",
-      "!assets/src/js/**/*.test.js"
-    ]
-  },
   "prettier": {
     "semi": true,
     "singleQuote": true,

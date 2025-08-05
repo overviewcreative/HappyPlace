@@ -49,8 +49,8 @@
   --dashboard-border: var(--color-gray-700);
   --dashboard-text: var(--color-gray-100);
   --dashboard-text-muted: var(--color-gray-400);
-  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --card-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --card-shadow: 0 4px 6px rgb(0 0 0 / 30%);
+  --card-shadow-hover: 0 8px 16px rgb(0 0 0 / 40%);
 }
 
 // Responsive breakpoints

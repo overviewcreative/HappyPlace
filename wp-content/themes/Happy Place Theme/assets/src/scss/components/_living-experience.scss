@@ -1,23 +1,23 @@
 // assets/scss/components/_living-experience.scss
 
 .living-experience {
-  padding: 3rem 0;
-  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  padding: var(--spacing-12) 0;
+  background: linear-gradient(135deg, var(--hph-gray-50) 0%, var(--hph-white) 100%);
 
   .section-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: var(--spacing-12);
   }
 
   .section-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--hph-color-primary-800);
-    margin-bottom: 0.5rem;
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--hph-primary-800);
+    margin-bottom: var(--spacing-2);
   }
 
   .section-subtitle {
-    font-size: 1.1rem;
+    font-size: var(--font-size-lg);
     color: var(--hph-color-gray-600);
     margin: 0;
   }
@@ -33,13 +33,13 @@
   .experience-card {
     background: white;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgb(0 0 0 / 8%);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 8px 30px rgb(0 0 0 / 12%);
     }
   }
 
@@ -245,7 +245,7 @@
   }
 
   // Responsive Design
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     .experience-grid {
       grid-template-columns: 1fr;
       gap: 1.5rem;

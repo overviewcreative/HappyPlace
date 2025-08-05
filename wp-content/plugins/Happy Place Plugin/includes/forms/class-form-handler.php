@@ -132,7 +132,7 @@ abstract class Form_Handler {
      * @param string $message
      */
     protected function set_success_message($message) {
-        if (!session_id()) {
+        if (!session_id() && headers_sent() === false) {
             session_start();
         }
         $_SESSION['form_success_message'] = $message;
@@ -144,7 +144,7 @@ abstract class Form_Handler {
      * @param string $message
      */
     protected function set_error_message($message) {
-        if (!session_id()) {
+        if (!session_id() && headers_sent() === false) {
             session_start();
         }
         $_SESSION['form_error_message'] = $message;

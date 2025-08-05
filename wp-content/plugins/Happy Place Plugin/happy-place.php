@@ -63,14 +63,34 @@ if (!defined('HPH_PLUGIN_URL')) {
 // CORE INITIALIZATION
 // =============================================================================
 
-// Load Plugin Manager and Initialize
-if (file_exists(HPH_INCLUDES_PATH . 'core/class-plugin-manager.php')) {
-    require_once HPH_INCLUDES_PATH . 'core/class-plugin-manager.php';
-    
-    // Initialize the plugin manager
-    if (class_exists('HappyPlace\Core\Plugin_Manager')) {
-        \HappyPlace\Core\Plugin_Manager::get_instance();
+// Ensure error logging for debugging
+if (!function_exists('hph_log_error')) {
+    function hph_log_error($message, $context = '') {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('HPH Plugin: ' . $context . ' - ' . $message);
+        }
     }
+}
+
+// Load Plugin Manager and Initialize
+$plugin_manager_file = HPH_INCLUDES_PATH . 'core/class-plugin-manager.php';
+if (file_exists($plugin_manager_file)) {
+    require_once $plugin_manager_file;
+    hph_log_error('Plugin Manager file loaded', 'INIT');
+    
+    // Initialize the plugin manager with error handling
+    try {
+        if (class_exists('HappyPlace\Core\Plugin_Manager')) {
+            $plugin_instance = \HappyPlace\Core\Plugin_Manager::get_instance();
+            hph_log_error('Plugin Manager instance created successfully', 'INIT');
+        } else {
+            hph_log_error('Plugin_Manager class not found after require', 'ERROR');
+        }
+    } catch (Exception $e) {
+        hph_log_error('Failed to initialize Plugin_Manager: ' . $e->getMessage(), 'FATAL');
+    }
+} else {
+    hph_log_error('Plugin Manager file not found: ' . $plugin_manager_file, 'FATAL');
 }
 
 // Load debug file in development

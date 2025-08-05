@@ -44,21 +44,21 @@ $breakpoints: (
 
 // Dashboard specific mobile breakpoint
 @mixin dashboard-mobile {
-    @media screen and (max-width: 767px) {
+    @media screen and (width <= 767px) {
         @content;
     }
 }
 
 // Dashboard specific tablet breakpoint
 @mixin dashboard-tablet {
-    @media screen and (min-width: 768px) and (max-width: 1023px) {
+    @media screen and (width >= 768px) and (width <= 1023px) {
         @content;
     }
 }
 
 // Dashboard specific desktop breakpoint
 @mixin dashboard-desktop {
-    @media screen and (min-width: 1024px) {
+    @media screen and (width >= 1024px) {
         @content;
     }
 }
@@ -85,9 +85,9 @@ $breakpoints: (
 
 // Dashboard card styling
 @mixin dashboard-card {
-    background: var(--dashboard-surface, #ffffff);
+    background: var(--dashboard-surface, #fff);
     border-radius: var(--card-border-radius, 8px);
-    box-shadow: var(--card-shadow, 0 1px 3px rgba(0, 0, 0, 0.1));
+    box-shadow: var(--card-shadow, 0 1px 3px rgb(0 0 0 / 10%));
     padding: var(--card-padding, 1.5rem);
 }
 
@@ -101,10 +101,10 @@ $breakpoints: (
 // Shimmer loading effect
 @mixin shimmer {
     background: linear-gradient(90deg, 
-        rgba(255, 255, 255, 0) 0%, 
-        rgba(255, 255, 255, 0.2) 20%, 
-        rgba(255, 255, 255, 0.5) 60%, 
-        rgba(255, 255, 255, 0)
+        rgb(255 255 255 / 0%) 0%, 
+        rgb(255 255 255 / 20%) 20%, 
+        rgb(255 255 255 / 50%) 60%, 
+        rgb(255 255 255 / 0%)
     );
     background-size: 200px 100%;
     background-repeat: no-repeat;
@@ -115,6 +115,7 @@ $breakpoints: (
     0% {
         background-position: -200px 0;
     }
+
     100% {
         background-position: calc(200px + 100%) 0;
     }
@@ -246,7 +247,7 @@ $breakpoints: (
         }
         
         &:focus {
-            box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.2);
+            box-shadow: 0 0 0 3px rgb(81 186 224 / 20%);
         }
     } @else if $variant == 'secondary' {
         background-color: var(--color-gray-100);
@@ -368,31 +369,37 @@ $breakpoints: (
     
     @if $level == 1 {
         font-size: var(--font-size-4xl);
+
         @include respond-to('md') {
             font-size: var(--font-size-5xl);
         }
     } @else if $level == 2 {
         font-size: var(--font-size-3xl);
+
         @include respond-to('md') {
             font-size: var(--font-size-4xl);
         }
     } @else if $level == 3 {
         font-size: var(--font-size-2xl);
+
         @include respond-to('md') {
             font-size: var(--font-size-3xl);
         }
     } @else if $level == 4 {
         font-size: var(--font-size-xl);
+
         @include respond-to('md') {
             font-size: var(--font-size-2xl);
         }
     } @else if $level == 5 {
         font-size: var(--font-size-lg);
+
         @include respond-to('md') {
             font-size: var(--font-size-xl);
         }
     } @else if $level == 6 {
         font-size: var(--font-size-base);
+
         @include respond-to('md') {
             font-size: var(--font-size-lg);
         }
@@ -679,10 +686,7 @@ $breakpoints: (
 
 @mixin overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
 }
 
 // Keyframes for animations
@@ -696,6 +700,7 @@ $breakpoints: (
         opacity: 0;
         transform: translateY(1rem);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -707,6 +712,7 @@ $breakpoints: (
         opacity: 0;
         transform: scale(0.95);
     }
+
     to {
         opacity: 1;
         transform: scale(1);

@@ -6,11 +6,8 @@
 
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    inset: 0;
+    background: rgb(0 0 0 / 50%);
     z-index: var(--z-modal-backdrop);
     opacity: 0;
     visibility: hidden;
@@ -143,7 +140,7 @@
         position: absolute;
         top: var(--hph-spacing-4);
         right: var(--hph-spacing-4);
-        background: rgba(0, 0, 0, 0.1);
+        background: rgb(0 0 0 / 10%);
         border: none;
         border-radius: 50%;
         width: 2rem;
@@ -155,7 +152,7 @@
         transition: var(--transition-fast);
         
         &:hover {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgb(0 0 0 / 20%);
         }
     }
 }
@@ -166,6 +163,7 @@
         opacity: 0;
         transform: translate(-50%, -50%) scale(0.95);
     }
+
     to {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
@@ -177,6 +175,7 @@
         opacity: 0;
         transform: translate(-50%, -40%) scale(0.95);
     }
+
     to {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
@@ -293,7 +292,7 @@
 // Dark mode support
 @media (prefers-color-scheme: dark) {
     .modal-overlay {
-        background: rgba(0, 0, 0, 0.8);
+        background: rgb(0 0 0 / 80%);
     }
 }
 

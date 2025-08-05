@@ -75,7 +75,7 @@
     
     &:hover {
         color: var(--color-text);
-        background: rgba(255, 255, 255, 0.5);
+        background: rgb(255 255 255 / 50%);
     }
     
     &.active {
@@ -153,8 +153,8 @@
     position: absolute;
     inset: 0;
     background-image: 
-        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
-        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 2px, transparent 2px);
+        radial-gradient(circle at 25% 25%, rgb(255 255 255 / 10%) 2px, transparent 2px),
+        radial-gradient(circle at 75% 75%, rgb(255 255 255 / 10%) 2px, transparent 2px);
     background-size: 50px 50px;
     background-position: 0 0, 25px 25px;
     opacity: 0.3;
@@ -170,8 +170,8 @@
 .hph-play-button {
     width: 80px;
     height: 80px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    background: rgb(255 255 255 / 20%);
+    border: 3px solid rgb(255 255 255 / 30%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -182,8 +182,8 @@
     backdrop-filter: blur(10px);
     
     &:hover {
-        background: rgba(255, 255, 255, 0.3);
-        border-color: rgba(255, 255, 255, 0.5);
+        background: rgb(255 255 255 / 30%);
+        border-color: rgb(255 255 255 / 50%);
         transform: scale(1.1);
     }
 }
@@ -268,7 +268,7 @@
 .hph-tour-control-btn {
     width: 40px;
     height: 40px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgb(0 0 0 / 70%);
     border: none;
     border-radius: 50%;
     color: white;
@@ -280,7 +280,7 @@
     backdrop-filter: blur(10px);
     
     &:hover {
-        background: rgba(0, 0, 0, 0.9);
+        background: rgb(0 0 0 / 90%);
         transform: scale(1.1);
     }
     
@@ -384,7 +384,7 @@
 .hph-plan-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgb(0 0 0 / 40%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -494,7 +494,7 @@
 .hph-modal-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgb(0 0 0 / 80%);
     backdrop-filter: blur(4px);
 }
 
@@ -505,7 +505,7 @@
     max-width: 90vw;
     max-height: 90vh;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 40px rgb(0 0 0 / 30%);
 }
 
 .hph-modal-header {
@@ -555,7 +555,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
     .hph-tour-container {
         grid-template-columns: 1fr;
         gap: var(--spacing-6);
@@ -571,7 +571,7 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .hph-virtual-experience {
         padding: var(--spacing-12) 0;
     }
@@ -646,7 +646,7 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
     .hph-virtual-experience {
         padding: var(--spacing-10) 0;
         margin: var(--spacing-8) 0;

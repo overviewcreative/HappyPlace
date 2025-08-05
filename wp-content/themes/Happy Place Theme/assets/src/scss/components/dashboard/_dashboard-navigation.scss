@@ -174,12 +174,14 @@
     .user-name {
       font-weight: var(--font-weight-medium);
       color: var(--dashboard-text);
+
       @include truncate;
     }
     
     .user-role {
       font-size: var(--font-size-sm);
       color: var(--dashboard-text-muted);
+
       @include truncate;
     }
   }

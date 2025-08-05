@@ -75,7 +75,7 @@
   
   &:hover {
     border-color: var(--color-primary);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
   }
 }
 
@@ -145,7 +145,7 @@
   &:hover {
     background: var(--color-primary-dark);
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   }
   
   &:active {
@@ -158,7 +158,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .hph-open-house-item {
     flex-direction: column;
     align-items: flex-start;

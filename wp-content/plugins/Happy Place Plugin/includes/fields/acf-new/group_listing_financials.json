@@ -1,0 +1,293 @@
+{
+    "key": "group_listing_financials",
+    "title": "Financial Information",
+    "fields": [
+        {
+            "key": "field_tab_taxes_fees",
+            "label": "Taxes & Fees",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_annual_taxes",
+            "label": "Annual Property Taxes",
+            "name": "annual_taxes",
+            "type": "number",
+            "instructions": "Annual property tax amount",
+            "wrapper": {
+                "width": "33",
+                "class": "hph-trigger-calculation"
+            },
+            "prepend": "$",
+            "append": "/year",
+            "min": 0,
+            "step": 0.01
+        },
+        {
+            "key": "field_estimated_monthly_taxes",
+            "label": "Monthly Taxes",
+            "name": "estimated_monthly_taxes",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED: annual_taxes / 12",
+            "wrapper": {
+                "width": "33",
+                "class": "hph-calculated-field"
+            },
+            "prepend": "$",
+            "append": "/month",
+            "readonly": 1,
+            "step": 0.01
+        },
+        {
+            "key": "field_tax_year",
+            "label": "Tax Year",
+            "name": "tax_year",
+            "type": "number",
+            "wrapper": {
+                "width": "34"
+            },
+            "min": 2000,
+            "max": 2030,
+            "step": 1
+        },
+        {
+            "key": "field_hoa_fee",
+            "label": "HOA Fee",
+            "name": "hoa_fee",
+            "type": "number",
+            "instructions": "Monthly HOA fee",
+            "wrapper": {
+                "width": "33",
+                "class": "hph-trigger-calculation"
+            },
+            "prepend": "$",
+            "append": "/month",
+            "min": 0,
+            "step": 0.01,
+            "default_value": 0
+        },
+        {
+            "key": "field_hoa_fee_includes",
+            "label": "HOA Fee Includes",
+            "name": "hoa_fee_includes",
+            "type": "checkbox",
+            "wrapper": {
+                "width": "67"
+            },
+            "choices": {
+                "water": "Water",
+                "sewer": "Sewer",
+                "trash": "Trash",
+                "landscaping": "Landscaping",
+                "pool": "Pool/Spa",
+                "gym": "Gym/Fitness",
+                "security": "Security",
+                "cable": "Cable/Internet",
+                "insurance": "Exterior Insurance"
+            },
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_tab_mortgage_calc",
+            "label": "Mortgage Calculator",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_estimated_down_payment",
+            "label": "Down Payment %",
+            "name": "estimated_down_payment",
+            "type": "number",
+            "instructions": "Default down payment percentage",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-trigger-calculation"
+            },
+            "append": "%",
+            "min": 0,
+            "max": 100,
+            "step": 0.5,
+            "default_value": 20
+        },
+        {
+            "key": "field_estimated_down_payment_amount",
+            "label": "Down Payment Amount",
+            "name": "estimated_down_payment_amount",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "prepend": "$",
+            "readonly": 1
+        },
+        {
+            "key": "field_interest_rate",
+            "label": "Interest Rate",
+            "name": "interest_rate",
+            "type": "number",
+            "instructions": "Default mortgage interest rate",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-trigger-calculation"
+            },
+            "append": "%",
+            "min": 0,
+            "max": 20,
+            "step": 0.125,
+            "default_value": 7.0
+        },
+        {
+            "key": "field_loan_term",
+            "label": "Loan Term",
+            "name": "loan_term",
+            "type": "select",
+            "wrapper": {
+                "width": "25"
+            },
+            "choices": {
+                "15": "15 years",
+                "20": "20 years",
+                "30": "30 years"
+            },
+            "default_value": "30"
+        },
+        {
+            "key": "field_estimated_loan_amount",
+            "label": "Loan Amount",
+            "name": "estimated_loan_amount",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED: price - down payment",
+            "wrapper": {
+                "width": "33",
+                "class": "hph-calculated-field"
+            },
+            "prepend": "$",
+            "readonly": 1
+        },
+        {
+            "key": "field_estimated_monthly_payment",
+            "label": "Est. Monthly Payment (P&I)",
+            "name": "estimated_monthly_payment",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED principal & interest",
+            "wrapper": {
+                "width": "33",
+                "class": "hph-calculated-field"
+            },
+            "prepend": "$",
+            "append": "/month",
+            "readonly": 1
+        },
+        {
+            "key": "field_estimated_monthly_insurance",
+            "label": "Est. Insurance",
+            "name": "estimated_monthly_insurance",
+            "type": "number",
+            "instructions": "Estimated monthly insurance",
+            "wrapper": {
+                "width": "34"
+            },
+            "prepend": "$",
+            "append": "/month",
+            "min": 0,
+            "default_value": 150
+        },
+        {
+            "key": "field_total_monthly_cost",
+            "label": "Total Monthly Cost",
+            "name": "total_monthly_cost",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED: P&I + taxes + insurance + HOA",
+            "wrapper": {
+                "width": "",
+                "class": "hph-calculated-field"
+            },
+            "prepend": "$",
+            "append": "/month",
+            "readonly": 1
+        },
+        {
+            "key": "field_tab_investment",
+            "label": "Investment Analysis",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_estimated_monthly_rent",
+            "label": "Est. Monthly Rent",
+            "name": "estimated_monthly_rent",
+            "type": "number",
+            "instructions": "Estimated rental income",
+            "wrapper": {
+                "width": "33",
+                "class": "hph-trigger-calculation"
+            },
+            "prepend": "$",
+            "append": "/month",
+            "min": 0
+        },
+        {
+            "key": "field_gross_rental_yield",
+            "label": "Gross Rental Yield",
+            "name": "gross_rental_yield",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED: (annual rent / price) × 100",
+            "wrapper": {
+                "width": "33",
+                "class": "hph-calculated-field"
+            },
+            "append": "%",
+            "readonly": 1,
+            "step": 0.01
+        },
+        {
+            "key": "field_one_percent_rule_ratio",
+            "label": "1% Rule Ratio",
+            "name": "one_percent_rule_ratio",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED: (monthly rent / price) × 100",
+            "wrapper": {
+                "width": "34",
+                "class": "hph-calculated-field"
+            },
+            "append": "%",
+            "readonly": 1,
+            "step": 0.01
+        },
+        {
+            "key": "field_days_on_market",
+            "label": "Days on Market",
+            "name": "days_on_market",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED from listing date",
+            "wrapper": {
+                "width": "",
+                "class": "hph-calculated-field"
+            },
+            "append": "days",
+            "readonly": 1
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 3,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Financial information including taxes, mortgage calculations, and investment analysis"
+}

@@ -192,6 +192,7 @@
             font-weight: var(--font-weight-medium);
             color: var(--dashboard-text);
             margin: 0 0 var(--dashboard-spacing-xs);
+
             @include truncate;
           }
           
@@ -353,6 +354,7 @@
             font-size: var(--font-size-sm);
             font-weight: var(--font-weight-medium);
             margin: 0 0 var(--dashboard-spacing-xs);
+
             @include truncate;
           }
           

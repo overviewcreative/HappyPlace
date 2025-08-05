@@ -151,7 +151,7 @@
     background: linear-gradient(
       90deg, 
       transparent, 
-      rgba(255, 255, 255, 0.4), 
+      rgb(255 255 255 / 40%), 
       transparent
     );
     animation: shimmer 1.5s infinite;
@@ -171,7 +171,7 @@
       background: var(--hph-color-gray-200);
       background-image: linear-gradient(
         90deg,
-        var(--hph-color-gray-200) 0px,
+        var(--hph-color-gray-200) 0,
         var(--hph-color-gray-100) 40px,
         var(--hph-color-gray-200) 80px
       );
@@ -344,7 +344,7 @@
     }
     
     // Enhanced responsive behavior
-    @media (max-width: 768px) {
+    @media (width <= 768px) {
       .basic-stat[data-bridge-field] {
         min-width: 100px;
         font-size: var(--hph-font-size-sm);
@@ -545,7 +545,7 @@
 // =============================================================================
 // RESPONSIVE ENHANCEMENTS FOR BRIDGE DATA
 // =============================================================================
-@media (max-width: 768px) {
+@media (width <= 768px) {
   // Mobile-specific bridge enhancements
   [data-bridge-loading="true"] {
     &::after {
@@ -565,7 +565,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .empty-state {
     padding: var(--hph-spacing-6);
     
@@ -602,7 +602,7 @@
     color: var(--hph-color-white);
     padding: 2px 6px;
     font-size: 10px;
-    border-radius: 4px 0 0 0;
+    border-radius: 4px 0 0;
     z-index: 1000;
   }
 }

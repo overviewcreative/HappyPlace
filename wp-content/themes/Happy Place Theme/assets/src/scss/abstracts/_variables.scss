@@ -1,331 +1,56 @@
 /* ============================================================================
-   HPH MASTER VARIABLES
-   Single source of truth for all CSS custom properties
+   HPH MASTER VARIABLES - UPDATED TO USE UNIFIED SYSTEM
+   
+   NOTICE: Variables have been moved to _unified-variables.scss
+   This file now imports the unified design system.
    ============================================================================ */
 
-:root {
-    /* ========================================================================
-       COLOR SYSTEM - Extended Monochromatic #51bae0
-       ======================================================================== */
-    
-    /* Primary Color Palette */
-    --hph-color-primary-25: #f8fcff;     /* Ultra light blue tint */
-    --hph-color-primary-50: #f0f9ff;     /* Very light blue tint */
-    --hph-color-primary-100: #e0f2fe;    /* Light blue tint */
-    --hph-color-primary-200: #bae6fd;    /* Lighter blue */
-    --hph-color-primary-300: #7dd3fc;    /* Light blue */
-    --hph-color-primary-400: #51bae0;    /* Base primary color */
-    --hph-color-primary-500: #38bdf8;    /* Main primary (slightly adjusted) */
-    --hph-color-primary-600: #0284c7;    /* Darker blue */
-    --hph-color-primary-700: #0369a1;    /* Dark blue */
-    --hph-color-primary-800: #075985;    /* Very dark blue */
-    --hph-color-primary-900: #0c4a6e;    /* Deep blue */
-    --hph-color-primary-950: #082f49;    /* Deepest blue */
-    --hph-color-primary-975: #051e34;    /* Ultra deep blue */
+@import 'unified-variables';
 
-    /* Neutral Palette - Warm whites and grays */
-    --hph-color-white: #fffdfb;          /* Warm white instead of pure white */
-    --hph-color-gray-25: #fcfcfc;        /* Ultra light warm gray */
-    --hph-color-gray-50: #fafaf9;        /* Very light warm gray */
-    --hph-color-gray-100: #f5f5f4;       /* Light warm gray */
-    --hph-color-gray-200: #e7e5e4;       /* Light gray */
-    --hph-color-gray-300: #d6d3d1;       /* Medium light gray */
-    --hph-color-gray-400: #a8a29e;       /* Medium gray */
-    --hph-color-gray-500: #78716c;       /* Medium dark gray */
-    --hph-color-gray-600: #57534e;       /* Dark gray */
-    --hph-color-gray-700: #44403c;       /* Very dark gray */
-    --hph-color-gray-800: #292524;       /* Almost black */
-    --hph-color-gray-900: #1c1917;       /* Deep black */
-    --hph-color-gray-950: #0f0f0e;       /* Ultra deep black */
-
-    /* Semantic Colors - Harmonized with primary */
-    --hph-color-success: #059669;
-    --hph-color-success-light: #d1fae5;
-    --hph-color-success-dark: #064e3b;
-    --hph-color-warning: #d97706;
-    --hph-color-warning-light: #fef3c7;
-    --hph-color-warning-dark: #92400e;
-    --hph-color-danger: #dc2626;
-    --hph-color-danger-light: #fee2e2;
-    --hph-color-danger-dark: #991b1b;
-    --hph-color-info: var(--hph-color-primary-500);
-    --hph-color-info-light: var(--hph-color-primary-50);
-    --hph-color-info-dark: var(--hph-color-primary-800);
-    /* ========================================================================
-       TYPOGRAPHY SYSTEM
-       ======================================================================== */
-    
-    /* Font Families */
-    --hph-font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    --hph-font-secondary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    
-    /* Font Sizes - Harmonious scale */
-    --hph-font-size-xs: 0.75rem;     /* 12px */
-    --hph-font-size-sm: 0.875rem;    /* 14px */
-    --hph-font-size-base: 1rem;      /* 16px */
-    --hph-font-size-lg: 1.125rem;    /* 18px */
-    --hph-font-size-xl: 1.25rem;     /* 20px */
-    --hph-font-size-2xl: 1.5rem;     /* 24px */
-    --hph-font-size-3xl: 1.875rem;   /* 30px */
-    --hph-font-size-4xl: 2.25rem;    /* 36px */
-    --hph-font-size-5xl: 3rem;       /* 48px */
-    --hph-font-size-6xl: 3.75rem;    /* 60px */
-
-    /* Font Weights */
-    --hph-font-thin: 100;
-    --hph-font-extralight: 200;
-    --hph-font-light: 300;
-    --hph-font-normal: 400;
-    --hph-font-medium: 500;
-    --hph-font-semibold: 600;
-    --hph-font-bold: 700;
-    --hph-font-extrabold: 800;
-    --hph-font-black: 900;
-
-    /* Line Heights */
-    --hph-line-height-none: 1;
-    --hph-line-height-tight: 1.25;
-    --hph-line-height-snug: 1.375;
-    --hph-line-height-normal: 1.5;
-    --hph-line-height-relaxed: 1.625;
-    --hph-line-height-loose: 2;
-
-    /* ========================================================================
-       SPACING SYSTEM - Consistent scale
-       ======================================================================== */
-    
-    --hph-spacing-px: 1px;
-    --hph-spacing-0: 0;
-    --hph-spacing-0-5: 0.125rem;  /* 2px */
-    --hph-spacing-1: 0.25rem;     /* 4px */
-    --hph-spacing-1-5: 0.375rem;  /* 6px */
-    --hph-spacing-2: 0.5rem;      /* 8px */
-    --hph-spacing-2-5: 0.625rem;  /* 10px */
-    --hph-spacing-3: 0.75rem;     /* 12px */
-    --hph-spacing-3-5: 0.875rem;  /* 14px */
-    --hph-spacing-4: 1rem;        /* 16px */
-    --hph-spacing-5: 1.25rem;     /* 20px */
-    --hph-spacing-6: 1.5rem;      /* 24px */
-    --hph-spacing-7: 1.75rem;     /* 28px */
-    --hph-spacing-8: 2rem;        /* 32px */
-    --hph-spacing-9: 2.25rem;     /* 36px */
-    --hph-spacing-10: 2.5rem;     /* 40px */
-    --hph-spacing-11: 2.75rem;    /* 44px */
-    --hph-spacing-12: 3rem;       /* 48px */
-    --hph-spacing-14: 3.5rem;     /* 56px */
-    --hph-spacing-16: 4rem;       /* 64px */
-    --hph-spacing-20: 5rem;       /* 80px */
-    --hph-spacing-24: 6rem;       /* 96px */
-    --hph-spacing-28: 7rem;       /* 112px */
-    --hph-spacing-32: 8rem;       /* 128px */
-
-    /* ========================================================================
-       BORDER RADIUS SYSTEM
-       ======================================================================== */
-    
-    --hph-radius-none: 0;
-    --hph-radius-sm: 0.125rem;    /* 2px */
-    --hph-radius-base: 0.25rem;   /* 4px */
-    --hph-radius-md: 0.375rem;    /* 6px */
-    --hph-radius-lg: 0.5rem;      /* 8px */
-    --hph-radius-xl: 0.75rem;     /* 12px */
-    --hph-radius-2xl: 1rem;       /* 16px */
-    --hph-radius-3xl: 1.5rem;     /* 24px */
-    --hph-radius-4xl: 2rem;       /* 32px */
-    --hph-radius-full: 9999px;
-
-    /* ========================================================================
-       SHADOW SYSTEM - Consistent elevation
-       ======================================================================== */
-    
-    /* Standard shadows */
-    --hph-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --hph-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-    --hph-shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    --hph-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-    --hph-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    --hph-shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    --hph-shadow-2xl: 0 50px 100px -20px rgba(0, 0, 0, 0.25);
-    
-    /* Colored shadows using primary colors */
-    --hph-shadow-primary: 0 4px 14px 0 rgba(81, 186, 224, 0.15);
-    --hph-shadow-primary-lg: 0 10px 28px 0 rgba(81, 186, 224, 0.2);
-    --hph-shadow-primary-xl: 0 20px 40px 0 rgba(81, 186, 224, 0.25);
-    --hph-shadow-dark: 0 4px 14px 0 rgba(8, 47, 73, 0.15);
-    --hph-shadow-dark-lg: 0 10px 28px 0 rgba(8, 47, 73, 0.2);
-    --hph-shadow-dark-xl: 0 20px 40px 0 rgba(8, 47, 73, 0.25);
-
-    /* ========================================================================
-       TRANSITION SYSTEM
-       ======================================================================== */
-    
-    --hph-transition-fast: 0.15s ease;
-    --hph-transition-base: 0.2s ease;
-    --hph-transition-slow: 0.3s ease;
-    --hph-transition-slower: 0.5s ease;
-
-    /* ========================================================================
-       Z-INDEX SCALE - Layering system
-       ======================================================================== */
-    
-    --hph-z-hide: -1;
-    --hph-z-auto: auto;
-    --hph-z-base: 0;
-    --hph-z-docked: 10;
-    --hph-z-dropdown: 1000;
-    --hph-z-sticky: 1020;
-    --hph-z-banner: 1030;
-    --hph-z-overlay: 1040;
-    --hph-z-modal: 1050;
-    --hph-z-popover: 1060;
-    --hph-z-skiplink: 1070;
-    --hph-z-toast: 1080;
-    --hph-z-tooltip: 1090;
-
-    /* ========================================================================
-       BREAKPOINT SYSTEM
-       ======================================================================== */
-    
-    --hph-breakpoint-sm: 640px;
-    --hph-breakpoint-md: 768px;
-    --hph-breakpoint-lg: 1024px;
-    --hph-breakpoint-xl: 1280px;
-    --hph-breakpoint-2xl: 1536px;
-
-    /* ========================================================================
-       CONTAINER SYSTEM
-       ======================================================================== */
-    
-    --hph-container-sm: 640px;
-    --hph-container-md: 768px;
-    --hph-container-lg: 1024px;
-    --hph-container-xl: 1280px;
-    --hph-container-2xl: 1400px;
-
-    /* ========================================================================
-       ICON SYSTEM
-       ======================================================================== */
-    
-    --hph-icon-size-xs: 0.75rem;
-    --hph-icon-size-sm: 0.875rem;
-    --hph-icon-size-base: 1rem;
-    --hph-icon-size-lg: 1.125rem;
-    --hph-icon-size-xl: 1.25rem;
-    --hph-icon-size-2xl: 1.5rem;
-    --hph-icon-size-3xl: 2rem;
-    --hph-icon-size-4xl: 2.5rem;
-
-    /* ========================================================================
-       COMPONENT-SPECIFIC VARIABLES
-       ======================================================================== */
-    
-    /* Button System */
-    --hph-button-height-sm: 36px;
-    --hph-button-height-md: 44px;
-    --hph-button-height-lg: 52px;
-    --hph-button-border-radius: 6px;
-    --hph-button-padding-x: var(--hph-spacing-4);
-    --hph-button-padding-x-sm: var(--hph-spacing-3);
-    --hph-button-padding-x-lg: var(--hph-spacing-6);
-    --hph-button-font-weight: var(--hph-font-medium);
-    
-    /* Card System */
-    --hph-card-border-radius: 12px;
-    --hph-card-border-radius-sm: 8px;
-    --hph-card-border-radius-lg: 16px;
-    --hph-card-shadow: var(--hph-shadow-base);
-    --hph-card-shadow-hover: var(--hph-shadow-lg);
-    --hph-card-padding: var(--hph-spacing-6);
-    --hph-card-padding-sm: var(--hph-spacing-4);
-    --hph-card-padding-lg: var(--hph-spacing-8);
-    
-    /* Form System */
-    --hph-form-field-height: 44px;
-    --hph-form-field-border-radius: 6px;
-    --hph-form-field-border: 1px solid var(--hph-color-gray-300);
-    --hph-form-field-border-focus: 2px solid var(--hph-color-primary-400);
-    --hph-form-field-padding: var(--hph-spacing-3);
-    --hph-form-label-font-weight: var(--hph-font-medium);
-    
-    /* Focus System */
-    --hph-focus-ring-width: 3px;
-    --hph-focus-ring-color: rgba(81, 186, 224, 0.2);
-    --hph-focus-ring-offset: 2px;
-
-    /* ========================================================================
-       LEGACY COMPATIBILITY MAPPINGS
-       ======================================================================== */
-    
-    /* Maintain backward compatibility with old variable names */
-    --color-primary: var(--hph-color-primary-500);
-    --color-primary-light: var(--hph-color-primary-100);
-    --color-primary-dark: var(--hph-color-primary-700);
-    --color-secondary: var(--hph-color-secondary-500);
-    --color-text: var(--hph-color-gray-900);
-    --color-text-light: var(--hph-color-gray-600);
-    --color-text-muted: var(--hph-color-gray-500);
-    --color-background: var(--hph-color-white);
-    --color-border: var(--hph-color-gray-300);
-    --color-border-light: var(--hph-color-gray-200);
-    --color-surface: var(--hph-color-gray-50);
-    --color-white: var(--hph-color-white);
-    --color-black: var(--hph-color-gray-900);
-    --color-success: var(--hph-color-success);
-    --color-warning: var(--hph-color-warning);
-    --color-error: var(--hph-color-danger);
-    --spacing-4: var(--hph-spacing-4);
-    --spacing-8: var(--hph-spacing-8);
-    --font-size-base: var(--hph-font-size-base);
-    --transition-normal: var(--hph-transition-base);
-    --transition-fast: var(--hph-transition-fast);
-    --transition-slow: var(--hph-transition-slow);
-    --transition-all: all var(--hph-transition-base);
-    
-    /* Comprehensive system aliases */
-    --font-family-primary: var(--hph-font-primary);
-    --font-family-secondary: var(--hph-font-secondary);
-    --font-family-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-    --font-weight-light: var(--hph-font-light);
-    --font-weight-normal: var(--hph-font-normal);
-    --font-weight-medium: var(--hph-font-medium);
-    --font-weight-semibold: var(--hph-font-semibold);
-    --font-weight-bold: var(--hph-font-bold);
-    --font-weight-extrabold: var(--hph-font-extrabold);
-    --line-height-tight: var(--hph-line-height-tight);
-    --line-height-snug: var(--hph-line-height-snug);
-    --line-height-normal: var(--hph-line-height-normal);
-    --line-height-relaxed: var(--hph-line-height-relaxed);
-    --line-height-loose: var(--hph-line-height-loose);
-}
+// All variables are now defined in _unified-variables.scss
+// This file serves as the main import point for backward compatibility
 
 /* ========================================================================
-   SCSS MAPS FOR UTILITY GENERATION
+   SCSS VARIABLES FOR BUILD-TIME PROCESSING
    ======================================================================== */
 
-// Spacing scale map for utility generation
+// Spacing scale for utility classes
 $spacing-scale: (
-    'px': 1px,
-    '0': 0,
-    '0-5': 0.125rem,
-    '1': 0.25rem,
-    '1-5': 0.375rem,
-    '2': 0.5rem,
-    '2-5': 0.625rem,
-    '3': 0.75rem,
-    '3-5': 0.875rem,
-    '4': 1rem,
-    '5': 1.25rem,
-    '6': 1.5rem,
-    '7': 1.75rem,
-    '8': 2rem,
-    '9': 2.25rem,
-    '10': 2.5rem,
-    '11': 2.75rem,
-    '12': 3rem,
-    '14': 3.5rem,
-    '16': 4rem,
-    '20': 5rem,
-    '24': 6rem,
-    '28': 7rem,
-    '32': 8rem
+    0: 0,
+    1: 0.25rem,
+    2: 0.5rem,
+    3: 0.75rem,
+    4: 1rem,
+    5: 1.25rem,
+    6: 1.5rem,
+    8: 2rem,
+    10: 2.5rem,
+    12: 3rem,
+    16: 4rem,
+    20: 5rem,
+    24: 6rem,
+    32: 8rem,
+    40: 10rem,
+    48: 12rem,
+    56: 14rem,
+    64: 16rem
 );
+
+// Breakpoints for responsive utilities
+$breakpoints: (
+    sm: 640px,
+    md: 768px,
+    lg: 1024px,
+    xl: 1280px,
+    2xl: 1536px
+);
+
+/* ========================================================================
+   PROJECT-SPECIFIC EXTENSIONS
+   Add any project-specific variables that extend the unified system
+   ======================================================================== */
+
+:root {
+    /* Project-specific extensions can be added here */
+    /* Example: --hph-project-specific-color: #custom; */
+}

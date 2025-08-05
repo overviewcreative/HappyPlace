@@ -1,0 +1,245 @@
+{
+    "key": "group_listing_core_fields",
+    "title": "Listing Core Information",
+    "fields": [
+        {
+            "key": "field_tab_identifiers",
+            "label": "Identifiers & Status",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_mls_number",
+            "label": "MLS Number",
+            "name": "mls_number",
+            "type": "text",
+            "instructions": "Public MLS listing number",
+            "required": 1,
+            "wrapper": {
+                "width": "33"
+            },
+            "placeholder": "MLS123456"
+        },
+        {
+            "key": "field_listing_date",
+            "label": "Listing Date",
+            "name": "listing_date",
+            "type": "date_picker",
+            "instructions": "Original listing date",
+            "required": 1,
+            "wrapper": {
+                "width": "33"
+            },
+            "display_format": "m/d/Y",
+            "return_format": "Y-m-d",
+            "first_day": 0
+        },
+        {
+            "key": "field_expiration_date",
+            "label": "Expiration Date",
+            "name": "expiration_date",
+            "type": "date_picker",
+            "instructions": "Listing agreement expiration",
+            "wrapper": {
+                "width": "34"
+            },
+            "display_format": "m/d/Y",
+            "return_format": "Y-m-d",
+            "first_day": 0
+        },
+        {
+            "key": "field_tab_pricing",
+            "label": "Pricing",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_price",
+            "label": "List Price",
+            "name": "price",
+            "type": "number",
+            "instructions": "Current listing price",
+            "required": 1,
+            "wrapper": {
+                "width": "33",
+                "class": "hph-trigger-calculation"
+            },
+            "prepend": "$",
+            "min": 0,
+            "step": 1
+        },
+        {
+            "key": "field_original_price",
+            "label": "Original Price",
+            "name": "original_price",
+            "type": "number",
+            "instructions": "Original listing price if changed",
+            "wrapper": {
+                "width": "33"
+            },
+            "prepend": "$",
+            "min": 0,
+            "step": 1
+        },
+        {
+            "key": "field_price_per_sqft",
+            "label": "Price per Sq Ft",
+            "name": "price_per_sqft",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED from price and square footage",
+            "wrapper": {
+                "width": "34",
+                "class": "hph-calculated-field"
+            },
+            "prepend": "$",
+            "append": "/sqft",
+            "readonly": 1,
+            "step": 0.01
+        },
+        {
+            "key": "field_tab_property_details",
+            "label": "Property Details",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_bedrooms",
+            "label": "Bedrooms",
+            "name": "bedrooms",
+            "type": "number",
+            "required": 1,
+            "wrapper": {
+                "width": "20"
+            },
+            "min": 0,
+            "max": 50,
+            "step": 1
+        },
+        {
+            "key": "field_bathrooms",
+            "label": "Full Bathrooms",
+            "name": "bathrooms",
+            "type": "number",
+            "required": 1,
+            "wrapper": {
+                "width": "20",
+                "class": "hph-trigger-calculation"
+            },
+            "min": 0,
+            "max": 20,
+            "step": 1
+        },
+        {
+            "key": "field_half_bathrooms",
+            "label": "Half Bathrooms",
+            "name": "half_bathrooms",
+            "type": "number",
+            "wrapper": {
+                "width": "20",
+                "class": "hph-trigger-calculation"
+            },
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "default_value": 0
+        },
+        {
+            "key": "field_bathrooms_total",
+            "label": "Total Bathrooms",
+            "name": "bathrooms_total",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED",
+            "wrapper": {
+                "width": "20",
+                "class": "hph-calculated-field"
+            },
+            "readonly": 1,
+            "step": 0.5
+        },
+        {
+            "key": "field_square_footage",
+            "label": "Square Footage",
+            "name": "square_footage",
+            "type": "number",
+            "instructions": "Total finished square feet",
+            "required": 1,
+            "wrapper": {
+                "width": "20",
+                "class": "hph-trigger-calculation"
+            },
+            "append": "sq ft",
+            "min": 0,
+            "step": 1
+        },
+        {
+            "key": "field_lot_size",
+            "label": "Lot Size (Acres)",
+            "name": "lot_size",
+            "type": "number",
+            "instructions": "Lot size in acres",
+            "wrapper": {
+                "width": "25"
+            },
+            "append": "acres",
+            "min": 0,
+            "step": 0.01
+        },
+        {
+            "key": "field_year_built",
+            "label": "Year Built",
+            "name": "year_built",
+            "type": "number",
+            "wrapper": {
+                "width": "25"
+            },
+            "min": 1800,
+            "max": 2030,
+            "step": 1
+        },
+        {
+            "key": "field_garage_spaces",
+            "label": "Garage Spaces",
+            "name": "garage_spaces",
+            "type": "number",
+            "wrapper": {
+                "width": "25"
+            },
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "default_value": 0
+        },
+        {
+            "key": "field_stories",
+            "label": "Stories",
+            "name": "stories",
+            "type": "number",
+            "wrapper": {
+                "width": "25"
+            },
+            "min": 1,
+            "max": 10,
+            "step": 0.5
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 1,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Core listing information including identifiers, pricing, and basic property details"
+}

@@ -143,7 +143,7 @@
             justify-content: space-between;
             
             .page-item {
-                &:not(.prev):not(.next) {
+                &:not(.prev, .next) {
                     display: none;
                 }
                 
@@ -227,7 +227,7 @@
             
             .page-item {
                 // Hide middle pages on mobile, keep first, last, current and adjacent
-                &:not(.prev):not(.next):not(.active):not(.dots) {
+                &:not(.prev, .next, .active, .dots) {
                     display: none;
                     
                     &.adjacent {

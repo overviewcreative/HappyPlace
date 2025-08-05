@@ -138,14 +138,14 @@ $line-heights: (
    ============================================ */
 
 $shadows: (
-    'xs': (0 1px 2px 0 rgba(0, 0, 0, 0.05)),
-    'sm': (0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)),
-    'base': (0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)),
-    'md': (0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)),
-    'lg': (0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)),
-    'xl': (0 25px 50px -12px rgba(0, 0, 0, 0.25)),
-    '2xl': (0 25px 50px -12px rgba(0, 0, 0, 0.25)),
-    'inner': (inset 0 2px 4px 0 rgba(0, 0, 0, 0.05))
+    'xs': (0 1px 2px 0 rgb(0 0 0 / 5%)),
+    'sm': (0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px -1px rgb(0 0 0 / 10%)),
+    'base': (0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%)),
+    'md': (0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%)),
+    'lg': (0 20px 25px -5px rgb(0 0 0 / 10%), 0 8px 10px -6px rgb(0 0 0 / 10%)),
+    'xl': (0 25px 50px -12px rgb(0 0 0 / 25%)),
+    '2xl': (0 25px 50px -12px rgb(0 0 0 / 25%)),
+    'inner': (inset 0 2px 4px 0 rgb(0 0 0 / 5%))
 );
 
 @function shadow($size) {
@@ -179,6 +179,7 @@ $container-max-widths: (
     @if type-of($number) == 'number' and not unitless($number) {
         @return $number / ($number * 0 + 1);
     }
+
     @return $number;
 }
 
@@ -273,6 +274,7 @@ $z-index: (
 @function fluid-size($min-size, $max-size, $min-screen: 320px, $max-screen: 1200px) {
     $slope: ($max-size - $min-size) / ($max-screen - $min-screen);
     $yAxisIntersection: -$min-screen * $slope + $min-size;
+
     @return clamp(#{$min-size}, #{$yAxisIntersection} + #{$slope * 100vw}, #{$max-size});
 }
 
@@ -281,6 +283,7 @@ $z-index: (
     @each $key in $keys {
         $map: map-get($map, $key);
     }
+
     @return $map;
 }
 
@@ -326,8 +329,10 @@ $z-index: (
 // Power function (for luminance calculation)
 @function pow($base, $exponent) {
     $result: 1;
+
     @for $i from 1 through $exponent {
         $result: $result * $base;
     }
+
     @return $result;
 }

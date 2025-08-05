@@ -1,0 +1,360 @@
+{
+    "key": "group_open_house_fields",
+    "title": "Open House Information",
+    "fields": [
+        {
+            "key": "field_oh_listing",
+            "label": "Associated Listing",
+            "name": "listing",
+            "type": "post_object",
+            "instructions": "Select the property listing for this open house",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "listing"
+            ],
+            "taxonomy": [],
+            "allow_null": 0,
+            "multiple": 0,
+            "return_format": "id",
+            "ui": 1
+        },
+        {
+            "key": "field_oh_hosting_agent",
+            "label": "Hosting Agent",
+            "name": "hosting_agent",
+            "type": "post_object",
+            "instructions": "Select the agent who will host this open house (can be different from listing agent)",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "agent"
+            ],
+            "taxonomy": [],
+            "allow_null": 0,
+            "multiple": 0,
+            "return_format": "id",
+            "ui": 1
+        },
+        {
+            "key": "field_oh_date",
+            "label": "Open House Date",
+            "name": "open_house_date",
+            "type": "date_picker",
+            "instructions": "Select the date for the open house",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33.33",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "F j, Y",
+            "return_format": "Y-m-d",
+            "first_day": 1
+        },
+        {
+            "key": "field_oh_start_time",
+            "label": "Start Time",
+            "name": "start_time",
+            "type": "time_picker",
+            "instructions": "Open house start time",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33.33",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "g:i a",
+            "return_format": "H:i:s"
+        },
+        {
+            "key": "field_oh_end_time",
+            "label": "End Time",
+            "name": "end_time",
+            "type": "time_picker",
+            "instructions": "Open house end time",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33.33",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "g:i a",
+            "return_format": "H:i:s"
+        },
+        {
+            "key": "field_oh_status",
+            "label": "Status",
+            "name": "status",
+            "type": "select",
+            "instructions": "Current status of the open house",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33.33",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "scheduled": "Scheduled",
+                "confirmed": "Confirmed",
+                "in_progress": "In Progress",
+                "completed": "Completed",
+                "cancelled": "Cancelled",
+                "postponed": "Postponed"
+            },
+            "default_value": "scheduled",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 1,
+            "ajax": 0,
+            "return_format": "value",
+            "placeholder": ""
+        },
+        {
+            "key": "field_oh_registration_required",
+            "label": "Registration Required",
+            "name": "registration_required",
+            "type": "true_false",
+            "instructions": "Require visitors to register for this open house",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33.33",
+                "class": "",
+                "id": ""
+            },
+            "message": "Require visitor registration",
+            "default_value": 0,
+            "ui": 1,
+            "ui_on_text": "Yes",
+            "ui_off_text": "No"
+        },
+        {
+            "key": "field_oh_max_attendees",
+            "label": "Maximum Attendees",
+            "name": "max_attendees",
+            "type": "number",
+            "instructions": "Maximum number of people allowed (leave blank for no limit)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33.33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "No limit",
+            "prepend": "",
+            "append": "people",
+            "min": 1,
+            "max": 500,
+            "step": ""
+        },
+        {
+            "key": "field_oh_description",
+            "label": "Description",
+            "name": "description",
+            "type": "textarea",
+            "instructions": "Special details about this open house",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Special features to highlight, parking instructions, etc.",
+            "maxlength": 500,
+            "rows": 4,
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_oh_special_instructions",
+            "label": "Special Instructions",
+            "name": "special_instructions",
+            "type": "textarea",
+            "instructions": "Instructions for visitors (parking, entry, etc.)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Parking available in driveway, enter through front door, etc.",
+            "maxlength": 300,
+            "rows": 4,
+            "new_lines": "wpautop"
+        },
+        {
+            "key": "field_oh_contact_info",
+            "label": "Contact Information",
+            "name": "contact_info",
+            "type": "group",
+            "instructions": "Contact details for this open house",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "100",
+                "class": "",
+                "id": ""
+            },
+            "layout": "block",
+            "sub_fields": [
+                {
+                    "key": "field_oh_contact_phone",
+                    "label": "Contact Phone",
+                    "name": "phone",
+                    "type": "text",
+                    "instructions": "Phone number for inquiries",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "(555) 123-4567",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": ""
+                },
+                {
+                    "key": "field_oh_contact_email",
+                    "label": "Contact Email",
+                    "name": "email",
+                    "type": "email",
+                    "instructions": "Email address for inquiries",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "agent@example.com",
+                    "prepend": "",
+                    "append": ""
+                }
+            ]
+        },
+        {
+            "key": "field_oh_attendee_tracking",
+            "label": "Attendee Tracking",
+            "name": "attendee_tracking",
+            "type": "group",
+            "instructions": "Track open house attendance and leads",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "100",
+                "class": "hph-admin-only",
+                "id": ""
+            },
+            "layout": "block",
+            "sub_fields": [
+                {
+                    "key": "field_oh_total_attendees",
+                    "label": "Total Attendees",
+                    "name": "total_attendees",
+                    "type": "number",
+                    "instructions": "Total number of people who attended",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "33.33",
+                        "class": "hph-calculated-field",
+                        "id": ""
+                    },
+                    "default_value": 0,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "people",
+                    "min": 0,
+                    "max": "",
+                    "step": "",
+                    "readonly": 1
+                },
+                {
+                    "key": "field_oh_leads_generated",
+                    "label": "Leads Generated",
+                    "name": "leads_generated",
+                    "type": "number",
+                    "instructions": "Number of qualified leads from this open house",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "33.33",
+                        "class": "hph-calculated-field",
+                        "id": ""
+                    },
+                    "default_value": 0,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "leads",
+                    "min": 0,
+                    "max": "",
+                    "step": "",
+                    "readonly": 1
+                },
+                {
+                    "key": "field_oh_follow_ups_needed",
+                    "label": "Follow-ups Needed",
+                    "name": "follow_ups_needed",
+                    "type": "number",
+                    "instructions": "Number of attendees requiring follow-up",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "33.33",
+                        "class": "hph-calculated-field",
+                        "id": ""
+                    },
+                    "default_value": 0,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "people",
+                    "min": 0,
+                    "max": "",
+                    "step": "",
+                    "readonly": 1
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "open-house"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Comprehensive open house scheduling and management fields"
+}

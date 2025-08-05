@@ -43,10 +43,12 @@
 .mr-auto { margin-right: auto !important; }
 .mb-auto { margin-bottom: auto !important; }
 .ml-auto { margin-left: auto !important; }
+
 .mx-auto { 
     margin-left: auto !important; 
     margin-right: auto !important; 
 }
+
 .my-auto { 
     margin-top: auto !important; 
     margin-bottom: auto !important; 
@@ -254,14 +256,17 @@
     border-top-left-radius: var(--hph-border-radius-lg) !important;
     border-top-right-radius: var(--hph-border-radius-lg) !important;
 }
+
 .rounded-bottom { 
     border-bottom-left-radius: var(--hph-border-radius-lg) !important;
     border-bottom-right-radius: var(--hph-border-radius-lg) !important;
 }
+
 .rounded-left { 
     border-top-left-radius: var(--hph-border-radius-lg) !important;
     border-bottom-left-radius: var(--hph-border-radius-lg) !important;
 }
+
 .rounded-right { 
     border-top-right-radius: var(--hph-border-radius-lg) !important;
     border-bottom-right-radius: var(--hph-border-radius-lg) !important;

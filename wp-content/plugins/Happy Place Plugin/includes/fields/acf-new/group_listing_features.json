@@ -1,0 +1,317 @@
+{
+    "key": "group_listing_features",
+    "title": "Features & Amenities",
+    "fields": [
+        {
+            "key": "field_tab_interior",
+            "label": "Interior Features",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_basement",
+            "label": "Basement",
+            "name": "basement",
+            "type": "select",
+            "wrapper": {
+                "width": "25"
+            },
+            "choices": {
+                "none": "None",
+                "crawl": "Crawl Space",
+                "partial": "Partial Basement",
+                "full": "Full Basement",
+                "finished": "Finished Basement",
+                "walkout": "Walkout Basement"
+            },
+            "default_value": "none"
+        },
+        {
+            "key": "field_heating",
+            "label": "Heating Type",
+            "name": "heating",
+            "type": "checkbox",
+            "wrapper": {
+                "width": "25"
+            },
+            "choices": {
+                "forced_air": "Forced Air",
+                "baseboard": "Baseboard",
+                "radiant": "Radiant",
+                "heat_pump": "Heat Pump",
+                "wood": "Wood/Pellet",
+                "solar": "Solar"
+            }
+        },
+        {
+            "key": "field_cooling",
+            "label": "Cooling Type",
+            "name": "cooling",
+            "type": "checkbox",
+            "wrapper": {
+                "width": "25"
+            },
+            "choices": {
+                "central_air": "Central Air",
+                "window_units": "Window Units",
+                "evaporative": "Evaporative",
+                "heat_pump": "Heat Pump",
+                "none": "None"
+            }
+        },
+        {
+            "key": "field_fireplace_count",
+            "label": "Fireplaces",
+            "name": "fireplace_count",
+            "type": "number",
+            "wrapper": {
+                "width": "25"
+            },
+            "min": 0,
+            "max": 10,
+            "default_value": 0
+        },
+        {
+            "key": "field_flooring",
+            "label": "Flooring Types",
+            "name": "flooring",
+            "type": "checkbox",
+            "wrapper": {
+                "width": "50"
+            },
+            "choices": {
+                "hardwood": "Hardwood",
+                "tile": "Tile",
+                "carpet": "Carpet",
+                "laminate": "Laminate",
+                "vinyl": "Vinyl/LVP",
+                "concrete": "Concrete"
+            },
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_kitchen_features",
+            "label": "Kitchen Features",
+            "name": "kitchen_features",
+            "type": "checkbox",
+            "wrapper": {
+                "width": "50"
+            },
+            "choices": {
+                "granite": "Granite Counters",
+                "quartz": "Quartz Counters",
+                "stainless": "Stainless Appliances",
+                "island": "Kitchen Island",
+                "pantry": "Walk-in Pantry",
+                "breakfast_bar": "Breakfast Bar"
+            },
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_tab_exterior",
+            "label": "Exterior Features",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_pool",
+            "label": "Pool",
+            "name": "pool",
+            "type": "true_false",
+            "wrapper": {
+                "width": "20"
+            },
+            "message": "Has Pool",
+            "ui": 1
+        },
+        {
+            "key": "field_hot_tub",
+            "label": "Hot Tub/Spa",
+            "name": "hot_tub",
+            "type": "true_false",
+            "wrapper": {
+                "width": "20"
+            },
+            "message": "Has Hot Tub",
+            "ui": 1
+        },
+        {
+            "key": "field_waterfront",
+            "label": "Waterfront",
+            "name": "waterfront",
+            "type": "true_false",
+            "wrapper": {
+                "width": "20"
+            },
+            "message": "Waterfront Property",
+            "ui": 1
+        },
+        {
+            "key": "field_view",
+            "label": "View",
+            "name": "view",
+            "type": "true_false",
+            "wrapper": {
+                "width": "20"
+            },
+            "message": "Has View",
+            "ui": 1
+        },
+        {
+            "key": "field_corner_lot",
+            "label": "Corner Lot",
+            "name": "corner_lot",
+            "type": "true_false",
+            "wrapper": {
+                "width": "20"
+            },
+            "message": "Corner Lot",
+            "ui": 1
+        },
+        {
+            "key": "field_lot_features",
+            "label": "Lot Features",
+            "name": "lot_features",
+            "type": "checkbox",
+            "wrapper": {
+                "width": ""
+            },
+            "choices": {
+                "fenced": "Fully Fenced",
+                "landscaped": "Professional Landscaping",
+                "sprinklers": "Sprinkler System",
+                "garden": "Garden Area",
+                "patio": "Patio",
+                "deck": "Deck",
+                "outdoor_kitchen": "Outdoor Kitchen",
+                "rv_parking": "RV Parking"
+            },
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_tab_additional",
+            "label": "Additional Features",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_smart_home_features",
+            "label": "Smart Home Features",
+            "name": "smart_home_features",
+            "type": "checkbox",
+            "wrapper": {
+                "width": ""
+            },
+            "choices": {
+                "thermostat": "Smart Thermostat",
+                "security": "Smart Security System",
+                "doorbell": "Video Doorbell",
+                "locks": "Smart Locks",
+                "lighting": "Smart Lighting",
+                "speakers": "Built-in Speakers"
+            },
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_energy_features",
+            "label": "Energy Efficient Features",
+            "name": "energy_features",
+            "type": "checkbox",
+            "wrapper": {
+                "width": ""
+            },
+            "choices": {
+                "solar_panels": "Solar Panels",
+                "solar_water": "Solar Water Heater",
+                "double_pane": "Double Pane Windows",
+                "insulation": "Extra Insulation",
+                "energy_star": "Energy Star Appliances",
+                "led": "LED Lighting Throughout"
+            },
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_custom_features",
+            "label": "Property Features (Tags)",
+            "name": "custom_features",
+            "type": "select",
+            "instructions": "Select existing features or type to add new ones. Use tags for searchable features.",
+            "wrapper": {
+                "width": ""
+            },
+            "choices": {
+                "pool": "Pool",
+                "hot_tub": "Hot Tub/Spa",
+                "waterfront": "Waterfront",
+                "mountain_view": "Mountain View",
+                "city_view": "City View",
+                "fireplace": "Fireplace",
+                "hardwood_floors": "Hardwood Floors",
+                "granite_counters": "Granite Counters",
+                "stainless_appliances": "Stainless Steel Appliances",
+                "walk_in_closet": "Walk-in Closet",
+                "master_suite": "Master Suite",
+                "home_office": "Home Office",
+                "finished_basement": "Finished Basement",
+                "attached_garage": "Attached Garage",
+                "central_air": "Central Air",
+                "forced_air_heat": "Forced Air Heat",
+                "solar_panels": "Solar Panels",
+                "smart_home": "Smart Home Features",
+                "security_system": "Security System",
+                "fenced_yard": "Fenced Yard",
+                "corner_lot": "Corner Lot",
+                "cul_de_sac": "Cul-de-sac",
+                "new_construction": "New Construction",
+                "move_in_ready": "Move-in Ready",
+                "chef_kitchen": "Chef's Kitchen",
+                "wine_cellar": "Wine Cellar",
+                "media_room": "Media Room",
+                "gym": "Home Gym",
+                "guest_house": "Guest House",
+                "workshop": "Workshop/Garage",
+                "rv_parking": "RV Parking",
+                "boat_dock": "Boat Dock",
+                "tennis_court": "Tennis Court",
+                "putting_green": "Putting Green"
+            },
+            "allow_null": 1,
+            "multiple": 1,
+            "ui": 1,
+            "ajax": 1,
+            "return_format": "value",
+            "placeholder": "Type to search or add new features..."
+        },
+        {
+            "key": "field_additional_features_text",
+            "label": "Additional Features Description",
+            "name": "additional_features_text",
+            "type": "textarea",
+            "instructions": "Detailed description of unique features not captured in tags",
+            "wrapper": {
+                "width": ""
+            },
+            "rows": 4
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 4,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Property features and amenities"
+}

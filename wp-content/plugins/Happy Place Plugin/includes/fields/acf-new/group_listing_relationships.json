@@ -1,0 +1,215 @@
+{
+    "key": "group_listing_relationships",
+    "title": "Relationships",
+    "fields": [
+        {
+            "key": "field_tab_agents",
+            "label": "Agents",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_listing_agent",
+            "label": "Listing Agent",
+            "name": "listing_agent",
+            "type": "relationship",
+            "instructions": "Primary listing agent",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            },
+            "post_type": [
+                "agent"
+            ],
+            "filters": [
+                "search"
+            ],
+            "min": 1,
+            "max": 1,
+            "return_format": "object"
+        },
+        {
+            "key": "field_co_listing_agent",
+            "label": "Co-Listing Agent",
+            "name": "co_listing_agent",
+            "type": "relationship",
+            "instructions": "Co-listing agent if applicable",
+            "wrapper": {
+                "width": "50"
+            },
+            "post_type": [
+                "agent"
+            ],
+            "filters": [
+                "search"
+            ],
+            "min": 0,
+            "max": 1,
+            "return_format": "object"
+        },
+        {
+            "key": "field_listing_office",
+            "label": "Listing Office",
+            "name": "listing_office",
+            "type": "relationship",
+            "instructions": "Listing brokerage office",
+            "wrapper": {
+                "width": "50"
+            },
+            "post_type": [
+                "office"
+            ],
+            "filters": [
+                "search"
+            ],
+            "min": 0,
+            "max": 1,
+            "return_format": "object"
+        },
+        {
+            "key": "field_buyer_agent_commission",
+            "label": "Buyer Agent Commission",
+            "name": "buyer_agent_commission",
+            "type": "number",
+            "instructions": "Commission offered to buyer's agent",
+            "wrapper": {
+                "width": "50"
+            },
+            "append": "%",
+            "min": 0,
+            "max": 10,
+            "step": 0.25,
+            "default_value": 2.5
+        },
+        {
+            "key": "field_tab_location_relationships",
+            "label": "Location Relationships",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_community",
+            "label": "Community/Subdivision",
+            "name": "community",
+            "type": "relationship",
+            "instructions": "Select community or subdivision if applicable",
+            "wrapper": {
+                "width": "50"
+            },
+            "post_type": [
+                "community"
+            ],
+            "filters": [
+                "search"
+            ],
+            "min": 0,
+            "max": 1,
+            "return_format": "object"
+        },
+        {
+            "key": "field_tab_media",
+            "label": "Media & Documents",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_virtual_tour_url",
+            "label": "Virtual Tour URL",
+            "name": "virtual_tour_url",
+            "type": "url",
+            "instructions": "Link to virtual tour or video walkthrough",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_property_website",
+            "label": "Property Website",
+            "name": "property_website",
+            "type": "url",
+            "instructions": "Dedicated property website if available",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_property_documents",
+            "label": "Property Documents",
+            "name": "property_documents",
+            "type": "repeater",
+            "instructions": "Upload property-related documents",
+            "wrapper": {
+                "width": ""
+            },
+            "layout": "table",
+            "button_label": "Add Document",
+            "sub_fields": [
+                {
+                    "key": "field_document_type",
+                    "label": "Document Type",
+                    "name": "document_type",
+                    "type": "select",
+                    "wrapper": {
+                        "width": "40"
+                    },
+                    "choices": {
+                        "disclosure": "Property Disclosure",
+                        "inspection": "Inspection Report",
+                        "survey": "Survey",
+                        "hoa": "HOA Documents",
+                        "warranty": "Home Warranty",
+                        "other": "Other"
+                    },
+                    "required": 1
+                },
+                {
+                    "key": "field_document_file",
+                    "label": "File",
+                    "name": "document_file",
+                    "type": "file",
+                    "wrapper": {
+                        "width": "40"
+                    },
+                    "return_format": "array",
+                    "library": "all",
+                    "required": 1
+                },
+                {
+                    "key": "field_document_visibility",
+                    "label": "Visibility",
+                    "name": "document_visibility",
+                    "type": "select",
+                    "wrapper": {
+                        "width": "20"
+                    },
+                    "choices": {
+                        "public": "Public",
+                        "agents": "Agents Only",
+                        "private": "Private"
+                    },
+                    "default_value": "agents"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 5,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Agent relationships, location relationships, and media/documents"
+}

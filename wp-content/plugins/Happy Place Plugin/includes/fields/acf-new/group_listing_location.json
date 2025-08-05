@@ -1,0 +1,297 @@
+{
+    "key": "group_listing_location",
+    "title": "Location & Address",
+    "fields": [
+        {
+            "key": "field_tab_address",
+            "label": "Address",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_street_address",
+            "label": "Street Address",
+            "name": "street_address",
+            "type": "text",
+            "instructions": "Full street address",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            },
+            "placeholder": "123 Main Street"
+        },
+        {
+            "key": "field_unit_number",
+            "label": "Unit/Apt",
+            "name": "unit_number",
+            "type": "text",
+            "wrapper": {
+                "width": "25"
+            },
+            "placeholder": "Unit #"
+        },
+        {
+            "key": "field_address_visibility",
+            "label": "Address Display",
+            "name": "address_visibility",
+            "type": "select",
+            "wrapper": {
+                "width": "25"
+            },
+            "choices": {
+                "full": "Show Full Address",
+                "street_only": "Street Name Only",
+                "neighborhood": "Neighborhood Only",
+                "hidden": "Do Not Display"
+            },
+            "default_value": "full"
+        },
+        {
+            "key": "field_city",
+            "label": "City",
+            "name": "city",
+            "type": "text",
+            "instructions": "City name for address",
+            "required": 1,
+            "wrapper": {
+                "width": "40"
+            }
+        },
+        {
+            "key": "field_state",
+            "label": "State",
+            "name": "state",
+            "type": "select",
+            "required": 1,
+            "wrapper": {
+                "width": "30"
+            },
+            "choices": {
+                "AL": "Alabama",
+                "AK": "Alaska",
+                "AZ": "Arizona",
+                "AR": "Arkansas",
+                "CA": "California",
+                "CO": "Colorado",
+                "CT": "Connecticut",
+                "DE": "Delaware",
+                "FL": "Florida",
+                "GA": "Georgia",
+                "HI": "Hawaii",
+                "ID": "Idaho",
+                "IL": "Illinois",
+                "IN": "Indiana",
+                "IA": "Iowa",
+                "KS": "Kansas",
+                "KY": "Kentucky",
+                "LA": "Louisiana",
+                "ME": "Maine",
+                "MD": "Maryland",
+                "MA": "Massachusetts",
+                "MI": "Michigan",
+                "MN": "Minnesota",
+                "MS": "Mississippi",
+                "MO": "Missouri",
+                "MT": "Montana",
+                "NE": "Nebraska",
+                "NV": "Nevada",
+                "NH": "New Hampshire",
+                "NJ": "New Jersey",
+                "NM": "New Mexico",
+                "NY": "New York",
+                "NC": "North Carolina",
+                "ND": "North Dakota",
+                "OH": "Ohio",
+                "OK": "Oklahoma",
+                "OR": "Oregon",
+                "PA": "Pennsylvania",
+                "RI": "Rhode Island",
+                "SC": "South Carolina",
+                "SD": "South Dakota",
+                "TN": "Tennessee",
+                "TX": "Texas",
+                "UT": "Utah",
+                "VT": "Vermont",
+                "VA": "Virginia",
+                "WA": "Washington",
+                "WV": "West Virginia",
+                "WI": "Wisconsin",
+                "WY": "Wyoming"
+            },
+            "ui": 1,
+            "ajax": 1
+        },
+        {
+            "key": "field_zip_code",
+            "label": "ZIP Code",
+            "name": "zip_code",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "30"
+            },
+            "placeholder": "12345"
+        },
+        {
+            "key": "field_full_address",
+            "label": "Full Address",
+            "name": "full_address",
+            "type": "text",
+            "instructions": "AUTO-GENERATED from address components",
+            "wrapper": {
+                "width": "",
+                "class": "hph-calculated-field"
+            },
+            "readonly": 1
+        },
+        {
+            "key": "field_tab_geographic",
+            "label": "Geographic Data",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_latitude",
+            "label": "Latitude",
+            "name": "latitude",
+            "type": "number",
+            "instructions": "AUTO-POPULATED from geocoding",
+            "wrapper": {
+                "width": "33",
+                "class": "hph-auto-populated"
+            },
+            "min": -90,
+            "max": 90,
+            "step": "any",
+            "readonly": 1
+        },
+        {
+            "key": "field_longitude",
+            "label": "Longitude",
+            "name": "longitude",
+            "type": "number",
+            "instructions": "AUTO-POPULATED from geocoding",
+            "wrapper": {
+                "width": "33",
+                "class": "hph-auto-populated"
+            },
+            "min": -180,
+            "max": 180,
+            "step": "any",
+            "readonly": 1
+        },
+        {
+            "key": "field_county",
+            "label": "County",
+            "name": "county",
+            "type": "text",
+            "instructions": "AUTO-POPULATED from geocoding",
+            "wrapper": {
+                "width": "34",
+                "class": "hph-auto-populated"
+            },
+            "readonly": 1
+        },
+        {
+            "key": "field_parcel_number",
+            "label": "Parcel Number",
+            "name": "parcel_number",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_zoning",
+            "label": "Zoning",
+            "name": "zoning",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_tab_scores",
+            "label": "Location Scores",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_walk_score",
+            "label": "Walk Score",
+            "name": "walk_score",
+            "type": "number",
+            "instructions": "AUTO-POPULATED from Walk Score API",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-auto-populated"
+            },
+            "append": "/100",
+            "min": 0,
+            "max": 100,
+            "readonly": 1
+        },
+        {
+            "key": "field_transit_score",
+            "label": "Transit Score",
+            "name": "transit_score",
+            "type": "number",
+            "instructions": "AUTO-POPULATED from Walk Score API",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-auto-populated"
+            },
+            "append": "/100",
+            "min": 0,
+            "max": 100,
+            "readonly": 1
+        },
+        {
+            "key": "field_bike_score",
+            "label": "Bike Score",
+            "name": "bike_score",
+            "type": "number",
+            "instructions": "AUTO-POPULATED from Walk Score API",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-auto-populated"
+            },
+            "append": "/100",
+            "min": 0,
+            "max": 100,
+            "readonly": 1
+        },
+        {
+            "key": "field_school_district",
+            "label": "School District",
+            "name": "school_district",
+            "type": "text",
+            "instructions": "AUTO-POPULATED from school API",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-auto-populated"
+            },
+            "readonly": 1
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 2,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Location details including address, geographic data, and location scores"
+}

@@ -159,7 +159,7 @@
 }
 
 /* Responsive behavior */
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .hph-features-grid {
     grid-template-columns: 1fr;
     gap: var(--hph-spacing-3);

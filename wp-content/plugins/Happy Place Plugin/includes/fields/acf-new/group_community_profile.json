@@ -1,0 +1,519 @@
+{
+    "key": "group_community_profile",
+    "title": "Community Profile",
+    "fields": [
+        {
+            "key": "field_tab_community_basic",
+            "label": "Basic Information",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_community_name",
+            "label": "Community Name",
+            "name": "community_name",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_community_developer",
+            "label": "Developer",
+            "name": "community_developer",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_community_established",
+            "label": "Year Established",
+            "name": "community_established",
+            "type": "number",
+            "wrapper": {
+                "width": "33"
+            },
+            "min": 1900,
+            "max": 2030
+        },
+        {
+            "key": "field_community_total_homes",
+            "label": "Total Homes",
+            "name": "community_total_homes",
+            "type": "number",
+            "wrapper": {
+                "width": "33"
+            },
+            "min": 1
+        },
+        {
+            "key": "field_community_total_acres",
+            "label": "Total Acres",
+            "name": "community_total_acres",
+            "type": "number",
+            "wrapper": {
+                "width": "34"
+            },
+            "min": 0,
+            "step": 0.1
+        },
+        {
+            "key": "field_community_description",
+            "label": "Community Description",
+            "name": "community_description",
+            "type": "wysiwyg",
+            "wrapper": {
+                "width": ""
+            },
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1
+        },
+        {
+            "key": "field_tab_community_hoa",
+            "label": "HOA Information",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_community_hoa_name",
+            "label": "HOA Name",
+            "name": "community_hoa_name",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_community_hoa_management_company",
+            "label": "Management Company",
+            "name": "community_hoa_management_company",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_community_hoa_phone",
+            "label": "HOA Phone",
+            "name": "community_hoa_phone",
+            "type": "text",
+            "wrapper": {
+                "width": "33"
+            }
+        },
+        {
+            "key": "field_community_hoa_email",
+            "label": "HOA Email",
+            "name": "community_hoa_email",
+            "type": "email",
+            "wrapper": {
+                "width": "33"
+            }
+        },
+        {
+            "key": "field_community_hoa_website",
+            "label": "HOA Website",
+            "name": "community_hoa_website",
+            "type": "url",
+            "wrapper": {
+                "width": "34"
+            }
+        },
+        {
+            "key": "field_community_hoa_fee_single_family",
+            "label": "HOA Fee - Single Family",
+            "name": "community_hoa_fee_single_family",
+            "type": "number",
+            "instructions": "Monthly HOA fee for single family homes",
+            "wrapper": {
+                "width": "25"
+            },
+            "prepend": "$",
+            "append": "/month",
+            "min": 0,
+            "step": 0.01
+        },
+        {
+            "key": "field_community_hoa_fee_townhouse",
+            "label": "HOA Fee - Townhouse",
+            "name": "community_hoa_fee_townhouse",
+            "type": "number",
+            "instructions": "Monthly HOA fee for townhouses",
+            "wrapper": {
+                "width": "25"
+            },
+            "prepend": "$",
+            "append": "/month",
+            "min": 0,
+            "step": 0.01
+        },
+        {
+            "key": "field_community_hoa_fee_condo",
+            "label": "HOA Fee - Condo",
+            "name": "community_hoa_fee_condo",
+            "type": "number",
+            "instructions": "Monthly HOA fee for condos",
+            "wrapper": {
+                "width": "25"
+            },
+            "prepend": "$",
+            "append": "/month",
+            "min": 0,
+            "step": 0.01
+        },
+        {
+            "key": "field_community_hoa_fee_special_assessment",
+            "label": "Special Assessment",
+            "name": "community_hoa_fee_special_assessment",
+            "type": "number",
+            "instructions": "Current special assessment if any",
+            "wrapper": {
+                "width": "25"
+            },
+            "prepend": "$",
+            "min": 0,
+            "step": 0.01
+        },
+        {
+            "key": "field_community_hoa_includes",
+            "label": "HOA Fee Includes",
+            "name": "community_hoa_includes",
+            "type": "checkbox",
+            "wrapper": {
+                "width": ""
+            },
+            "choices": {
+                "water": "Water",
+                "sewer": "Sewer",
+                "trash": "Trash & Recycling",
+                "landscaping": "Landscaping",
+                "pool_maintenance": "Pool/Spa Maintenance",
+                "gym": "Gym/Fitness Center",
+                "security": "Security/Gate",
+                "cable": "Cable/Internet",
+                "exterior_insurance": "Exterior Insurance",
+                "roof_maintenance": "Roof Maintenance",
+                "common_area_maintenance": "Common Area Maintenance",
+                "snow_removal": "Snow Removal"
+            },
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_tab_community_amenities",
+            "label": "Amenities",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_community_pool_count",
+            "label": "Number of Pools",
+            "name": "community_pool_count",
+            "type": "number",
+            "wrapper": {
+                "width": "25"
+            },
+            "min": 0,
+            "default_value": 0
+        },
+        {
+            "key": "field_community_pool_types",
+            "label": "Pool Types",
+            "name": "community_pool_types",
+            "type": "checkbox",
+            "wrapper": {
+                "width": "25"
+            },
+            "choices": {
+                "swimming": "Swimming Pool",
+                "lap": "Lap Pool",
+                "kiddie": "Children's Pool",
+                "hot_tub": "Hot Tub/Spa",
+                "lazy_river": "Lazy River"
+            }
+        },
+        {
+            "key": "field_community_tennis_courts",
+            "label": "Tennis Courts",
+            "name": "community_tennis_courts",
+            "type": "number",
+            "wrapper": {
+                "width": "25"
+            },
+            "min": 0,
+            "default_value": 0
+        },
+        {
+            "key": "field_community_sport_courts",
+            "label": "Other Sport Courts",
+            "name": "community_sport_courts",
+            "type": "checkbox",
+            "wrapper": {
+                "width": "25"
+            },
+            "choices": {
+                "basketball": "Basketball",
+                "pickleball": "Pickleball",
+                "volleyball": "Volleyball",
+                "bocce": "Bocce Ball"
+            }
+        },
+        {
+            "key": "field_community_clubhouse_features",
+            "label": "Clubhouse Features",
+            "name": "community_clubhouse_features",
+            "type": "checkbox",
+            "wrapper": {
+                "width": "50"
+            },
+            "choices": {
+                "fitness_center": "Fitness Center",
+                "business_center": "Business Center",
+                "library": "Library",
+                "game_room": "Game Room",
+                "event_room": "Event/Party Room",
+                "kitchen": "Catering Kitchen",
+                "bar_lounge": "Bar/Lounge",
+                "yoga_studio": "Yoga Studio"
+            },
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_community_outdoor_amenities",
+            "label": "Outdoor Amenities",
+            "name": "community_outdoor_amenities",
+            "type": "checkbox",
+            "wrapper": {
+                "width": "50"
+            },
+            "choices": {
+                "playground": "Playground",
+                "dog_park": "Dog Park",
+                "walking_trails": "Walking Trails",
+                "jogging_track": "Jogging Track",
+                "golf_course": "Golf Course",
+                "putting_green": "Putting Green",
+                "barbecue_area": "BBQ/Picnic Area",
+                "fire_pit": "Fire Pit",
+                "gazebo": "Gazebo/Pavilion"
+            },
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_community_additional_amenities",
+            "label": "Additional Amenities",
+            "name": "community_additional_amenities",
+            "type": "textarea",
+            "instructions": "Any other amenities not listed above",
+            "wrapper": {
+                "width": ""
+            },
+            "rows": 3
+        },
+        {
+            "key": "field_tab_community_buildings",
+            "label": "Buildings & Units",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_community_buildings",
+            "label": "Buildings/Towers",
+            "name": "community_buildings",
+            "type": "repeater",
+            "instructions": "Individual buildings or towers within the community",
+            "wrapper": {
+                "width": ""
+            },
+            "layout": "table",
+            "button_label": "Add Building",
+            "sub_fields": [
+                {
+                    "key": "field_building_name",
+                    "label": "Building Name",
+                    "name": "building_name",
+                    "type": "text",
+                    "wrapper": {
+                        "width": "30"
+                    },
+                    "placeholder": "e.g., Tower A, North Building",
+                    "required": 1
+                },
+                {
+                    "key": "field_building_address",
+                    "label": "Building Address",
+                    "name": "building_address",
+                    "type": "text",
+                    "wrapper": {
+                        "width": "40"
+                    },
+                    "placeholder": "Specific building address if different"
+                },
+                {
+                    "key": "field_building_floors",
+                    "label": "Floors",
+                    "name": "building_floors",
+                    "type": "number",
+                    "wrapper": {
+                        "width": "15"
+                    },
+                    "min": 1,
+                    "max": 100
+                },
+                {
+                    "key": "field_building_units",
+                    "label": "Units",
+                    "name": "building_units",
+                    "type": "number",
+                    "wrapper": {
+                        "width": "15"
+                    },
+                    "min": 1
+                }
+            ]
+        },
+        {
+            "key": "field_tab_community_rules",
+            "label": "Rules & Restrictions",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_community_pet_policy",
+            "label": "Pet Policy",
+            "name": "community_pet_policy",
+            "type": "select",
+            "wrapper": {
+                "width": "33"
+            },
+            "choices": {
+                "allowed": "Pets Allowed",
+                "restricted": "Restricted (Size/Breed Limits)",
+                "no_pets": "No Pets Allowed",
+                "cats_only": "Cats Only",
+                "small_pets": "Small Pets Only"
+            }
+        },
+        {
+            "key": "field_community_rental_restrictions",
+            "label": "Rental Restrictions",
+            "name": "community_rental_restrictions",
+            "type": "select",
+            "wrapper": {
+                "width": "33"
+            },
+            "choices": {
+                "allowed": "Rentals Allowed",
+                "restricted": "Restricted (Minimum Term)",
+                "owner_occupied": "Owner Occupied Only"
+            }
+        },
+        {
+            "key": "field_community_age_restrictions",
+            "label": "Age Restrictions",
+            "name": "community_age_restrictions",
+            "type": "select",
+            "wrapper": {
+                "width": "34"
+            },
+            "choices": {
+                "none": "No Age Restrictions",
+                "55_plus": "55+ Community",
+                "active_adult": "Active Adult (45+)",
+                "senior": "Senior Living (62+)"
+            }
+        },
+        {
+            "key": "field_community_architectural_guidelines",
+            "label": "Architectural Guidelines",
+            "name": "community_architectural_guidelines",
+            "type": "textarea",
+            "instructions": "Key architectural or modification guidelines",
+            "wrapper": {
+                "width": ""
+            },
+            "rows": 4
+        },
+        {
+            "key": "field_tab_community_stats",
+            "label": "Statistics",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_community_active_listings",
+            "label": "Active Listings",
+            "name": "community_active_listings",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED current listings",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "readonly": 1
+        },
+        {
+            "key": "field_community_sold_last_12_months",
+            "label": "Sold (Last 12 Months)",
+            "name": "community_sold_last_12_months",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED sales",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "readonly": 1
+        },
+        {
+            "key": "field_community_average_sale_price",
+            "label": "Average Sale Price",
+            "name": "community_average_sale_price",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED last 12 months",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "prepend": "$",
+            "readonly": 1
+        },
+        {
+            "key": "field_community_average_dom",
+            "label": "Average Days on Market",
+            "name": "community_average_dom",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED last 12 months",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "append": "days",
+            "readonly": 1
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "community"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Community/subdivision information including HOA details and amenities"
+}

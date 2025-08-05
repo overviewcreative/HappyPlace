@@ -11,6 +11,7 @@
     
     .gallery-main {
         position: relative;
+
         @include aspect-ratio(16/9);
         
         .main-image {
@@ -46,7 +47,7 @@
             position: absolute;
             top: var(--hph-spacing-4);
             right: var(--hph-spacing-4);
-            background: rgba(0, 0, 0, 0.7);
+            background: rgb(0 0 0 / 70%);
             color: var(--color-white);
             padding: var(--hph-spacing-2) var(--hph-spacing-3);
             border-radius: var(--hph-border-radius-lg);
@@ -87,7 +88,7 @@
         position: absolute;
         top: var(--hph-spacing-4);
         left: var(--hph-spacing-4);
-        background: rgba(0, 0, 0, 0.7);
+        background: rgb(0 0 0 / 70%);
         color: var(--color-white);
         border: none;
         padding: var(--hph-spacing-2) var(--hph-spacing-3);
@@ -97,7 +98,7 @@
         transition: var(--transition-fast);
         
         &:hover {
-            background: rgba(0, 0, 0, 0.9);
+            background: rgb(0 0 0 / 90%);
         }
     }
 }

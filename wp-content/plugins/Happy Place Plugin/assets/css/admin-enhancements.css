@@ -1,0 +1,424 @@
+/**
+ * Happy Place Plugin - Admin UI Enhancements
+ * Improved styling for ACF fields and admin interface
+ */
+
+/* =============================================================================
+   ACF Field Type Styling
+   ============================================================================= */
+
+/* Calculated Fields */
+.hph-calculated-field input,
+.hph-calculated-field textarea,
+.hph-calculated-field select {
+    background-color: #f8f9fa !important;
+    border: 1px solid #e3e4e6 !important;
+    color: #6c757d !important;
+    cursor: not-allowed !important;
+}
+
+.hph-calculated-field .acf-label label::after {
+    content: " 🧮";
+    color: #007cba;
+    font-weight: normal;
+}
+
+.hph-calculated-field .acf-input::before {
+    content: "AUTO-CALCULATED";
+    display: block;
+    font-size: 11px;
+    color: #007cba;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+/* Auto-populated Fields */
+.hph-auto-populated input,
+.hph-auto-populated textarea,
+.hph-auto-populated select {
+    background-color: #f0f8ff !important;
+    border: 1px solid #b3d9ff !important;
+    color: #0073aa !important;
+    cursor: not-allowed !important;
+}
+
+.hph-auto-populated .acf-label label::after {
+    content: " 🌐";
+    color: #0073aa;
+    font-weight: normal;
+}
+
+.hph-auto-populated .acf-input::before {
+    content: "AUTO-POPULATED";
+    display: block;
+    font-size: 11px;
+    color: #0073aa;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+/* Manual Entry Fields that Trigger Calculations */
+.hph-trigger-calculation input:focus,
+.hph-trigger-calculation textarea:focus,
+.hph-trigger-calculation select:focus {
+    border-color: #00a0d2 !important;
+    box-shadow: 0 0 0 1px #00a0d2 !important;
+}
+
+.hph-trigger-calculation .acf-label label::after {
+    content: " ⚡";
+    color: #00a0d2;
+    font-weight: normal;
+}
+
+/* Required Fields */
+.acf-required .acf-label label::before {
+    content: "* ";
+    color: #dc3232;
+    font-weight: bold;
+}
+
+/* =============================================================================
+   Tab Styling Improvements
+   ============================================================================= */
+
+.acf-tab-wrap {
+    margin-bottom: 20px;
+}
+
+.acf-tab-wrap .acf-tab-button {
+    padding: 12px 20px;
+    font-weight: 500;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.2s ease;
+}
+
+.acf-tab-wrap .acf-tab-button:hover {
+    background-color: #f1f1f1;
+}
+
+.acf-tab-wrap .acf-tab-button.active {
+    background-color: #0073aa;
+    color: white;
+    border-bottom-color: #0073aa;
+}
+
+/* =============================================================================
+   Field Group Styling
+   ============================================================================= */
+
+.acf-postbox {
+    margin-bottom: 20px;
+}
+
+.acf-postbox h2.hndle {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 4px 4px 0 0;
+    margin: 0;
+}
+
+.acf-postbox .inside {
+    padding: 20px;
+    background-color: #fafafa;
+    border-radius: 0 0 4px 4px;
+}
+
+/* =============================================================================
+   Repeater Field Styling
+   ============================================================================= */
+
+.acf-repeater {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.acf-repeater .acf-row {
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+
+.acf-repeater .acf-row:hover {
+    background-color: #f9f9f9;
+}
+
+.acf-repeater .acf-row-handle {
+    background-color: #f1f1f1;
+    border-right: 1px solid #ddd;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+}
+
+.acf-repeater .acf-row-handle:active {
+    cursor: grabbing;
+}
+
+.acf-repeater .acf-button {
+    background: #0073aa;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.acf-repeater .acf-button:hover {
+    background: #005a87;
+}
+
+/* =============================================================================
+   Photo Gallery Specific Styling
+   ============================================================================= */
+
+.acf-field[data-name="listing_photos"] .acf-repeater.-block .acf-row {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.acf-field[data-name="listing_photos"] .acf-repeater.-block .acf-row:hover {
+    border-color: #0073aa;
+    box-shadow: 0 2px 8px rgba(0, 115, 170, 0.1);
+}
+
+.acf-field[data-name="listing_photos"] .acf-image-uploader {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+    transition: all 0.2s ease;
+}
+
+.acf-field[data-name="listing_photos"] .acf-image-uploader:hover {
+    border-color: #0073aa;
+    background: #f0f8ff;
+}
+
+/* Featured Photo Indicator */
+.acf-field[data-name="photo_featured"] input:checked + .acf-switch {
+    background-color: #f39c12 !important;
+}
+
+.acf-field[data-name="photo_featured"] input:checked + .acf-switch::before {
+    content: "⭐";
+    font-size: 12px;
+    color: white;
+    text-align: center;
+    line-height: 1;
+}
+
+/* =============================================================================
+   Select2 Improvements (for tag-like features)
+   ============================================================================= */
+
+.select2-container--default .select2-selection--multiple {
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    min-height: 40px !important;
+    padding: 5px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #0073aa !important;
+    border: 1px solid #005a87 !important;
+    color: white !important;
+    border-radius: 3px !important;
+    padding: 3px 8px !important;
+    margin: 2px !important;
+    font-size: 12px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: white !important;
+    margin-right: 5px !important;
+    font-weight: bold !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #ff6b6b !important;
+}
+
+/* =============================================================================
+   Community/HOA Field Styling
+   ============================================================================= */
+
+.acf-field[data-name^="community_hoa"] {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background-size: 200% 200%;
+    border-radius: 8px;
+    padding: 15px !important;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.acf-field[data-name^="community_hoa"] .acf-label label {
+    color: white !important;
+    font-weight: 600;
+}
+
+.acf-field[data-name^="community_hoa"] input,
+.acf-field[data-name^="community_hoa"] textarea,
+.acf-field[data-name^="community_hoa"] select {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    color: #333 !important;
+}
+
+/* =============================================================================
+   Responsive Improvements
+   ============================================================================= */
+
+@media (max-width: 782px) {
+    .acf-postbox .inside {
+        padding: 15px;
+    }
+    
+    .acf-tab-wrap .acf-tab-button {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .acf-field[data-name="listing_photos"] .acf-repeater.-block .acf-row {
+        padding: 10px;
+    }
+}
+
+/* =============================================================================
+   Loading States
+   ============================================================================= */
+
+.acf-loading {
+    position: relative;
+}
+
+.acf-loading::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.acf-loading::before {
+    content: "Loading...";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 101;
+    color: #0073aa;
+    font-weight: 600;
+}
+
+/* =============================================================================
+   Success/Error States
+   ============================================================================= */
+
+.acf-field.success input,
+.acf-field.success textarea,
+.acf-field.success select {
+    border-color: #46b450 !important;
+    background-color: #f0fff4 !important;
+}
+
+.acf-field.error input,
+.acf-field.error textarea,
+.acf-field.error select {
+    border-color: #dc3232 !important;
+    background-color: #fff5f5 !important;
+}
+
+/* =============================================================================
+   Tooltips
+   ============================================================================= */
+
+.acf-tooltip {
+    background: #333 !important;
+    color: white !important;
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    max-width: 300px !important;
+}
+
+/* =============================================================================
+   Button Improvements
+   ============================================================================= */
+
+.button.hph-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    text-shadow: none;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.button.hph-primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button.hph-secondary {
+    background: transparent;
+    border: 2px solid #0073aa;
+    color: #0073aa;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.button.hph-secondary:hover {
+    background: #0073aa;
+    color: white;
+}
+
+/* =============================================================================
+   Dark Mode Support
+   ============================================================================= */
+
+@media (prefers-color-scheme: dark) {
+    .acf-postbox .inside {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+    }
+    
+    .hph-calculated-field input,
+    .hph-calculated-field textarea,
+    .hph-calculated-field select {
+        background-color: #2d2d2d !important;
+        border-color: #404040 !important;
+        color: #a0a0a0 !important;
+    }
+    
+    .hph-auto-populated input,
+    .hph-auto-populated textarea,
+    .hph-auto-populated select {
+        background-color: #1a2332 !important;
+        border-color: #2a3e5a !important;
+        color: #4a9eff !important;
+    }
+}

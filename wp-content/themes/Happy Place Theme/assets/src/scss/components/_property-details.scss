@@ -1,28 +1,28 @@
 .property-details {
-    padding: 2rem;
+    padding: var(--spacing-8);
 }
 
 .property-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
 
     .stat-item {
         text-align: center;
-        padding: 1rem;
-        background: #f8f9fa;
-        border-radius: 8px;
-        border: 1px solid #e9ecef;
+        padding: var(--spacing-4);
+        background: var(--hph-gray-50);
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--hph-gray-200);
 
         .stat-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #667eea;
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--hph-primary-500);
         }
 
         .stat-label {
-            font-size: 0.9rem;
+            font-size: var(--font-size-sm);
             color: #666;
             margin-top: 0.25rem;
         }

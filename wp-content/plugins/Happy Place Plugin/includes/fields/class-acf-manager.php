@@ -29,8 +29,8 @@ class ACF_Manager
         add_filter('acf/prepare_field', [$this, 'enhance_field_display']);
         add_filter('acf/validate_value', [$this, 'validate_field_values'], 10, 4);
         
-        // Enqueue scripts for real-time calculations
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_calculation_scripts']);
+        // Enqueue scripts for real-time calculations and admin styling
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         
         // AJAX handlers
         add_action('wp_ajax_hph_calculate_metrics', [$this, 'ajax_calculate_metrics']);
@@ -365,32 +365,48 @@ class ACF_Manager
     }
 
     /**
-     * Enqueue calculation scripts
+     * Enqueue admin assets (CSS and JS)
      */
-    public function enqueue_calculation_scripts($hook): void
+    public function enqueue_admin_assets($hook): void
     {
+        // Only load on post edit screens
         if (!in_array($hook, ['post.php', 'post-new.php'])) {
             return;
         }
         
         global $post;
-        if (!$post || $post->post_type !== 'listing') {
+        if (!$post || !in_array($post->post_type, ['listing', 'agent', 'office', 'community'])) {
             return;
         }
         
-        wp_enqueue_script(
-            'hph-field-calculations',
-            plugin_dir_url(__FILE__) . '../assets/js/field-calculations.js',
-            ['jquery', 'acf-input'],
-            '1.0.0',
-            true
+        // Enqueue admin CSS
+        wp_enqueue_style(
+            'hph-admin-enhancements',
+            plugin_dir_url(__FILE__) . '../../assets/css/admin-enhancements.css',
+            [],
+            '1.0.0'
         );
         
-        wp_localize_script('hph-field-calculations', 'hphCalc', [
-            'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('hph_calculations'),
-            'post_id' => $post->ID
-        ]);
+        // Only enqueue calculation scripts for listings
+        if ($post->post_type === 'listing') {
+            wp_enqueue_script(
+                'hph-field-calculations',
+                plugin_dir_url(__FILE__) . '../../assets/js/field-calculations.js',
+                ['jquery', 'acf-input', 'select2'],
+                '1.0.0',
+                true
+            );
+            
+            wp_localize_script('hph-field-calculations', 'hphCalc', [
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('hph_calculations'),
+                'post_id' => $post->ID
+            ]);
+        }
+        
+        // Enqueue Select2 for better tag-like functionality
+        wp_enqueue_script('select2');
+        wp_enqueue_style('select2');
     }
 
     /**

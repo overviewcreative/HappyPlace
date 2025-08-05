@@ -6,7 +6,7 @@
   margin: 0 auto;
   background: var(--color-white);
   border-radius: var(--border-radius-lg);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
   overflow: hidden;
 
   // Form Header
@@ -43,7 +43,7 @@
     .hph-progress-bar {
       width: 100%;
       height: 6px;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgb(255 255 255 / 20%);
       border-radius: 3px;
       overflow: hidden;
 
@@ -250,12 +250,12 @@
       &:focus {
         outline: none;
         border-color: var(--hph-primary-400);
-        box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.1);
+        box-shadow: 0 0 0 3px rgb(81 186 224 / 10%);
       }
 
       &.error {
         border-color: var(--color-danger);
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        box-shadow: 0 0 0 3px rgb(239 68 68 / 10%);
       }
 
       &::placeholder {
@@ -439,7 +439,7 @@
           background: var(--hph-primary-600);
           border-color: var(--hph-primary-600);
           transform: translateY(-1px);
-          box-shadow: 0 4px 8px rgba(81, 186, 224, 0.3);
+          box-shadow: 0 4px 8px rgb(81 186 224 / 30%);
         }
       }
 
@@ -633,12 +633,12 @@
 
     &:hover {
       border-color: var(--hph-primary-300);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
     }
 
     &.selected {
       border-color: var(--hph-primary-400);
-      box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.1);
+      box-shadow: 0 0 0 3px rgb(81 186 224 / 10%);
     }
 
     &.uploading {
@@ -703,14 +703,14 @@
         bottom: 0;
         left: 0;
         right: 0;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgb(0 0 0 / 80%);
         color: white;
         padding: var(--spacing-2);
 
         .progress-bar {
           width: 100%;
           height: 4px;
-          background: rgba(255, 255, 255, 0.3);
+          background: rgb(255 255 255 / 30%);
           border-radius: 2px;
           overflow: hidden;
           margin-bottom: var(--spacing-1);
@@ -789,7 +789,7 @@
       transform: translate(-50%, -50%);
       display: flex;
       gap: var(--spacing-1);
-      background: rgba(0, 0, 0, 0.8);
+      background: rgb(0 0 0 / 80%);
       padding: var(--spacing-2);
       border-radius: var(--border-radius-md);
 
@@ -814,11 +814,11 @@
         }
 
         &.action-btn--secondary {
-          background: rgba(255, 255, 255, 0.2);
+          background: rgb(255 255 255 / 20%);
           color: white;
 
           &:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgb(255 255 255 / 30%);
           }
         }
 
@@ -838,11 +838,8 @@
 // Preview Modal Styles
 .hph-preview-modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  inset: 0;
+  background: rgb(0 0 0 / 80%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -854,7 +851,7 @@
     max-width: 800px;
     max-height: 90vh;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgb(0 0 0 / 30%);
 
     .modal-header {
       display: flex;
@@ -896,7 +893,7 @@
           max-width: 100%;
           max-height: 400px;
           border-radius: var(--border-radius-md);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
         }
       }
 
@@ -944,7 +941,7 @@
 }
 
 // Responsive Design
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .hph-multistep-form {
     margin: 0;
     border-radius: 0;

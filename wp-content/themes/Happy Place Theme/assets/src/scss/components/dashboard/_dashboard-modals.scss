@@ -5,11 +5,8 @@
 
 .hph-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: rgb(0 0 0 / 50%);
   backdrop-filter: blur(4px);
   z-index: var(--z-modal);
   display: flex;
@@ -110,6 +107,7 @@
     font-weight: var(--font-weight-semibold);
     color: var(--dashboard-text);
     margin: 0;
+
     @include truncate;
     margin-right: var(--dashboard-spacing-md);
   }
@@ -255,6 +253,7 @@
     
     .loading-spinner {
       margin: 0 auto var(--dashboard-spacing-lg);
+
       @include spinner(48px, var(--dashboard-primary));
     }
     
@@ -268,11 +267,8 @@
 // Drawer (slide-in from side)
 .hph-drawer-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: rgb(0 0 0 / 50%);
   backdrop-filter: blur(4px);
   z-index: var(--z-modal);
   opacity: 0;

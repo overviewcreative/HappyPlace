@@ -26,22 +26,22 @@
 }
 
 .features-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: var(--heading-color, #1a1a1a);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-4);
+    color: var(--hph-gray-900);
 }
 
 .features-subtitle {
-    font-size: 1.2rem;
-    color: var(--text-muted, #6c757d);
+    font-size: var(--font-size-xl);
+    color: var(--hph-gray-600);
     margin-bottom: 0;
 }
 
 .features-grid {
     display: grid;
-    gap: 2rem;
-    margin-top: 3rem;
+    gap: var(--spacing-8);
+    margin-top: var(--spacing-12);
 }
 
 .features-section.columns-2 .features-grid {
@@ -58,26 +58,26 @@
 
 .feature-item {
     text-align: center;
-    padding: 2rem 1rem;
-    transition: transform 0.3s ease;
+    padding: var(--spacing-8) var(--spacing-4);
+    transition: var(--hph-transition-transform);
 }
 
 .feature-item:hover {
-    transform: translateY(-5px);
+    transform: var(--hph-transform-hover-translate);
 }
 
 .feature-icon {
-    margin-bottom: 1.5rem;
-    color: var(--primary-color, #007cba);
+    margin-bottom: var(--spacing-6);
+    color: var(--hph-primary-400);
 }
 
 .feature-icon i {
-    font-size: 3rem;
+    font-size: var(--font-size-5xl);
 }
 
 .feature-title {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
     margin-bottom: 1rem;
     color: var(--heading-color, #1a1a1a);
 }
@@ -103,12 +103,12 @@
 .features-section.features-cards .feature-item {
     background: var(--card-bg, #fff);
     border-radius: var(--border-radius, 8px);
-    box-shadow: var(--card-shadow, 0 2px 10px rgba(0,0,0,0.1));
+    box-shadow: var(--card-shadow, 0 2px 10px rgb(0 0 0 / 10%));
     border: 1px solid var(--border-color, #e9ecef);
 }
 
 .features-section.features-cards .feature-item:hover {
-    box-shadow: var(--card-shadow-hover, 0 5px 25px rgba(0,0,0,0.15));
+    box-shadow: var(--card-shadow-hover, 0 5px 25px rgb(0 0 0 / 15%));
 }
 
 /* =============================================================================
@@ -146,10 +146,10 @@
 
 .testimonial-item,
 .testimonial-slide {
-    background: var(--card-bg, #fff);
-    padding: 2rem;
-    border-radius: var(--border-radius, 8px);
-    box-shadow: var(--card-shadow, 0 2px 10px rgba(0,0,0,0.1));
+    background: var(--hph-white);
+    padding: var(--spacing-8);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-lg);
     text-align: center;
 }
 
@@ -299,24 +299,24 @@
 }
 
 .pricing-plan {
-    background: var(--card-bg, #fff);
-    border: 2px solid var(--border-color, #e9ecef);
-    border-radius: var(--border-radius, 8px);
-    padding: 2rem;
+    background: var(--hph-white);
+    border: 2px solid var(--hph-gray-200);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-8);
     text-align: center;
     position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: var(--hph-transition-all);
     display: flex;
     flex-direction: column;
 }
 
 .pricing-plan:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--card-shadow-hover, 0 10px 30px rgba(0,0,0,0.15));
+    transform: var(--hph-transform-hover-translate);
+    box-shadow: var(--shadow-xl);
 }
 
 .pricing-plan-featured {
-    border-color: var(--primary-color, #007cba);
+    border-color: var(--hph-primary-400);
     transform: scale(1.05);
 }
 
@@ -464,18 +464,18 @@
    ============================================================================= */
 
 .spacing-small {
-    padding: 2rem 0;
+    padding: var(--spacing-8) 0;
 }
 
 .spacing-large {
-    padding: 6rem 0;
+    padding: var(--spacing-24) 0;
 }
 
 /* =============================================================================
    RESPONSIVE DESIGN
    ============================================================================= */
 
-@media (max-width: 768px) {
+@media (width <= var(--hph-breakpoint-md)) {
     .features-grid,
     .testimonials-grid,
     .pricing-grid {

@@ -1,0 +1,207 @@
+{
+    "key": "group_listing_content_media",
+    "title": "Content & Media",
+    "fields": [
+        {
+            "key": "field_tab_descriptions",
+            "label": "Descriptions",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_listing_description_full",
+            "label": "Full Property Description",
+            "name": "listing_description_full",
+            "type": "wysiwyg",
+            "instructions": "Complete property description for website and MLS",
+            "required": 1,
+            "wrapper": {
+                "width": ""
+            },
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1
+        },
+        {
+            "key": "field_listing_description_short",
+            "label": "Short Description (Flyer)",
+            "name": "listing_description_short",
+            "type": "textarea",
+            "instructions": "Brief description for flyers and marketing materials (250 characters max)",
+            "required": 1,
+            "wrapper": {
+                "width": ""
+            },
+            "rows": 4,
+            "maxlength": 250,
+            "placeholder": "Highlight key features and selling points in 250 characters or less..."
+        },
+        {
+            "key": "field_listing_highlights",
+            "label": "Key Highlights",
+            "name": "listing_highlights",
+            "type": "repeater",
+            "instructions": "Bullet-point highlights for marketing",
+            "wrapper": {
+                "width": ""
+            },
+            "layout": "table",
+            "button_label": "Add Highlight",
+            "min": 0,
+            "max": 10,
+            "sub_fields": [
+                {
+                    "key": "field_highlight_text",
+                    "label": "Highlight",
+                    "name": "highlight_text",
+                    "type": "text",
+                    "wrapper": {
+                        "width": ""
+                    },
+                    "maxlength": 100,
+                    "placeholder": "e.g., Updated kitchen with granite counters"
+                }
+            ]
+        },
+        {
+            "key": "field_tab_photo_gallery",
+            "label": "Photo Gallery",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_listing_photos",
+            "label": "Property Photos",
+            "name": "listing_photos",
+            "type": "repeater",
+            "instructions": "Upload and tag property photos by room/area",
+            "wrapper": {
+                "width": ""
+            },
+            "layout": "block",
+            "button_label": "Add Photo",
+            "sub_fields": [
+                {
+                    "key": "field_photo_image",
+                    "label": "Photo",
+                    "name": "photo_image",
+                    "type": "image",
+                    "wrapper": {
+                        "width": "40"
+                    },
+                    "return_format": "array",
+                    "preview_size": "medium",
+                    "library": "all",
+                    "required": 1
+                },
+                {
+                    "key": "field_photo_room_type",
+                    "label": "Room/Area Type",
+                    "name": "photo_room_type",
+                    "type": "select",
+                    "wrapper": {
+                        "width": "30"
+                    },
+                    "choices": {
+                        "exterior": "Exterior",
+                        "front": "Front of House",
+                        "back_yard": "Backyard",
+                        "living_room": "Living Room",
+                        "family_room": "Family Room",
+                        "dining_room": "Dining Room",
+                        "kitchen": "Kitchen",
+                        "breakfast_nook": "Breakfast Nook",
+                        "master_bedroom": "Master Bedroom",
+                        "master_bathroom": "Master Bathroom",
+                        "bedroom": "Bedroom",
+                        "bathroom": "Bathroom",
+                        "home_office": "Home Office",
+                        "basement": "Basement",
+                        "garage": "Garage",
+                        "laundry": "Laundry Room",
+                        "pool": "Pool",
+                        "patio": "Patio/Deck",
+                        "other": "Other"
+                    },
+                    "required": 1,
+                    "ui": 1
+                },
+                {
+                    "key": "field_photo_caption",
+                    "label": "Caption",
+                    "name": "photo_caption",
+                    "type": "text",
+                    "wrapper": {
+                        "width": "30"
+                    },
+                    "placeholder": "Optional photo description"
+                },
+                {
+                    "key": "field_photo_order",
+                    "label": "Display Order",
+                    "name": "photo_order",
+                    "type": "number",
+                    "instructions": "Lower numbers display first",
+                    "wrapper": {
+                        "width": "50"
+                    },
+                    "min": 1,
+                    "max": 999,
+                    "step": 1,
+                    "default_value": 10
+                },
+                {
+                    "key": "field_photo_featured",
+                    "label": "Featured Photo",
+                    "name": "photo_featured",
+                    "type": "true_false",
+                    "instructions": "Use as main listing photo",
+                    "wrapper": {
+                        "width": "50"
+                    },
+                    "message": "Set as featured photo",
+                    "ui": 1
+                }
+            ]
+        },
+        {
+            "key": "field_listing_video_tour",
+            "label": "Video Tour",
+            "name": "listing_video_tour",
+            "type": "oembed",
+            "instructions": "YouTube, Vimeo, or other video tour URL",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_listing_virtual_tour",
+            "label": "Virtual Tour",
+            "name": "listing_virtual_tour",
+            "type": "url",
+            "instructions": "Matterport or other virtual tour link",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 6,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Property descriptions, photo gallery with room tagging, and marketing materials"
+}

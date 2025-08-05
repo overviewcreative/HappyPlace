@@ -41,10 +41,12 @@
   // Icon support
   svg, i {
     margin-right: 8px;
+
     &:last-child {
       margin-right: 0;
       margin-left: 8px;
     }
+
     &:only-child {
       margin: 0;
     }
@@ -61,12 +63,12 @@
     background-color: var(--hph-primary-500);
     border-color: var(--hph-primary-500);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(81, 186, 224, 0.3);
+    box-shadow: 0 4px 12px rgb(81 186 224 / 30%);
   }
   
   &:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(81, 186, 224, 0.3);
+    box-shadow: 0 2px 4px rgb(81 186 224 / 30%);
   }
 }
 
@@ -223,7 +225,7 @@
 }
 
 // Responsive adjustments
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .action-btn {
     padding: 10px 20px;
     font-size: 15px;

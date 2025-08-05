@@ -80,7 +80,7 @@
 }
 
 /* Mobile Header */
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .header-container {
         flex-wrap: wrap;
     }
@@ -117,7 +117,7 @@
     }
 }
 
-@media (min-width: 769px) {
+@media (width >= 769px) {
     .mobile-menu-toggle {
         display: none;
     }

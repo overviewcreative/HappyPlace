@@ -118,7 +118,7 @@
       border-color: var(--status-danger);
       
       &:focus {
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        box-shadow: 0 0 0 3px rgb(239 68 68 / 10%);
       }
     }
     
@@ -126,7 +126,7 @@
       border-color: var(--status-success);
       
       &:focus {
-        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        box-shadow: 0 0 0 3px rgb(34 197 94 / 10%);
       }
     }
     
@@ -373,7 +373,7 @@
       background: white;
       border-radius: 50%;
       transition: all 0.2s ease;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
     }
   }
   

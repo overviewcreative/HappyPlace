@@ -101,7 +101,7 @@ a {
     color: var(--color-primary-dark);
 }
 
-::-moz-selection {
+::selection {
     background: var(--color-primary-light);
     color: var(--color-primary-dark);
 }
@@ -130,11 +130,9 @@ a {
     @include sr-only;
     
     &:focus {
-        position: fixed;
         top: var(--hph-spacing-4);
         left: var(--hph-spacing-4);
         z-index: var(--z-toast);
-        padding: var(--hph-spacing-3) var(--hph-spacing-6);
         background: var(--color-primary);
         color: var(--color-white);
         border-radius: var(--hph-border-radius-lg);
@@ -168,17 +166,17 @@ a {
         text-decoration: underline;
     }
     
-    a[href]:after {
+    a[href]::after {
         content: " (" attr(href) ")";
     }
     
-    abbr[title]:after {
+    abbr[title]::after {
         content: " (" attr(title) ")";
     }
     
     pre,
     blockquote {
-        border: 1px solid #999;
+        border: 1px solid var(--hph-gray-400);
         page-break-inside: avoid;
     }
     

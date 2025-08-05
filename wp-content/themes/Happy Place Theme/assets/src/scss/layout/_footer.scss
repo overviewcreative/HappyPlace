@@ -67,7 +67,7 @@
     flex-wrap: wrap;
     gap: var(--spacing-md);
     
-    @media (max-width: 768px) {
+    @media (width <= 768px) {
         flex-direction: column;
         text-align: center;
     }
@@ -93,7 +93,7 @@
         }
     }
     
-    @media (max-width: 768px) {
+    @media (width <= 768px) {
         flex-wrap: wrap;
         justify-content: center;
     }

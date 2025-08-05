@@ -1,0 +1,439 @@
+{
+    "key": "group_agent_profile",
+    "title": "Agent Profile",
+    "fields": [
+        {
+            "key": "field_tab_agent_info",
+            "label": "Basic Information",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_agent_first_name",
+            "label": "First Name",
+            "name": "agent_first_name",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_agent_last_name",
+            "label": "Last Name",
+            "name": "agent_last_name",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_agent_email",
+            "label": "Email",
+            "name": "agent_email",
+            "type": "email",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_agent_phone",
+            "label": "Phone",
+            "name": "agent_phone",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            },
+            "placeholder": "(555) 123-4567"
+        },
+        {
+            "key": "field_agent_mobile",
+            "label": "Mobile Phone",
+            "name": "agent_mobile",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            },
+            "placeholder": "(555) 123-4567"
+        },
+        {
+            "key": "field_agent_license_number",
+            "label": "License Number",
+            "name": "agent_license_number",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_agent_license_state",
+            "label": "License State",
+            "name": "agent_license_state",
+            "type": "select",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            },
+            "choices": {
+                "AL": "Alabama",
+                "AK": "Alaska",
+                "AZ": "Arizona",
+                "AR": "Arkansas",
+                "CA": "California",
+                "CO": "Colorado",
+                "CT": "Connecticut",
+                "DE": "Delaware",
+                "FL": "Florida",
+                "GA": "Georgia",
+                "HI": "Hawaii",
+                "ID": "Idaho",
+                "IL": "Illinois",
+                "IN": "Indiana",
+                "IA": "Iowa",
+                "KS": "Kansas",
+                "KY": "Kentucky",
+                "LA": "Louisiana",
+                "ME": "Maine",
+                "MD": "Maryland",
+                "MA": "Massachusetts",
+                "MI": "Michigan",
+                "MN": "Minnesota",
+                "MS": "Mississippi",
+                "MO": "Missouri",
+                "MT": "Montana",
+                "NE": "Nebraska",
+                "NV": "Nevada",
+                "NH": "New Hampshire",
+                "NJ": "New Jersey",
+                "NM": "New Mexico",
+                "NY": "New York",
+                "NC": "North Carolina",
+                "ND": "North Dakota",
+                "OH": "Ohio",
+                "OK": "Oklahoma",
+                "OR": "Oregon",
+                "PA": "Pennsylvania",
+                "RI": "Rhode Island",
+                "SC": "South Carolina",
+                "SD": "South Dakota",
+                "TN": "Tennessee",
+                "TX": "Texas",
+                "UT": "Utah",
+                "VT": "Vermont",
+                "VA": "Virginia",
+                "WA": "Washington",
+                "WV": "West Virginia",
+                "WI": "Wisconsin",
+                "WY": "Wyoming"
+            },
+            "ui": 1
+        },
+        {
+            "key": "field_agent_title",
+            "label": "Professional Title",
+            "name": "agent_title",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            },
+            "placeholder": "e.g., Senior Real Estate Agent"
+        },
+        {
+            "key": "field_tab_agent_bio",
+            "label": "Biography & Experience",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_agent_bio",
+            "label": "Biography",
+            "name": "agent_bio",
+            "type": "wysiwyg",
+            "instructions": "Professional biography for public display",
+            "wrapper": {
+                "width": ""
+            },
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1
+        },
+        {
+            "key": "field_agent_years_experience",
+            "label": "Years of Experience",
+            "name": "agent_years_experience",
+            "type": "number",
+            "wrapper": {
+                "width": "33"
+            },
+            "min": 0,
+            "max": 100,
+            "step": 1
+        },
+        {
+            "key": "field_agent_specialties",
+            "label": "Specialties",
+            "name": "agent_specialties",
+            "type": "checkbox",
+            "wrapper": {
+                "width": "67"
+            },
+            "choices": {
+                "buyers": "Buyer's Agent",
+                "sellers": "Seller's Agent",
+                "luxury": "Luxury Properties",
+                "first_time": "First Time Buyers",
+                "investors": "Investment Properties",
+                "commercial": "Commercial Real Estate",
+                "relocation": "Relocation Specialist",
+                "foreclosure": "Foreclosure/Short Sale"
+            },
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_agent_languages",
+            "label": "Languages Spoken",
+            "name": "agent_languages",
+            "type": "text",
+            "wrapper": {
+                "width": ""
+            },
+            "placeholder": "e.g., English, Spanish, Mandarin"
+        },
+        {
+            "key": "field_tab_agent_social",
+            "label": "Online Presence",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_agent_website",
+            "label": "Personal Website",
+            "name": "agent_website",
+            "type": "url",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_agent_linkedin",
+            "label": "LinkedIn Profile",
+            "name": "agent_linkedin",
+            "type": "url",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_agent_facebook",
+            "label": "Facebook Page",
+            "name": "agent_facebook",
+            "type": "url",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_agent_instagram",
+            "label": "Instagram",
+            "name": "agent_instagram",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            },
+            "prepend": "@"
+        },
+        {
+            "key": "field_agent_youtube",
+            "label": "YouTube Channel",
+            "name": "agent_youtube",
+            "type": "url",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_agent_twitter",
+            "label": "Twitter/X",
+            "name": "agent_twitter",
+            "type": "text",
+            "wrapper": {
+                "width": "50"
+            },
+            "prepend": "@"
+        },
+        {
+            "key": "field_tab_agent_office",
+            "label": "Office & Team",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_agent_office",
+            "label": "Primary Office",
+            "name": "agent_office",
+            "type": "relationship",
+            "instructions": "Select primary office location",
+            "required": 1,
+            "wrapper": {
+                "width": "50"
+            },
+            "post_type": [
+                "office"
+            ],
+            "filters": [
+                "search"
+            ],
+            "min": 1,
+            "max": 1,
+            "return_format": "object"
+        },
+        {
+            "key": "field_agent_team",
+            "label": "Team Name",
+            "name": "agent_team",
+            "type": "text",
+            "instructions": "If part of a team",
+            "wrapper": {
+                "width": "50"
+            }
+        },
+        {
+            "key": "field_agent_team_members",
+            "label": "Team Members",
+            "name": "agent_team_members",
+            "type": "relationship",
+            "instructions": "Select other team members",
+            "wrapper": {
+                "width": ""
+            },
+            "post_type": [
+                "agent"
+            ],
+            "filters": [
+                "search"
+            ],
+            "min": 0,
+            "max": "",
+            "return_format": "object"
+        },
+        {
+            "key": "field_tab_agent_stats",
+            "label": "Statistics",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_agent_total_sales_volume",
+            "label": "Total Sales Volume",
+            "name": "agent_total_sales_volume",
+            "type": "number",
+            "instructions": "Total career sales volume",
+            "wrapper": {
+                "width": "33"
+            },
+            "prepend": "$",
+            "min": 0
+        },
+        {
+            "key": "field_agent_total_transactions",
+            "label": "Total Transactions",
+            "name": "agent_total_transactions",
+            "type": "number",
+            "instructions": "Total number of transactions",
+            "wrapper": {
+                "width": "33"
+            },
+            "min": 0
+        },
+        {
+            "key": "field_agent_average_sale_price",
+            "label": "Average Sale Price",
+            "name": "agent_average_sale_price",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED",
+            "wrapper": {
+                "width": "34",
+                "class": "hph-calculated-field"
+            },
+            "prepend": "$",
+            "readonly": 1
+        },
+        {
+            "key": "field_agent_active_listings_count",
+            "label": "Active Listings",
+            "name": "agent_active_listings_count",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED current active listings",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "readonly": 1
+        },
+        {
+            "key": "field_agent_sold_listings_count",
+            "label": "Sold Listings",
+            "name": "agent_sold_listings_count",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED total sold listings",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "readonly": 1
+        },
+        {
+            "key": "field_agent_average_dom",
+            "label": "Avg Days on Market",
+            "name": "agent_average_dom",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED average DOM",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "append": "days",
+            "readonly": 1
+        },
+        {
+            "key": "field_agent_rating",
+            "label": "Average Rating",
+            "name": "agent_rating",
+            "type": "number",
+            "instructions": "AUTO-CALCULATED from reviews",
+            "wrapper": {
+                "width": "25",
+                "class": "hph-calculated-field"
+            },
+            "append": "/5",
+            "readonly": 1,
+            "step": 0.1
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "agent"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Comprehensive agent profile information"
+}

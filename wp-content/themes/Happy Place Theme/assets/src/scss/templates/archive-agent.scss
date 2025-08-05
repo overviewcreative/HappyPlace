@@ -231,7 +231,7 @@
 }
 
 // Responsive design
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .archive-agents {
         .agents-grid {
             grid-template-columns: 1fr;
