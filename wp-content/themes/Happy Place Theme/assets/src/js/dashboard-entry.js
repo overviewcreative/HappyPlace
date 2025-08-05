@@ -429,23 +429,49 @@ class EnhancedDashboard {
     }
     
     /**
-     * View listing (placeholder for navigation)
+     * View listing implementation
      */
     viewListing(listing) {
         if (listing?.id) {
-            window.location.href = `/wp-admin/post.php?post=${listing.id}&action=edit`;
+            // Check if we're in admin context or frontend
+            if (window.location.pathname.includes('/wp-admin/')) {
+                // Admin context - go to post editor
+                window.location.href = `/wp-admin/post.php?post=${listing.id}&action=edit`;
+            } else {
+                // Frontend context - go to listing page
+                window.location.href = `/listing/${listing.slug || listing.id}/`;
+            }
+        } else {
+            console.warn('No listing ID provided for navigation');
         }
     }
-    
+
     /**
-     * View lead (placeholder for navigation)
+     * View lead implementation
      */
     viewLead(lead) {
-        console.log('View lead:', lead);
-        // Implementation depends on how leads are managed
-    }
-    
-    /**
+        if (!lead?.id) {
+            console.warn('No lead ID provided for navigation');
+            return;
+        }
+        
+        // Open lead details modal or navigate to lead management page
+        if (typeof openLeadDetailsModal === 'function') {
+            openLeadDetailsModal(lead);
+        } else {
+            // Fallback to lead management page
+            const leadUrl = lead.contact_method === 'email' 
+                ? `mailto:${lead.email}?subject=Re: ${lead.property_address || 'Property Inquiry'}`
+                : `tel:${lead.phone}`;
+            
+            // Open contact method or navigate to CRM if available
+            if (lead.crm_url) {
+                window.open(lead.crm_url, '_blank');
+            } else {
+                window.open(leadUrl, '_blank');
+            }
+        }
+    }    /**
      * Destroy dashboard
      */
     destroy() {

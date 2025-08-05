@@ -32,6 +32,11 @@ class Ajax_Coordinator {
             'file' => 'class-flyer-ajax.php',
             'priority' => 20
         ],
+        'marketing' => [
+            'class' => 'Marketing_Ajax',
+            'file' => 'class-marketing-ajax.php',
+            'priority' => 25
+        ],
         'integration' => [
             'class' => 'Integration_Ajax',
             'file' => 'class-integration-ajax.php',
@@ -156,6 +161,18 @@ class Ajax_Coordinator {
             'get_listing_data_for_flyer' => [
                 'handler' => 'flyer',
                 'method' => 'handle_get_listing_data'
+            ],
+            'hph_schedule_social_post' => [
+                'handler' => 'marketing',
+                'method' => 'handle_schedule_social_post'
+            ],
+            'hph_create_email_campaign' => [
+                'handler' => 'marketing',
+                'method' => 'handle_create_email_campaign'
+            ],
+            'hph_create_marketing_campaign' => [
+                'handler' => 'marketing',
+                'method' => 'handle_create_marketing_campaign'
             ],
             'hph_two_way_airtable_sync' => [
                 'handler' => 'integration',

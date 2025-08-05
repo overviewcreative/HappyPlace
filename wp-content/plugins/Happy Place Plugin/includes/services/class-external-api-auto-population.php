@@ -529,9 +529,10 @@ class External_API_Auto_Population {
         $city = get_field('city', $post_id);
         $state = get_field('state', $post_id);
         
-        // Delaware school district mapping (hardcoded for now)
+        // Delaware school district mapping (will be moved to database/config in future)
         if (strtoupper($state) === 'DE') {
-            $delaware_districts = [
+            // Get from WordPress options or custom table
+            $delaware_districts = get_option('hph_delaware_school_districts', [
                 'Wilmington' => 'Red Clay Consolidated School District',
                 'Newark' => 'Christina School District',
                 'Dover' => 'Capital School District',
@@ -547,7 +548,7 @@ class External_API_Auto_Population {
                 'Seaford' => 'Seaford School District',
                 'Laurel' => 'Laurel School District',
                 'Delmar' => 'Delmar School District',
-            ];
+            ]);
             
             if (isset($delaware_districts[$city])) {
                 return $delaware_districts[$city];

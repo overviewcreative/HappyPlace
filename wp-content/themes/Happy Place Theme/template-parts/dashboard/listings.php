@@ -714,13 +714,146 @@ function applyFilters() {
 
 // Import/Export Functions
 function importFromMLS() {
-    // Placeholder for MLS import functionality
-    alert('MLS import functionality will be available soon.');
+    // MLS import functionality with proper implementation
+    if (confirm('Start MLS import? This will sync listings from your MLS system.')) {
+        showNotification('Starting MLS import...', 'info');
+        
+        // Show loading state
+        const importBtn = document.querySelector('[onclick="importFromMLS()"]');
+        const originalText = importBtn.textContent;
+        importBtn.disabled = true;
+        importBtn.textContent = 'Importing...';
+        
+        // Make AJAX request for MLS import
+        fetch('/wp-admin/admin-ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'hph_import_from_mls',
+                nonce: window.hphAjax?.nonce || ''
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(`MLS import completed! ${data.data.count || 0} listings imported.`, 'success');
+                // Refresh the listings display
+                location.reload();
+            } else {
+                showNotification(data.data?.message || 'MLS import failed. Please try again.', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('MLS import error:', error);
+            showNotification('MLS import failed. Please check your connection and try again.', 'error');
+        })
+        .finally(() => {
+            importBtn.disabled = false;
+            importBtn.textContent = originalText;
+        });
+    }
 }
 
 function exportListings() {
-    // Placeholder for export functionality
-    alert('Export functionality will be available soon.');
+    // Export functionality with multiple format support
+    const exportModal = document.createElement('div');
+    exportModal.className = 'hph-modal hph-export-modal';
+    exportModal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Export Listings</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="export-options">
+                    <h4>Export Format</h4>
+                    <label><input type="radio" name="export_format" value="csv" checked> CSV (Spreadsheet)</label>
+                    <label><input type="radio" name="export_format" value="pdf"> PDF Report</label>
+                    <label><input type="radio" name="export_format" value="xml"> XML Feed</label>
+                    <label><input type="radio" name="export_format" value="json"> JSON Data</label>
+                    
+                    <h4>Filter Options</h4>
+                    <label><input type="checkbox" name="export_filter" value="active" checked> Active Listings Only</label>
+                    <label><input type="checkbox" name="export_filter" value="include_images"> Include Image URLs</label>
+                    <label><input type="checkbox" name="export_filter" value="include_agent"> Include Agent Info</label>
+                    
+                    <h4>Date Range</h4>
+                    <div class="date-range">
+                        <input type="date" name="start_date" placeholder="Start Date">
+                        <input type="date" name="end_date" placeholder="End Date">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                <button type="button" class="btn btn-primary export-confirm">Export</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(exportModal);
+    
+    // Handle modal close
+    exportModal.querySelector('.modal-close').addEventListener('click', () => {
+        exportModal.remove();
+    });
+    
+    exportModal.querySelector('.modal-cancel').addEventListener('click', () => {
+        exportModal.remove();
+    });
+    
+    // Handle export
+    exportModal.querySelector('.export-confirm').addEventListener('click', () => {
+        const format = exportModal.querySelector('input[name="export_format"]:checked').value;
+        const filters = Array.from(exportModal.querySelectorAll('input[name="export_filter"]:checked')).map(cb => cb.value);
+        const startDate = exportModal.querySelector('input[name="start_date"]').value;
+        const endDate = exportModal.querySelector('input[name="end_date"]').value;
+        
+        // Start export process
+        const exportBtn = exportModal.querySelector('.export-confirm');
+        exportBtn.disabled = true;
+        exportBtn.textContent = 'Exporting...';
+        
+        fetch('/wp-admin/admin-ajax.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'hph_export_listings',
+                format: format,
+                filters: JSON.stringify(filters),
+                start_date: startDate,
+                end_date: endDate,
+                nonce: window.hphAjax?.nonce || ''
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.data.download_url) {
+                // Trigger download
+                const link = document.createElement('a');
+                link.href = data.data.download_url;
+                link.download = data.data.filename || `listings_export.${format}`;
+                link.click();
+                
+                showNotification('Export completed successfully!', 'success');
+                exportModal.remove();
+            } else {
+                showNotification(data.data?.message || 'Export failed. Please try again.', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Export error:', error);
+            showNotification('Export failed. Please check your connection and try again.', 'error');
+        })
+        .finally(() => {
+            exportBtn.disabled = false;
+            exportBtn.textContent = 'Export';
+        });
+    });
 }
 
 // Notification System

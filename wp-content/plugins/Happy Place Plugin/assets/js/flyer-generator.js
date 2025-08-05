@@ -1054,7 +1054,7 @@
         });
         canvas.add(contactLocationIcon);
         
-        // Generate QR code (placeholder for now)
+        // Generate QR code for listing URL
         generateQRCode(mappedData);
         
         } catch (error) {
@@ -1136,25 +1136,36 @@
     }
 
     function generateQRCode(propertyData) {
-        // Placeholder function for future QR code generation
-        // This will be implemented once QR library is integrated
+        // Generate QR code using the Google Charts API via PHP helper
+        const listingId = propertyData.listing_id || propertyData.ID;
         
-        // Example implementation structure:
-        // const qrData = {
-        //     propertyUrl: propertyData.listing_url || 'https://theparkergroup.com',
-        //     address: propertyData.full_address,
-        //     price: propertyData.price,
-        //     mlsNumber: propertyData.mls_number
-        // };
+        if (!listingId) {
+            console.error('No listing ID available for QR code generation');
+            return null;
+        }
         
-        // Generate QR code and replace placeholder
-        // QRCode.toCanvas(canvas, JSON.stringify(qrData), function (error) {
-        //     if (error) console.error(error);
-        //     console.log('QR code generated successfully');
-        // });
+        // Create QR code URL using Google Charts API
+        const qrSize = 150; // Size in pixels
+        const listingUrl = propertyData.listing_url || propertyData.permalink || window.location.href;
+        const encodedUrl = encodeURIComponent(listingUrl);
+        const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chs=${qrSize}x${qrSize}&chl=${encodedUrl}&choe=UTF-8`;
         
-        console.log('QR Code generation placeholder - ready for implementation');
-        return null;
+        // Create and return QR code image element
+        const qrImage = new Image();
+        qrImage.crossOrigin = 'anonymous';
+        qrImage.onload = function() {
+            console.log('QR code generated successfully for listing:', listingId);
+        };
+        qrImage.onerror = function() {
+            console.error('Failed to generate QR code for listing:', listingId);
+        };
+        qrImage.src = qrUrl;
+        
+        return {
+            image: qrImage,
+            url: qrUrl,
+            size: qrSize
+        };
     }
 
     // Attach functions to the window object for global access

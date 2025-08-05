@@ -483,6 +483,9 @@ class Plugin_Manager {
             $this->components['taxonomies']->register_taxonomies();
         }
         
+        // Create front-end dashboard page
+        $this->create_frontend_dashboard_page();
+        
         // Flush rewrite rules
         flush_rewrite_rules();
         
@@ -505,6 +508,48 @@ class Plugin_Manager {
         
         // Fire deactivation hook
         do_action('hph_plugin_deactivated');
+    }
+    
+    /**
+     * Create frontend dashboard page
+     */
+    private function create_frontend_dashboard_page(): void {
+        // Check if dashboard page already exists
+        $existing_page = get_page_by_path('agent-dashboard');
+        
+        if (!$existing_page) {
+            // Create the dashboard page
+            $dashboard_page = [
+                'post_title'    => __('Agent Dashboard', 'happy-place'),
+                'post_content'  => __('Welcome to your agent dashboard. Access your listings, marketing tools, and performance analytics.', 'happy-place'),
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_name'     => 'agent-dashboard',
+                'post_author'   => 1, // Admin user
+                'comment_status' => 'closed',
+                'ping_status'   => 'closed'
+            ];
+            
+            $page_id = wp_insert_post($dashboard_page);
+            
+            if ($page_id && !is_wp_error($page_id)) {
+                // Set the page template
+                update_post_meta($page_id, '_wp_page_template', 'page-templates/agent-dashboard-rebuilt.php');
+                
+                // Save page ID for reference
+                update_option('hph_dashboard_page_id', $page_id);
+                
+                error_log('HPH: Created frontend agent dashboard page with ID: ' . $page_id);
+            } else {
+                error_log('HPH: Failed to create agent dashboard page');
+            }
+        } else {
+            // Update existing page to use correct template
+            update_post_meta($existing_page->ID, '_wp_page_template', 'page-templates/agent-dashboard-rebuilt.php');
+            update_option('hph_dashboard_page_id', $existing_page->ID);
+            
+            error_log('HPH: Updated existing agent dashboard page with ID: ' . $existing_page->ID);
+        }
     }
     
     /**

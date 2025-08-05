@@ -4,6 +4,7 @@
  * Modal dialogs and overlays
  */
 
+// Legacy modal styles
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -48,33 +49,271 @@
         justify-content: space-between;
         padding: var(--hph-spacing-6);
         border-bottom: 1px solid var(--color-border-light);
+    }
+}
+
+// HPH Modal System (Production Implementation)
+.hph-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    display: none;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.3s ease-out;
+    
+    &.show {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.hph-modal {
+    background: var(--color-white);
+    border-radius: var(--hph-border-radius-lg);
+    box-shadow: var(--hph-shadow-2xl);
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    animation: slideIn 0.3s ease-out;
+    
+    // Size variants
+    &.hph-modal-sm {
+        max-width: 300px;
+    }
+    
+    &.hph-modal-md {
+        max-width: 500px;
+    }
+    
+    &.hph-modal-lg {
+        max-width: 800px;
+    }
+    
+    &.hph-modal-xl {
+        max-width: 1140px;
+    }
+    
+    // Specific modal types
+    &.hph-flyer-modal {
+        max-width: 600px;
+    }
+    
+    &.hph-social-modal {
+        max-width: 700px;
+    }
+    
+    &.hph-email-modal {
+        max-width: 800px;
+    }
+    
+    &.hph-campaign-modal {
+        max-width: 900px;
+    }
+}
+
+.hph-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--hph-spacing-6);
+    border-bottom: 1px solid var(--color-border-light);
+    background: var(--color-grey-50);
+    
+    h3 {
+        margin: 0;
+        font-size: var(--hph-font-size-lg);
+        font-weight: var(--hph-font-weight-semibold);
+        color: var(--color-text);
+    }
+}
+
+.hph-modal-close {
+    background: none;
+    border: none;
+    font-size: var(--hph-font-size-2xl);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: var(--hph-spacing-2);
+    border-radius: var(--hph-border-radius);
+    transition: all var(--transition-normal);
+    
+    &:hover {
+        background: var(--color-grey-100);
+        color: var(--color-text);
+    }
+}
+
+.hph-modal-body {
+    padding: var(--hph-spacing-6);
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.hph-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--hph-spacing-3);
+    padding: var(--hph-spacing-6);
+    border-top: 1px solid var(--color-border-light);
+    background: var(--color-grey-50);
+}
+
+// HPH Button styles for modals
+.hph-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--hph-spacing-2);
+    padding: var(--hph-spacing-3) var(--hph-spacing-6);
+    border: 1px solid transparent;
+    border-radius: var(--hph-border-radius);
+    font-size: var(--hph-font-size-sm);
+    font-weight: var(--hph-font-weight-medium);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    
+    &.hph-btn-primary {
+        background: var(--color-primary);
+        color: var(--color-white);
+        border-color: var(--color-primary);
         
-        .modal-title {
-            font-size: var(--hph-font-size-xl);
-            font-weight: var(--font-weight-semibold);
-            color: var(--color-text);
-            margin: 0;
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--color-text-muted);
-            cursor: pointer;
-            padding: var(--hph-spacing-2);
-            border-radius: var(--hph-border-radius-md);
-            transition: var(--transition-fast);
-            
-            &:hover {
-                background: var(--color-surface);
-                color: var(--color-text);
-            }
-            
-            i {
-                font-size: var(--hph-font-size-lg);
-            }
+        &:hover {
+            background: var(--color-primary-dark);
+            border-color: var(--color-primary-dark);
         }
     }
+    
+    &.hph-btn-secondary {
+        background: var(--color-white);
+        color: var(--color-text);
+        border-color: var(--color-border);
+        
+        &:hover {
+            background: var(--color-grey-50);
+            border-color: var(--color-border-dark);
+        }
+    }
+    
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+// Form styles for modals
+.hph-form-group {
+    margin-bottom: var(--hph-spacing-4);
+    
+    label {
+        display: block;
+        margin-bottom: var(--hph-spacing-2);
+        font-weight: var(--hph-font-weight-medium);
+        color: var(--color-text);
+    }
+    
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: var(--hph-spacing-3);
+        border: 1px solid var(--color-border);
+        border-radius: var(--hph-border-radius);
+        font-size: var(--hph-font-size-sm);
+        transition: border-color var(--transition-normal);
+        
+        &:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+        }
+    }
+    
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+    
+    .hph-form-help {
+        display: block;
+        margin-top: var(--hph-spacing-1);
+        font-size: var(--hph-font-size-xs);
+        color: var(--color-text-muted);
+    }
+}
+
+.hph-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hph-spacing-2);
+    
+    label {
+        display: flex;
+        align-items: center;
+        gap: var(--hph-spacing-2);
+        font-weight: normal;
+        cursor: pointer;
+        
+        input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+    }
+}
+
+// Animations
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+// Prevent body scroll when modal is open
+body.hph-modal-open {
+    overflow: hidden;
+}
+
+.modal-title {
+    font-size: var(--hph-font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: var(--hph-spacing-2);
+    border-radius: var(--hph-border-radius-md);
+    transition: var(--transition-fast);
+    
+    &:hover {
+        background: var(--color-surface);
+        color: var(--color-text);
+    }
+    
+    i {
+        font-size: var(--hph-font-size-lg);
+    }
+}
     
     .modal-body {
         padding: var(--hph-spacing-6);

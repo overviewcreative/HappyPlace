@@ -33,21 +33,31 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// For now, dashboard is publicly accessible for testing
-// TODO: Re-implement proper authentication later
+// Production Authentication - REQUIRED for dashboard access
+if (!is_user_logged_in()) {
+    wp_redirect(add_query_arg('redirect_to', urlencode(get_permalink()), wp_login_url()));
+    exit;
+}
 
-// Get current user (may be null for public access)
-$current_user = is_user_logged_in() ? wp_get_current_user() : null;
-$current_agent_id = $current_user ? $current_user->ID : 0;
+// Verify user capabilities - Agents need edit_posts or manage_options capability
+if (!current_user_can('edit_posts') && !current_user_can('manage_options')) {
+    wp_die(
+        __('You do not have permission to access the agent dashboard. Please contact your administrator if you believe this is an error.', 'happy-place'),
+        __('Access Denied', 'happy-place'),
+        array('response' => 403)
+    );
+}
 
-// Allow public access for now - remove when implementing proper auth
-// if (!is_user_logged_in()) {
-//     wp_redirect(wp_login_url(get_permalink()));
-//     exit;
-// }
-// if (!current_user_can('edit_posts') && !current_user_can('manage_options')) {
-//     wp_die(__('You do not have permission to access this dashboard.', 'happy-place'), __('Access Denied', 'happy-place'));
-// }
+// Get authenticated user data
+$current_user = wp_get_current_user();
+$current_agent_id = $current_user->ID;
+
+// Verify nonce for any POST requests
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!wp_verify_nonce($_POST['hph_dashboard_nonce'] ?? '', 'hph_dashboard_action')) {
+        wp_die(__('Security verification failed. Please refresh the page and try again.', 'happy-place'));
+    }
+}
 
 // Calculate additional stats for sidebar and passing to templates
 $recent_listings = get_posts([
@@ -113,6 +123,9 @@ if (!array_key_exists($current_section, $dashboard_sections)) {
 }
 
 get_header(); ?>
+
+<!-- Security Nonce for Dashboard Actions -->
+<?php wp_nonce_field('hph_dashboard_action', 'hph_dashboard_nonce'); ?>
 
 <div class="hph-dashboard-wrapper" id="hph-dashboard">
     

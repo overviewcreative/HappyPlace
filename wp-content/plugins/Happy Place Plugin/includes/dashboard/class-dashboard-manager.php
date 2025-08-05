@@ -44,9 +44,9 @@ class Dashboard_Manager {
     private ?Dashboard_Permissions $permissions = null;
     
     /**
-     * @var Marketing_Suite_Integration Marketing suite integration
+     * @var Marketing_Suite_Generator Marketing suite generator
      */
-    private ?Marketing_Suite_Integration $marketing_suite = null;
+    private ?Marketing_Suite_Generator $marketing_suite = null;
     
     /**
      * @var Dashboard_Listing_Forms Forms integration
@@ -177,20 +177,16 @@ class Dashboard_Manager {
         require_once plugin_dir_path(__FILE__) . 'class-dashboard-permissions.php';
         $this->permissions = new Dashboard_Permissions();
         
-        // Initialize marketing suite integration
-        require_once plugin_dir_path(__FILE__) . 'class-marketing-suite-integration.php';
-        $this->marketing_suite = new Marketing_Suite_Integration();
+        // Initialize marketing suite generator
+        require_once plugin_dir_path(__FILE__) . 'class-marketing-suite-generator.php';
+        $this->marketing_suite = Marketing_Suite_Generator::get_instance();
         
-        // Set data provider for marketing suite
-        if ($this->data_provider) {
-            $this->marketing_suite->set_data_provider($this->data_provider);
-        }
+        // Marketing suite generator is initialized via singleton pattern
+        // No additional initialization required
         
         // Initialize forms integration
         require_once plugin_dir_path(__FILE__) . 'class-dashboard-listing-forms.php';
         $this->forms = new Dashboard_Listing_Forms();
-        
-        $this->marketing_suite->init();
         
         error_log('HPH Dashboard: Core components initialized');
     }

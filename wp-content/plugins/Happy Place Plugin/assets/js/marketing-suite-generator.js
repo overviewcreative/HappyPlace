@@ -1620,8 +1620,41 @@
     };
 
     function downloadAllAsZip() {
-        // This would require JSZip library
-        showError('Bulk download feature coming soon. Please download individual formats.');
+        if (typeof JSZip === 'undefined') {
+            showError('JSZip library not loaded. Cannot create ZIP file.');
+            return;
+        }
+        
+        if (generationResults.length === 0) {
+            showError('No results to download.');
+            return;
+        }
+        
+        const zip = new JSZip();
+        const promises = [];
+        
+        generationResults.forEach(result => {
+            const canvas = result.canvas;
+            const promise = new Promise((resolve) => {
+                canvas.toBlob((blob) => {
+                    zip.file(`${currentCampaignType}-${result.format}.png`, blob);
+                    resolve();
+                }, 'image/png');
+            });
+            promises.push(promise);
+        });
+        
+        Promise.all(promises).then(() => {
+            zip.generateAsync({type: 'blob'}).then((content) => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = `marketing-suite-${currentCampaignType}-${Date.now()}.zip`;
+                link.click();
+            });
+        }).catch((error) => {
+            console.error('ZIP generation failed:', error);
+            showError('Failed to create ZIP file.');
+        });
     }
 
     function showIndividualDownloads() {
@@ -1643,12 +1676,28 @@
             errorContainer.find('.error-message').text(message);
             errorContainer.show();
         } else {
-            alert(message); // Fallback
+            // Create error container if it doesn't exist
+            const errorHtml = `
+                <div class="flyer-error">
+                    <div class="error-content">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span class="error-message">${message}</span>
+                        <button type="button" class="dismiss-error">&times;</button>
+                    </div>
+                </div>
+            `;
+            $('body').append(errorHtml);
+            
+            // Bind dismiss event
+            $('.dismiss-error').on('click', hideError);
         }
+        
+        // Auto-hide after 5 seconds
+        setTimeout(hideError, 5000);
     }
 
     function hideError() {
-        $('.flyer-error').hide();
+        $('.flyer-error').fadeOut();
     }
 
     // Legacy flyer generator compatibility
@@ -1665,5 +1714,8 @@
         // PDF generation would require jsPDF integration
         showError('PDF download feature coming soon.');
     };
+    
+    // Expose initializeMarketingSuite globally for modal loading
+    window.initializeMarketingSuite = initializeMarketingSuite;
 
 })(jQuery);
