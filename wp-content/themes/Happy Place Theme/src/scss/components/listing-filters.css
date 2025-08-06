@@ -1,0 +1,190 @@
+/* Filter Section Styles */
+.hph-filter-section {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    position: relative;
+}
+
+.hph-filter-section:last-child {
+    border-bottom: none;
+}
+
+.hph-filter-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    font-weight: 600;
+    text-align: left;
+    transition: color 0.2s ease;
+}
+
+.hph-filter-toggle:hover,
+.hph-filter-toggle:focus {
+    color: #007cba;
+    outline: none;
+}
+
+.hph-filter-toggle:focus-visible {
+    outline: 2px solid #007cba;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* Toggle Icon */
+.hph-filter-icon {
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+}
+
+.is-expanded .hph-filter-icon {
+    transform: rotate(180deg);
+}
+
+/* Filter Content */
+.hph-filter-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.is-expanded .hph-filter-content {
+    max-height: 500px; /* Adjust based on your content */
+    opacity: 1;
+    padding-bottom: 1rem;
+}
+
+/* Filter Inputs */
+.hph-price-inputs {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.hph-price-separator {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.hph-price-select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+/* Filter Buttons */
+.hph-filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.hph-filter-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hph-filter-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.hph-filter-btn.active {
+    background-color: #007cba;
+    color: #fff;
+    border-color: #006ba1;
+}
+
+/* Checkboxes */
+.hph-filter-checkboxes {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.hph-filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.hph-filter-checkbox input[type="checkbox"] {
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 1.5px solid #666;
+    border-radius: 3px;
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+    cursor: pointer;
+    position: relative;
+}
+
+.hph-filter-checkbox input[type="checkbox"]:checked {
+    background-color: #007cba;
+    border-color: #006ba1;
+}
+
+.hph-filter-checkbox input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.hph-checkbox-label {
+    font-size: 0.95rem;
+    color: #333;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .hph-filter-toggle {
+        padding: 0.75rem 0;
+    }
+    
+    .is-expanded .hph-filter-content {
+        max-height: 300px; /* Smaller on mobile */
+    }
+    
+    .hph-price-inputs {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .hph-price-separator {
+        text-align: center;
+    }
+    
+    .hph-filter-buttons {
+        gap: 0.375rem;
+    }
+    
+    .hph-filter-btn {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.9rem;
+    }
+}

@@ -1,0 +1,74 @@
+/**
+ * Happy Place Plugin - Main SCSS
+ * 
+ * Entry point for all plugin styles
+ * 
+ * @package HappyPlace
+ */
+
+// Core Variables
+:root {
+  --hph-primary: #0073aa;
+  --hph-secondary: #005177;
+  --hph-success: #46b450;
+  --hph-warning: #ffb900;
+  --hph-error: #dc3232;
+  --hph-text: #23282d;
+  --hph-border: #c3c4c7;
+  --hph-bg: #f1f1f1;
+}
+
+// Plugin-specific base styles
+.happy-place-plugin {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  
+  .btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--hph-primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    
+    &:hover {
+      background: var(--hph-secondary);
+    }
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+    
+    label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--hph-border);
+      border-radius: 3px;
+    }
+  }
+  
+  .alert {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 3px;
+    
+    &.success {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+    
+    &.error {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+  }
+}

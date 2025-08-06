@@ -1,0 +1,103 @@
+/* Map Cluster Styles */
+.hph-cluster-label {
+    font-family: var(--hph-font-sans);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.hph-cluster-info {
+    padding: 6px 12px;
+    text-align: center;
+    font-family: var(--hph-font-sans);
+    line-height: 1.4;
+}
+
+.hph-cluster-info strong {
+    display: block;
+    color: var(--hph-color-gray-800);
+    font-size: var(--hph-font-size-base);
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.hph-cluster-info span {
+    display: block;
+    color: var(--hph-color-gray-600);
+    font-size: var(--hph-font-size-sm);
+}
+
+/* Map Style Overrides */
+.gm-style {
+    font-family: var(--hph-font-sans) !important;
+}
+
+/* Style the default Google Maps UI elements */
+.gm-style-mtc button {
+    font-family: var(--hph-font-sans) !important;
+    font-size: var(--hph-font-size-sm) !important;
+    padding: 8px 12px !important;
+}
+
+.gm-style-mtc div {
+    padding: 4px !important;
+}
+
+/* Custom map controls */
+.gm-custom-control {
+    background-color: var(--hph-color-white);
+    border-radius: var(--hph-radius-md);
+    box-shadow: var(--hph-shadow-md);
+    margin: 10px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.gm-custom-control:hover {
+    box-shadow: var(--hph-shadow-lg);
+    transform: translateY(-1px);
+}
+
+/* Improve cluster info window appearance */
+.gm-style .gm-style-iw-c {
+    border-radius: var(--hph-radius-lg) !important;
+    box-shadow: var(--hph-shadow-lg) !important;
+}
+
+.gm-style .gm-style-iw-t::after {
+    background: linear-gradient(45deg, var(--hph-color-white) 50%, rgba(255,255,255,0) 51%, rgba(255,255,255,0) 100%) !important;
+}
+
+/* Map marker animations */
+@keyframes markerDrop {
+    0% {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(20px);
+    }
+    80% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.marker-animation {
+    animation: markerDrop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Improve map controls visibility */
+.gm-bundled-control {
+    background: var(--hph-color-white) !important;
+    border-radius: var(--hph-radius-lg) !important;
+    box-shadow: var(--hph-shadow-md) !important;
+}
+
+.gm-bundled-control .gm-svpc,
+.gm-bundled-control .gmnoprint > div {
+    border-radius: var(--hph-radius-md) !important;
+    margin: 6px !important;
+}

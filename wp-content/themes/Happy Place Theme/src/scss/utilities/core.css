@@ -1,0 +1,380 @@
+/**
+ * Happy Place Theme - Core Styles
+ * 
+ * Core theme styles and utilities
+ * 
+ * @package HappyPlace
+ */
+
+/* =============================================================================
+   CORE UTILITIES
+   ============================================================================= */
+
+.hph-hidden {
+    display: none !important;
+}
+
+.hph-sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+.hph-loading {
+    position: relative;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.hph-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--hph-color-primary-400);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: hph-spin 1s linear infinite;
+}
+
+@keyframes hph-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =============================================================================
+   LAYOUT UTILITIES
+   ============================================================================= */
+
+.hph-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.hph-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+.hph-col {
+    flex: 1;
+    padding: 0 15px;
+}
+
+.hph-col-auto {
+    flex: 0 0 auto;
+}
+
+/* =============================================================================
+   COMMON COMPONENTS
+   ============================================================================= */
+
+.hph-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background: var(--hph-color-primary-400);
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+}
+
+.hph-button:hover {
+    background: var(--hph-color-primary-500);
+    transform: translateY(-1px);
+}
+
+.hph-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.hph-button-secondary {
+    background: var(--hph-color-gray-100);
+    color: var(--hph-color-gray-900);
+}
+
+.hph-button-secondary:hover {
+    background: var(--hph-color-gray-200);
+}
+
+/* =============================================================================
+   FORM ELEMENTS
+   ============================================================================= */
+
+.hph-form-group {
+    margin-bottom: 20px;
+}
+
+.hph-form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--hph-color-gray-700);
+}
+
+.hph-form-input,
+.hph-form-select,
+.hph-form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--hph-color-gray-300);
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.hph-form-input:focus,
+.hph-form-select:focus,
+.hph-form-textarea:focus {
+    outline: none;
+    border-color: var(--hph-color-primary-400);
+    box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.1);
+}
+
+/* =============================================================================
+   NOTIFICATIONS
+   ============================================================================= */
+
+.hph-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 20px;
+    border-radius: 6px;
+    color: white;
+    font-weight: 500;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hph-notification-success {
+    background: var(--hph-color-success-500);
+}
+
+.hph-notification-error {
+    background: var(--hph-color-error-500);
+}
+
+.hph-notification-warning {
+    background: var(--hph-color-warning-500);
+}
+
+.hph-notification-info {
+    background: var(--hph-color-info-500);
+}
+
+/* =============================================================================
+   SCROLL TO TOP
+   ============================================================================= */
+
+.hph-scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--hph-color-primary-400);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hph-scroll-to-top:hover {
+    background: var(--hph-color-primary-500);
+    transform: translateY(-2px);
+}
+
+/* =============================================================================
+   MOBILE MENU
+   ============================================================================= */
+
+.hph-mobile-menu {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .hph-mobile-menu-toggle {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .hph-mobile-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border-top: 1px solid var(--hph-color-gray-200);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .hph-mobile-menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .hph-mobile-menu li {
+        border-bottom: 1px solid var(--hph-color-gray-100);
+    }
+
+    .hph-mobile-menu a {
+        display: block;
+        padding: 15px 20px;
+        text-decoration: none;
+        color: var(--hph-color-gray-700);
+    }
+
+    .hph-mobile-menu a:hover {
+        background: var(--hph-color-gray-50);
+    }
+}
+
+/* =============================================================================
+   RESPONSIVE UTILITIES
+   ============================================================================= */
+
+@media (max-width: 768px) {
+    .hph-hide-mobile {
+        display: none !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .hph-hide-desktop {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-hide-small {
+        display: none !important;
+    }
+}
+
+/* =============================================================================
+   MAIN CONTENT AREA
+   ============================================================================= */
+
+/* Layout & Containers
+--------------------------------------------- */
+:root {
+    --header-height: 80px;
+    --container-width: 1280px;
+    --container-padding: 2rem;
+    --section-spacing: 4rem;
+}
+
+/* Main Content Area */
+.hph-site-main {
+    position: relative;
+    min-height: calc(100vh - var(--header-height));
+    width: 100%;
+    margin-top: var(--header-height);
+    background-color: var(--color-bg);
+    flex: 1 0 auto;
+}
+
+/* Container within main */
+.hph-container {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+}
+
+/* Archive specific styles */
+.hph-site-main--archive {
+    padding: var(--section-spacing) 0;
+}
+
+.hph-site-main--archive .hph-archive-header {
+    margin-bottom: var(--section-spacing);
+    text-align: center;
+}
+
+.hph-site-main--archive .hph-archive-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-primary);
+}
+
+.hph-archive-description {
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--color-text-light);
+}
+
+/* Grid Layouts */
+.hph-listings-grid,
+.hph-agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: var(--section-spacing);
+}
+
+/* Admin Bar Adjustments */
+.admin-bar .hph-site-main {
+    min-height: calc(100vh - var(--header-height) - 32px);
+    margin-top: calc(var(--header-height) + 32px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 782px) {
+    :root {
+        --header-height: 60px;
+        --container-padding: 1.5rem;
+        --section-spacing: 3rem;
+    }
+
+    .admin-bar .hph-site-main {
+        margin-top: calc(var(--header-height) + 46px);
+    }
+
+    .hph-site-main--archive .hph-archive-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --container-padding: 1rem;
+        --section-spacing: 2rem;
+    }
+
+    .hph-listings-grid,
+    .hph-agents-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}

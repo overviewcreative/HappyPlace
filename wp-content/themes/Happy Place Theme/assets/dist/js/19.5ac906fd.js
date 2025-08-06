@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkhappy_place_theme=self.webpackChunkhappy_place_theme||[]).push([[19,945],{19:function(e,n,t){t.r(n),t.d(n,{init:function(){return p}});t(778);function p(){console.log("Dashboard entry point loaded")}}}]);

@@ -1,0 +1,303 @@
+/**
+ * Happy Place Listing List Card Component Styles
+ * 
+ * @package HappyPlace
+ */
+
+/* Base List Card */
+.hph-listing-list-card {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    background: var(--hph-color-white);
+    border-radius: var(--hph-radius-lg);
+    box-shadow: var(--hph-shadow-md);
+    overflow: hidden;
+    transition: transform var(--hph-transition-fast), box-shadow var(--hph-transition-fast);
+    border: 1px solid var(--hph-color-gray-200);
+    margin-bottom: var(--hph-spacing-4);
+}
+
+.hph-listing-list-card:hover {
+    box-shadow: var(--hph-shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* Compact Mode */
+.hph-listing-list-card--compact {
+    grid-template-columns: 140px 1fr;
+    margin-bottom: var(--hph-spacing-3);
+}
+
+/* Card Image Container */
+.hph-list-card-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    overflow: hidden;
+}
+
+.hph-listing-list-card--compact .hph-list-card-image {
+    min-height: 140px;
+}
+
+.hph-list-card-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--hph-transition-fast);
+}
+
+.hph-list-card-image:hover .hph-list-card-photo {
+    transform: scale(1.05);
+}
+
+/* Card Content */
+.hph-list-card-content {
+    padding: var(--hph-spacing-4);
+    display: flex;
+    flex-direction: column;
+}
+
+.hph-listing-list-card--compact .hph-list-card-content {
+    padding: var(--hph-spacing-3);
+}
+
+/* Card Header (Title and Price) */
+.hph-list-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--hph-spacing-2);
+    flex-wrap: wrap;
+}
+
+.hph-listing-list-card .hph-property-title {
+    font-size: var(--hph-font-size-lg);
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.hph-listing-list-card--compact .hph-property-title {
+    font-size: var(--hph-font-size-base);
+}
+
+.hph-listing-list-card .hph-property-title a {
+    color: var(--hph-color-gray-800);
+    text-decoration: none;
+}
+
+.hph-listing-list-card .hph-property-title a:hover {
+    color: var(--hph-color-primary-600);
+}
+
+.hph-listing-list-card .hph-property-price {
+    font-size: var(--hph-font-size-xl);
+    font-weight: 700;
+    color: var(--hph-color-primary-600);
+    white-space: nowrap;
+}
+
+.hph-listing-list-card--compact .hph-property-price {
+    font-size: var(--hph-font-size-lg);
+}
+
+/* Property Location */
+.hph-listing-list-card .hph-property-location {
+    margin-bottom: var(--hph-spacing-3);
+    color: var(--hph-color-gray-600);
+    font-size: var(--hph-font-size-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--hph-spacing-1);
+}
+
+.hph-listing-list-card .hph-property-location i {
+    color: var(--hph-color-primary-500);
+}
+
+.hph-listing-list-card--compact .hph-property-location {
+    font-size: var(--hph-font-size-xs);
+    margin-bottom: var(--hph-spacing-2);
+}
+
+/* Property Stats */
+.hph-listing-list-card .hph-property-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--hph-spacing-4);
+    margin-bottom: var(--hph-spacing-3);
+}
+
+.hph-listing-list-card--compact .hph-property-stats {
+    gap: var(--hph-spacing-2);
+    margin-bottom: var(--hph-spacing-2);
+}
+
+.hph-listing-list-card .hph-property-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-spacing-2);
+    color: var(--hph-color-gray-700);
+    font-size: var(--hph-font-size-sm);
+}
+
+.hph-listing-list-card--compact .hph-property-stat {
+    font-size: var(--hph-font-size-xs);
+}
+
+.hph-listing-list-card .hph-property-stat i {
+    color: var(--hph-color-primary-500);
+}
+
+/* Status Badge */
+.hph-listing-list-card .hph-property-status {
+    position: absolute;
+    top: var(--hph-spacing-3);
+    left: var(--hph-spacing-3);
+    padding: var(--hph-spacing-1) var(--hph-spacing-2);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--hph-color-primary-600);
+    font-size: var(--hph-font-size-xs);
+    font-weight: 600;
+    border-radius: var(--hph-radius-full);
+    z-index: 2;
+}
+
+.hph-property-status--warning {
+    color: var(--hph-color-warning) !important;
+}
+
+.hph-property-status--danger {
+    color: var(--hph-color-danger) !important;
+}
+
+.hph-property-status--info {
+    color: var(--hph-color-info) !important;
+}
+
+/* Favorite Button */
+.hph-listing-list-card .hph-favorite-btn {
+    position: absolute;
+    top: var(--hph-spacing-3);
+    right: var(--hph-spacing-3);
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--hph-color-gray-500);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--hph-transition-fast);
+    box-shadow: var(--hph-shadow-sm);
+}
+
+.hph-listing-list-card .hph-favorite-btn:hover {
+    background: var(--hph-color-white);
+    color: var(--hph-color-danger);
+    transform: scale(1.1);
+}
+
+.hph-listing-list-card .hph-favorite-btn.active {
+    color: var(--hph-color-danger);
+}
+
+.hph-listing-list-card .hph-favorite-btn.active i {
+    font-weight: 900;
+}
+
+/* Agent Info */
+.hph-list-card-agent {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-spacing-2);
+    margin-top: auto;
+    padding-top: var(--hph-spacing-3);
+    border-top: 1px solid var(--hph-color-gray-200);
+    margin-bottom: var(--hph-spacing-3);
+}
+
+.hph-listing-list-card .hph-agent-photo {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.hph-listing-list-card .hph-agent-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hph-listing-list-card .hph-agent-name {
+    font-size: var(--hph-font-size-sm);
+    color: var(--hph-color-gray-700);
+}
+
+/* Card Actions */
+.hph-list-card-actions {
+    margin-top: auto;
+}
+
+.hph-btn-sm {
+    padding: var(--hph-spacing-1) var(--hph-spacing-3);
+    font-size: var(--hph-font-size-sm);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hph-listing-list-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-list-card-image {
+        height: 200px;
+    }
+    
+    .hph-listing-list-card--compact {
+        grid-template-columns: 120px 1fr;
+    }
+    
+    .hph-listing-list-card--compact .hph-list-card-image {
+        height: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-listing-list-card--compact {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-listing-list-card--compact .hph-list-card-image {
+        height: 140px;
+    }
+    
+    .hph-list-card-header {
+        flex-direction: column;
+    }
+    
+    .hph-property-price {
+        margin-top: var(--hph-spacing-1);
+    }
+}
+
+/* Print styles */
+@media print {
+    .hph-listing-list-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .hph-favorite-btn,
+    .hph-list-card-actions {
+        display: none;
+    }
+}

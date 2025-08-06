@@ -1,0 +1,49 @@
+/**
+ * Main SCSS Entry Point
+ * Happy Place Theme
+ */
+
+// Variables and mixins
+@import 'utilities/variables';
+@import 'utilities/mixins';
+@import 'utilities/functions';
+
+// Base styles
+@import 'base/reset';
+@import 'base/typography';
+@import 'base/forms';
+@import 'base/buttons';
+
+// Layout
+@import 'layout/grid';
+@import 'layout/header';
+@import 'layout/footer';
+
+// Existing CSS files (import as-is for now)
+@import 'utilities/core.css';
+@import 'utilities/map-clusters.css';
+@import 'utilities/map-info-window.css';
+
+// New SCSS Components
+@import 'components/cards';
+@import 'components/modals';
+
+// Components (existing CSS files)
+@import 'components/agent-archive.css';
+@import 'components/agent-profile.css';  
+@import 'components/agent-single.css';
+@import 'components/listing-filters.css';
+@import 'components/listing-filters-ajax.css';
+@import 'components/listing-gallery.css';
+@import 'components/listing-list-card.css';
+@import 'components/listing-map.css';
+@import 'components/listing-swipe-card.css';
+
+// Pages (existing CSS files)
+@import 'pages/archive-listing.css';
+@import 'pages/single-listing.css';
+@import 'pages/dashboard-core.css';
+@import 'pages/dashboard-modals.css';
+@import 'pages/dashboard-responsive.css';
+@import 'pages/dashboard-sections.css';
+@import 'pages/dashboard-utilities.css';

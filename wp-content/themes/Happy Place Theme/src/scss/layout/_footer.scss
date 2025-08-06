@@ -1,0 +1,100 @@
+// Footer Styles
+// Happy Place Theme
+
+.site-footer {
+  background: #2c3e50;
+  color: white;
+  margin-top: $spacing-xl;
+  
+  a {
+    color: lighten($primary-color, 20%);
+    text-decoration: none;
+    
+    &:hover {
+      color: white;
+    }
+  }
+}
+
+.footer-widgets {
+  padding: $spacing-xl 0;
+  
+  .container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: $spacing-xl;
+  }
+  
+  .widget {
+    h3 {
+      color: white;
+      font-size: 1.25rem;
+      margin-bottom: $spacing-md;
+      border-bottom: 2px solid $primary-color;
+      padding-bottom: $spacing-sm;
+    }
+    
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      
+      li {
+        margin-bottom: $spacing-sm;
+      }
+    }
+    
+    p {
+      line-height: 1.6;
+      color: #bdc3c7;
+    }
+  }
+}
+
+.footer-bottom {
+  background: darken(#2c3e50, 10%);
+  padding: $spacing-md 0;
+  text-align: center;
+  border-top: 1px solid #34495e;
+  
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    @include media(md) {
+      flex-direction: column;
+      gap: $spacing-md;
+    }
+  }
+  
+  .copyright {
+    color: #95a5a6;
+    font-size: 0.875rem;
+  }
+  
+  .footer-menu {
+    ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      gap: $spacing-lg;
+      
+      @include media(md) {
+        flex-direction: column;
+        text-align: center;
+        gap: $spacing-sm;
+      }
+    }
+    
+    a {
+      color: #95a5a6;
+      font-size: 0.875rem;
+      
+      &:hover {
+        color: $primary-color;
+      }
+    }
+  }
+}

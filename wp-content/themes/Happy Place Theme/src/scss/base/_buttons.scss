@@ -1,0 +1,14 @@
+// Buttons
+// Happy Place Theme
+
+.btn {
+  @include button-style();
+  
+  &.btn-secondary {
+    @include button-style($gray-color);
+  }
+  
+  &.btn-success {
+    @include button-style($success-color);
+  }
+}

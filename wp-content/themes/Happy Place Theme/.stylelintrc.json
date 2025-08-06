@@ -1,0 +1,31 @@
+{
+  "extends": "stylelint-config-standard-scss",
+  "rules": {
+    "selector-class-pattern": "^[a-z][a-z0-9-_]*$",
+    "selector-id-pattern": "^[a-z][a-z0-9-_]*$",
+    "color-hex-case": "lower",
+    "color-hex-length": "short",
+    "font-family-name-quotes": "always-unless-keyword",
+    "function-url-quotes": "always",
+    "string-quotes": "single",
+    "declaration-block-trailing-semicolon": "always",
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "extend",
+          "include",
+          "mixin",
+          "if",
+          "else",
+          "each",
+          "for",
+          "while",
+          "function",
+          "return"
+        ]
+      }
+    ],
+    "scss/at-rule-no-unknown": true
+  }
+}

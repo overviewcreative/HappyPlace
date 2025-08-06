@@ -43,6 +43,7 @@ require_once HPH_THEME_DIR . '/inc/translations.php';
 require_once HPH_THEME_DIR . '/inc/template-functions.php';
 require_once HPH_THEME_DIR . '/inc/template-helpers.php';
 require_once HPH_THEME_DIR . '/inc/template-tags.php';
+require_once HPH_THEME_DIR . '/inc/template-utilities.php';
 
 // Feature-specific classes
 require_once HPH_THEME_DIR . '/inc/class-geocoding.php';

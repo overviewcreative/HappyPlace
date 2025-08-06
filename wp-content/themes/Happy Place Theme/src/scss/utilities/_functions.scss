@@ -1,0 +1,16 @@
+// SCSS Functions
+// Happy Place Theme
+
+// Convert px to rem
+@function rem($px, $base: 16px) {
+  @return #{$px / $base}rem;
+}
+
+// Color functions
+@function lighten-color($color, $amount: 10%) {
+  @return lighten($color, $amount);
+}
+
+@function darken-color($color, $amount: 10%) {
+  @return darken($color, $amount);
+}

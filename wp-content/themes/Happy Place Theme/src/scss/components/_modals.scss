@@ -1,0 +1,215 @@
+// Modal Components
+// Happy Place Theme
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  
+  &.modal-active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.modal {
+  background: white;
+  border-radius: 8px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  transform: scale(0.8);
+  transition: transform 0.3s ease;
+  
+  .modal-overlay.modal-active & {
+    transform: scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-lg;
+  border-bottom: 1px solid #eee;
+  
+  .modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: $spacing-xs;
+    color: $gray-color;
+    
+    &:hover {
+      color: #333;
+    }
+  }
+}
+
+.modal-content {
+  padding: $spacing-lg;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  border-top: 1px solid #eee;
+  
+  .btn {
+    @include button-style();
+  }
+}
+
+// Specific modal sizes
+.modal-sm {
+  .modal {
+    max-width: 400px;
+  }
+}
+
+.modal-lg {
+  .modal {
+    max-width: 800px;
+  }
+}
+
+.modal-xl {
+  .modal {
+    max-width: 1200px;
+  }
+}
+
+// Gallery modal
+.gallery-modal {
+  .modal {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+  
+  .modal-content {
+    padding: 0;
+    position: relative;
+  }
+  
+  .gallery-image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .gallery-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: $spacing-md;
+    cursor: pointer;
+    font-size: 1.5rem;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    
+    &.prev {
+      left: $spacing-md;
+    }
+    
+    &.next {
+      right: $spacing-md;
+    }
+  }
+  
+  .gallery-counter {
+    position: absolute;
+    bottom: $spacing-md;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: 4px;
+    font-size: 0.875rem;
+  }
+}
+
+// Contact modal
+.contact-modal {
+  .form-group {
+    margin-bottom: $spacing-md;
+    
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: $spacing-xs;
+    }
+    
+    input,
+    textarea {
+      width: 100%;
+      padding: $spacing-sm;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: $font-size-base;
+      
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+      }
+    }
+    
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+  }
+}
+
+// Notification modals
+.notification-modal {
+  .modal {
+    max-width: 500px;
+  }
+  
+  .modal-content {
+    text-align: center;
+    
+    .notification-icon {
+      font-size: 3rem;
+      margin-bottom: $spacing-md;
+      
+      &.success {
+        color: $success-color;
+      }
+      
+      &.error {
+        color: $danger-color;
+      }
+      
+      &.warning {
+        color: $warning-color;
+      }
+    }
+  }
+}

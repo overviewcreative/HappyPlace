@@ -73,24 +73,36 @@ if (!function_exists('hph_log_error')) {
 }
 
 // Load Plugin Manager and Initialize
-$plugin_manager_file = HPH_INCLUDES_PATH . 'core/class-plugin-manager.php';
+$plugin_manager_file = HPH_INCLUDES_PATH . 'core/class-plugin-manager-clean.php';
 if (file_exists($plugin_manager_file)) {
     require_once $plugin_manager_file;
-    hph_log_error('Plugin Manager file loaded', 'INIT');
     
-    // Initialize the plugin manager with error handling
+    // Initialize the clean plugin manager
     try {
-        if (class_exists('HappyPlace\Core\Plugin_Manager')) {
-            $plugin_instance = \HappyPlace\Core\Plugin_Manager::get_instance();
-            hph_log_error('Plugin Manager instance created successfully', 'INIT');
+        if (class_exists('HappyPlace\Core\Plugin_Manager_Clean')) {
+            $plugin_instance = \HappyPlace\Core\Plugin_Manager_Clean::get_instance();
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                hph_log_error('Clean Plugin Manager initialized successfully', 'INIT');
+            }
         } else {
-            hph_log_error('Plugin_Manager class not found after require', 'ERROR');
+            hph_log_error('Plugin_Manager_Clean class not found', 'ERROR');
         }
     } catch (Exception $e) {
-        hph_log_error('Failed to initialize Plugin_Manager: ' . $e->getMessage(), 'FATAL');
+        hph_log_error('Failed to initialize Plugin_Manager_Clean: ' . $e->getMessage(), 'FATAL');
     }
 } else {
-    hph_log_error('Plugin Manager file not found: ' . $plugin_manager_file, 'FATAL');
+    // Fallback to original plugin manager
+    $fallback_file = HPH_INCLUDES_PATH . 'core/class-plugin-manager.php';
+    if (file_exists($fallback_file)) {
+        require_once $fallback_file;
+        try {
+            $plugin_instance = \HappyPlace\Core\Plugin_Manager::get_instance();
+        } catch (Exception $e) {
+            hph_log_error('Fallback plugin manager failed: ' . $e->getMessage(), 'FATAL');
+        }
+    } else {
+        hph_log_error('No plugin manager found', 'FATAL');
+    }
 }
 
 // Load debug file in development
