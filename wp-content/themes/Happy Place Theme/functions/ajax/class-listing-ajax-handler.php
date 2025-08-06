@@ -28,11 +28,7 @@ class Listing_Ajax_Handler
      */
     public function get_listing_data()
     {
-        check_ajax_referer('hph_theme_nonce', 'nonce');
-
-        if (!check_ajax_referer('hph_theme_nonce', 'nonce', false)) {
-            wp_send_json_error(['message' => __('Security check failed', 'happy-place')]);
-        }
+        check_ajax_referer('happy_place_nonce', 'nonce');
 
         $listing_id = isset($_POST['listing_id']) ? absint($_POST['listing_id']) : 0;
 

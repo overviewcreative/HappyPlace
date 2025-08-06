@@ -7,6 +7,8 @@
 
 namespace HappyPlace\Api\Ajax;
 
+use HappyPlace\Api\Ajax\Nonce_Manager;
+
 // Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
@@ -94,23 +96,37 @@ abstract class Base_Ajax_Handler {
     
     protected function validate_security(string $action, array $config): bool {
         $skip_nonce = ($config['skip_nonce'] ?? false) && ($config['public'] ?? false);
+        $required_capability = $this->capabilities[$action] ?? 'read';
+        $allow_public = $config['public'] ?? false;
         
-        if (!$skip_nonce) {
-            if (!check_ajax_referer($this->nonce_action, 'nonce', false)) {
+        // Use enhanced nonce manager for validation
+        $allowed_nonces = [
+            $this->nonce_action,
+            'hph_dashboard_nonce',
+            'marketing_suite_nonce',
+            'hph_theme_nonce'
+        ];
+        
+        if ($skip_nonce) {
+            // For public endpoints that skip nonce, still check capability if user is logged in
+            if (is_user_logged_in() && !current_user_can($required_capability)) {
                 wp_send_json_error([
-                    'message' => 'Security check failed',
-                    'code' => 'invalid_nonce'
+                    'message' => 'Insufficient permissions',
+                    'code' => 'insufficient_permissions'
                 ], 403);
                 return false;
             }
+            return true;
         }
         
-        $required_capability = $this->capabilities[$action] ?? 'read';
-        if (!current_user_can($required_capability)) {
-            wp_send_json_error([
-                'message' => 'Insufficient permissions',
-                'code' => 'insufficient_permissions'
-            ], 403);
+        $validation = Nonce_Manager::validate_ajax_security(
+            $allowed_nonces,
+            $required_capability,
+            $allow_public
+        );
+        
+        if (!$validation['valid']) {
+            Nonce_Manager::send_ajax_error($validation);
             return false;
         }
         

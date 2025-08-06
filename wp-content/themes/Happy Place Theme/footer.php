@@ -8,7 +8,7 @@
         </main>
 
         <footer class="hph-footer" itemscope itemtype="https://schema.org/WPFooter">
-            <div class="container">
+            <div class="hph-footer-container">
                 <div class="hph-footer-column" itemscope itemtype="https://schema.org/RealEstateAgent">
                     <div class="hph-footer-brand">
                         <?php 
@@ -116,7 +116,7 @@
             </div>
 
             <div class="hph-footer-bottom">
-                <div class="container">
+                <div class="hph-footer-container">
                     <div class="hph-footer-copyright">
                         <p>&copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. <?php esc_html_e('All rights reserved.', 'happy-place'); ?></p>
                     </div>
@@ -144,12 +144,6 @@
             </div>
         </footer>
     </div><!-- .hph-site-wrapper -->
-    
-    <?php 
-    // Include global modals
-    get_template_part('template-parts/global/modals'); 
-    ?>
-    
     <?php wp_footer(); ?>
 </body>
 </html>

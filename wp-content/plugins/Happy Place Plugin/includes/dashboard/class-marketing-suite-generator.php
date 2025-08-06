@@ -208,7 +208,7 @@ class Marketing_Suite_Generator {
             true
         );
         
-        // Localize script
+        // Localize script with comprehensive configuration
         wp_localize_script('marketing-suite-generator', 'marketingSuite', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('marketing_suite_nonce'),
@@ -222,6 +222,16 @@ class Marketing_Suite_Generator {
                 'selectListing' => __('Please select a listing.', 'happy-place'),
                 'selectFormats' => __('Please select at least one format.', 'happy-place'),
             ]
+        ]);
+
+        // Also provide flyerGenerator object for compatibility
+        wp_localize_script('marketing-suite-generator', 'flyerGenerator', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('marketing_suite_nonce'),
+            'dashboardNonce' => wp_create_nonce('hph_dashboard_nonce'),
+            'pluginUrl' => HPH_PLUGIN_URL,
+            'formatConfigs' => $this->format_configs,
+            'campaignTypes' => $this->campaign_types
         ]);
         
         // Styles
@@ -544,45 +554,76 @@ class Marketing_Suite_Generator {
      * Handle AJAX request for marketing suite generation
      */
     public function handle_ajax_generate(): void {
-        // Flexible nonce checking for compatibility
-        $nonce_valid = false;
-        if (isset($_POST['nonce'])) {
-            if (wp_verify_nonce($_POST['nonce'], 'marketing_suite_nonce')) {
-                $nonce_valid = true;
-            } elseif (wp_verify_nonce($_POST['nonce'], 'hph_dashboard_nonce')) {
-                $nonce_valid = true;
-            }
-        }
-        
-        if (!$nonce_valid) {
-            wp_die(__('Security check failed.', 'happy-place'));
-        }
-        
-        if (!current_user_can('read')) {
-            wp_die(__('Insufficient permissions.', 'happy-place'));
-        }
-        
-        $listing_id = intval($_POST['listing_id'] ?? 0);
-        $campaign_type = sanitize_text_field($_POST['campaign_type'] ?? 'listing');
-        $formats = array_map('sanitize_text_field', $_POST['formats'] ?? []);
-        $template = sanitize_text_field($_POST['template'] ?? 'parker_group');
-        
-        if (!$listing_id || empty($formats)) {
-            wp_send_json_error(['message' => __('Invalid parameters.', 'happy-place')]);
-        }
-        
         try {
+            // Enhanced security validation
+            $nonce_valid = false;
+            if (isset($_POST['nonce'])) {
+                if (wp_verify_nonce($_POST['nonce'], 'marketing_suite_nonce')) {
+                    $nonce_valid = true;
+                } elseif (wp_verify_nonce($_POST['nonce'], 'hph_dashboard_nonce')) {
+                    $nonce_valid = true;
+                } elseif (wp_verify_nonce($_POST['nonce'], 'hph_ajax_nonce')) {
+                    $nonce_valid = true;
+                }
+            }
+            
+            if (!$nonce_valid) {
+                wp_send_json_error([
+                    'message' => __('Security check failed.', 'happy-place'),
+                    'code' => 'invalid_nonce'
+                ], 403);
+                return;
+            }
+            
+            if (!current_user_can('read')) {
+                wp_send_json_error([
+                    'message' => __('Insufficient permissions.', 'happy-place'),
+                    'code' => 'insufficient_permissions'
+                ], 403);
+                return;
+            }
+            
+            $listing_id = intval($_POST['listing_id'] ?? 0);
+            $campaign_type = sanitize_text_field($_POST['campaign_type'] ?? 'listing');
+            $formats = array_map('sanitize_text_field', $_POST['formats'] ?? []);
+            $template = sanitize_text_field($_POST['template'] ?? 'parker_group');
+            
+            if (!$listing_id || empty($formats)) {
+                wp_send_json_error([
+                    'message' => __('Invalid parameters. Listing ID and formats are required.', 'happy-place'),
+                    'code' => 'missing_parameters'
+                ], 400);
+                return;
+            }
+            
+            // Validate listing exists
+            $listing = get_post($listing_id);
+            if (!$listing || $listing->post_type !== 'listing') {
+                wp_send_json_error([
+                    'message' => __('Invalid listing ID.', 'happy-place'),
+                    'code' => 'invalid_listing'
+                ], 400);
+                return;
+            }
+            
+            error_log("HPH Marketing Suite: Generating for listing {$listing_id}, formats: " . implode(', ', $formats));
+            
             $listing_data = $this->prepare_listing_data($listing_id, $campaign_type, $_POST);
             
             wp_send_json_success([
                 'listing' => $listing_data,
                 'formats' => $formats,
                 'template' => $template,
-                'campaign_type' => $campaign_type
+                'campaign_type' => $campaign_type,
+                'message' => __('Marketing suite data prepared successfully.', 'happy-place')
             ]);
             
-        } catch (Exception $e) {
-            wp_send_json_error(['message' => $e->getMessage()]);
+        } catch (\Exception $e) {
+            error_log('HPH Marketing Suite Generate Error: ' . $e->getMessage());
+            wp_send_json_error([
+                'message' => __('Error generating marketing suite: ', 'happy-place') . $e->getMessage(),
+                'code' => 'generation_error'
+            ], 500);
         }
     }
     

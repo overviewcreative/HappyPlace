@@ -1,478 +1,697 @@
-
 <?php
 /**
- * Import required component classes
+ * Template for displaying single property listings
+ *
+ * @package Happy_Place_Theme
  */
-use HappyPlace\Components\Listing\Hero;
-use HappyPlace\Components\Listing\Gallery;
-use HappyPlace\Components\Listing\Card;
-use HappyPlace\Components\Agent\Card as AgentCard;
-use HappyPlace\Components\Agent\Profile;
-use HappyPlace\Components\Tools\Mortgage_Calculator;
-use HappyPlace\Components\UI\Button;
-use HappyPlace\Components\UI\Modal;
-
-// Safety check for component availability
-if (!class_exists('HappyPlace\Components\Listing\Hero')) {
-    // Load theme manager to ensure components are available
-    if (class_exists('HappyPlace\Core\Theme_Manager')) {
-        HappyPlace\Core\Theme_Manager::get_instance();
-    }
-}
-
-/**
- * Single Listing Template - Complete Implementation
- * 
- * This template serves as the testing ground for all components
- * and demonstrates proper integration with the Happy Place architecture.
- * 
- * @package HappyPlace
- * @template-name single-listing.php
- * @version 2.0.0
- */
-
-if (!defined('ABSPATH')) {
-    exit;
-}
-
-// Start performance monitoring
-$template_start_time = microtime(true);
 
 get_header();
 
-// Get listing ID and validate
-$listing_id = get_the_ID();
-if (!$listing_id || get_post_type() !== 'listing') {
-    // Handle error case
-    echo '<div class="error-message">Invalid listing.</div>';
-    get_footer();
-    return;
+// Load property data with corrected field names
+$price = get_field('price');
+$status = get_field('status') ?: 'Active'; // Default to Active if not set
+$status_class = sanitize_html_class(strtolower($status));
+$status_display = esc_html($status);
+$street_address = get_field('street_address');
+$city = get_field('city');
+$state = get_field('region'); // Changed from state
+$zip = get_field('zip_code'); // Changed from zip
+$bedrooms = get_field('bedrooms');
+$bathrooms = get_field('bathrooms');
+$square_feet = get_field('square_footage'); // Changed from square_feet
+$lot_size = get_field('lot_size');
+$year_built = get_field('year_built');
+$description = get_field('short_description'); // Changed from description
+$virtual_tour = get_field('virtual_tour_link'); // Changed from virtual_tour_url
+$agent_id = get_field('agent');
+$mls_number = get_field('mls_number');
+$price_per_sqft = get_field('price_per_sqft');
+
+// Get main photo or gallery image for hero
+$main_photo = get_field('main_photo');
+$hero_image = '';
+
+if ($main_photo) {
+    $hero_image = $main_photo;
+} elseif (!empty($gallery_images)) {
+    $hero_image = $gallery_images[0]['url'];
+} elseif (has_post_thumbnail()) {
+    $hero_image = get_the_post_thumbnail_url(get_the_ID(), 'full');
+} else {
+    $hero_image = get_theme_file_uri('assets/images/property-placeholder.jpg');
 }
 
-// Get comprehensive listing data through bridge functions
-$listing_data = [];
-$components_status = [];
-$debug_info = [];
-
-try {
-    // Core listing data
-    $listing_data = function_exists('hph_bridge_get_listing_data') 
-        ? hph_bridge_get_listing_data($listing_id)
-        : hph_fallback_get_listing_data($listing_id);
-    
-    // Hero/header data
-    $hero_data = function_exists('hph_bridge_get_hero_data')
-        ? hph_bridge_get_hero_data($listing_id)
-        : hph_fallback_get_hero_data($listing_id);
-    
-    // Gallery data
-    $gallery_data = function_exists('hph_bridge_get_gallery_data')
-        ? hph_bridge_get_gallery_data($listing_id)
-        : hph_fallback_get_gallery_data($listing_id);
-    
-    // Property details
-    $property_details = function_exists('hph_bridge_get_property_details')
-        ? hph_bridge_get_property_details($listing_id)
-        : hph_fallback_get_property_details($listing_id);
-    
-    // Features and amenities
-    $features_data = function_exists('hph_bridge_get_features')
-        ? hph_bridge_get_features($listing_id)
-        : hph_fallback_get_features($listing_id);
-    
-    // Agent information
-    $agent_data = function_exists('hph_bridge_get_agent_data')
-        ? hph_bridge_get_agent_data($listing_id)
-        : hph_fallback_get_agent_data($listing_id);
-    
-    // Financial data for calculator
-    $financial_data = function_exists('hph_bridge_get_financial_data')
-        ? hph_bridge_get_financial_data($listing_id)
-        : hph_fallback_get_financial_data($listing_id);
-    
-    // Similar/related listings
-    $similar_listings = function_exists('hph_bridge_get_similar_listings')
-        ? hph_bridge_get_similar_listings($listing_id, 3)
-        : hph_fallback_get_similar_listings($listing_id, 3);
-
-} catch (Exception $e) {
-    // Log error and provide fallback
-    error_log('HPH Single Listing Error: ' . $e->getMessage());
-    $listing_data = hph_emergency_fallback_data($listing_id);
+// Get address fields
+$full_address = get_field('full_address');
+if (empty($full_address)) {
+    $full_address = $street_address;
+    if ($city) $full_address .= ', ' . $city;
+    if ($region) $full_address .= ', ' . $region;
+    if ($zip) $full_address .= ' ' . $zip_code;
 }
 
-// Test component availability
-$components_status = [
-    'hero' => class_exists('HappyPlace\\Components\\Listing\\Listing_Hero'),
-    'gallery' => class_exists('HappyPlace\\Components\\Listing\\Gallery'),
-    'details' => class_exists('HappyPlace\\Components\\Listing\\Listing_Details'),
-    'features' => class_exists('HappyPlace\\Components\\Listing\\Features'),
-    'agent_card' => class_exists('HappyPlace\\Components\\Agent\\Agent_Card'),
-    'mortgage_calculator' => class_exists('HappyPlace\\Components\\Tools\\Mortgage_Calculator'),
-    'contact_form' => class_exists('HappyPlace\\Components\\UI\\Contact_Form'),
-    'similar_grid' => class_exists('HappyPlace\\Components\\Listing\\Similar_Grid')
-];
+// Get feature fields
+$features = get_field('features') ?: array(); // Primary features field
+$exterior_features = get_field('exterior_features') ?: array();
+$utility_features = get_field('utility_features') ?: array();
 
-// Prepare template arguments
-$template_args = [
-    'listing_id' => $listing_id,
-    'listing_data' => $listing_data,
-    'hero_data' => $hero_data,
-    'gallery_data' => $gallery_data,
-    'property_details' => $property_details,
-    'features_data' => $features_data,
-    'agent_data' => $agent_data,
-    'financial_data' => $financial_data,
-    'similar_listings' => $similar_listings,
-    'components_status' => $components_status
-];
+// Ensure arrays and clean empty values
+$features = is_array($features) ? array_filter($features) : array();
+$exterior_features = is_array($exterior_features) ? array_filter($exterior_features) : array();
+$utility_features = is_array($utility_features) ? array_filter($utility_features) : array();
 
-// Assets are automatically loaded by Asset_Manager for single listing pages
-// Manual enqueueing disabled to prevent 404 errors with missing files
-// if (function_exists('hph_enqueue_template_assets')) {
-//     hph_enqueue_template_assets('single-listing');
-// }
+// Get gallery images
+$gallery = get_field('photo_gallery');
+$gallery_images = !empty($gallery) ? $gallery : array();
 
-// Add structured data
-if (function_exists('hph_add_listing_schema')) {
-    hph_add_listing_schema($listing_data);
+// Get current user favorites
+$favorites = array();
+if (is_user_logged_in()) {
+    $user_id = get_current_user_id();
+    $user_favorites = get_user_meta($user_id, 'hph_favorites', true);
+    if (!empty($user_favorites)) {
+        $favorites = explode(',', $user_favorites);
+    }
 }
 
-// Debug information for development
-if (defined('WP_DEBUG') && WP_DEBUG) {
-    $debug_info = [
-        'listing_id' => $listing_id,
-        'data_sources' => [
-            'bridge_functions' => function_exists('hph_bridge_get_listing_data'),
-            'plugin_active' => class_exists('HPH_Plugin_Manager'),
-            'acf_active' => function_exists('get_field')
-        ],
-        'component_count' => count(array_filter($components_status)),
-        'total_components' => count($components_status),
-        'memory_usage' => memory_get_usage(true),
-        'queries_before' => get_num_queries()
-    ];
-}
+// Check if this listing is in favorites
+$is_favorite = in_array(get_the_ID(), $favorites);
 ?>
 
-<article id="listing-<?php echo esc_attr($listing_id); ?>" class="single-listing-page" itemscope itemtype="https://schema.org/RealEstateListing">
-    
-    <!-- Hero Section -->
-    <section class="listing-hero-section" data-section="hero">
-        <?php 
-        if ($components_status['hero']) {
-            // Use Hero Component
-            try {
-                $hero_component = new HappyPlace\Components\Listing\Listing_Hero([
-                    'listing_id' => $listing_id,
-                    'hero_data' => $hero_data,
-                    'gallery_data' => $gallery_data,
-                    'variant' => 'full-width',
-                    'show_gallery' => true,
-                    'show_quick_facts' => true
-                ]);
-                $hero_component->display();
+<main class="hph-main hph-single-listing">
+    <!-- Property Header -->
+    <div class="hph-listing-hero">
+        <img src="<?php echo esc_url($hero_image); ?>" 
+             alt="<?php echo esc_attr(get_the_title()); ?>" 
+             class="hph-listing-hero-image"
+             loading="eager">
+        
+        <div class="hph-listing-hero-overlay">
+            <div class="hph-container">
+                <div class="hph-listing-status hph-listing-status--<?php echo $status_class; ?>">
+                    <?php echo $status_display; ?>
+                </div>
                 
-            } catch (Exception $e) {
-                error_log('HPH Hero Component Error: ' . $e->getMessage());
-                // Fall back to template part
-                hph_get_template_part('listing/hero', null, $template_args);
-            }
-            
-        } else {
-            // Use template part fallback
-            hph_get_template_part('listing/hero', null, $template_args);
-        }
-        ?>
-    </section>
-
-    <!-- Main Content Area -->
-    <div class="listing-content-wrapper">
-        <div class="hph-container">
-            <div class="listing-content-grid">
+                <h1 class="hph-listing-title"><?php the_title(); ?></h1>
                 
-                <!-- Primary Content Column -->
-                <main class="listing-main-content" role="main">
+                <div class="hph-listing-address">
+                    <i class="fas fa-map-marker-alt"></i> 
+                    <?php echo esc_html($full_address); ?>
+                </div>
+                
+                <div class="hph-listing-price">
+                    $<?php echo number_format($price); ?>
+                </div>
+                
+                <div class="hph-listing-hero-stats">
+                    <span><i class="fas fa-bed"></i> <?php echo esc_html($bedrooms); ?> beds</span>
+                    <span><i class="fas fa-bath"></i> <?php echo esc_html($bathrooms); ?> baths</span>
+                    <span><i class="fas fa-ruler-combined"></i> <?php echo number_format($square_feet); ?> sq ft</span>
+                    <?php if ($lot_size) : ?>
+                        <span><i class="fas fa-tree"></i> <?php echo esc_html($lot_size); ?> acres</span>
+                    <?php endif; ?>
+                </div>
+                
+                <div class="hph-listing-actions">
+                    <button class="hph-btn hph-btn-primary hph-btn-schedule">
+                        <i class="far fa-calendar-alt"></i> Schedule Showing
+                    </button>
                     
-                    <!-- Property Description -->
-                    <section class="property-description-section" data-section="description">
-                        <header class="section-header">
-                            <h2 class="section-title">About This Property</h2>
-                        </header>
-                        
-                        <div class="property-description-content">
-                            <?php 
-                            $description = $listing_data['description'] ?? get_the_content();
-                            if ($description) {
-                                echo '<div class="formatted-content">' . wpautop($description) . '</div>';
-                            } else {
-                                echo '<p class="no-description">Property description coming soon.</p>';
-                            }
-                            ?>
-                        </div>
-                    </section>
-
-                    <!-- Property Details -->
-                    <section class="property-details-section" data-section="details">
-                        <?php 
-                        if ($components_status['details']) {
-                            // Use Details Component
-                            try {
-                                $details_component = new HappyPlace\Components\Listing\Listing_Details([
-                                    'listing_id' => $listing_id,
-                                    'property_details' => $property_details,
-                                    'variant' => 'detailed',
-                                    'show_categories' => ['basic', 'dimensions', 'utilities', 'features']
-                                ]);
-                                $details_component->display();
-                                
-                            } catch (Exception $e) {
-                                error_log('HPH Details Component Error: ' . $e->getMessage());
-                                hph_get_template_part('listing/details', null, $template_args);
-                            }
-                            
-                        } else {
-                            // Template part fallback
-                            hph_get_template_part('listing/details', null, $template_args);
-                        }
-                        ?>
-                    </section>
-
-                    <!-- Features & Amenities -->
-                    <section class="property-features-section" data-section="features">
-                        <?php 
-                        if ($components_status['features'] && !empty($features_data)) {
-                            // Use Features Component
-                            try {
-                                $features_component = new HappyPlace\Components\Listing\Features([
-                                    'listing_id' => $listing_id,
-                                    'features_data' => $features_data,
-                                    'layout' => 'grid',
-                                    'show_categories' => true,
-                                    'show_icons' => true
-                                ]);
-                                $features_component->display();
-                                
-                            } catch (Exception $e) {
-                                error_log('HPH Features Component Error: ' . $e->getMessage());
-                                hph_get_template_part('listing/features', null, $template_args);
-                            }
-                            
-                        } elseif (!empty($features_data)) {
-                            // Template part fallback
-                            hph_get_template_part('listing/features', null, $template_args);
-                        }
-                        ?>
-                    </section>
-
-                    <!-- Photo Gallery (if not in hero) -->
-                    <?php if (!empty($gallery_data) && count($gallery_data) > 3) : ?>
-                    <section class="property-gallery-section" data-section="gallery">
-                        <?php 
-                        if ($components_status['gallery']) {
-                            // Use Gallery Component
-                            try {
-                                $gallery_component = new HappyPlace\Components\Listing\Gallery([
-                                    'listing_id' => $listing_id,
-                                    'gallery_data' => $gallery_data,
-                                    'variant' => 'detailed',
-                                    'layout' => 'masonry',
-                                    'show_lightbox' => true,
-                                    'lazy_load' => true
-                                ]);
-                                $gallery_component->display();
-                                
-                            } catch (Exception $e) {
-                                error_log('HPH Gallery Component Error: ' . $e->getMessage());
-                                hph_get_template_part('listing/gallery', null, $template_args);
-                            }
-                            
-                        } else {
-                            // Template part fallback
-                            hph_get_template_part('listing/gallery', null, $template_args);
-                        }
-                        ?>
-                    </section>
-                    <?php endif; ?>
-
-                    <!-- Neighborhood Information -->
-                    <section class="neighborhood-section" data-section="neighborhood">
-                        <?php hph_get_template_part('listing/neighborhood', null, $template_args); ?>
-                    </section>
-
-                    <!-- Similar Listings -->
-                    <?php if (!empty($similar_listings)) : ?>
-                    <section class="similar-listings-section" data-section="similar">
-                        <?php 
-                        if ($components_status['similar_listings']) {
-                            // Use Similar Listings Component
-                            try {
-                                $similar_component = new HappyPlace\Components\Listing\Similar_Grid([
-                                    'current_listing_id' => $listing_id,
-                                    'similar_listings' => $similar_listings,
-                                    'columns' => 3,
-                                    'show_title' => true,
-                                    'title' => 'Similar Properties'
-                                ]);
-                                $similar_component->display();
-                                
-                            } catch (Exception $e) {
-                                error_log('HPH Similar Listings Component Error: ' . $e->getMessage());
-                                hph_get_template_part('listing/similar-listings', null, $template_args);
-                            }
-                            
-                        } else {
-                            // Template part fallback
-                            hph_get_template_part('listing/similar-listings', null, $template_args);
-                        }
-                        ?>
-                    </section>
-                    <?php endif; ?>
-
-                </main>
-
-                <!-- Sidebar -->
-                <aside class="listing-sidebar" role="complementary">
+                    <button class="hph-btn hph-btn-outline hph-btn-favorite <?php echo $is_favorite ? 'is-favorite' : ''; ?>" 
+                            data-id="<?php echo get_the_ID(); ?>" 
+                            data-nonce="<?php echo wp_create_nonce('hph_favorite_nonce'); ?>">
+                        <i class="<?php echo $is_favorite ? 'fas' : 'far'; ?> fa-heart"></i>
+                        <span><?php echo $is_favorite ? 'Saved' : 'Save'; ?></span>
+                    </button>
                     
-                    <!-- Agent Card -->
-                    <div class="sidebar-section agent-section">
-                        <?php 
-                        if ($components_status['agent_card'] && !empty($agent_data)) {
-                            // Use Agent Card Component
-                            try {
-                                $agent_component = new HappyPlace\Components\Agent\Agent_Card([
-                                    'agent_id' => $agent_data['id'] ?? 0,
-                                    'agent_data' => $agent_data,
-                                    'variant' => 'sidebar',
-                                    'show_contact_form' => true,
-                                    'show_listings_count' => true
-                                ]);
-                                $agent_component->display();
-                                
-                            } catch (Exception $e) {
-                                error_log('HPH Agent Card Component Error: ' . $e->getMessage());
-                                hph_get_template_part('agent/card', 'sidebar', $template_args);
-                            }
-                            
-                        } else {
-                            // Template part fallback
-                            hph_get_template_part('agent/card', 'sidebar', $template_args);
-                        }
-                        ?>
-                    </div>
-
-                    <!-- Mortgage Calculator -->
-                    <div class="sidebar-section calculator-section">
-                        <?php 
-                        if ($components_status['mortgage_calculator'] && !empty($financial_data)) {
-                            // Use Mortgage Calculator Component
-                            try {
-                                $calculator_component = new HappyPlace\Components\Tools\Mortgage_Calculator([
-                                    'listing_id' => $listing_id,
-                                    'financial_data' => $financial_data,
-                                    'variant' => 'sidebar',
-                                    'show_taxes' => true,
-                                    'show_insurance' => true,
-                                    'show_pmi' => true
-                                ]);
-                                $calculator_component->display();
-                                
-                            } catch (Exception $e) {
-                                error_log('HPH Calculator Component Error: ' . $e->getMessage());
-                                hph_get_template_part('tools/mortgage-calculator', 'sidebar', $template_args);
-                            }
-                            
-                        } else {
-                            // Template part fallback
-                            hph_get_template_part('tools/mortgage-calculator', 'sidebar', $template_args);
-                        }
-                        ?>
-                    </div>
-
-                    <!-- Contact Form -->
-                    <div class="sidebar-section contact-section">
-                        <?php 
-                        if ($components_status['contact_form']) {
-                            // Use Contact Form Component
-                            try {
-                                $contact_component = new HappyPlace\Components\UI\Contact_Form([
-                                    'listing_id' => $listing_id,
-                                    'agent_id' => $agent_data['id'] ?? 0,
-                                    'variant' => 'sidebar',
-                                    'form_type' => 'listing_inquiry',
-                                    'show_phone' => true,
-                                    'show_tour_request' => true
-                                ]);
-                                $contact_component->display();
-                                
-                            } catch (Exception $e) {
-                                error_log('HPH Contact Form Component Error: ' . $e->getMessage());
-                                hph_get_template_part('forms/contact-form', 'sidebar', $template_args);
-                            }
-                            
-                        } else {
-                            // Template part fallback
-                            hph_get_template_part('forms/contact-form', 'sidebar', $template_args);
-                        }
-                        ?>
-                    </div>
-
-                    <!-- Additional Sidebar Widgets -->
-                    <?php if (is_active_sidebar('listing-sidebar')) : ?>
-                        <div class="sidebar-section widgets-section">
-                            <?php dynamic_sidebar('listing-sidebar'); ?>
-                        </div>
-                    <?php endif; ?>
-
-                </aside>
-
+                    <button class="hph-btn hph-btn-outline hph-btn-share">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+    
+    <!-- Main Content -->
+    <div class="hph-container">
+        <div class="hph-listing-content-wrapper">
+            <!-- Left Column (Main Content) -->
+            <div class="hph-listing-main">
+                <!-- Gallery Section -->
+                <div class="hph-listing-gallery-section">
+                    <div class="hph-gallery">
+                        <div class="hph-gallery-grid">
+                            <?php if ($gallery_images) : ?>
+                                <?php $count = 0; ?>
+                                <?php foreach ($gallery_images as $image) : ?>
+                                    <div class="hph-gallery-item <?php echo ($count === 0) ? 'hph-gallery-main' : ''; ?>">
+                                        <img src="<?php echo esc_url($image['url']); ?>" 
+                                             alt="<?php echo esc_attr($image['alt']); ?>"
+                                             data-full="<?php echo esc_url($image['url']); ?>">
+                                    </div>
+                                    <?php $count++; ?>
+                                    <?php if ($count >= 5) break; ?>
+                                <?php endforeach; ?>
+                                
+                                <?php if (count($gallery_images) > 5) : ?>
+                                    <div class="hph-gallery-more">
+                                        <span>+<?php echo count($gallery_images) - 5; ?> Photos</span>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Description Section -->
+                <div class="hph-card hph-listing-description">
+                    <h2>About This Property</h2>
+                    <div class="hph-listing-description-content">
+                        <?php echo wpautop($description); ?>
+                    </div>
+                </div>
+                
+                <!-- Property Details Section -->
+                <div class="hph-card hph-listing-details-section">
+                    <h2>Property Details</h2>
+                    
+                    <div class="hph-property-details-grid">
+                        <div class="hph-property-detail">
+                            <div class="hph-property-detail-label">Property Type</div>
+                            <div class="hph-property-detail-value">
+                                <?php 
+                                if (!empty($property_types)) {
+                                    echo esc_html(implode(', ', array_map('ucwords', $property_types)));
+                                } else {
+                                    echo esc_html__('Not Specified', 'happy-place');
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        
+                        <div class="hph-property-detail">
+                            <div class="hph-property-detail-label">Year Built</div>
+                            <div class="hph-property-detail-value"><?php echo esc_html($year_built); ?></div>
+                        </div>
+                        
+                        <div class="hph-property-detail">
+                            <div class="hph-property-detail-label">Square Footage</div>
+                            <div class="hph-property-detail-value"><?php echo number_format($square_feet); ?> sq ft</div>
+                        </div>
+                        
+                        <div class="hph-property-detail">
+                            <div class="hph-property-detail-label">Lot Size</div>
+                            <div class="hph-property-detail-value"><?php echo esc_html($lot_size); ?> acres</div>
+                        </div>
+                        
+                        <div class="hph-property-detail">
+                            <div class="hph-property-detail-label">Bedrooms</div>
+                            <div class="hph-property-detail-value"><?php echo esc_html($bedrooms); ?></div>
+                        </div>
+                        
+                        <div class="hph-property-detail">
+                            <div class="hph-property-detail-label">Bathrooms</div>
+                            <div class="hph-property-detail-value"><?php echo esc_html($bathrooms); ?></div>
+                        </div>
+                        
+                        <div class="hph-property-detail">
+                            <div class="hph-property-detail-label">Garage</div>
+                            <div class="hph-property-detail-value"><?php echo esc_html($garage); ?> car</div>
+                        </div>
+                        
+                        <div class="hph-property-detail">
+                            <div class="hph-property-detail-label">MLS#</div>
+                            <div class="hph-property-detail-value"><?php echo esc_html($mls_number); ?></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Features Section -->
+                <div class="hph-card hph-listing-features">
+                    <h2>Features & Amenities</h2>
+                    
+                    <?php if (!empty($features)) : ?>
+                        <h3>Interior Features</h3>
+                        <ul>
+                            <?php foreach ($features as $feature) : 
+                                if (empty($feature)) continue;
+                                $display_name = str_replace(['_', '-'], ' ', $feature);
+                                $display_name = ucwords($display_name);
+                                $icon_class = $feature_icons[sanitize_title($feature)] ?? $feature_icons['default'];
+                            ?>
+                                <li>
+                                    <i class="<?php echo esc_attr($icon_class); ?>"></i>
+                                    <?php echo esc_html($display_name); ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($exterior_features)) : ?>
+                        <h3>Exterior Features</h3>
+                        <ul>
+                            <?php foreach ($exterior_features as $feature) : 
+                                $icon_class = $feature_icons[$feature] ?? $feature_icons['default'];
+                            ?>
+                                <li>
+                                    <i class="<?php echo esc_attr($icon_class); ?>"></i>
+                                    <?php echo esc_html($feature); ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($utility_features)) : ?>
+                        <h3>Utility Features</h3>
+                        <ul>
+                            <?php foreach ($utility_features as $feature) : 
+                                $icon_class = $feature_icons[$feature] ?? $feature_icons['default'];
+                            ?>
+                                <li>
+                                    <i class="<?php echo esc_attr($icon_class); ?>"></i>
+                                    <?php echo esc_html($feature); ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                </div>
+                
+                <!-- Location Section -->
+                <?php 
+                $latitude = get_field('latitude');
+                $longitude = get_field('longitude');
+                if ($latitude && $longitude) : 
+                ?>
+                    <div class="hph-card hph-listing-map">
+                        <h2>Location</h2>
+                        
+                        <div id="property-map" 
+                             class="hph-property-map" 
+                             data-lat="<?php echo esc_attr($latitude); ?>" 
+                             data-lng="<?php echo esc_attr($longitude); ?>"
+                             data-title="<?php echo esc_attr(get_the_title()); ?>"
+                             data-address="<?php echo esc_attr($full_address); ?>">
+                        </div>
+                        
+                        <div class="hph-nearby-places">
+                            <h3>Explore Nearby</h3>
+                            <div class="hph-nearby-places-buttons">
+                                <button class="hph-nearby-places-btn" data-type="restaurant">
+                                    <i class="fas fa-utensils"></i> Restaurants
+                                </button>
+                                <button class="hph-nearby-places-btn" data-type="school">
+                                    <i class="fas fa-school"></i> Schools
+                                </button>
+                                <button class="hph-nearby-places-btn" data-type="shopping_mall">
+                                    <i class="fas fa-shopping-bag"></i> Shopping
+                                </button>
+                                <button class="hph-nearby-places-btn" data-type="park">
+                                    <i class="fas fa-tree"></i> Parks
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Virtual Tour Section -->
+                <?php if ($virtual_tour) : ?>
+                    <div class="hph-card hph-virtual-tour-section">
+                        <h2>Virtual Tour</h2>
+                        
+                        <div class="hph-virtual-tour-container">
+                            <iframe src="<?php echo esc_url($virtual_tour); ?>" 
+                                    class="hph-virtual-tour-iframe" 
+                                    allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+            
+            <!-- Right Column (Sidebar) -->
+            <div class="hph-listing-sidebar">
+                <!-- Agent Card -->
+                <?php 
+                // Get agents who manage this listing
+                $args = array(
+                    'post_type' => 'agent',
+                    'posts_per_page' => 1,
+                    'meta_query' => array(
+                        array(
+                            'key' => 'managed_listings',
+                            'value' => '"' . get_the_ID() . '"',
+                            'compare' => 'LIKE'
+                        )
+                    )
+                );
+                
+                $agent_query = new WP_Query($args);
+                
+                if ($agent_query->have_posts()) : 
+                    $agent_query->the_post();
+                    $agent_id = get_the_ID();
+                    // Get agent data with fallbacks
+                    $agent_name = get_the_title();
+                    $profile_photo = get_field('profile_photo');
+                    $agent_image = $profile_photo ? $profile_photo['url'] : '';
+                    $agent_phone = get_field('phone');
+                    $agent_email = get_field('email');
+                    $agent_license = get_field('license_number');
+                    $agent_license_state = get_field('license_state');
+                    $contact_prefs = get_field('contact_preferences');
+                    $service_areas = get_field('service_areas');
+                    $social_links = get_field('social_links');
+                    $certifications = get_field('certifications');
+                ?>
+                    <div class="hph-card hph-agent-card">
+                        <div class="hph-agent-header">
+                            <div class="hph-agent-image">
+                                <?php if ($agent_image) : ?>
+                                    <img src="<?php echo esc_url($agent_image); ?>" 
+                                         alt="<?php echo esc_attr($agent_name); ?>"
+                                         loading="lazy">
+                                <?php else : ?>
+                                    <div class="hph-agent-placeholder">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <div class="hph-agent-info">
+                                <h3 class="hph-agent-name"><?php echo esc_html($agent_name); ?></h3>
+                                <div class="hph-agent-meta">
+                                    <?php if ($agent_license) : ?>
+                                        <div class="hph-agent-license">
+                                            License #<?php echo esc_html($agent_license); ?>
+                                            <?php if ($agent_license_state) : ?>
+                                                (<?php echo esc_html(strtoupper($agent_license_state)); ?>)
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($certifications) : ?>
+                                        <div class="hph-agent-certifications">
+                                            <?php foreach ($certifications as $cert) : ?>
+                                                <span class="hph-certification">
+                                                    <?php echo esc_html($cert['name']); ?>
+                                                </span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
 
-    <!-- Component Testing Debug Panel (Development Only) -->
-    <?php if (defined('WP_DEBUG') && WP_DEBUG && isset($_GET['component_test'])) : ?>
-    <div id="component-debug-panel" style="position: fixed; bottom: 0; right: 0; background: #000; color: #fff; padding: 20px; max-width: 400px; max-height: 300px; overflow: auto; z-index: 9999; font-family: monospace; font-size: 12px;">
-        <h4 style="margin: 0 0 10px 0; color: #4CAF50;">🧪 Component Test Results</h4>
-        
-        <div style="margin-bottom: 15px;">
-            <strong>Components Available:</strong><br>
-            <?php foreach ($components_status as $component => $available) : ?>
-                <span style="color: <?php echo $available ? '#4CAF50' : '#f44336'; ?>;">
-                    <?php echo $available ? '✅' : '❌'; ?> <?php echo ucwords(str_replace('_', ' ', $component)); ?>
-                </span><br>
-            <?php endforeach; ?>
-        </div>
+                        <div class="hph-agent-contact">
+                            <?php 
+                            // Get contact preferences
+                            $contact_prefs = get_field('contact_preferences', $agent_id) ?: [];
+                            $phone = get_field('phone', $agent_id);
+                            $email = get_field('email', $agent_id);
+                            $schedule_link = get_field('schedule_link', $agent_id);
+                            $chat_link = get_field('chat_link', $agent_id);
+                            ?>
 
-        <div style="margin-bottom: 15px;">
-            <strong>Performance:</strong><br>
-            Load Time: <?php echo round((microtime(true) - $template_start_time) * 1000, 2); ?>ms<br>
-            Memory: <?php echo round(memory_get_usage(true) / 1024 / 1024, 2); ?>MB<br>
-            Queries: <?php echo get_num_queries() - ($debug_info['queries_before'] ?? 0); ?><br>
-        </div>
+                            <?php if ($schedule_link) : ?>
+                                <a href="<?php echo esc_url($schedule_link); ?>" 
+                                   class="hph-btn hph-btn-primary hph-btn-block"
+                                   target="_blank">
+                                    <i class="far fa-calendar-alt"></i> Schedule Showing
+                                </a>
+                            <?php endif; ?>
 
-        <div>
-            <strong>Data Sources:</strong><br>
-            Bridge Functions: <?php echo $debug_info['data_sources']['bridge_functions'] ? '✅' : '❌'; ?><br>
-            Plugin Active: <?php echo $debug_info['data_sources']['plugin_active'] ? '✅' : '❌'; ?><br>
-            ACF Active: <?php echo $debug_info['data_sources']['acf_active'] ? '✅' : '❌'; ?><br>
-        </div>
+                            <?php if ($phone && in_array('phone_ok', $contact_prefs)) : ?>
+                                <a href="tel:<?php echo esc_attr($phone); ?>" 
+                                   class="hph-btn hph-btn-outline hph-btn-block">
+                                    <i class="fas fa-phone"></i> <?php echo esc_html($phone); ?>
+                                </a>
+                            <?php endif; ?>
+                            
+                            <?php if ($chat_link && in_array('text_ok', $contact_prefs)) : ?>
+                                <a href="<?php echo esc_url($chat_link); ?>" 
+                                   class="hph-btn hph-btn-outline hph-btn-block"
+                                   target="_blank">
+                                    <i class="fas fa-comment"></i> Chat Now
+                                </a>
+                            <?php endif; ?>
+                            
+                            <?php if ($email && in_array('email_ok', $contact_prefs)) : ?>
+                                <a href="mailto:<?php echo esc_attr($email); ?>" 
+                                   class="hph-btn hph-btn-outline hph-btn-block">
+                                    <i class="fas fa-envelope"></i> Email Agent
+                                </a>
+                            <?php endif; ?>
 
-        <div style="margin-top: 10px; font-size: 10px; opacity: 0.7;">
-            Add ?component_test=1 to URL to see this panel
+                            <a href="<?php echo get_permalink($agent_id); ?>" 
+                               class="hph-btn hph-btn-outline hph-btn-block">
+                                View Full Profile
+                            </a>
+                        </div>
+
+                        <?php if ($social_links) : ?>
+                            <div class="hph-agent-social">
+                                <?php foreach ($social_links as $social) : 
+                                    if (empty($social['url'])) continue;
+                                ?>
+                                    <a href="<?php echo esc_url($social['url']); ?>" 
+                                       target="_blank" 
+                                       rel="noopener noreferrer"
+                                       class="hph-agent-social-link">
+                                        <i class="fab fa-<?php echo esc_attr($social['platform']); ?>"></i>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($service_areas) : ?>
+                            <div class="hph-agent-service-areas">
+                                <h4>Service Areas</h4>
+                                <div class="hph-service-area-tags">
+                                    <?php foreach ($service_areas as $area) : ?>
+                                        <span class="hph-service-area-tag">
+                                            <?php echo esc_html(str_replace('_', ' ', ucwords($area))); ?>
+                                        </span>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php 
+                wp_reset_postdata();
+                endif; 
+                ?>
+
+                <!-- Contact Form -->
+                <div class="hph-card hph-contact-form-card">
+                    <h3>Interested in this property?</h3>
+                    
+                    <form class="hph-listing-contact-form" id="property-inquiry-form">
+                        <input type="hidden" name="property_id" value="<?php echo get_the_ID(); ?>">
+                        
+                        <div class="hph-form-group">
+                            <label for="inquiry-name">Your Name</label>
+                            <input type="text" id="inquiry-name" name="name" required>
+                        </div>
+                        
+                        <div class="hph-form-group">
+                            <label for="inquiry-email">Email Address</label>
+                            <input type="email" id="inquiry-email" name="email" required>
+                        </div>
+                        
+                        <div class="hph-form-group">
+                            <label for="inquiry-phone">Phone Number</label>
+                            <input type="tel" id="inquiry-phone" name="phone">
+                        </div>
+                        
+                        <div class="hph-form-group">
+                            <label for="inquiry-message">Message</label>
+                            <textarea id="inquiry-message" name="message" rows="4" required>I'm interested in this property. Please contact me with more information.</textarea>
+                        </div>
+                        
+                        <div class="hph-form-group hph-form-checkbox">
+                            <input type="checkbox" id="inquiry-consent" name="consent" required>
+                            <label for="inquiry-consent">
+                                I consent to receiving communications about this property and related services.
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="hph-btn hph-btn-primary hph-btn-block">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Mortgage Calculator -->
+                <div class="hph-card hph-mortgage-calculator">
+                    <h3>Mortgage Calculator</h3>
+                    
+                    <form class="hph-mortgage-calculator-form" id="mortgage-calculator-form">
+                        <input type="hidden" id="property-price" value="<?php echo esc_attr($price); ?>">
+                        
+                        <div class="hph-form-group">
+                            <label for="down-payment">Down Payment</label>
+                            <div class="hph-input-group">
+                                <span class="hph-input-group-text">$</span>
+                                <input type="number" id="down-payment" value="<?php echo round($price * 0.2); ?>">
+                            </div>
+                            <input type="range" id="down-payment-slider" min="0" max="<?php echo esc_attr($price); ?>" value="<?php echo round($price * 0.2); ?>" step="1000">
+                        </div>
+                        
+                        <div class="hph-form-group">
+                            <label for="interest-rate">Interest Rate</label>
+                            <div class="hph-input-group">
+                                <input type="number" id="interest-rate" value="5.5" step="0.1">
+                                <span class="hph-input-group-text">%</span>
+                            </div>
+                            <input type="range" id="interest-rate-slider" min="2" max="10" value="5.5" step="0.1">
+                        </div>
+                        
+                        <div class="hph-form-group">
+                            <label for="loan-term">Loan Term</label>
+                            <div class="hph-input-group">
+                                <input type="number" id="loan-term" value="30">
+                                <span class="hph-input-group-text">years</span>
+                            </div>
+                            <input type="range" id="loan-term-slider" min="5" max="30" value="30" step="5">
+                        </div>
+                        
+                        <div class="hph-mortgage-result">
+                            <div class="hph-mortgage-payment">
+                                <span class="hph-mortgage-payment-label">Monthly Payment:</span>
+                                <span class="hph-mortgage-payment-value" id="monthly-payment">$0</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Similar Properties -->
+                <?php
+                // Get property type
+                $property_types = get_the_terms(get_the_ID(), 'property_type');
+                
+                if ($property_types) {
+                    $property_type_ids = array();
+                    foreach ($property_types as $property_type) {
+                        $property_type_ids[] = $property_type->term_id;
+                    }
+                    
+                    // Similar properties query
+                    $similar_args = array(
+                        'post_type' => 'listing',
+                        'posts_per_page' => 3,
+                        'post__not_in' => array(get_the_ID()),
+                        'tax_query' => array(
+                            array(
+                                'taxonomy' => 'property_type',
+                                'field' => 'term_id',
+                                'terms' => $property_type_ids
+                            )
+                        ),
+                        'meta_query' => array(
+                            array(
+                                'key' => 'bedrooms',
+                                'value' => $bedrooms,
+                                'compare' => 'BETWEEN',
+                                'type' => 'NUMERIC',
+                                'value' => array($bedrooms - 1, $bedrooms + 1)
+                            ),
+                            array(
+                                'key' => 'price',
+                                'value' => array($price * 0.8, $price * 1.2),
+                                'compare' => 'BETWEEN',
+                                'type' => 'NUMERIC'
+                            )
+                        )
+                    );
+                    
+                    $similar_query = new WP_Query($similar_args);
+                    
+                    if ($similar_query->have_posts()) :
+                    ?>
+                        <div class="hph-card hph-similar-properties">
+                            <h3>Similar Properties</h3>
+                            
+                            <div class="hph-similar-properties-list">
+                                <?php while ($similar_query->have_posts()) : $similar_query->the_post(); ?>
+                                    <?php
+                                    $similar_price = get_field('price');
+                                    $similar_bedrooms = get_field('bedrooms');
+                                    $similar_bathrooms = get_field('bathrooms');
+                                    $similar_sqft = get_field('square_feet');
+                                    ?>
+                                    
+                                    <div class="hph-similar-property">
+                                        <a href="<?php the_permalink(); ?>" class="hph-similar-property-link">
+                                            <div class="hph-similar-property-image">
+                                                <?php if (has_post_thumbnail()) : ?>
+                                                    <?php the_post_thumbnail('medium'); ?>
+                                                <?php else : ?>
+                                                    <div class="hph-similar-property-placeholder"></div>
+                                                <?php endif; ?>
+                                            </div>
+                                            
+                                            <div class="hph-similar-property-info">
+                                                <div class="hph-similar-property-price">$<?php echo number_format($similar_price); ?></div>
+                                                <h4 class="hph-similar-property-title"><?php the_title(); ?></h4>
+                                                <div class="hph-similar-property-meta">
+                                                    <span><?php echo esc_html($similar_bedrooms); ?> bd</span>
+                                                    <span><?php echo esc_html($similar_bathrooms); ?> ba</span>
+                                                    <span><?php echo number_format($similar_sqft); ?> sq ft</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                <?php endwhile; ?>
+                                <?php wp_reset_postdata(); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php } ?>
+            </div>
         </div>
     </div>
-    <?php endif; ?>
+</main>
 
-</article>
+<!-- Gallery Modal -->
+<div class="hph-gallery-modal" id="gallery-modal">
+    <div class="hph-gallery-modal-header">
+        <h3 class="hph-gallery-modal-title"><?php the_title(); ?> - Photo Gallery</h3>
+        <button class="hph-gallery-modal-close">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="hph-gallery-modal-content">
+        <div class="hph-gallery-modal-main">
+            <img src="" alt="" class="hph-gallery-modal-image">
+            
+            <button class="hph-gallery-nav hph-gallery-prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <button class="hph-gallery-nav hph-gallery-next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+        <div class="hph-gallery-modal-thumbs">
+            <?php if ($gallery_images) : ?>
+                <?php foreach ($gallery_images as $index => $image) : ?>
+                    <div class="hph-gallery-thumb" data-index="<?php echo esc_attr($index); ?>">
+                        <img src="<?php echo esc_url($image['sizes']['thumbnail']); ?>" 
+                             alt="<?php echo esc_attr($image['alt']); ?>"
+                             data-full="<?php echo esc_url($image['url']); ?>">
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
 
-<?php
-// Performance logging
-if (defined('WP_DEBUG') && WP_DEBUG) {
-    $template_end_time = microtime(true);
-    $execution_time = ($template_end_time - $template_start_time) * 1000;
-    error_log("HPH Single Listing Template: {$execution_time}ms, " . get_num_queries() . " queries, " . round(memory_get_usage(true) / 1024 / 1024, 2) . "MB memory");
-}
+<!-- Contact Form Success Message -->
+<div class="hph-form-message success" id="inquiry-success" style="display: none;">
+    <i class="fas fa-check-circle"></i> 
+    Your message has been sent successfully! We'll be in touch soon.
+</div>
 
-get_footer();
-?>
+<?php get_footer(); ?>

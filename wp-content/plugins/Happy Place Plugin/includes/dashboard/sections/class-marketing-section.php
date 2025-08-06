@@ -83,8 +83,8 @@ class Marketing_Section extends Base_Dashboard_Section {
         // Enqueue jQuery first (ensure it's loaded)
         wp_enqueue_script('jquery');
         
-        // Enqueue Fabric.js for canvas manipulation
-        wp_enqueue_script('fabric', 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js', ['jquery'], '5.3.0', true);
+        // Enqueue Fabric.js for canvas manipulation - use consistent handle
+        wp_enqueue_script('fabric-js', 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js', ['jquery'], '5.3.0', true);
         
         // Enqueue JSZip for creating ZIP downloads
         wp_enqueue_script('jszip', 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js', ['jquery'], '3.10.1', true);
@@ -93,7 +93,7 @@ class Marketing_Section extends Base_Dashboard_Section {
         wp_enqueue_script(
             'marketing-suite-generator',
             HPH_PLUGIN_URL . 'assets/js/marketing-suite-generator.js',
-            ['jquery', 'fabric', 'jszip'],
+            ['jquery', 'fabric-js', 'jszip'],
             HPH_VERSION,
             true
         );
@@ -105,8 +105,16 @@ class Marketing_Section extends Base_Dashboard_Section {
             HPH_VERSION
         );
         
-        // Localize script with AJAX URL and nonce - Use consistent variable name
+        // Localize script with AJAX URL and nonce - Use consistent variable names
         wp_localize_script('marketing-suite-generator', 'marketingSuiteAjax', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('marketing_suite_nonce'),
+            'pluginUrl' => HPH_PLUGIN_URL,
+            'dashboardNonce' => wp_create_nonce('hph_dashboard_nonce')
+        ]);
+
+        // Also provide flyerGenerator object for compatibility
+        wp_localize_script('marketing-suite-generator', 'flyerGenerator', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('marketing_suite_nonce'),
             'pluginUrl' => HPH_PLUGIN_URL,
@@ -443,41 +451,57 @@ class Marketing_Section extends Base_Dashboard_Section {
      * Load marketing suite interface via AJAX
      */
     public function load_marketing_suite_interface(): void {
-        // Flexible nonce checking for compatibility
-        $nonce_valid = false;
-        if (isset($_POST['nonce'])) {
-            if (wp_verify_nonce($_POST['nonce'], 'marketing_suite_nonce')) {
-                $nonce_valid = true;
-            } elseif (wp_verify_nonce($_POST['nonce'], 'hph_dashboard_nonce')) {
-                $nonce_valid = true;
+        try {
+            // Enhanced security validation - check multiple nonce types for compatibility
+            $nonce_valid = false;
+            if (isset($_POST['nonce'])) {
+                if (wp_verify_nonce($_POST['nonce'], 'marketing_suite_nonce')) {
+                    $nonce_valid = true;
+                } elseif (wp_verify_nonce($_POST['nonce'], 'hph_dashboard_nonce')) {
+                    $nonce_valid = true;
+                } elseif (wp_verify_nonce($_POST['nonce'], 'hph_ajax_nonce')) {
+                    $nonce_valid = true;
+                }
             }
-        }
-        
-        if (!$nonce_valid) {
-            wp_die(__('Security check failed.', 'happy-place'));
-        }
-        
-        if (!current_user_can('read')) {
-            wp_die(__('You do not have permission to perform this action.', 'happy-place'));
-        }
-        
-        // Debug logging
-        error_log('HPH Marketing Suite: Loading interface via AJAX...');
-        
-        // Ensure the marketing suite generator class is loaded
-        $generator_file = HPH_PATH . 'includes/dashboard/class-marketing-suite-generator.php';
-        if (file_exists($generator_file)) {
-            require_once $generator_file;
-            error_log('HPH Marketing Suite: Generator file loaded');
-        } else {
-            error_log('HPH Marketing Suite: Generator file not found at: ' . $generator_file);
-        }
-        
-        // Check if marketing suite generator class exists
-        if (class_exists('HappyPlace\\Dashboard\\Marketing_Suite_Generator')) {
-            error_log('HPH Marketing Suite: Generator class found, creating instance...');
             
-            try {
+            if (!$nonce_valid) {
+                wp_send_json_error([
+                    'message' => __('Security check failed.', 'happy-place'),
+                    'code' => 'invalid_nonce'
+                ], 403);
+                return;
+            }
+            
+            // Verify user permissions
+            if (!current_user_can('read')) {
+                wp_send_json_error([
+                    'message' => __('You do not have permission to perform this action.', 'happy-place'),
+                    'code' => 'insufficient_permissions'
+                ], 403);
+                return;
+            }
+            
+            // Debug logging
+            error_log('HPH Marketing Suite: Loading interface via AJAX...');
+            
+            // Ensure the marketing suite generator class is loaded
+            $generator_file = HPH_PATH . 'includes/dashboard/class-marketing-suite-generator.php';
+            if (file_exists($generator_file)) {
+                require_once $generator_file;
+                error_log('HPH Marketing Suite: Generator file loaded');
+            } else {
+                error_log('HPH Marketing Suite: Generator file not found at: ' . $generator_file);
+                wp_send_json_error([
+                    'message' => __('Marketing suite generator not found.', 'happy-place'),
+                    'code' => 'generator_not_found'
+                ], 500);
+                return;
+            }
+            
+            // Check if marketing suite generator class exists
+            if (class_exists('HappyPlace\\Dashboard\\Marketing_Suite_Generator')) {
+                error_log('HPH Marketing Suite: Generator class found, creating instance...');
+                
                 $generator = \HappyPlace\Dashboard\Marketing_Suite_Generator::get_instance();
                 
                 // Get listings and agents data
@@ -501,36 +525,36 @@ class Marketing_Section extends Base_Dashboard_Section {
                     ]
                 ]);
                 
-            } catch (Exception $e) {
-                error_log('HPH Marketing Suite: Error rendering interface: ' . $e->getMessage());
-                wp_send_json_error([
-                    'message' => 'Error loading Marketing Suite: ' . $e->getMessage()
+            } else {
+                error_log('HPH Marketing Suite: Generator class not found, using fallback');
+                // Fallback: provide a simple interface or redirect message
+                $html = '<div class="marketing-suite-fallback" style="padding: 30px; text-align: center;">
+                    <h3>Marketing Suite Generator</h3>
+                    <p>The Marketing Suite Generator is available in the admin menu.</p>
+                    <a href="' . admin_url('admin.php?page=marketing-suite-generator') . '" class="button button-primary" target="_blank">
+                        Open Marketing Suite Generator
+                    </a>
+                    <details style="margin-top: 20px; text-align: left;">
+                        <summary>Debug Information</summary>
+                        <p><strong>Generator file path:</strong> ' . $generator_file . '</p>
+                        <p><strong>File exists:</strong> ' . (file_exists($generator_file) ? 'Yes' : 'No') . '</p>
+                        <p><strong>Class exists:</strong> No</p>
+                    </details>
+                </div>';
+                
+                wp_send_json_success([
+                    'html' => $html
                 ]);
             }
-        } else {
-            error_log('HPH Marketing Suite: Generator class not found, using fallback');
-            // Fallback: provide a simple interface or redirect message
-            $html = '<div class="marketing-suite-fallback" style="padding: 30px; text-align: center;">
-                <h3>Marketing Suite Generator</h3>
-                <p>The Marketing Suite Generator is available in the admin menu.</p>
-                <a href="' . admin_url('admin.php?page=marketing-suite-generator') . '" class="button button-primary" target="_blank">
-                    Open Marketing Suite Generator
-                </a>
-                <details style="margin-top: 20px; text-align: left;">
-                    <summary>Debug Information</summary>
-                    <p><strong>Generator file path:</strong> ' . $generator_file . '</p>
-                    <p><strong>File exists:</strong> ' . (file_exists($generator_file) ? 'Yes' : 'No') . '</p>
-                    <p><strong>Class exists:</strong> No</p>
-                </details>
-            </div>';
             
-            wp_send_json_success([
-                'html' => $html
-            ]);
+        } catch (\Exception $e) {
+            error_log('HPH Marketing Suite: Error in load_marketing_suite_interface: ' . $e->getMessage());
+            wp_send_json_error([
+                'message' => __('Error loading Marketing Suite: ', 'happy-place') . $e->getMessage(),
+                'code' => 'exception_occurred'
+            ], 500);
         }
-    }
-    
-    /**
+    }    /**
      * Get section title
      */
     protected function get_section_title(): string {
@@ -677,25 +701,57 @@ class Marketing_Section extends Base_Dashboard_Section {
      * Generate marketing flyer
      */
     public function generate_flyer(): void {
-        check_ajax_referer('hph_dashboard_nonce', 'nonce');
-        
-        if (!current_user_can('edit_posts')) {
-            wp_die(__('You do not have permission to perform this action.', 'happy-place'));
-        }
-        
-        $listing_id = absint($_POST['listing_id'] ?? 0);
-        $template_id = sanitize_text_field($_POST['template_id'] ?? 'default');
-        
-        // Check if marketing suite generator class exists
-        if (class_exists('Marketing_Suite_Generator')) {
-            wp_send_json_success([
-                'message' => __('Marketing suite available - use the full generator interface', 'happy-place'),
-                'redirect' => admin_url('admin.php?page=marketing-suite-generator')
-            ]);
-        } else {
+        try {
+            // Security validation
+            if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hph_dashboard_nonce') && 
+                !wp_verify_nonce($_POST['nonce'] ?? '', 'hph_ajax_nonce')) {
+                wp_send_json_error([
+                    'message' => __('Security check failed.', 'happy-place'),
+                    'code' => 'invalid_nonce'
+                ], 403);
+                return;
+            }
+            
+            if (!current_user_can('edit_posts')) {
+                wp_send_json_error([
+                    'message' => __('You do not have permission to perform this action.', 'happy-place'),
+                    'code' => 'insufficient_permissions'
+                ], 403);
+                return;
+            }
+            
+            $listing_id = absint($_POST['listing_id'] ?? 0);
+            $template_id = sanitize_text_field($_POST['template_id'] ?? 'default');
+            
+            if (!$listing_id || get_post_type($listing_id) !== 'listing') {
+                wp_send_json_error([
+                    'message' => __('Invalid listing ID provided.', 'happy-place'),
+                    'code' => 'invalid_listing'
+                ], 400);
+                return;
+            }
+            
+            // Check if marketing suite generator class exists
+            if (class_exists('HappyPlace\\Dashboard\\Marketing_Suite_Generator')) {
+                wp_send_json_success([
+                    'message' => __('Marketing suite available - use the full generator interface', 'happy-place'),
+                    'redirect' => admin_url('admin.php?page=marketing-suite-generator'),
+                    'listing_id' => $listing_id,
+                    'template_id' => $template_id
+                ]);
+            } else {
+                wp_send_json_error([
+                    'message' => __('Marketing suite generator not available', 'happy-place'),
+                    'code' => 'generator_unavailable'
+                ], 500);
+            }
+            
+        } catch (\Exception $e) {
+            error_log('HPH Marketing Section: Error in generate_flyer: ' . $e->getMessage());
             wp_send_json_error([
-                'message' => __('Marketing suite not available', 'happy-place')
-            ]);
+                'message' => __('Error generating flyer.', 'happy-place'),
+                'code' => 'exception_occurred'
+            ], 500);
         }
     }
     
@@ -703,91 +759,183 @@ class Marketing_Section extends Base_Dashboard_Section {
      * Schedule social media post
      */
     public function schedule_social_post(): void {
-        check_ajax_referer('hph_dashboard_nonce', 'nonce');
-        
-        if (!current_user_can('edit_posts')) {
-            wp_die(__('You do not have permission to perform this action.', 'happy-place'));
-        }
-        
-        $post_data = [
-            'content' => sanitize_textarea_field($_POST['content'] ?? ''),
-            'platforms' => array_map('sanitize_text_field', $_POST['platforms'] ?? []),
-            'schedule_date' => sanitize_text_field($_POST['schedule_date'] ?? ''),
-            'listing_id' => absint($_POST['listing_id'] ?? 0)
-        ];
-        
-        // Validate required fields
-        if (empty($post_data['content']) || empty($post_data['platforms'])) {
-            wp_send_json_error([
-                'message' => __('Content and platforms are required', 'happy-place')
+        try {
+            // Security validation
+            if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hph_dashboard_nonce') && 
+                !wp_verify_nonce($_POST['nonce'] ?? '', 'hph_ajax_nonce')) {
+                wp_send_json_error([
+                    'message' => __('Security check failed.', 'happy-place'),
+                    'code' => 'invalid_nonce'
+                ], 403);
+                return;
+            }
+            
+            if (!current_user_can('edit_posts')) {
+                wp_send_json_error([
+                    'message' => __('You do not have permission to perform this action.', 'happy-place'),
+                    'code' => 'insufficient_permissions'
+                ], 403);
+                return;
+            }
+            
+            $post_data = [
+                'content' => sanitize_textarea_field($_POST['content'] ?? ''),
+                'platforms' => array_map('sanitize_text_field', $_POST['platforms'] ?? []),
+                'schedule_date' => sanitize_text_field($_POST['schedule_date'] ?? ''),
+                'listing_id' => absint($_POST['listing_id'] ?? 0)
+            ];
+            
+            // Validate required fields
+            if (empty($post_data['content']) || empty($post_data['platforms'])) {
+                wp_send_json_error([
+                    'message' => __('Content and platforms are required', 'happy-place'),
+                    'code' => 'missing_required_fields'
+                ], 400);
+                return;
+            }
+            
+            // Validate listing ID if provided
+            if ($post_data['listing_id'] && get_post_type($post_data['listing_id']) !== 'listing') {
+                wp_send_json_error([
+                    'message' => __('Invalid listing ID provided.', 'happy-place'),
+                    'code' => 'invalid_listing'
+                ], 400);
+                return;
+            }
+            
+            // TODO: Implement social media scheduling logic
+            wp_send_json_success([
+                'message' => __('Social media post scheduled successfully', 'happy-place'),
+                'data' => $post_data
             ]);
+            
+        } catch (\Exception $e) {
+            error_log('HPH Marketing Section: Error in schedule_social_post: ' . $e->getMessage());
+            wp_send_json_error([
+                'message' => __('Error scheduling social media post.', 'happy-place'),
+                'code' => 'exception_occurred'
+            ], 500);
         }
-        
-        // TODO: Implement social media scheduling
-        wp_send_json_success([
-            'message' => __('Social media post scheduled successfully', 'happy-place')
-        ]);
     }
     
     /**
      * Create email campaign
      */
     public function create_email_campaign(): void {
-        check_ajax_referer('hph_dashboard_nonce', 'nonce');
-        
-        if (!current_user_can('edit_posts')) {
-            wp_die(__('You do not have permission to perform this action.', 'happy-place'));
-        }
-        
-        $campaign_data = [
-            'name' => sanitize_text_field($_POST['name'] ?? ''),
-            'subject' => sanitize_text_field($_POST['subject'] ?? ''),
-            'content' => wp_kses_post($_POST['content'] ?? ''),
-            'recipients' => array_map('sanitize_email', $_POST['recipients'] ?? []),
-            'template_id' => sanitize_text_field($_POST['template_id'] ?? 'default')
-        ];
-        
-        // Validate required fields
-        if (empty($campaign_data['name']) || empty($campaign_data['subject']) || empty($campaign_data['content'])) {
-            wp_send_json_error([
-                'message' => __('Campaign name, subject, and content are required', 'happy-place')
+        try {
+            // Security validation
+            if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hph_dashboard_nonce') && 
+                !wp_verify_nonce($_POST['nonce'] ?? '', 'hph_ajax_nonce')) {
+                wp_send_json_error([
+                    'message' => __('Security check failed.', 'happy-place'),
+                    'code' => 'invalid_nonce'
+                ], 403);
+                return;
+            }
+            
+            if (!current_user_can('edit_posts')) {
+                wp_send_json_error([
+                    'message' => __('You do not have permission to perform this action.', 'happy-place'),
+                    'code' => 'insufficient_permissions'
+                ], 403);
+                return;
+            }
+            
+            $campaign_data = [
+                'name' => sanitize_text_field($_POST['name'] ?? ''),
+                'subject' => sanitize_text_field($_POST['subject'] ?? ''),
+                'content' => wp_kses_post($_POST['content'] ?? ''),
+                'recipients' => array_map('sanitize_email', $_POST['recipients'] ?? []),
+                'template_id' => sanitize_text_field($_POST['template_id'] ?? 'default')
+            ];
+            
+            // Validate required fields
+            if (empty($campaign_data['name']) || empty($campaign_data['subject']) || empty($campaign_data['content'])) {
+                wp_send_json_error([
+                    'message' => __('Campaign name, subject, and content are required', 'happy-place'),
+                    'code' => 'missing_required_fields'
+                ], 400);
+                return;
+            }
+            
+            // Validate email addresses
+            $invalid_emails = array_filter($campaign_data['recipients'], function($email) {
+                return !is_email($email);
+            });
+            
+            if (!empty($invalid_emails)) {
+                wp_send_json_error([
+                    'message' => __('Some email addresses are invalid.', 'happy-place'),
+                    'code' => 'invalid_emails',
+                    'invalid_emails' => $invalid_emails
+                ], 400);
+                return;
+            }
+            
+            // TODO: Implement email campaign creation logic
+            wp_send_json_success([
+                'message' => __('Email campaign created successfully', 'happy-place'),
+                'data' => $campaign_data
             ]);
+            
+        } catch (\Exception $e) {
+            error_log('HPH Marketing Section: Error in create_email_campaign: ' . $e->getMessage());
+            wp_send_json_error([
+                'message' => __('Error creating email campaign.', 'happy-place'),
+                'code' => 'exception_occurred'
+            ], 500);
         }
-        
-        // TODO: Implement email campaign creation
-        wp_send_json_success([
-            'message' => __('Email campaign created successfully', 'happy-place')
-        ]);
     }
     
     /**
      * Get marketing templates
      */
     public function get_marketing_templates(): void {
-        check_ajax_referer('hph_dashboard_nonce', 'nonce');
-        
-        if (!current_user_can('edit_posts')) {
-            wp_die(__('You do not have permission to access this resource.', 'happy-place'));
+        try {
+            // Security validation
+            if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hph_dashboard_nonce') && 
+                !wp_verify_nonce($_POST['nonce'] ?? '', 'hph_ajax_nonce')) {
+                wp_send_json_error([
+                    'message' => __('Security check failed.', 'happy-place'),
+                    'code' => 'invalid_nonce'
+                ], 403);
+                return;
+            }
+            
+            if (!current_user_can('edit_posts')) {
+                wp_send_json_error([
+                    'message' => __('You do not have permission to access this resource.', 'happy-place'),
+                    'code' => 'insufficient_permissions'
+                ], 403);
+                return;
+            }
+            
+            $template_type = sanitize_text_field($_POST['template_type'] ?? 'flyer');
+            
+            $templates = [
+                'flyer' => [
+                    ['id' => 'modern', 'name' => 'Modern Style', 'preview' => ''],
+                    ['id' => 'classic', 'name' => 'Classic Style', 'preview' => ''],
+                    ['id' => 'luxury', 'name' => 'Luxury Style', 'preview' => '']
+                ],
+                'email' => [
+                    ['id' => 'newsletter', 'name' => 'Newsletter', 'preview' => ''],
+                    ['id' => 'listing-alert', 'name' => 'New Listing Alert', 'preview' => ''],
+                    ['id' => 'market-update', 'name' => 'Market Update', 'preview' => '']
+                ]
+            ];
+            
+            wp_send_json_success([
+                'templates' => $templates[$template_type] ?? []
+            ]);
+            
+        } catch (\Exception $e) {
+            error_log('HPH Marketing Section: Error in get_marketing_templates: ' . $e->getMessage());
+            wp_send_json_error([
+                'message' => __('Error retrieving marketing templates.', 'happy-place'),
+                'code' => 'exception_occurred'
+            ], 500);
         }
-        
-        $template_type = sanitize_text_field($_POST['template_type'] ?? 'flyer');
-        
-        $templates = [
-            'flyer' => [
-                ['id' => 'modern', 'name' => 'Modern Style', 'preview' => ''],
-                ['id' => 'classic', 'name' => 'Classic Style', 'preview' => ''],
-                ['id' => 'luxury', 'name' => 'Luxury Style', 'preview' => '']
-            ],
-            'email' => [
-                ['id' => 'newsletter', 'name' => 'Newsletter', 'preview' => ''],
-                ['id' => 'listing-alert', 'name' => 'New Listing Alert', 'preview' => ''],
-                ['id' => 'market-update', 'name' => 'Market Update', 'preview' => '']
-            ]
-        ];
-        
-        wp_send_json_success([
-            'templates' => $templates[$template_type] ?? []
-        ]);
     }
     
     /**

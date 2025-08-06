@@ -160,10 +160,48 @@
             return;
         }
 
-        if (typeof flyerGenerator === 'undefined') {
-            console.error('Marketing Suite: flyerGenerator object not found');
-            showError('Configuration object not found. Please refresh the page.');
-            return;
+        // Check for configuration objects - multiple possible sources
+        let config = null;
+        if (typeof flyerGenerator !== 'undefined') {
+            config = flyerGenerator;
+            console.log('Marketing Suite: Using flyerGenerator config');
+        } else if (typeof marketingSuite !== 'undefined') {
+            config = marketingSuite;
+            console.log('Marketing Suite: Using marketingSuite config');
+        } else if (typeof marketingSuiteAjax !== 'undefined') {
+            config = marketingSuiteAjax;
+            console.log('Marketing Suite: Using marketingSuiteAjax config');
+        }
+
+        if (!config) {
+            console.error('Marketing Suite: No configuration object found');
+            // Create fallback configuration
+            config = {
+                ajaxUrl: window.ajaxurl || '/wp-admin/admin-ajax.php',
+                nonce: '',
+                dashboardNonce: ''
+            };
+            console.warn('Marketing Suite: Using fallback configuration');
+        }
+
+        // Make config globally available as flyerGenerator for compatibility
+        window.flyerGenerator = config;
+
+        // Also make formatConfigs globally available
+        if (config.formatConfigs) {
+            window.formatConfigs = config.formatConfigs;
+        } else {
+            // Fallback format configurations
+            console.warn('Marketing Suite: No formatConfigs found in config, using defaults');
+            window.formatConfigs = {
+                'full_flyer': { width: 800, height: 1000, name: 'Full Flyer', description: 'Standard property flyer', category: 'print' },
+                'instagram_post': { width: 1080, height: 1080, name: 'Instagram Post', description: 'Square social media post', category: 'social' },
+                'facebook_post': { width: 1200, height: 630, name: 'Facebook Post', description: 'Facebook cover or post', category: 'social' },
+                'twitter_post': { width: 1024, height: 512, name: 'Twitter Post', description: 'Twitter header or post', category: 'social' },
+                'web_banner': { width: 1200, height: 300, name: 'Web Banner', description: 'Website banner', category: 'web' },
+                'postcard': { width: 600, height: 400, name: 'Postcard', description: 'Marketing postcard', category: 'print' },
+                'business_card': { width: 350, height: 200, name: 'Business Card', description: 'Quick reference card', category: 'print' }
+            };
         }
 
         // Initialize all canvases
@@ -179,12 +217,32 @@
     }
 
     function initializeCanvases() {
+        console.log('Marketing Suite: Initializing canvases...');
+        
+        if (typeof fabric === 'undefined') {
+            console.error('Marketing Suite: Fabric.js is not available for canvas initialization');
+            showError('Fabric.js library is not loaded. Please refresh the page.');
+            return;
+        }
+
+        if (typeof formatConfigs === 'undefined' || Object.keys(formatConfigs).length === 0) {
+            console.warn('Marketing Suite: No format configurations found, using defaults');
+            // Use default format configurations if none are provided
+            window.formatConfigs = {
+                'full_flyer': { width: 800, height: 1000, name: 'Full Flyer' },
+                'instagram_post': { width: 1080, height: 1080, name: 'Instagram Post' },
+                'facebook_post': { width: 1200, height: 630, name: 'Facebook Post' }
+            };
+        }
+
         Object.keys(formatConfigs).forEach(formatKey => {
             const config = formatConfigs[formatKey];
+            console.log(`Marketing Suite: Setting up canvas for ${formatKey}:`, config);
             
             // Create canvas element if it doesn't exist
             let canvasElement = document.getElementById(`canvas-${formatKey}`);
             if (!canvasElement) {
+                console.log(`Marketing Suite: Creating canvas element for ${formatKey}`);
                 canvasElement = document.createElement('canvas');
                 canvasElement.id = `canvas-${formatKey}`;
                 canvasElement.width = config.width;
@@ -200,11 +258,14 @@
                     width: config.width,
                     height: config.height
                 });
-                console.log(`Canvas initialized for ${formatKey}:`, config.width, 'x', config.height);
+                console.log(`Marketing Suite: Canvas initialized successfully for ${formatKey}:`, config.width, 'x', config.height);
             } catch (error) {
-                console.error(`Error initializing canvas for ${formatKey}:`, error);
+                console.error(`Marketing Suite: Error initializing canvas for ${formatKey}:`, error);
+                showError(`Failed to initialize canvas for ${formatKey}: ${error.message}`);
             }
         });
+        
+        console.log('Marketing Suite: Canvas initialization complete. Total canvases:', Object.keys(canvases).length);
     }
 
     function bindEventHandlers() {
@@ -440,7 +501,7 @@
 
         // Prepare AJAX data
         const ajaxData = {
-            action: 'generate_flyer',
+            action: 'hph_generate_marketing_suite',
             nonce: flyerGenerator.nonce,
             listing_id: listingId,
             campaign_type: currentCampaignType,
@@ -1512,6 +1573,10 @@
             $('.generation-progress').hide();
             $('#generate-marketing-suite').prop('disabled', false);
         }
+    }
+
+    function hideProgress() {
+        showProgress(false);
     }
 
     function updateProgress(percentage, text) {

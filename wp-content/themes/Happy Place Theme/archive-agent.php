@@ -1,156 +1,94 @@
 <?php
+
 /**
- * Archive template for agents
+ * Template Name: Agents Archive
  * 
- * @package Happy_Place_Theme
- * @since 1.0.0
+ * This is the template for displaying the agents directory.
+ * 
+ * @package HappyPlace
  */
 
 get_header();
-
-// Get archive data
-$archive_data = [
-    'title' => 'Our Agents',
-    'description' => 'Meet our professional real estate agents'
-];
-
-// Get agents
-$agents = get_posts([
-    'post_type' => 'agent',
-    'posts_per_page' => get_option('posts_per_page', 12),
-    'meta_key' => 'agent_status',
-    'meta_value' => 'active',
-    'meta_compare' => '='
-]);
-
-if (empty($agents)) {
-    $agents = get_posts([
-        'post_type' => 'agent',
-        'posts_per_page' => get_option('posts_per_page', 12)
-    ]);
-}
 ?>
 
-<div class="archive-agents">
-    <!-- Archive Header -->
-    <div class="archive-header">
-        <div class="container">
-            <h1 class="archive-title"><?php echo esc_html($archive_data['title']); ?></h1>
-            <p class="archive-description"><?php echo esc_html($archive_data['description']); ?></p>
-            
-            <div class="archive-stats">
-                <?php
-                $total_agents = count($agents);
-                if ($total_agents > 0): ?>
-                    <span class="agents-count"><?php echo esc_html($total_agents); ?> professional agent<?php echo $total_agents !== 1 ? 's' : ''; ?></span>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Search & Filters -->
-    <div class="archive-filters">
-        <div class="container">
-            <form class="search-form" method="get" action="<?php echo esc_url(home_url('/')); ?>">
-                <input type="hidden" name="post_type" value="agent">
-                <input type="search" name="s" placeholder="Search agents..." value="<?php echo get_search_query(); ?>">
-                <button type="submit">Search</button>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Agents Grid -->
-    <div class="archive-content">
-        <div class="container">
-            <?php if (!empty($agents)): ?>
-                <div class="agents-grid">
-                    <?php foreach ($agents as $agent): ?>
-                        <div class="agent-card">
-                            <div class="agent-photo">
-                                <?php if (has_post_thumbnail($agent->ID)): ?>
-                                    <a href="<?php echo get_permalink($agent->ID); ?>">
-                                        <?php echo get_the_post_thumbnail($agent->ID, 'medium'); ?>
-                                    </a>
-                                <?php else: ?>
-                                    <div class="agent-photo-placeholder">
-                                        <span class="agent-initials">
-                                            <?php 
-                                            $name = get_the_title($agent->ID);
-                                            $name_parts = explode(' ', $name);
-                                            echo esc_html(substr($name_parts[0], 0, 1));
-                                            if (count($name_parts) > 1) {
-                                                echo esc_html(substr($name_parts[1], 0, 1));
-                                            }
-                                            ?>
-                                        </span>
-                                    </div>
-                                <?php endif; ?>
+<main id="primary" class="site-main">
+    <div class="container">
+        <?php get_template_part('templates/partials/global/content-header'); ?>
+
+        <div class="agents-grid">
+            <?php
+            $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+            $args = array(
+                'post_type' => 'agent',
+                'posts_per_page' => 12,
+                'paged' => $paged,
+                'orderby' => 'title',
+                'order' => 'ASC'
+            );
+
+            $query = new WP_Query($args);
+
+            if ($query->have_posts()) :
+                while ($query->have_posts()) :
+                    $query->the_post();
+            ?>
+                    <article id="post-<?php the_ID(); ?>" <?php post_class('agent-card'); ?>>
+                        <?php if (has_post_thumbnail()) : ?>
+                            <div class="agent-card__image">
+                                <?php the_post_thumbnail('agent-thumbnail'); ?>
                             </div>
-                            
-                            <div class="agent-info">
-                                <h3 class="agent-name">
-                                    <a href="<?php echo get_permalink($agent->ID); ?>">
-                                        <?php echo get_the_title($agent->ID); ?>
+                        <?php endif; ?>
+
+                        <div class="agent-card__content">
+                            <h2 class="agent-card__name">
+                                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                            </h2>
+
+                            <?php if ($title = get_field('title')) : ?>
+                                <p class="agent-card__title"><?php echo esc_html($title); ?></p>
+                            <?php endif; ?>
+
+                            <?php if ($phone = get_field('phone')) : ?>
+                                <p class="agent-card__phone">
+                                    <a href="tel:<?php echo esc_attr(preg_replace('/[^0-9]/', '', $phone)); ?>">
+                                        <?php echo esc_html($phone); ?>
                                     </a>
-                                </h3>
-                                
-                                <?php 
-                                $agent_title = get_field('agent_title', $agent->ID);
-                                if ($agent_title): ?>
-                                    <p class="agent-title"><?php echo esc_html($agent_title); ?></p>
-                                <?php endif; ?>
-                                
-                                <?php 
-                                $agent_phone = get_field('agent_phone', $agent->ID);
-                                if ($agent_phone): ?>
-                                    <p class="agent-phone">
-                                        <a href="tel:<?php echo esc_attr($agent_phone); ?>">
-                                            <?php echo esc_html($agent_phone); ?>
-                                        </a>
-                                    </p>
-                                <?php endif; ?>
-                                
-                                <?php 
-                                $agent_email = get_field('agent_email', $agent->ID);
-                                if ($agent_email): ?>
-                                    <p class="agent-email">
-                                        <a href="mailto:<?php echo esc_attr($agent_email); ?>">
-                                            <?php echo esc_html($agent_email); ?>
-                                        </a>
-                                    </p>
-                                <?php endif; ?>
-                                
-                                <div class="agent-excerpt">
-                                    <?php echo wp_trim_words(get_the_excerpt($agent->ID), 20); ?>
-                                </div>
-                                
-                                <a href="<?php echo get_permalink($agent->ID); ?>" class="agent-link">
-                                    View Profile
-                                </a>
+                                </p>
+                            <?php endif; ?>
+
+                            <?php if ($email = get_field('email')) : ?>
+                                <p class="agent-card__email">
+                                    <a href="mailto:<?php echo esc_attr($email); ?>">
+                                        <?php echo esc_html($email); ?>
+                                    </a>
+                                </p>
+                            <?php endif; ?>
+
+                            <div class="agent-card__actions">
+                                <a href="<?php the_permalink(); ?>" class="btn btn-primary">View Profile</a>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-                
-                <!-- Pagination -->
-                <div class="archive-pagination">
-                    <?php
-                    the_posts_pagination([
-                        'prev_text' => '← Previous',
-                        'next_text' => 'Next →',
-                        'mid_size' => 2
-                    ]);
-                    ?>
-                </div>
-                
-            <?php else: ?>
-                <div class="no-agents">
-                    <h2>No agents found</h2>
-                    <p>There are currently no agents available. Please check back later.</p>
-                </div>
-            <?php endif; ?>
+                    </article>
+            <?php
+                endwhile;
+
+                // Custom pagination for WP_Query
+                $big = 999999999;
+                echo paginate_links(array(
+                    'base' => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+                    'format' => '?paged=%#%',
+                    'current' => max(1, get_query_var('paged')),
+                    'total' => $query->max_num_pages
+                ));
+
+                wp_reset_postdata();
+            else :
+                get_template_part('templates/partials/global/no-results');
+            endif;
+            ?>
         </div>
     </div>
-</div>
+</main>
 
-<?php get_footer(); ?>
+<?php
+get_footer();
